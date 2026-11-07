@@ -21,20 +21,20 @@ placeholders = false
 [[inventory.stock]]
 obj = "obj.bread"
 count = 10
-restockCycles = 150
+restockCycles = 100
 
 [[inventory.stock]]
 obj = "obj.cake"
 count = 3
-restockCycles = 1000
+restockCycles = 800
 
 [[inventory.stock]]
 obj = "obj.chocolate_slice"
-count = 6
-restockCycles = 400
+count = 8
+restockCycles = 200
 
 [[inventory.stock]]
 obj = "obj.chocolate_bar"
-count = 9
-restockCycles = 250
+count = 7
+restockCycles = 200
 

@@ -87,6 +87,7 @@ sealed interface Effect {
         /** Percentage (0-100) of a protection prayer's block this hit ignores. */
         val penetration: Int = 0,
         val missSpotanim: String? = null,
+        val missSound: String? = null,
         val onHit: Effect? = null,
         val onHitEvenOnMiss: Boolean = false,
         val lifesteal: Int = 0,

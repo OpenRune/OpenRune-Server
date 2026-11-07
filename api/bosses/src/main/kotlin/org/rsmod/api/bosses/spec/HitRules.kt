@@ -25,6 +25,9 @@ sealed interface IncomingAction {
 
     data class ScalePercent(val percent: Int, override val style: HitType? = null) : IncomingAction
 
+    /** Divides a non-zero hit by [divisor], rounding down but never below 1. A 0 stays 0. */
+    data class DivideMinOne(val divisor: Int, override val style: HitType? = null) : IncomingAction
+
     /**
      * Raises a hit below [percent] of the attacker's max hit to a roll between that floor and the
      * max. Only [HitType.Ranged] and [HitType.Melee] have a player max hit to measure against.

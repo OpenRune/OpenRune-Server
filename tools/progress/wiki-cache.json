@@ -971,7 +971,7 @@
       "image": "https://oldschool.runescape.wiki/images/thumb/Dessous.png/48px-Dessous.png?bd2c8"
     },
     "Gadderanks": {
-      "image": "https://oldschool.runescape.wiki/images/thumb/Gadderanks.png/48px-Gadderanks.png?63d5a"
+      "image": "https://oldschool.runescape.wiki/images/thumb/Gadderanks.png/48px-Gadderanks.png?aac4f"
     },
     "Lowerniel Drakan": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Lowerniel_Drakan.png/48px-Lowerniel_Drakan.png?b887a"
@@ -1485,6 +1485,12 @@
     },
     "Xarth": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Xarth.png/48px-Xarth.png?bc5b7"
+    },
+    "Games Zone": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Games_Zone.png/48px-Games_Zone.png?edf24"
+    },
+    "Barracuda Trials": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Tempor_Tantrum.png/48px-The_Tempor_Tantrum.png?0ab4e"
     }
   },
   "categories": {
@@ -1677,29 +1683,26 @@
     ],
     "Category:Minigames": [
       "Barbarian Assault",
+      "Barracuda Trials",
       "Blast Furnace",
       "Bounty Hunter",
       "Brimhaven Agility Arena",
       "Burthorpe Games Room",
       "Castle Wars",
-      "Chompy bird hunting",
       "Clan Wars",
-      "Dorgesh-Kaan market trading",
       "Duel Arena",
       "Emir's Arena",
-      "Farming contracts",
       "Fishing Trawler",
       "Fortis Colosseum",
+      "Games Zone",
       "Giants' Foundry",
       "Gnome Ball",
       "Gnome Restaurant",
-      "Golem crafting",
       "Guardians of the Rift",
       "Hallowed Sepulchre",
       "Impetuous Impulses",
       "Inferno",
       "Intelligence Gathering",
-      "Keldagrim tasks",
       "Last Man Standing",
       "Mage Arena",
       "Mage Training Arena",
@@ -1708,15 +1711,12 @@
       "Mess",
       "Nightmare Zone",
       "Pest Control",
-      "Pete Kayer's Challenges",
       "Pyramid Plunder",
       "Rat Pits",
       "Rogues' Den",
       "Shades of Mort'ton (minigame)",
       "Sorceress's Garden",
       "Soul Wars",
-      "Stealing artefacts",
-      "Stealing valuables",
       "Tai Bwo Wannai Cleanup",
       "Tears of Guthix (minigame)",
       "Temple Trekking",
@@ -1730,5 +1730,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-10-29"
+  "fetched": "2026-11-05"
 }

@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("integration-test-suite")
 }
 
 kotlin {
@@ -21,4 +22,13 @@ dependencies {
     implementation(projects.engine.map)
     implementation(projects.engine.objtx)
     implementation(projects.engine.plugin)
+}
+
+dependencies {
+    integrationImplementation(libs.guice)
+    integrationImplementation(libs.rsprot.api)
+    integrationImplementation(projects.api.net)
+    integrationImplementation(projects.api.repo)
+    integrationImplementation(projects.engine.game)
+    integrationImplementation(projects.engine.map)
 }

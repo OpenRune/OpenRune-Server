@@ -152,6 +152,7 @@ class CookingEvents @Inject constructor(
                 entries = listOf(SkillMultiEntry(food.raw.internalName)),
                 padLabels = true,
                 eventsEndAtMaxCount = true,
+                quantityVarp = COOK_QUANTITY_VARP,
             )) { selection ->
                 cookFood(food, surface, selection.amount)
             }
@@ -168,6 +169,7 @@ class CookingEvents @Inject constructor(
             },
             padLabels = true,
             eventsEndAtMaxCount = true,
+            quantityVarp = COOK_QUANTITY_VARP,
         )) { selection ->
             val food = cookable.firstOrNull {
                 it.cooked.internalName == selection.entry.internal
@@ -237,5 +239,7 @@ class CookingEvents @Inject constructor(
 
         // A queue added mid-processing is decremented on the same tick, so delay 1 re-fires instantly.
         const val MIN_REQUEUE_TICKS = 2
+
+        const val COOK_QUANTITY_VARP = "varp.cooking_skillmulti_quantity"
     }
 }

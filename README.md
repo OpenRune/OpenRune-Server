@@ -35,7 +35,7 @@ OpenRune Server adheres to OSRS protocols, giving you the freedom to connect any
 
 ## 📊 Content progress
 
-Skills **20/23** · Bosses **25/179** · Raids **0/4** · Minigames **2/52**
+Skills **20/23** · Bosses **25/179** · Raids **0/4** · Minigames **2/46**
 
 Full breakdown in **[PROGRESS.md](PROGRESS.md)**, including every content module and
 the bosses that already have drop tables and only need the encounter writing.
@@ -119,7 +119,7 @@ See [.github/docs/RELEASE_CI.md](.github/docs/RELEASE_CI.md) for what the workfl
 
 ## 💬 Bug Reports & Support
 - Open an issue on [GitHub](https://github.com/OpenRune/OpenRune-Server/issues) with reproduction details.
-- Reach the team directly in the [Discord server](https://discord.gg/HAwN6N8F).
+- Reach the team directly in the [Discord server](https://discord.gg/v2qcXzBCwf).
 
 ## 🙏 Acknowledgments
 - Cache management powered by [OpenRune-FileStore](https://github.com/OpenRune/OpenRune-FileStore).
