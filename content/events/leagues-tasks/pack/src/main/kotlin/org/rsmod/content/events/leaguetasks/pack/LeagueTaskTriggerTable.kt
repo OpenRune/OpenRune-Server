@@ -31,6 +31,10 @@ object LeagueTaskTriggerTable {
     const val EMOTE = 17
     const val COLLECTION = 18
     const val NPC_PARAM = 19
+    const val STYLE = 20
+    const val MIN_HIT = 21
+    const val UNHURT = 22
+    const val WORN = 23
 
     fun triggers() =
         dbTable("dbtable.league_task_trigger", serverOnly = true) {
@@ -54,6 +58,10 @@ object LeagueTaskTriggerTable {
             column("emote", EMOTE, VarType.STRING)
             column("collection", COLLECTION, VarType.DBROW)
             column("npc_param", NPC_PARAM, VarType.INT)
+            column("style", STYLE, VarType.INT)
+            column("min_hit", MIN_HIT, VarType.INT)
+            column("unhurt", UNHURT, VarType.INT)
+            column("worn", WORN, VarType.OBJ)
 
             val rows = TriggerRows(this)
             rows.levelTasks()
@@ -85,6 +93,7 @@ object LeagueTaskTriggerTable {
             rows.collectionTasks()
             rows.slayerTasks()
             rows.minigameTasks()
+            rows.conditionalCombatTasks()
         }
 }
 

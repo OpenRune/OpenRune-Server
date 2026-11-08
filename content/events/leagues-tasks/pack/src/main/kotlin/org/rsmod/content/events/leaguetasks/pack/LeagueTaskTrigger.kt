@@ -19,7 +19,9 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     Equip(6, isState = true),
     /**
      * The player gets the kill of an `npc`, an npc of a `category`, a `slayer_task` npc, or an npc
-     * with the `npc_param` param.
+     * with the `npc_param` param. Optional conditions: the player's killing hit used `style` (a
+     * `HitType` id) and dealt at least `min_hit`, the npc never damaged the player (`unhurt`), and
+     * one of the `worn` items is worn.
      */
     Kill(7, isState = false),
     /**
@@ -76,7 +78,11 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
      */
     CollectionSlots(27, isState = true),
     /** A slayer task is completed. */
-    SlayerTask(28, isState = false);
+    SlayerTask(28, isState = false),
+    /** A kill counts toward the player's slayer task, of one of the `npc` npcs when listed. */
+    SlayerTaskKill(29, isState = false),
+    /** A player hit of at least `value` lands on an npc, from one of the `tool` items when listed. */
+    Damage(30, isState = false);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)

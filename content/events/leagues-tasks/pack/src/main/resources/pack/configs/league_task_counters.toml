@@ -474,3 +474,9 @@ id = "varbit.league_counter_complete_slayer_tasks"
 varp = "varp.league_counters_14"
 startBit = 0
 endBit = 7
+
+[[varbit]]
+id = "varbit.league_counter_slay_task_creatures"
+varp = "varp.league_counters_14"
+startBit = 8
+endBit = 15

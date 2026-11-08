@@ -5,6 +5,7 @@ import dev.openrune.definition.type.ParamType
 import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.SlayerTaskCredit
+import org.rsmod.api.player.events.NpcKilledEvent
 import org.rsmod.api.script.onNpcKilled
 import org.rsmod.content.events.leaguetasks.LeagueTaskProgress
 import org.rsmod.content.events.leaguetasks.LeagueTaskRequirement
@@ -52,10 +53,24 @@ class KillTriggers @Inject constructor(private val progress: LeagueTaskProgress)
             }
             val hit = killingHit
             val met = (matching(npc.type) + matching(npc.visType) + anyNpcRows).filter { row ->
-                row.tools.isEmpty() || hit != null && hit.usedAny(row.tools)
+                val toolMet = row.tools.isEmpty() || hit != null && hit.usedAny(row.tools)
+                toolMet && conditionsMet(row)
             }
             progress.record(player, met)
         }
+    }
+
+    private fun NpcKilledEvent.conditionsMet(row: LeagueTaskRequirement): Boolean {
+        if (row.style != null && killingStyle?.id != row.style) {
+            return false
+        }
+        if (row.minHit > 0 && (!dealtKillingHit || (killingHit?.damage ?: 0) < row.minHit)) {
+            return false
+        }
+        if (row.unhurt && tookDamage) {
+            return false
+        }
+        return row.worn.isEmpty() || player.worn.any { it != null && it.id in row.worn }
     }
 
     private fun matching(type: NpcServerType): Set<LeagueTaskRequirement> = buildSet {
