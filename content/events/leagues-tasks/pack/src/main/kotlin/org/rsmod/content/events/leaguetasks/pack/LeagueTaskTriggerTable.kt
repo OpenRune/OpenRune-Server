@@ -73,6 +73,7 @@ object LeagueTaskTriggerTable {
             rows.thievingTasks()
             rows.magicTasks()
             rows.combatActionTasks()
+            rows.countedKillTasks()
         }
 }
 

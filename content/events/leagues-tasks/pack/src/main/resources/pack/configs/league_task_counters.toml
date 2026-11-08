@@ -422,3 +422,38 @@ id = "varbit.league_counter_pickpocket_menaphite_thugs"
 varp = "varp.league_counters_12"
 startBit = 11
 endBit = 16
+
+[[varbit]]
+id = "varbit.league_counter_kill_lizardman_shamans"
+varp = "varp.league_counters_12"
+startBit = 17
+endBit = 25
+
+[[varp]]
+id = "varp.league_counters_13"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_kill_demonic_gorillas"
+varp = "varp.league_counters_13"
+startBit = 0
+endBit = 8
+
+[[varbit]]
+id = "varbit.league_counter_kill_bandits"
+varp = "varp.league_counters_13"
+startBit = 9
+endBit = 13
+
+[[varbit]]
+id = "varbit.league_counter_kill_elves_in_tirannwn"
+varp = "varp.league_counters_13"
+startBit = 14
+endBit = 19
+
+[[varbit]]
+id = "varbit.league_counter_kill_bunnies"
+varp = "varp.league_counters_13"
+startBit = 20
+endBit = 22

@@ -66,6 +66,7 @@ league_counters_9 = 62009
 league_counters_10 = 62010
 league_counters_11 = 62011
 league_counters_12 = 62012
+league_counters_13 = 62013
 
 [gamevals.varbit]
 league_counter_chop_willow_logs = 62000
@@ -128,3 +129,8 @@ league_counter_open_muddy_chests = 62056
 league_counter_pickpocket_knights_of_varlamore = 62057
 league_counter_pickpocket_knights_of_ardougne = 62058
 league_counter_pickpocket_menaphite_thugs = 62059
+league_counter_kill_lizardman_shamans = 62060
+league_counter_kill_demonic_gorillas = 62061
+league_counter_kill_bandits = 62062
+league_counter_kill_elves_in_tirannwn = 62063
+league_counter_kill_bunnies = 62064
