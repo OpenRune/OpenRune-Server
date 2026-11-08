@@ -83,6 +83,7 @@ object LeagueTaskTriggerTable {
             rows.collectionTasks()
             rows.minigameTasks()
             rows.conditionalCombatTasks()
+            rows.outfitTasks()
         }
 }
 

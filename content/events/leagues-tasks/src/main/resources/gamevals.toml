@@ -79,6 +79,7 @@ league_counters_12 = 62012
 league_counters_13 = 62013
 league_counters_14 = 62014
 league_task_windows = 62015
+league_worn_collections = 62016
 
 [gamevals.varbit]
 league_counter_chop_willow_logs = 62000
@@ -151,3 +152,9 @@ league_counter_complete_slayer_tasks = 62066
 league_counter_slay_task_creatures = 62067
 league_window_chicken_kills = 62068
 league_window_penguin_kills = 62069
+league_worn_godswords = 62070
+league_worn_dagannoth_rings = 62071
+league_worn_zenyte = 62072
+league_worn_god_books = 62073
+league_worn_cerberus_boots = 62074
+league_worn_snelms = 62075

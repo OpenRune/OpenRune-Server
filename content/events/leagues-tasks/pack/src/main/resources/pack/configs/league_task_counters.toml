@@ -497,3 +497,44 @@ id = "varbit.league_window_penguin_kills"
 varp = "varp.league_task_windows"
 startBit = 2
 endBit = 5
+
+[[varp]]
+id = "varp.league_worn_collections"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_worn_godswords"
+varp = "varp.league_worn_collections"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.league_worn_dagannoth_rings"
+varp = "varp.league_worn_collections"
+startBit = 5
+endBit = 8
+
+[[varbit]]
+id = "varbit.league_worn_zenyte"
+varp = "varp.league_worn_collections"
+startBit = 9
+endBit = 12
+
+[[varbit]]
+id = "varbit.league_worn_god_books"
+varp = "varp.league_worn_collections"
+startBit = 13
+endBit = 18
+
+[[varbit]]
+id = "varbit.league_worn_cerberus_boots"
+varp = "varp.league_worn_collections"
+startBit = 19
+endBit = 21
+
+[[varbit]]
+id = "varbit.league_worn_snelms"
+varp = "varp.league_worn_collections"
+startBit = 22
+endBit = 30
