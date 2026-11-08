@@ -17,7 +17,10 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     Xp(5, isState = true),
     /** At least `count` of the `obj` items are worn at once. */
     Equip(6, isState = true),
-    /** The player gets the kill of an `npc`, an npc of a `category`, or a `slayer_task` npc. */
+    /**
+     * The player gets the kill of an `npc`, an npc of a `category`, a `slayer_task` npc, or an npc
+     * with the `npc_param` param.
+     */
     Kill(7, isState = false),
     /**
      * A skilling action gives one of the `obj` products (any when empty) from a `stat` skill (any
@@ -66,7 +69,14 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
      * One of the `obj` items (any when empty) is used on one of the `npc` npcs or `loc` locs and its
      * handler runs to the end. Only items with a handler on that target count.
      */
-    UseOn(26, isState = false);
+    UseOn(26, isState = false),
+    /**
+     * At least `value` distinct collection log slots are filled across the `collection` category
+     * rows, or across the whole log when the row lists none.
+     */
+    CollectionSlots(27, isState = true),
+    /** A slayer task is completed. */
+    SlayerTask(28, isState = false);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)

@@ -38,6 +38,10 @@ public class LeagueTaskRequirement(
     public val option: Int = 0,
     /** The emote tab name, as `PlayerEmoteEvent.emote` reports it. */
     public val emote: String? = null,
+    /** `dbtable.collection_log_categories` rows; empty means the whole log. */
+    public val collections: List<Int> = emptyList(),
+    /** A param the killed npc's type must have. */
+    public val npcParam: Int? = null,
 ) {
     /** The varp a [varp] or [varbit] requirement is stored in. */
     public val baseVarp: Int?
@@ -128,6 +132,13 @@ public class LeagueTaskRequirement(
                             .map { it.id },
                     option = row.intOptional("dbcol.league_task_trigger:option") ?: 0,
                     emote = row.stringOptional("dbcol.league_task_trigger:emote"),
+                    collections =
+                        row.slotsOptional(
+                                "dbcol.league_task_trigger:collection",
+                                DbColumnCodec.DbRowTypeCodec,
+                            )
+                            .map { it.id },
+                    npcParam = row.intOptional("dbcol.league_task_trigger:npc_param"),
                 )
             }
 

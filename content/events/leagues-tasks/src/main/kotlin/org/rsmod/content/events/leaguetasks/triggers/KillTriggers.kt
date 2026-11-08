@@ -1,5 +1,7 @@
 package org.rsmod.content.events.leaguetasks.triggers
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.ParamType
 import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.SlayerTaskCredit
@@ -31,8 +33,17 @@ class KillTriggers @Inject constructor(private val progress: LeagueTaskProgress)
 
     private val slayerRows: List<LeagueTaskRequirement> = rows.filter { it.slayerTask != null }
 
+    private val rowsByParam: Map<ParamType, List<LeagueTaskRequirement>> =
+        rows.filter { it.npcParam != null }
+            .groupBy { checkNotNull(ServerCacheManager.getParam(it.npcParam!!)) }
+
     private val anyNpcRows: List<LeagueTaskRequirement> =
-        rows.filter { it.npcs.isEmpty() && it.categories.isEmpty() && it.slayerTask == null }
+        rows.filter {
+            it.npcs.isEmpty() &&
+                it.categories.isEmpty() &&
+                it.slayerTask == null &&
+                it.npcParam == null
+        }
 
     override fun ScriptContext.startup() {
         onNpcKilled {
@@ -51,6 +62,11 @@ class KillTriggers @Inject constructor(private val progress: LeagueTaskProgress)
         addAll(rowsByNpc[type.id].orEmpty())
         addAll(rowsByCategory[type.category].orEmpty())
         slayerRows.filterTo(this) { SlayerTaskCredit.counts(type, it.slayerTask ?: 0) }
+        for ((param, paramRows) in rowsByParam) {
+            if (type.hasParam(param)) {
+                addAll(paramRows)
+            }
+        }
     }
 
     private fun Hit.usedAny(tools: List<Int>): Boolean {

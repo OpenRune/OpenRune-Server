@@ -8,6 +8,7 @@ import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTrigger
 import org.rsmod.game.entity.Player
 
@@ -63,6 +64,7 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
                         row.objs == first.objs &&
                         row.npcs == first.npcs &&
                         row.categories == first.categories &&
+                        row.npcParam == first.npcParam &&
                         row.slayerTask == first.slayerTask &&
                         row.stats == first.stats &&
                         row.areas == first.areas &&
@@ -191,6 +193,8 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
                     }
                 current >= row.value
             }
+            LeagueTaskTrigger.CollectionSlots ->
+                CollectionLog.filledSlots(player, row.collections) >= row.value
             LeagueTaskTrigger.Kill,
             LeagueTaskTrigger.Product,
             LeagueTaskTrigger.Spell,
@@ -209,7 +213,8 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
             LeagueTaskTrigger.SpecialAttack,
             LeagueTaskTrigger.Ammo,
             LeagueTaskTrigger.Emote,
-            LeagueTaskTrigger.UseOn ->
+            LeagueTaskTrigger.UseOn,
+            LeagueTaskTrigger.SlayerTask ->
                 row.counter?.let { player.vars[it] >= row.count } ?: false
         }
     }
