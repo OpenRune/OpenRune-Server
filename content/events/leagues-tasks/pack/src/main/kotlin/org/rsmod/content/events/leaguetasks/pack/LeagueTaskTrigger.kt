@@ -38,7 +38,9 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     /** One of the `obj` foods or potions is eaten or drunk. */
     Consume(14, isState = false),
     /** The `varp` or `varbit` holds at least `value`: quest progress, kill counts, unlocks. */
-    Var(15, isState = true);
+    Var(15, isState = true),
+    /** The `interface` is opened. */
+    Interface(16, isState = false);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)

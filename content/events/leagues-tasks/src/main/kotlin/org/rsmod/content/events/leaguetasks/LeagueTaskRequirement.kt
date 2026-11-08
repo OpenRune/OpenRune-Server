@@ -31,6 +31,7 @@ public class LeagueTaskRequirement(
     public val tools: List<Int> = emptyList(),
     public val varp: VarpServerType? = null,
     public val varbit: VarBitType? = null,
+    public val interf: Int? = null,
 ) {
     /** The varp a [varp] or [varbit] requirement is stored in. */
     public val baseVarp: Int?
@@ -112,6 +113,7 @@ public class LeagueTaskRequirement(
                                 "League task trigger row ${row.id} has unknown varbit $id."
                             }
                         },
+                    interf = row.intOptional("dbcol.league_task_trigger:interface"),
                 )
             }
 

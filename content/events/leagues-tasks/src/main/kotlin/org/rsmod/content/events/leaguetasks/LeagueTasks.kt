@@ -103,10 +103,17 @@ public class LeagueTasks @Inject constructor(private val eventBus: EventBus) {
             league.notificationColour,
         )
         player.midiJingle("jingle.dt2_horn_part_6")
+        updateProgressBar(player, earned)
+    }
+
+    internal fun updateProgressBar(
+        player: Player,
+        points: Int = player.vars["varp.league_points_completed"],
+    ) {
         player.runClientScript(
             "clientscript.[clientscript,league_side_panel_update_bar]".asRSCM(RSCMType.CLIENTSCRIPT),
             "component.league_side_panel:fill".asRSCM(RSCMType.COMPONENT),
-            earned,
+            points,
         )
     }
 
