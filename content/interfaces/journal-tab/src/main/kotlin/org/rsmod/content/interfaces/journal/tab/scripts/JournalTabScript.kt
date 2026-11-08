@@ -31,6 +31,10 @@ class JournalTabScript @Inject constructor(private val eventBus: EventBus) : Plu
             player.switchJournalTab(SideJournalTab.Tasks)
         }
 
+        onIfOverlayButton("component.side_journal:league_list") {
+            player.switchJournalTab(SideJournalTab.League)
+        }
+
         onIfOverlayButton("component.toplevel_osrs_stretch:stone2") { player.selectStoneOp(it.op) }
     }
 
