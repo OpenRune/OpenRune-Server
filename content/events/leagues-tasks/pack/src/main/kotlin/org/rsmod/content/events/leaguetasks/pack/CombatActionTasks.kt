@@ -29,6 +29,7 @@ private val MACES =
     )
 
 internal fun TriggerRows.combatActionTasks() {
+    variable("league_task_use_the_protect_from_melee_prayer", "varbit.prayer_protectfrommelee", 1)
     trigger("dbrow.league_task_perform_a_special_attack", LeagueTaskTrigger.SpecialAttack)
     trigger(
         "dbrow.league_task_use_the_special_attack_of_a_dragon_axe",
