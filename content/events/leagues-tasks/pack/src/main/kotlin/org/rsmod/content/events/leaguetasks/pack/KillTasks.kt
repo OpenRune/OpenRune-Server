@@ -4,6 +4,7 @@ import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.AREA
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.COUNT
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.COUNTER
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.NPC
+import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.TOOL
 
 /**
  * Kill tasks whose `action` row has no `npc_kill`, `npc_kill_category` or
@@ -26,9 +27,15 @@ internal fun TriggerRows.kill(
     times: Int = 1,
     counter: String? = null,
     area: String? = null,
+    tools: List<String> = emptyList(),
 ) {
     trigger("dbrow.$task", LeagueTaskTrigger.Kill) {
-        columnRSCM(NPC, npcs.asList())
+        if (npcs.isNotEmpty()) {
+            columnRSCM(NPC, npcs.asList())
+        }
+        if (tools.isNotEmpty()) {
+            columnRSCM(TOOL, tools)
+        }
         if (times != 1) {
             column(COUNT, times)
         }

@@ -52,7 +52,11 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     /** One of the `npc` npcs is pickpocketed. */
     Pickpocket(21, isState = false),
     /** One of the `loc` stalls is stolen from, giving one of the `obj` items when listed. */
-    Steal(22, isState = false);
+    Steal(22, isState = false),
+    /** A special attack is performed, with one of the `obj` weapons when listed. */
+    SpecialAttack(23, isState = false),
+    /** One of the `obj` ammo items is fired; progress advances by the amount used. */
+    Ammo(24, isState = false);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)
