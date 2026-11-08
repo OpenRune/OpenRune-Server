@@ -10,7 +10,7 @@ import kotlin.math.sign
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
-import org.rsmod.api.enums.HunterEnums.hunter_goat_pit_capacity
+import org.rsmod.api.enums.HunterGoatPitEnums.hunter_goat_pit_capacity
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
