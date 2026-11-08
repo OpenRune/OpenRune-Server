@@ -36,7 +36,9 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     /** One of the `obj` items (any when empty) is offered at an altar, the Ectofuntus or a bowl. */
     Offer(13, isState = false),
     /** One of the `obj` foods or potions is eaten or drunk. */
-    Consume(14, isState = false);
+    Consume(14, isState = false),
+    /** The `varp` or `varbit` holds at least `value`: quest progress, kill counts, unlocks. */
+    Var(15, isState = true);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)

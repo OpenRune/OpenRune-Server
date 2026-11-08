@@ -54,6 +54,7 @@ league_counters_7 = 62007
 league_counters_8 = 62008
 league_counters_9 = 62009
 league_counters_10 = 62010
+league_counters_11 = 62011
 
 [gamevals.varbit]
 league_counter_chop_willow_logs = 62000
@@ -108,3 +109,4 @@ league_counter_craft_unpowered_orbs = 62048
 league_counter_craft_blue_dragonhide_bodies = 62049
 league_counter_craft_death_runes = 62050
 league_counter_craft_law_runes = 62051
+league_counter_kill_godwars_bosses = 62052

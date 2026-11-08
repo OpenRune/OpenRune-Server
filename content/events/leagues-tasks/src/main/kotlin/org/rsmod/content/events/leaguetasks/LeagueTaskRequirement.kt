@@ -9,6 +9,7 @@ import dev.openrune.types.dbcol.column
 import dev.openrune.types.dbcol.int
 import dev.openrune.types.dbcol.intOptional
 import dev.openrune.types.dbcol.slotsOptional
+import dev.openrune.types.varp.VarpServerType
 import org.rsmod.api.table.ActionRow
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTrigger
 
@@ -28,7 +29,13 @@ public class LeagueTaskRequirement(
     public val areas: List<Int> = emptyList(),
     /** Tools the action must be done with; empty means any. */
     public val tools: List<Int> = emptyList(),
+    public val varp: VarpServerType? = null,
+    public val varbit: VarBitType? = null,
 ) {
+    /** The varp a [varp] or [varbit] requirement is stored in. */
+    public val baseVarp: Int?
+        get() = varbit?.varp ?: varp?.id
+
     internal companion object {
         /**
          * Rows of `dbtable.league_task_trigger`, plus a requirement read from the `action` row of
@@ -93,6 +100,18 @@ public class LeagueTaskRequirement(
                                 DbColumnCodec.ItemServerTypeCodec,
                             )
                             .map { it.id },
+                    varp =
+                        row.intOptional("dbcol.league_task_trigger:varp")?.let { id ->
+                            checkNotNull(ServerCacheManager.getVarp(id)) {
+                                "League task trigger row ${row.id} has unknown varp $id."
+                            }
+                        },
+                    varbit =
+                        row.intOptional("dbcol.league_task_trigger:varbit")?.let { id ->
+                            checkNotNull(ServerCacheManager.getVarbit(id)) {
+                                "League task trigger row ${row.id} has unknown varbit $id."
+                            }
+                        },
                 )
             }
 

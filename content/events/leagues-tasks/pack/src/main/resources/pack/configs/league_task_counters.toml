@@ -364,3 +364,14 @@ id = "varbit.league_counter_craft_law_runes"
 varp = "varp.league_counters_10"
 startBit = 18
 endBit = 23
+
+[[varp]]
+id = "varp.league_counters_11"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_kill_godwars_bosses"
+varp = "varp.league_counters_11"
+startBit = 0
+endBit = 8

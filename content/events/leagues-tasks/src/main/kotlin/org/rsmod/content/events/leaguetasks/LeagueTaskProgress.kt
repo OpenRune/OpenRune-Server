@@ -33,6 +33,9 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
                 check(row.areas.isEmpty()) {
                     "League task ${row.task}: a ${row.trigger} row cannot be limited to an area."
                 }
+                check(row.trigger != LeagueTaskTrigger.Var || row.baseVarp != null) {
+                    "League task ${row.task}: its Var row names no varp or varbit."
+                }
                 continue
             }
             val remembers = row.count > 1 || rowsByTask.getValue(row.task).size > 1
@@ -176,6 +179,17 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
             LeagueTaskTrigger.Equip -> {
                 val worn = player.worn.mapNotNullTo(HashSet()) { it?.id }
                 row.objs.count { it in worn } >= row.count
+            }
+            LeagueTaskTrigger.Var -> {
+                val varbit = row.varbit
+                val varp = row.varp
+                val current =
+                    when {
+                        varbit != null -> player.vars[varbit]
+                        varp != null -> player.vars[varp]
+                        else -> 0
+                    }
+                current >= row.value
             }
             LeagueTaskTrigger.Kill,
             LeagueTaskTrigger.Product,
