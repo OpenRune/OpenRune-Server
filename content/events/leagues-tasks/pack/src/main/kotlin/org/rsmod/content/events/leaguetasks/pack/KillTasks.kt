@@ -8,10 +8,12 @@ import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.TOOL
 
 /**
  * Kill tasks whose `action` row has no `npc_kill`, `npc_kill_category` or
- * `npc_kill_slayer_category` of its own. Tasks with one are read from Jagex's row directly.
+ * `npc_kill_slayer_category` of its own, or one broader than the task. Other tasks are read from
+ * Jagex's row directly.
  */
 internal fun TriggerRows.killTasks() {
     kill("league_task_defeat_the_king_black_dragon", "npc.king_dragon")
+    kill("action_kill_an_imp_in_a_basement", "npc.ic_basement_imp")
     kill(
         "league_task_kill_10_frost_crabs",
         "npc.frostcrab",
