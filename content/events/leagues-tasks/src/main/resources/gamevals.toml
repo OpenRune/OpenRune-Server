@@ -20,6 +20,9 @@ league_task_sync = 63441
 [gamevals.dbtable]
 league_task_trigger = 40000
 
+[gamevals.category]
+bones = 6
+
 [gamevals.area]
 league_region_asgarnia = 32700
 league_region_kandarin = 32701

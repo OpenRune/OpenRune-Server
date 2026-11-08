@@ -111,6 +111,5 @@ public sealed class SkillingProductSource {
 
     public data object GraniteCannonballs : SkillingProductSource()
 
-    /** Two items combined by using one on the other, such as butter on a baked potato. */
-    public data class Combine(public val used: ItemServerType) : SkillingProductSource()
+    public data object PotatoTopping : SkillingProductSource()
 }

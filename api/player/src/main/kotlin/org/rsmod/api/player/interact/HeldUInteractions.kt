@@ -10,6 +10,7 @@ import org.rsmod.api.player.events.interact.HeldUEvents
 import org.rsmod.api.player.events.interact.ObservedAction
 import org.rsmod.api.player.events.interact.ObservedTarget
 import org.rsmod.api.player.events.interact.PlayerInteractionEvent
+import org.rsmod.api.player.events.interact.heldCount
 import org.rsmod.api.player.events.interact.observeInteraction
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
@@ -36,7 +37,12 @@ public class HeldUInteractions @Inject constructor(private val eventBus: EventBu
                 PlayerInteractionEvent(
                     access.player,
                     ObservedTarget.Held(target, targetSlot),
-                    ObservedAction.Use(used, component = null, comsub = usedSlot),
+                    ObservedAction.Use(
+                        used,
+                        component = null,
+                        comsub = usedSlot,
+                        count = access.player.inv.heldCount(used, usedSlot),
+                    ),
                 )
             },
             block,

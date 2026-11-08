@@ -3,6 +3,7 @@ package org.rsmod.content.events.leaguetasks.triggers
 import jakarta.inject.Inject
 import org.rsmod.api.player.events.interact.ObservedAction
 import org.rsmod.api.player.events.interact.ObservedTarget
+import org.rsmod.api.player.events.interact.heldCount
 import org.rsmod.api.script.onPlayerInteractionFinished
 import org.rsmod.content.events.leaguetasks.LeagueTaskProgress
 import org.rsmod.content.events.leaguetasks.LeagueTaskRequirement
@@ -13,7 +14,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 /**
  * Counts an npc or loc option, or an item used on one, once its handler has run to the end,
- * dialogue included.
+ * dialogue included. A use only counts when the handler took or changed the used item, so a refusal
+ * does not.
  */
 class InteractTriggers @Inject constructor(private val progress: LeagueTaskProgress) :
     PluginScript() {
@@ -37,8 +39,14 @@ class InteractTriggers @Inject constructor(private val progress: LeagueTaskProgr
                 }
                 is ObservedAction.Use -> {
                     val item = action.item ?: return@onPlayerInteractionFinished
+                    if (player.inv.heldCount(item, action.comsub) >= action.count) {
+                        return@onPlayerInteractionFinished
+                    }
                     val rows =
-                        uses.of(started.target).filter { it.objs.isEmpty() || item.id in it.objs }
+                        uses.of(started.target).filter {
+                            (it.objs.isEmpty() || item.id in it.objs) &&
+                                (it.categories.isEmpty() || item.category in it.categories)
+                        }
                     progress.record(player, rows)
                 }
             }

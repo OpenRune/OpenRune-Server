@@ -1,6 +1,8 @@
 package org.rsmod.api.game.process.player
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.npc.isValidTarget
@@ -8,6 +10,7 @@ import org.rsmod.api.player.clearInteractionRoute
 import org.rsmod.api.player.events.interact.ObservedAction
 import org.rsmod.api.player.events.interact.ObservedTarget
 import org.rsmod.api.player.events.interact.PlayerInteractionEvent
+import org.rsmod.api.player.events.interact.heldCount
 import org.rsmod.api.player.events.interact.observeInteraction
 import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.interact.LocTInteractions
@@ -507,27 +510,34 @@ constructor(
                     visibleLoc(player, interaction.target) to ObservedAction.Option(interaction.op.slot)
                 is InteractionLocT ->
                     visibleLoc(player, interaction.target) to
-                        ObservedAction.Use(interaction.objType, interaction.component, interaction.comsub)
+                        player.use(interaction.objType, interaction.component, interaction.comsub)
                 is InteractionNpcOp ->
                     visibleNpc(player, interaction.target) to ObservedAction.Option(interaction.op.slot)
                 is InteractionNpcT ->
                     visibleNpc(player, interaction.target) to
-                        ObservedAction.Use(interaction.objType, interaction.component, interaction.comsub)
+                        player.use(interaction.objType, interaction.component, interaction.comsub)
                 is InteractionObjOp ->
                     ObservedTarget.Ground(interaction.target) to
                         ObservedAction.Option(interaction.op.slot)
                 is InteractionObjT ->
                     ObservedTarget.Ground(interaction.target) to
-                        ObservedAction.Use(interaction.objType, interaction.component, interaction.comsub)
+                        player.use(interaction.objType, interaction.component, interaction.comsub)
                 is InteractionPlayerOp ->
                     ObservedTarget.Other(interaction.target) to
                         ObservedAction.Option(interaction.op.slot)
                 is InteractionPlayerT ->
                     ObservedTarget.Other(interaction.target) to
-                        ObservedAction.Use(interaction.objType, interaction.component, interaction.comsub)
+                        player.use(interaction.objType, interaction.component, interaction.comsub)
             }
         return PlayerInteractionEvent(player, target, action)
     }
+
+    private fun Player.use(
+        objType: ItemServerType?,
+        component: ComponentType,
+        comsub: Int,
+    ): ObservedAction.Use =
+        ObservedAction.Use(objType, component, comsub, inv.heldCount(objType, comsub))
 
     private fun visibleLoc(player: Player, loc: BoundLocInfo): ObservedTarget.Loc {
         var visible = loc

@@ -8,6 +8,7 @@ import org.rsmod.events.EventBus
 import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.player.PlayerEvent
+import org.rsmod.game.inv.Inventory
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.obj.Obj
 
@@ -32,10 +33,15 @@ public sealed class ObservedAction {
 
     /**
      * An item or spell used on the target. [item] is null for spells; [component] is null when one
-     * inventory item is used on another, where [comsub] is the used item's slot.
+     * inventory item is used on another, where [comsub] is the used item's slot. [count] is how many
+     * of [item] that inventory slot held when the interaction started, 0 for spells.
      */
-    public data class Use(val item: ItemServerType?, val component: ComponentType?, val comsub: Int) :
-        ObservedAction()
+    public data class Use(
+        val item: ItemServerType?,
+        val component: ComponentType?,
+        val comsub: Int,
+        val count: Int,
+    ) : ObservedAction()
 }
 
 /**
@@ -61,6 +67,11 @@ public data class PlayerInteractionFinishedEvent(
     public val started: PlayerInteractionEvent,
     public val completed: Boolean,
 ) : UnboundEvent, PlayerEvent
+
+public fun Inventory.heldCount(type: ItemServerType?, slot: Int): Int {
+    val obj = this[slot] ?: return 0
+    return if (type != null && obj.id == type.id) obj.count else 0
+}
 
 /**
  * Runs [block] and publishes [PlayerInteractionEvent] before it and
