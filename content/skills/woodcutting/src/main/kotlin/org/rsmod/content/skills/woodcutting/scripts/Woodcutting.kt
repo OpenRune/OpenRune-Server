@@ -152,7 +152,7 @@ constructor(
                     count = 1,
                     experience = xp,
                     grantsExperience = true,
-                    source = SkillingProductSource.Woodcutting(tree, logs),
+                    source = SkillingProductSource.Woodcutting(tree, logs, getInvObj(axe)),
                 )
             if (awardSkillingProduct(product) == SkillingAwardResult.Success) {
                 spam("You get some ${logs.name.lowercase()}.")

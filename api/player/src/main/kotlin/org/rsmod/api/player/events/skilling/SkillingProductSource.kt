@@ -19,15 +19,20 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.loc.BoundLocInfo
 
 public sealed class SkillingProductSource {
+    /** The axe, pickaxe or other tool the action was done with, if it needs one. */
+    public open val tool: ItemServerType?
+        get() = null
 
     public data class Mining(
         public val rock: BoundLocInfo,
-        public val rockData: MiningRocksRow
+        public val rockData: MiningRocksRow,
+        override val tool: ItemServerType,
     ) : SkillingProductSource()
 
     public data class Woodcutting(
         public val tree: BoundLocInfo,
-        public val productType: ItemServerType
+        public val productType: ItemServerType,
+        override val tool: ItemServerType,
     ) : SkillingProductSource()
 
     public data class Fishing(

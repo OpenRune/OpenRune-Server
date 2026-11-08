@@ -144,7 +144,7 @@ constructor(
                     return
                 }
                 is GemPreRoll.Gem -> {
-                    awardGemFind(rock, data, gemPre.item)
+                    awardGemFind(rock, data, gemPre.item, pickaxe)
                     opLoc3(rock)
                     return
                 }
@@ -165,7 +165,7 @@ constructor(
                     count = 1,
                     experience = xp,
                     grantsExperience = true,
-                    source = SkillingProductSource.Mining(rock, data),
+                    source = SkillingProductSource.Mining(rock, data, getInvObj(pickaxe)),
                 )
 
             when (awardSkillingProduct(product)) {
@@ -231,6 +231,7 @@ constructor(
         rock: BoundLocInfo,
         data: MiningRocksRow,
         gem: String,
+        pickaxe: InvObj,
     ) {
         val product =
             SkillingProduct(
@@ -240,7 +241,7 @@ constructor(
                 count = 1,
                 experience = 0.0,
                 grantsExperience = false,
-                source = SkillingProductSource.Mining(rock, data),
+                source = SkillingProductSource.Mining(rock, data, getInvObj(pickaxe)),
                 depletes = false,
             )
         when (awardSkillingProduct(product)) {

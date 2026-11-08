@@ -128,7 +128,7 @@ class WoodcuttingSideDropsScriptTest {
 
         fun publish(logs: String = "obj.oak_logs", bonus: Boolean = false, skill: String = "stat.woodcutting") {
             val source = SkillingProductSource.Woodcutting(
-                mockk(), checkNotNull(ServerCacheManager.getItem(logs.asRSCM())),
+                mockk(), checkNotNull(ServerCacheManager.getItem(logs.asRSCM())), mockk(),
             )
             events.publish(SkillingActionCompleteEvent(player,
                 SkillingActionContext.Product(skill, logs, 1, 37.5, source, bonus)))
