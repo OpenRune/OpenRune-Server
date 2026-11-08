@@ -133,6 +133,21 @@ internal fun TriggerRows.craftingTasks() {
     )
 
     product("league_task_craft_a_ghorrock_teleport_tablet", "stat.magic", "obj.tablet_ghorrock")
+
+    product(
+        "league_task_fill_a_bucket_with_sand_at_the_sunset_coast",
+        CRAFTING,
+        "obj.bucket_sand",
+        areas = listOf("area.league_region_varlamore"),
+    )
+    product(
+        "league_task_fill_up_20_buckets_of_sand_in_rellekka",
+        CRAFTING,
+        "obj.bucket_sand",
+        times = 20,
+        counter = "varbit.league_counter_fill_sand_in_rellekka",
+        areas = listOf("area.league_region_fremennik"),
+    )
 }
 
 private fun TriggerRows.runes(task: String, rune: String, times: Int, counter: String) {

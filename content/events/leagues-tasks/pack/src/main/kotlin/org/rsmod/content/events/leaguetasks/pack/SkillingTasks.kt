@@ -67,6 +67,7 @@ internal fun TriggerRows.skillingTasks() {
         "obj.2dosemoonlightpotion",
         "obj.1dosemoonlightpotion",
     )
+    objTask("league_task_bury_ourg_bone", LeagueTaskTrigger.Bury, "obj.zogre_ancestral_bones_ourg")
 }
 
 /**

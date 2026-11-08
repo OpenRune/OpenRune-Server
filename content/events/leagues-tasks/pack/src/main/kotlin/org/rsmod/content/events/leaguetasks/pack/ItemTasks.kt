@@ -44,6 +44,16 @@ internal fun TriggerRows.itemTasks() {
     bought("league_task_purchase_a_celestial_ring", "obj.celestial_ring")
     bought("league_task_purchase_the_chugging_barrel", "obj.mm_prepot_device")
     bought("league_task_purchase_an_onyx_in_mor_ul_rek", "obj.onyx")
+
+    obtained("league_task_pick_up_snapegrass", "obj.snape_grass")
+    objTask(
+        "league_task_pick_up_10_whiteberries_in_tirannwn",
+        LeagueTaskTrigger.Obtain,
+        "obj.white_berries",
+        times = 10,
+        counter = "varbit.league_task_pick_up_whiteberries_in_tirannwn",
+        area = "area.league_region_tirannwn",
+    )
 }
 
 private fun TriggerRows.obtained(task: String, vararg objs: String) {

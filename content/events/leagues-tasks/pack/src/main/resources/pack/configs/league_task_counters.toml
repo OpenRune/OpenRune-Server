@@ -538,3 +538,9 @@ id = "varbit.league_worn_snelms"
 varp = "varp.league_worn_collections"
 startBit = 22
 endBit = 30
+
+[[varbit]]
+id = "varbit.league_counter_fill_sand_in_rellekka"
+varp = "varp.league_counters_14"
+startBit = 16
+endBit = 20

@@ -37,6 +37,7 @@ internal fun TriggerRows.worldTasks() {
         "league_task_enter_the_wilderness_resource_area",
         "area.league_wilderness_resource_area",
     )
+    variable("league_task_open_the_crystal_chest", "varp.kc_crystal_chest", 1)
 }
 
 internal fun TriggerRows.opened(task: String, interf: String, area: String? = null) {

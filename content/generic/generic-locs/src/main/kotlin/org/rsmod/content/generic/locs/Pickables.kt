@@ -6,6 +6,7 @@ import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
+import org.rsmod.api.player.events.PlayerPickEvent
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpLoc1
@@ -70,6 +71,8 @@ class Pickables @Inject constructor(
 
         if (locRepo.findExact(loc.coords, type) == null || !givePickables(row, rolledSeed)) return
 
+        val picked = if (rolledSeed) requireNotNull(row.seed) else row.itemgiven
+        publish(PlayerPickEvent(player, type, picked, if (rolledSeed) 1 else row.itemamount))
         soundSynth("synth.pick")
 
         advanceLoc(loc, type, row)
