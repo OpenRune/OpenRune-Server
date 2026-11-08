@@ -28,6 +28,7 @@ object LeagueTaskTriggerTable {
     const val INTERFACE = 14
     const val LOC = 15
     const val OPTION = 16
+    const val EMOTE = 17
 
     fun triggers() =
         dbTable("dbtable.league_task_trigger", serverOnly = true) {
@@ -48,6 +49,7 @@ object LeagueTaskTriggerTable {
             column("interface", INTERFACE, VarType.INT)
             column("loc", LOC, VarType.LOC)
             column("option", OPTION, VarType.INT)
+            column("emote", EMOTE, VarType.STRING)
 
             val rows = TriggerRows(this)
             rows.levelTasks()
@@ -74,6 +76,7 @@ object LeagueTaskTriggerTable {
             rows.magicTasks()
             rows.combatActionTasks()
             rows.countedKillTasks()
+            rows.emoteTasks()
         }
 }
 

@@ -9,6 +9,7 @@ import dev.openrune.types.dbcol.column
 import dev.openrune.types.dbcol.int
 import dev.openrune.types.dbcol.intOptional
 import dev.openrune.types.dbcol.slotsOptional
+import dev.openrune.types.dbcol.stringOptional
 import dev.openrune.types.varp.VarpServerType
 import org.rsmod.api.table.ActionRow
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTrigger
@@ -35,6 +36,8 @@ public class LeagueTaskRequirement(
     public val locs: List<Int> = emptyList(),
     /** The interaction option slot, 1 to 5; 0 means any. */
     public val option: Int = 0,
+    /** The emote tab name, as `PlayerEmoteEvent.emote` reports it. */
+    public val emote: String? = null,
 ) {
     /** The varp a [varp] or [varbit] requirement is stored in. */
     public val baseVarp: Int?
@@ -124,6 +127,7 @@ public class LeagueTaskRequirement(
                             )
                             .map { it.id },
                     option = row.intOptional("dbcol.league_task_trigger:option") ?: 0,
+                    emote = row.stringOptional("dbcol.league_task_trigger:emote"),
                 )
             }
 

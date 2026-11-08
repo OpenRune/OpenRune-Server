@@ -5,6 +5,19 @@ import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.INTERFAC
 
 internal fun TriggerRows.worldTasks() {
     opened("league_task_open_the_leagues_menu", "interface.league_side_panel")
+    opened("league_task_use_the_bank_in_nardah", "interface.bankmain", "area.league_nardah_bank")
+    opened(
+        "league_task_use_the_bank_at_the_mage_arena",
+        "interface.bankmain",
+        "area.league_mage_arena_bank",
+    )
+    opened("league_task_use_the_bank_in_lletya", "interface.bankmain", "area.league_lletya_bank")
+    opened("league_task_use_the_bank_on_jatizso", "interface.bankmain", "area.league_jatizso_bank")
+    opened(
+        "league_task_use_the_bank_on_neitiznot",
+        "interface.bankmain",
+        "area.league_neitiznot_bank",
+    )
 
     entered("league_task_enter_the_taverley_dungeon", "area.taverley_dungeon")
     entered("league_task_enter_the_brimhaven_dungeon", "area.brimhaven_dungeon")
@@ -26,8 +39,13 @@ internal fun TriggerRows.worldTasks() {
     )
 }
 
-internal fun TriggerRows.opened(task: String, interf: String) {
-    trigger("dbrow.$task", LeagueTaskTrigger.Interface) { columnRSCM(INTERFACE, interf) }
+internal fun TriggerRows.opened(task: String, interf: String, area: String? = null) {
+    trigger("dbrow.$task", LeagueTaskTrigger.Interface) {
+        columnRSCM(INTERFACE, interf)
+        if (area != null) {
+            columnRSCM(AREA, area)
+        }
+    }
 }
 
 internal fun TriggerRows.entered(task: String, area: String) {

@@ -56,7 +56,12 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     /** A special attack is performed, with one of the `obj` weapons when listed. */
     SpecialAttack(23, isState = false),
     /** One of the `obj` ammo items is fired; progress advances by the amount used. */
-    Ammo(24, isState = false);
+    Ammo(24, isState = false),
+    /**
+     * The `emote` (its emote tab name) is performed, near one of the `npc` npcs or `loc` locs when
+     * the row lists any.
+     */
+    Emote(25, isState = false);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)

@@ -207,7 +207,8 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
             LeagueTaskTrigger.Pickpocket,
             LeagueTaskTrigger.Steal,
             LeagueTaskTrigger.SpecialAttack,
-            LeagueTaskTrigger.Ammo ->
+            LeagueTaskTrigger.Ammo,
+            LeagueTaskTrigger.Emote ->
                 row.counter?.let { player.vars[it] >= row.count } ?: false
         }
     }

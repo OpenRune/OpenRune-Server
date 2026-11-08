@@ -263,3 +263,43 @@ levels = [0, 1, 2, 3]
 
 [[area.polygons]]
 vertices = [[3174, 3924], [3196, 3924], [3196, 3944], [3174, 3944]]
+
+[[area]]
+name = "Nardah bank"
+area_id = "area.league_nardah_bank"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3419, 2883], [3431, 2883], [3431, 2900], [3419, 2900]]
+
+[[area]]
+name = "Mage Arena bank"
+area_id = "area.league_mage_arena_bank"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2526, 4706], [2542, 4706], [2542, 4722], [2526, 4722]]
+
+[[area]]
+name = "Lletya bank"
+area_id = "area.league_lletya_bank"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2346, 3160], [2360, 3160], [2360, 3172], [2346, 3172]]
+
+[[area]]
+name = "Jatizso bank"
+area_id = "area.league_jatizso_bank"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2410, 3793], [2422, 3793], [2422, 3805], [2410, 3805]]
+
+[[area]]
+name = "Neitiznot bank"
+area_id = "area.league_neitiznot_bank"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2331, 3801], [2345, 3801], [2345, 3813], [2331, 3813]]

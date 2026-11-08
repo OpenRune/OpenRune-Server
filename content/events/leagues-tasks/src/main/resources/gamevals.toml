@@ -51,6 +51,11 @@ league_wizards_guild = 32723
 league_ranging_guild = 32724
 league_crafting_guild = 32725
 league_woodcutting_guild = 32726
+league_nardah_bank = 32730
+league_mage_arena_bank = 32731
+league_lletya_bank = 32732
+league_jatizso_bank = 32733
+league_neitiznot_bank = 32734
 
 [gamevals.varp]
 league_counters_0 = 62000
