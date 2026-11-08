@@ -31,8 +31,12 @@ class SkillingTriggers @Inject constructor(private val progress: LeagueTaskProgr
         onEvent<SkillingActionCompleteEvent> {
             when (val context = context) {
                 is SkillingActionContext.Product -> {
-                    val rows = product[context.item.asRSCM(RSCMType.OBJ)]
-                    val made = rows.filter { it.stats.isEmpty() || context.skill in it.stats }
+                    val tool = context.source.tool?.id
+                    val made =
+                        product[context.item.asRSCM(RSCMType.OBJ)].filter { row ->
+                            (row.stats.isEmpty() || context.skill in row.stats) &&
+                                (row.tools.isEmpty() || tool in row.tools)
+                        }
                     record(player, made, context.count)
                 }
                 is SkillingActionContext.SpellCast -> record(player, spell[context.spell.id])
@@ -60,11 +64,8 @@ class SkillingTriggers @Inject constructor(private val progress: LeagueTaskProgr
         }
     }
 
-    private fun record(player: Player, rows: List<LeagueTaskRequirement>, amount: Int = 1) {
-        for (row in rows) {
-            progress.record(player, row, amount)
-        }
-    }
+    private fun record(player: Player, rows: List<LeagueTaskRequirement>, amount: Int = 1) =
+        progress.record(player, rows, amount)
 
     /** One kind's rows by the obj they name, plus the rows that take any obj. */
     private inner class ObjRows(trigger: LeagueTaskTrigger) {

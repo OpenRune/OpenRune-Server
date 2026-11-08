@@ -21,7 +21,8 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     Kill(7, isState = false),
     /**
      * A skilling action gives one of the `obj` products (any when empty) from a `stat` skill (any
-     * when empty). Progress advances by the number of items made.
+     * when empty), done with one of the `tool` items when the row lists any. Progress advances by
+     * the number of items made.
      */
     Product(8, isState = false),
     /** One of the `obj` spells is cast, its runes paid. */

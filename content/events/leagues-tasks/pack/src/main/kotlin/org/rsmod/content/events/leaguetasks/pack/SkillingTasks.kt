@@ -6,27 +6,10 @@ import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.COUNT
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.COUNTER
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.OBJ
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.STAT
+import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.TOOL
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.VALUE
 
 internal fun TriggerRows.skillingTasks() {
-    product("league_task_chop_some_logs", "stat.woodcutting", "obj.logs")
-    product(
-        "league_task_chop_100_yew_logs",
-        "stat.woodcutting",
-        "obj.yew_logs",
-        times = 100,
-        counter = "varbit.league_task_chop_yew_logs",
-    )
-    product("action_mine_some_clay", "stat.mining", "obj.clay")
-    product(
-        "league_task_mine_50_mithril_ore",
-        "stat.mining",
-        "obj.mithril_ore",
-        times = 50,
-        counter = "varbit.league_task_mine_mithril_ore",
-    )
-    product("league_task_catch_a_shrimp", "stat.fishing", "obj.raw_shrimp")
-    product("league_task_cook_shrimp", "stat.cooking", "obj.shrimp")
     product("league_task_clean_a_grimy_guam", "stat.herblore", "obj.guam_leaf")
     product(
         "league_task_clean_25_grimy_guam_leafs",
@@ -49,16 +32,6 @@ internal fun TriggerRows.skillingTasks() {
     )
     spell("action_cast_low_level_alchemy", "obj.21_low_alchemy")
     trigger("dbrow.action_alchemy_500", LeagueTaskTrigger.Alchemy) { column(VALUE, 500) }
-
-    objTask("league_task_burn_some_normal_logs", LeagueTaskTrigger.Firemaking, "obj.logs")
-    objTask("league_task_burn_some_oak_logs", LeagueTaskTrigger.Firemaking, "obj.oak_logs")
-    objTask(
-        "league_task_burn_25_maple_logs",
-        LeagueTaskTrigger.Firemaking,
-        "obj.maple_logs",
-        times = 25,
-        counter = "varbit.league_task_burn_maple_logs",
-    )
 
     objTask(
         "league_task_bury_6_bones",
@@ -94,29 +67,47 @@ internal fun TriggerRows.skillingTasks() {
         "obj.3dose1strength",
         "obj.2dose1strength",
         "obj.1dose1strength",
+        "obj.4dosemoonlightpotion",
+        "obj.3dosemoonlightpotion",
+        "obj.2dosemoonlightpotion",
+        "obj.1dosemoonlightpotion",
     )
 }
 
-private fun TriggerRows.product(
+/**
+ * Met by making one of [objs] (any product of [stat] when none are given) with any of [tools], in
+ * any of [areas].
+ */
+internal fun TriggerRows.product(
     task: String,
     stat: String,
     vararg objs: String,
     times: Int = 1,
     counter: String? = null,
+    tools: List<String> = emptyList(),
+    areas: List<String> = emptyList(),
 ) {
     trigger("dbrow.$task", LeagueTaskTrigger.Product) {
         columnRSCM(STAT, stat)
-        columnRSCM(OBJ, objs.asList())
+        if (objs.isNotEmpty()) {
+            columnRSCM(OBJ, objs.asList())
+        }
+        if (tools.isNotEmpty()) {
+            columnRSCM(TOOL, tools)
+        }
+        if (areas.isNotEmpty()) {
+            columnRSCM(AREA, areas)
+        }
         times(times, counter)
     }
 }
 
-private fun TriggerRows.spell(task: String, vararg spells: String) {
+internal fun TriggerRows.spell(task: String, vararg spells: String) {
     trigger("dbrow.$task", LeagueTaskTrigger.Spell) { columnRSCM(OBJ, spells.asList()) }
 }
 
 /** A [trigger] row met by any of [objs], or by any item when none are given. */
-private fun TriggerRows.objTask(
+internal fun TriggerRows.objTask(
     task: String,
     trigger: LeagueTaskTrigger,
     vararg objs: String,
@@ -135,7 +126,7 @@ private fun TriggerRows.objTask(
     }
 }
 
-private fun DBRowBuilder.times(times: Int, counter: String?) {
+internal fun DBRowBuilder.times(times: Int, counter: String?) {
     if (times != 1) {
         column(COUNT, times)
     }

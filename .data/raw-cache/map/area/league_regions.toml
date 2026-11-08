@@ -1,0 +1,161 @@
+# PLACEHOLDER league region bounds: rough rectangles, to be traced properly later.
+# Surface rectangles cover levels 0 to 3; underground parts are listed where a task needs them.
+
+[[area]]
+name = "League region: Asgarnia"
+area_id = "area.league_region_asgarnia"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2880, 3136], [3071, 3136], [3071, 3519], [2880, 3519]]
+
+[[area.polygons]]
+vertices = [[2816, 3520], [2943, 3520], [2943, 3647], [2816, 3647]]
+
+[[area]]
+name = "League region: Kandarin"
+area_id = "area.league_region_kandarin"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2368, 2944], [2879, 2944], [2879, 3583], [2368, 3583]]
+
+[[area]]
+name = "League region: Karamja"
+area_id = "area.league_region_karamja"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2688, 2880], [2943, 2880], [2943, 3263], [2688, 3263]]
+
+[[area.polygons]]
+vertices = [[2368, 5056], [2559, 5056], [2559, 5183], [2368, 5183]]
+
+[[area]]
+name = "League region: Morytania"
+area_id = "area.league_region_morytania"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3392, 3136], [3903, 3136], [3903, 3583], [3392, 3583]]
+
+[[area.polygons]]
+vertices = [[3640, 2944], [3903, 2944], [3903, 3135], [3640, 3135]]
+
+[[area]]
+name = "League region: Kharidian Desert"
+area_id = "area.league_region_desert"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3136, 2688], [3519, 2688], [3519, 3135], [3136, 3135]]
+
+[[area.polygons]]
+vertices = [[3264, 3136], [3391, 3136], [3391, 3263], [3264, 3263]]
+
+[[area]]
+name = "League region: Tirannwn"
+area_id = "area.league_region_tirannwn"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2112, 3008], [2367, 3008], [2367, 3455], [2112, 3455]]
+
+[[area.polygons]]
+vertices = [[3200, 6016], [3327, 6016], [3327, 6143], [3200, 6143]]
+
+[[area]]
+name = "League region: Fremennik Provinces"
+area_id = "area.league_region_fremennik"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2048, 3584], [2815, 3584], [2815, 3967], [2048, 3967]]
+
+[[area]]
+name = "League region: Kourend & Kebos"
+area_id = "area.league_region_kourend"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1152, 3392], [1855, 3392], [1855, 4095], [1152, 4095]]
+
+[[area]]
+name = "League region: Wilderness"
+area_id = "area.league_region_wilderness"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2944, 3520], [3391, 3520], [3391, 3967], [2944, 3967]]
+
+[[area.polygons]]
+vertices = [[2944, 9920], [3391, 9920], [3391, 10367], [2944, 10367]]
+
+[[area]]
+name = "League region: Varlamore"
+area_id = "area.league_region_varlamore"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1152, 2816], [1855, 2816], [1855, 3391], [1152, 3391]]
+
+[[area.polygons]]
+vertices = [[1216, 9280], [1855, 9280], [1855, 9663], [1216, 9663]]
+
+# PLACEHOLDER sub-areas named by tasks.
+
+[[area]]
+name = "Shayzien"
+area_id = "area.league_shayzien"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1408, 3520], [1599, 3520], [1599, 3647], [1408, 3647]]
+
+[[area]]
+name = "Prifddinas"
+area_id = "area.league_prifddinas"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3200, 6016], [3327, 6016], [3327, 6143], [3200, 6143]]
+
+[[area]]
+name = "Tlati Rainforest"
+area_id = "area.league_tlati_rainforest"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1216, 3008], [1407, 3008], [1407, 3135], [1216, 3135]]
+
+[[area]]
+name = "Forsaken Tower"
+area_id = "area.league_forsaken_tower"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1360, 3800], [1400, 3800], [1400, 3840], [1360, 3840]]
+
+[[area]]
+name = "Stonecutter Outpost"
+area_id = "area.league_stonecutter_outpost"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1720, 2840], [1780, 2840], [1780, 2900], [1720, 2900]]
+
+[[area]]
+name = "Necropolis"
+area_id = "area.league_necropolis"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3300, 2690], [3380, 2690], [3380, 2770], [3300, 2770]]
+
+[[area]]
+name = "Piscatoris Fishing Colony"
+area_id = "area.league_piscatoris"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2304, 3648], [2367, 3648], [2367, 3711], [2304, 3711]]

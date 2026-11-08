@@ -32,9 +32,7 @@ class KillTriggers @Inject constructor(private val progress: LeagueTaskProgress)
             if (!isHero) {
                 return@onNpcKilled
             }
-            for (row in matching(npc.type) + matching(npc.visType)) {
-                progress.record(player, row)
-            }
+            progress.record(player, matching(npc.type) + matching(npc.visType))
         }
     }
 

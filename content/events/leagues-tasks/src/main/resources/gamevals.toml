@@ -19,3 +19,68 @@ league_task_sync = 63441
 
 [gamevals.dbtable]
 league_task_trigger = 40000
+
+[gamevals.area]
+league_region_asgarnia = 32700
+league_region_kandarin = 32701
+league_region_karamja = 32702
+league_region_morytania = 32703
+league_region_desert = 32704
+league_region_tirannwn = 32705
+league_region_fremennik = 32706
+league_region_kourend = 32707
+league_region_wilderness = 32708
+league_region_varlamore = 32709
+league_shayzien = 32710
+league_prifddinas = 32711
+league_tlati_rainforest = 32712
+league_forsaken_tower = 32713
+league_stonecutter_outpost = 32714
+league_necropolis = 32715
+league_piscatoris = 32716
+
+[gamevals.varp]
+league_counters_0 = 62000
+league_counters_1 = 62001
+league_counters_2 = 62002
+league_counters_3 = 62003
+league_counters_4 = 62004
+league_counters_5 = 62005
+league_counters_6 = 62006
+league_counters_7 = 62007
+
+[gamevals.varbit]
+league_counter_chop_willow_logs = 62000
+league_counter_chop_blisterwood_logs = 62001
+league_counter_chop_magic_logs = 62002
+league_counter_chop_maples_in_tirannwn = 62003
+league_counter_chop_teak_logs_in_prifddinas = 62004
+league_counter_mine_tin_ore = 62005
+league_counter_mine_silver_ore = 62006
+league_counter_mine_iron_ore = 62007
+league_counter_mine_granite_in_the_necropolis = 62008
+league_counter_mine_gold_in_tirannwn = 62009
+league_counter_mine_granite = 62010
+league_counter_mine_adamantite_ore = 62011
+league_counter_mine_soft_clay_in_tirannwn = 62012
+league_counter_mine_runite_in_tirannwn = 62013
+league_counter_catch_cod = 62014
+league_counter_catch_swordfish = 62015
+league_counter_catch_tuna = 62016
+league_counter_catch_mackerel = 62017
+league_counter_catch_lobsters = 62018
+league_counter_catch_trout = 62019
+league_counter_catch_karambwan_on_karamja = 62020
+league_counter_catch_shark = 62021
+league_counter_catch_dark_crabs = 62022
+league_counter_cook_swordfish = 62023
+league_counter_cook_tuna = 62024
+league_counter_cook_sharks = 62025
+league_counter_cook_meat_pies = 62026
+league_counter_cook_karambwans = 62027
+league_counter_cook_sharks_in_darkmeyer = 62028
+league_counter_cook_anglerfish = 62029
+league_counter_burn_willow_logs = 62030
+league_counter_burn_yew_logs = 62031
+league_counter_burn_blisterwood_logs = 62032
+league_counter_burn_redwood_logs = 62033

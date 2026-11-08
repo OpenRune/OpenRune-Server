@@ -26,6 +26,8 @@ public class LeagueTaskRequirement(
     public val counter: VarBitType? = null,
     /** Where an event must happen; empty means anywhere. */
     public val areas: List<Int> = emptyList(),
+    /** Tools the action must be done with; empty means any. */
+    public val tools: List<Int> = emptyList(),
 ) {
     internal companion object {
         /**
@@ -83,6 +85,12 @@ public class LeagueTaskRequirement(
                         row.slotsOptional(
                                 "dbcol.league_task_trigger:area",
                                 DbColumnCodec.AreaTypeCodec,
+                            )
+                            .map { it.id },
+                    tools =
+                        row.slotsOptional(
+                                "dbcol.league_task_trigger:tool",
+                                DbColumnCodec.ItemServerTypeCodec,
                             )
                             .map { it.id },
                 )

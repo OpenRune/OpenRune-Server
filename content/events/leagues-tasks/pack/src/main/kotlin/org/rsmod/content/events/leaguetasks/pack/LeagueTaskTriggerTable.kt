@@ -22,6 +22,7 @@ object LeagueTaskTriggerTable {
     const val SLAYER_TASK = 8
     const val COUNTER = 9
     const val AREA = 10
+    const val TOOL = 11
 
     fun triggers() =
         dbTable("dbtable.league_task_trigger", serverOnly = true) {
@@ -36,12 +37,18 @@ object LeagueTaskTriggerTable {
             column("slayer_task", SLAYER_TASK, VarType.INT)
             column("counter", COUNTER, VarType.INT)
             column("area", AREA, VarType.AREA)
+            column("tool", TOOL, VarType.OBJ)
 
             val rows = TriggerRows(this)
             rows.levelTasks()
             rows.equipTasks()
             rows.killTasks()
             rows.skillingTasks()
+            rows.woodcuttingTasks()
+            rows.miningTasks()
+            rows.fishingTasks()
+            rows.cookingTasks()
+            rows.firemakingTasks()
         }
 }
 
