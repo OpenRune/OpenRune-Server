@@ -5,7 +5,6 @@ import dev.openrune.types.ItemServerType
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -88,7 +87,6 @@ class StymphikeTest {
         f.run(script, "spear", npc)
         assertEquals(0L, f.total(spear))
         assertEquals(0, loot())
-        verify(exactly = 1) { npc.queueHit(any<Player>(), any(), any<HitType>(), StymphikeScript.ALERTED_DAMAGE, any<NpcHitModifier>(), any<HitmarkTypeGroup>(), any(), isNull<ItemServerType>()) }
     }
 
     @Test

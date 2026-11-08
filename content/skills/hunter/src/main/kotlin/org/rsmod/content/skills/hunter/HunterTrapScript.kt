@@ -142,7 +142,7 @@ constructor(
                     if (invDel(inv, kind.item).failure) return
                     objRepo.add(kind.item, tile, LAID_OBJ_DURATION, receiver = player, reveal = LAID_OBJ_REVEAL)
                 }
-        val salted = invDel(inv, ANTI_ODOUR_SALT).success
+        val salted = kind.smokeRefusal.isEmpty() && invDel(inv, ANTI_ODOUR_SALT).success
         anim(LAY_SEQ)
         soundSynth(kind.laySynth)
         delay(LAY_TICKS)

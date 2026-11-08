@@ -17,6 +17,7 @@ import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.random.DefaultGameRandom
+import org.rsmod.api.random.GameRandom
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
@@ -29,9 +30,8 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
 @OptIn(InternalApi::class)
-class HunterFixture(coords: CoordGrid = CoordGrid(3222, 3222, 0)) {
+class HunterFixture(coords: CoordGrid = CoordGrid(3222, 3222, 0), val random: GameRandom = DefaultGameRandom(408L)) {
     private val client = RecordingClient()
-    val random = DefaultGameRandom(408L)
     val coroutine = GameCoroutine("hunter-test")
     private var result: Result<Any?>? = null
 

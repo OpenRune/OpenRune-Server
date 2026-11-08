@@ -2,7 +2,6 @@ package org.rsmod.content.skills.hunter
 
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
@@ -23,6 +22,16 @@ class LootSackTest {
     private val script = HunterLootSackScript(ObjRepository(MapClock(100), registry), mockk(relaxed = true))
     private val sack by lazy { HunterLootSacksRow.all().first() }
 
+    private fun opened(): Map<Int, Long> {
+        val f = HunterFixture()
+        f.player.inv[0] = InvObj(sack.sack.internalName, 1)
+        f.call(HunterLootSackScript(ObjRepository(MapClock(100), ObjRegistry(ZoneUpdateMap())), mockk(relaxed = true)), "open", sack)
+        return totals(f.player.inv.filterNotNull().map { it.id to it.count })
+    }
+
+    private fun totals(objs: List<Pair<Int, Int>>): Map<Int, Long> =
+        objs.groupBy({ it.first }, { it.second.toLong() }).mapValues { it.value.sum() }
+
     @Test
     fun `one sack opened twice rolls once`() {
         val f = HunterFixture()
@@ -32,7 +41,7 @@ class LootSackTest {
         f.call(script, "open", sack)
         assertEquals(0L, f.total(sack.sack.internalName))
         assertEquals(after, f.player.inv.objs.toList())
-        assertTrue(after.any { it != null })
+        assertEquals(opened(), totals(f.player.inv.filterNotNull().map { it.id to it.count }))
     }
 
     @Test
@@ -42,7 +51,10 @@ class LootSackTest {
         f.fill()
         f.call(script, "open", sack)
         assertEquals(0L, f.total(sack.sack.internalName))
-        assertTrue(registry.findAll(ZoneKey.from(f.player.coords)).any())
+        assertEquals(27L, f.total(DAGGER))
+        val held = f.player.inv.filterNotNull().filter { it.id != InvObj(DAGGER, 1).id }.map { it.id to it.count }
+        val dropped = registry.findAll(ZoneKey.from(f.player.coords)).map { it.type to it.count }.toList()
+        assertEquals(opened(), totals(held + dropped))
     }
 
     @Test
@@ -57,6 +69,7 @@ class LootSackTest {
 
     companion object {
         private const val COINS = "obj.coins"
+        private const val DAGGER = "obj.bronze_dagger"
 
         @JvmStatic
         @BeforeAll

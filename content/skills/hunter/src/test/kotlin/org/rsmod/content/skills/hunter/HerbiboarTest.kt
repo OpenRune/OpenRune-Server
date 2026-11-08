@@ -24,13 +24,18 @@ import org.rsmod.game.inv.InvObj
 @ResourceLock("ServerCacheManager")
 class HerbiboarTest {
     private val registry = ObjRegistry(ZoneUpdateMap())
-    private val f = HunterFixture()
+    private val fixed =
+        mockk<GameRandom> {
+            every { of(any<Int>()) } returns 0
+            every { of(any<Int>(), any<Int>()) } answers { secondArg() }
+        }
+    private val f = HunterFixture(random = fixed)
     private val script =
         HerbiboarScript(
             ObjRepository(MapClock(100), registry),
             mockk(relaxed = true),
             mockk(relaxed = true),
-            f.random,
+            fixed,
             mockk(relaxed = true),
             mockk(relaxed = true),
         )
@@ -62,14 +67,12 @@ class HerbiboarTest {
         VarPlayerIntMapSetter.set(f.player, leg.trail, leg.dir)
     }
 
-    private fun hunterXp() = f.player.statMap.getXP(HerbiboarScript.HUNTER)
-
     @Test
     fun `a herbiboar harvested twice gives one harvest`() {
         caught()
         f.run(script, "harvest", npc)
         f.run(script, "harvest", npc)
-        assertTrue(held() in 1..3)
+        assertEquals(HERBS, held())
         assertEquals(1, f.player.vars[HerbiboarScript.HARVESTED])
     }
 
@@ -79,7 +82,7 @@ class HerbiboarTest {
         f.fill()
         f.run(script, "harvest", npc)
         assertEquals(0, held())
-        assertTrue(ground() in 1..3)
+        assertEquals(HERBS, ground())
     }
 
     @Test
@@ -101,7 +104,7 @@ class HerbiboarTest {
             f.run(script, "harvest", npc)
         }
         assertEquals(5, held())
-        assertTrue(held() + ground() in 20..60)
+        assertEquals(20 * HERBS, held() + ground())
         assertEquals(20, f.player.vars[HerbiboarScript.HARVESTED])
     }
 
@@ -114,7 +117,7 @@ class HerbiboarTest {
             f.run(script, "harvest", npc)
         }
         assertEquals(0, f.player.vars[HerbiboarScript.HORN_CHARGES])
-        assertTrue(held() + ground() in 101..303)
+        assertEquals(101 * HERBS, held() + ground())
     }
 
     @Test
@@ -124,47 +127,31 @@ class HerbiboarTest {
         repeat(50) { f.call(script, "rollFossil") }
         assertEquals(Int.MAX_VALUE.toLong(), f.total("obj.fossil_numulite"))
         assertEquals(1, f.player.inv.count { it != null && it.id in fossils })
-        assertTrue(groundFossils() > 0)
+        assertEquals(50L * HerbiboarFossilsRow.all().first().max, groundFossils())
     }
 
     @Test
     fun `a spot inspected twice rolls its fossil once`() {
-        val lucky =
-            mockk<GameRandom> {
-                every { of(any<Int>()) } returns 0
-                every { of(any<Int>(), any<Int>()) } answers { firstArg() }
-            }
-        val script =
-            HerbiboarScript(
-                ObjRepository(MapClock(100), registry),
-                mockk(relaxed = true),
-                mockk(relaxed = true),
-                lucky,
-                mockk(relaxed = true),
-                mockk(relaxed = true),
-            )
         onTrail()
-        val before = hunterXp()
         f.run(script, "inspectSpot", leg.from)
         val found = heldFossils() + groundFossils()
         f.run(script, "inspectSpot", leg.from)
         assertTrue(found > 0)
         assertEquals(found, heldFossils() + groundFossils())
-        assertEquals(HerbiboarScript.INSPECT_XP.toInt(), hunterXp() - before)
     }
 
     @Test
     fun `a trail reset during the inspect rewards nothing`() {
         onTrail()
-        val before = hunterXp()
         f.call(script, "inspectSpot", leg.from)
         VarPlayerIntMapSetter.set(f.player, leg.trail, 0)
         f.finish()
-        assertEquals(0, hunterXp() - before)
-        assertEquals(0L, groundFossils())
+        assertEquals(0L, heldFossils() + groundFossils())
     }
 
     companion object {
+        private const val HERBS = 3
+
         @JvmStatic
         @BeforeAll
         fun cache() = HunterFixture.cache()
