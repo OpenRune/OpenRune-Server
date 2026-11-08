@@ -480,3 +480,20 @@ id = "varbit.league_counter_slay_task_creatures"
 varp = "varp.league_counters_14"
 startBit = 8
 endBit = 15
+
+[[varp]]
+id = "varp.league_task_windows"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_window_chicken_kills"
+varp = "varp.league_task_windows"
+startBit = 0
+endBit = 1
+
+[[varbit]]
+id = "varbit.league_window_penguin_kills"
+varp = "varp.league_task_windows"
+startBit = 2
+endBit = 5

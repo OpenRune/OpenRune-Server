@@ -16,6 +16,8 @@ league_task_list = 2573
 [gamevals.timer]
 league_points_claim = 63440
 league_task_sync = 63441
+league_chicken_window = 63442
+league_penguin_window = 63443
 
 [gamevals.dbtable]
 league_task_trigger = 40000
@@ -76,6 +78,7 @@ league_counters_11 = 62011
 league_counters_12 = 62012
 league_counters_13 = 62013
 league_counters_14 = 62014
+league_task_windows = 62015
 
 [gamevals.varbit]
 league_counter_chop_willow_logs = 62000
@@ -146,3 +149,5 @@ league_counter_kill_bunnies = 62064
 league_counter_kill_superiors = 62065
 league_counter_complete_slayer_tasks = 62066
 league_counter_slay_task_creatures = 62067
+league_window_chicken_kills = 62068
+league_window_penguin_kills = 62069

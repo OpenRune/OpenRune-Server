@@ -1,11 +1,8 @@
 package org.rsmod.content.events.leaguetasks.triggers
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.definition.type.ParamType
 import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.SlayerTaskCredit
-import org.rsmod.api.player.events.NpcKilledEvent
 import org.rsmod.api.script.onNpcKilled
 import org.rsmod.content.events.leaguetasks.LeagueTaskProgress
 import org.rsmod.content.events.leaguetasks.LeagueTaskRequirement
@@ -34,17 +31,8 @@ class KillTriggers @Inject constructor(private val progress: LeagueTaskProgress)
 
     private val slayerRows: List<LeagueTaskRequirement> = rows.filter { it.slayerTask != null }
 
-    private val rowsByParam: Map<ParamType, List<LeagueTaskRequirement>> =
-        rows.filter { it.npcParam != null }
-            .groupBy { checkNotNull(ServerCacheManager.getParam(it.npcParam!!)) }
-
     private val anyNpcRows: List<LeagueTaskRequirement> =
-        rows.filter {
-            it.npcs.isEmpty() &&
-                it.categories.isEmpty() &&
-                it.slayerTask == null &&
-                it.npcParam == null
-        }
+        rows.filter { it.npcs.isEmpty() && it.categories.isEmpty() && it.slayerTask == null }
 
     override fun ScriptContext.startup() {
         onNpcKilled {
@@ -53,35 +41,16 @@ class KillTriggers @Inject constructor(private val progress: LeagueTaskProgress)
             }
             val hit = killingHit
             val met = (matching(npc.type) + matching(npc.visType) + anyNpcRows).filter { row ->
-                val toolMet = row.tools.isEmpty() || hit != null && hit.usedAny(row.tools)
-                toolMet && conditionsMet(row)
+                row.tools.isEmpty() || hit != null && hit.usedAny(row.tools)
             }
             progress.record(player, met)
         }
-    }
-
-    private fun NpcKilledEvent.conditionsMet(row: LeagueTaskRequirement): Boolean {
-        if (row.style != null && killingStyle?.id != row.style) {
-            return false
-        }
-        if (row.minHit > 0 && (!dealtKillingHit || (killingHit?.damage ?: 0) < row.minHit)) {
-            return false
-        }
-        if (row.unhurt && tookDamage) {
-            return false
-        }
-        return row.worn.isEmpty() || player.worn.any { it != null && it.id in row.worn }
     }
 
     private fun matching(type: NpcServerType): Set<LeagueTaskRequirement> = buildSet {
         addAll(rowsByNpc[type.id].orEmpty())
         addAll(rowsByCategory[type.category].orEmpty())
         slayerRows.filterTo(this) { SlayerTaskCredit.counts(type, it.slayerTask ?: 0) }
-        for ((param, paramRows) in rowsByParam) {
-            if (type.hasParam(param)) {
-                addAll(paramRows)
-            }
-        }
     }
 
     private fun Hit.usedAny(tools: List<Int>): Boolean {

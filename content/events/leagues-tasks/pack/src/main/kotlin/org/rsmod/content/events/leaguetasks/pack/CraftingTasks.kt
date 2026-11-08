@@ -49,6 +49,7 @@ internal fun TriggerRows.craftingTasks() {
     product("league_task_craft_a_snelm", CRAFTING, *SNELMS)
     product("action_craft_a_sapphire_amulet", CRAFTING, "obj.unstrung_sapphire_amulet")
     product("league_task_craft_an_emerald_ring", CRAFTING, "obj.emerald_ring")
+    product("league_task_assemble_a_slayer_helm", CRAFTING, "obj.slayer_helm")
     product("league_task_craft_a_dragonstone_amulet", CRAFTING, "obj.unstrung_dragonstone_amulet")
     product("league_task_craft_an_onyx_amulet", CRAFTING, "obj.unstrung_onyx_amulet")
     product(

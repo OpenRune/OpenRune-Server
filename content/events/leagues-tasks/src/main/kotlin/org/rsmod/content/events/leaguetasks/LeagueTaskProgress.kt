@@ -64,11 +64,6 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
                         row.objs == first.objs &&
                         row.npcs == first.npcs &&
                         row.categories == first.categories &&
-                        row.npcParam == first.npcParam &&
-                        row.style == first.style &&
-                        row.minHit == first.minHit &&
-                        row.unhurt == first.unhurt &&
-                        row.worn == first.worn &&
                         row.slayerTask == first.slayerTask &&
                         row.stats == first.stats &&
                         row.areas == first.areas &&
@@ -217,10 +212,7 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
             LeagueTaskTrigger.SpecialAttack,
             LeagueTaskTrigger.Ammo,
             LeagueTaskTrigger.Emote,
-            LeagueTaskTrigger.UseOn,
-            LeagueTaskTrigger.SlayerTask,
-            LeagueTaskTrigger.SlayerTaskKill,
-            LeagueTaskTrigger.Damage ->
+            LeagueTaskTrigger.UseOn ->
                 row.counter?.let { player.vars[it] >= row.count } ?: false
         }
     }

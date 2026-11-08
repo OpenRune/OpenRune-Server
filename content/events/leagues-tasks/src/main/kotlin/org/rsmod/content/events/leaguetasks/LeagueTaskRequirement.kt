@@ -40,16 +40,6 @@ public class LeagueTaskRequirement(
     public val emote: String? = null,
     /** `dbtable.collection_log_categories` rows; empty means the whole log. */
     public val collections: List<Int> = emptyList(),
-    /** A param the killed npc's type must have. */
-    public val npcParam: Int? = null,
-    /** The `HitType` id of the player's killing hit. */
-    public val style: Int? = null,
-    /** The least damage the player's killing hit must deal; 0 means any. */
-    public val minHit: Int = 0,
-    /** The npc must never have damaged the player. */
-    public val unhurt: Boolean = false,
-    /** One of these must be worn; empty means no gear condition. */
-    public val worn: List<Int> = emptyList(),
 ) {
     /** The varp a [varp] or [varbit] requirement is stored in. */
     public val baseVarp: Int?
@@ -144,16 +134,6 @@ public class LeagueTaskRequirement(
                         row.slotsOptional(
                                 "dbcol.league_task_trigger:collection",
                                 DbColumnCodec.DbRowTypeCodec,
-                            )
-                            .map { it.id },
-                    npcParam = row.intOptional("dbcol.league_task_trigger:npc_param"),
-                    style = row.intOptional("dbcol.league_task_trigger:style"),
-                    minHit = row.intOptional("dbcol.league_task_trigger:min_hit") ?: 0,
-                    unhurt = row.intOptional("dbcol.league_task_trigger:unhurt") == 1,
-                    worn =
-                        row.slotsOptional(
-                                "dbcol.league_task_trigger:worn",
-                                DbColumnCodec.ItemServerTypeCodec,
                             )
                             .map { it.id },
                 )
