@@ -13,6 +13,7 @@ import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.table.ImplingLootRow
+import org.rsmod.api.table.hunter.HunterImplingRulesRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.hunter.HunterClues.clueReward
 import org.rsmod.game.entity.Npc
@@ -107,8 +108,9 @@ class ImplingLootScript @Inject constructor(private val objRepo: ObjRepository) 
 
     internal companion object {
         const val LOOT = "Loot"
-        const val JAR_BREAK_NUM = 1
-        const val JAR_BREAK_DEN = 10
+        private val RULES by lazy { HunterImplingRulesRow.getRow("dbrow.hunter_impling_rules") }
+        val JAR_BREAK_NUM: Int get() = RULES.jarBreakNum
+        val JAR_BREAK_DEN: Int get() = RULES.jarBreakDen
         const val MONKEY_MADNESS_II = "quest_monkeymadness2"
         const val DRAGON_JAVELIN_TIPS = "obj.dragon_javelin_head"
 

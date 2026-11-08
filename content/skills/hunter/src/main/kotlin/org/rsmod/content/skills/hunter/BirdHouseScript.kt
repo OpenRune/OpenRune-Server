@@ -23,6 +23,7 @@ import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.table.BirdhouseTypesRow
+import org.rsmod.api.table.hunter.HunterBirdHouseRow
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.content.skills.hunter.HunterClues.canReceiveClue
 import org.rsmod.content.skills.hunter.HunterClues.scrollBoxes
@@ -317,18 +318,19 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
         val EGG_NESTS =
             listOf("obj.bird_nest_egg_red", "obj.bird_nest_egg_green", "obj.bird_nest_egg_blue")
         const val STRUNG_RABBIT_FOOT = "obj.hunting_strung_rabbit_foot"
-        const val CLUE_NEST_DEN = 1500
+        private val RULES by lazy { HunterBirdHouseRow.getRow("dbrow.hunter_bird_house") }
+        val CLUE_NEST_DEN: Int get() = RULES.clueNestRate
         val CLUE_NESTS =
             listOf("beginner", "easy", "medium", "hard", "elite").associateWith { "obj.wc_clue_nest_$it" }
-        const val SEEDS_NEEDED = 10
+        val SEEDS_NEEDED: Int get() = RULES.seedsNeeded
         const val PICKUP_SEQ = "seq.human_pickupfloor"
         const val MAKE_SEQ = "seq.birdhouse_make"
         const val MAKE_SYNTH = "synth.birdhouse_make"
         const val PLACE_SYNTH = "synth.birdhouse_place"
         const val SEEDED_MESSAGE = "Your birdhouse trap is now full of seed and will start to catch birds."
-        const val FULL_MINUTES = 50
-        const val BIRDS = 10
-        const val NEST_ROLLS = 5
+        val FULL_MINUTES: Int get() = RULES.fullMinutes
+        val BIRDS: Int get() = RULES.birds
+        val NEST_ROLLS: Int get() = RULES.nestRolls
 
         val SPACES =
             listOf(

@@ -14,6 +14,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.table.hunter.HunterTrackingRow
+import org.rsmod.api.table.hunter.HunterTrackingRulesRow
 import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
 import org.rsmod.game.entity.Player
 import org.rsmod.game.proj.ProjAnim
@@ -265,13 +266,14 @@ constructor(
         const val NOOSE_WAND = "obj.noose_wand"
         const val RING_OF_PURSUIT = "obj.ring_of_pursuit"
         const val PURSUIT_USES = "varp.ring_of_pursuit_uses"
-        const val PURSUIT_CHARGES = 10
+        val PURSUIT_CHARGES: Int get() = RULES.pursuitCharges
         const val NOOSE_SYNTH = "synth.human_unarmedblock"
         const val CATCH_SYNTH = "synth.hunting_snare_trapping"
         const val KICK_SYNTH = "synth.hunting_noose_kick"
         const val FLEE_SYNTH = "synth.hunting_kebbit_flee"
         const val PERMILLE = 1000
-        const val FAIL_LEVELS = 2
+        private val RULES by lazy { HunterTrackingRulesRow.getRow("dbrow.hunter_tracking_rules") }
+        val FAIL_LEVELS: Int get() = RULES.failLevels
         const val SEARCH_SEQ = "seq.hunting_searching_bushes"
         const val KICK_SEQ = "seq.human_unarmedkick"
         const val INSPECT_TICKS = 2

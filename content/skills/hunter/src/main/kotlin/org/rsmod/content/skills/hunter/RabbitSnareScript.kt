@@ -11,6 +11,7 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.table.hunter.HunterRabbitSnareRow
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.loc.BoundLocInfo
@@ -119,12 +120,13 @@ constructor(
                 "seq.hunting_snare_capture_rabbit1",
                 "seq.hunting_snare_capture_rabbit2",
             )
-        const val LEVEL = 27
+        private val RULES by lazy { HunterRabbitSnareRow.getRow("dbrow.hunter_rabbit_snare") }
+        val LEVEL: Int get() = RULES.level
         const val FLUSH_TICKS = 1
-        const val EMPTY_TICKS = 50
+        val EMPTY_TICKS: Int get() = RULES.emptyTicks
         const val HOLE_RANGE = 12
         const val TRAVEL_STEP = 15
-        const val FERRET_LOW = 192
-        const val FERRET_HIGH = 256
+        val FERRET_LOW: Int get() = RULES.ferretLow
+        val FERRET_HIGH: Int get() = RULES.ferretHigh
     }
 }

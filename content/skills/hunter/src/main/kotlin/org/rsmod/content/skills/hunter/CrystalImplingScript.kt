@@ -82,7 +82,7 @@ constructor(
         val LEVEL: Int get() = ROW.level
         val XP: Int get() = ROW.xp
         const val JAR = "obj.ii_captured_impling_12"
-        const val VISIBLE_AFTER_MINUTES = 3
+        val VISIBLE_AFTER_MINUTES: Int get() = ROW.visibleAfterMinutes
 
         val NET_LOW: Int get() = ROW.netLow
         val NET_HIGH: Int get() = ROW.netHigh

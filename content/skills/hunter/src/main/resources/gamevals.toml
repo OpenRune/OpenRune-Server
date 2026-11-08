@@ -1,4 +1,17 @@
 [gamevals.dbtable]
+hunter_goat_pit = 65458
+hunter_net_trap = 65457
+hunter_rabbit_snare = 65456
+hunter_trap_rules = 65455
+hunter_cape = 65454
+hunter_loot_sack_rules = 65453
+hunter_tracking_rules = 65452
+hunter_bird_house = 65451
+hunter_deadfall_rules = 65450
+hunter_pitfall_rules = 65449
+hunter_falconry_rules = 65448
+hunter_butterfly_rules = 65447
+hunter_impling_rules = 65446
 hunter_monkey_trap = 65501
 hunter_crystal_impling = 65500
 hunter_stymphike = 65466
@@ -44,6 +57,19 @@ hunter_leon_bolts = 65468
 hunter_bolt_fletching = 65467
 
 [gamevals.dbrow]
+hunter_goat_pit = 63882
+hunter_net_trap = 63881
+hunter_rabbit_snare = 63880
+hunter_trap_rules = 63879
+hunter_cape = 63878
+hunter_loot_sack_rules = 63877
+hunter_tracking_rules = 63876
+hunter_bird_house = 63875
+hunter_deadfall_rules = 63874
+hunter_pitfall_rules = 63873
+hunter_falconry_rules = 63856
+hunter_butterfly_rules = 63822
+hunter_impling_rules = 63821
 hunter_monkey_trap = 63892
 hunter_crystal_impling = 63891
 hunter_stymphike = 63890

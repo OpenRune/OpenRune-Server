@@ -30,6 +30,7 @@ import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.table.hunter.HunterFalconryFeesRow
 import org.rsmod.api.table.hunter.HunterFalconryRow
+import org.rsmod.api.table.hunter.HunterFalconryRulesRow
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.distance
@@ -529,8 +530,9 @@ constructor(
         const val FLIGHT_START = 24
         const val FLIGHT_STEP = 8
         const val RETURN_STEP = 16
-        const val LEAVE_PREY_TICKS = 100
-        const val KEBBIT_RESPAWN_TICKS = 15
+        private val RULES by lazy { HunterFalconryRulesRow.getRow("dbrow.hunter_falconry_rules") }
+        val LEAVE_PREY_TICKS: Int get() = RULES.leavePreyTicks
+        val KEBBIT_RESPAWN_TICKS: Int get() = RULES.kebbitRespawnTicks
         const val CLIMB_STEP_DELAY = 30
         const val CLIMB_CROSS_DELAY = 94
         const val CLIMB_TICKS = 3

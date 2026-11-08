@@ -31,5 +31,18 @@ class HunterTrapPluginPack : PluginPack() {
             HunterActivityTables.crabTrapBuild(),
             HunterActivityTables.mossLizard(),
             HunterActivityTables.outfit(),
+            HunterActivityTables.goatPit(),
+            HunterActivityTables.netTrap(),
+            HunterActivityTables.rabbitSnare(),
+            HunterActivityTables.trapRules(),
+            HunterActivityTables.cape(),
+            HunterActivityTables.lootSackRules(),
+            HunterActivityTables.trackingRules(),
+            HunterActivityTables.birdHouse(),
+            HunterActivityTables.deadfallRules(),
+            HunterActivityTables.pitfallRules(),
+            HunterActivityTables.falconryRules(),
+            HunterActivityTables.butterflyRules(),
+            HunterActivityTables.implingRules(),
         )
 }

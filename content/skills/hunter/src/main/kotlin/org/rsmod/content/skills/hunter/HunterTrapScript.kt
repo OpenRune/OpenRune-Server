@@ -37,6 +37,7 @@ import org.rsmod.api.script.onOpObj4
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.table.hunter.HunterTrapCreaturesRow
+import org.rsmod.api.table.hunter.HunterTrapRulesRow
 import org.rsmod.api.table.hunter.HunterTrapsRow
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.content.other.pets.PetRewards
@@ -595,13 +596,14 @@ constructor(
         const val APPROACH_TIMEOUT = 6
         const val SETTLE_TICKS = 2
         const val RANGE = 2
-        const val COLLAPSE_TICKS = 100
-        const val OBJ_DURATION = 100
-        const val LAID_OBJ_DURATION = 300
-        const val LAID_OBJ_REVEAL = 100
-        const val SMOKE_LEVEL = 39
-        const val BAIT_BONUS = 3
-        const val SMOKE_BONUS = 2
+        val COLLAPSE_TICKS: Int get() = RULES.collapseTicks
+        val OBJ_DURATION: Int get() = RULES.objDuration
+        val LAID_OBJ_DURATION: Int get() = RULES.laidObjDuration
+        val LAID_OBJ_REVEAL: Int get() = RULES.laidObjReveal
+        private val RULES by lazy { HunterTrapRulesRow.getRow("dbrow.hunter_trap_rules") }
+        val SMOKE_LEVEL: Int get() = RULES.smokeLevel
+        val BAIT_BONUS: Int get() = RULES.baitBonus
+        val SMOKE_BONUS: Int get() = RULES.smokeBonus
         const val BIRD_SNARE_INDEX = 0
         const val OVERLAY_TIMER = 4
         const val OVERLAY_TICKS = 101

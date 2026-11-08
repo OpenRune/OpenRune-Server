@@ -10,6 +10,7 @@ import org.rsmod.api.script.onEvent
 import org.rsmod.api.table.ImplingSpawnPointsRow
 import org.rsmod.api.table.ImplingSpawnTablesRow
 import org.rsmod.api.table.ImplingTypesRow
+import org.rsmod.api.table.hunter.HunterImplingRulesRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -96,11 +97,12 @@ class ImplingSpawns @Inject constructor(private val npcRepo: NpcRepository, priv
     private fun points(row: String): List<CoordGrid> = ImplingSpawnPointsRow.getRow(row).spots
 
     internal companion object {
-        const val CYCLE_TICKS = 3000
-        const val INVISIBLE_TICKS = 200
-        const val HIGH_ROLLS = 4
-        const val MIN_ROLLS = 5
-        const val MAX_ROLLS = 10
+        private val RULES by lazy { HunterImplingRulesRow.getRow("dbrow.hunter_impling_rules") }
+        val CYCLE_TICKS: Int get() = RULES.cycleTicks
+        val INVISIBLE_TICKS: Int get() = RULES.invisibleTicks
+        val HIGH_ROLLS: Int get() = RULES.highRolls
+        val MIN_ROLLS: Int get() = RULES.minRolls
+        val MAX_ROLLS: Int get() = RULES.maxRolls
 
         const val LOW = "dbrow.impling_spawn_low"
         const val MID = "dbrow.impling_spawn_mid"

@@ -26,6 +26,7 @@ import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
+import org.rsmod.api.table.hunter.HunterNetTrapRow
 import org.rsmod.api.table.hunter.HunterNetTrapsRow
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.catchChance256
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.distance
@@ -445,7 +446,7 @@ constructor(
     internal companion object {
         const val HUNTER = "stat.hunter"
         const val TIMER = "timer.hunter_net_traps"
-        const val FULL_TIMER_TICKS = 100
+        val FULL_TIMER_TICKS: Int get() = RULES.fullTicks
         const val STEP_OFF_TICKS = 1
         const val ROPE = "obj.rope"
         const val SMALL_NET = "obj.net"
@@ -457,7 +458,8 @@ constructor(
         const val SET_SYNTH = "synth.hunting_net_trap_set"
         const val CATCH_SYNTH = "synth.salamander_hit"
         const val SPRING_SYNTH = "synth.hunting_net_trap_spring"
-        const val NET_TRAP_LEVEL = 29
+        private val RULES by lazy { HunterNetTrapRow.getRow("dbrow.hunter_net_trap") }
+        val NET_TRAP_LEVEL: Int get() = RULES.level
         const val LURE_RANGE = 2
         const val ROLL_DELAY = 3
         const val SETTLE_TICKS = 2
@@ -465,6 +467,6 @@ constructor(
         const val CHECK_TICKS = 2
         const val RELAY_TICKS = 4
         const val RESPAWN_TICKS = 1
-        const val OBJ_DURATION = 100
+        val OBJ_DURATION: Int get() = RULES.objDuration
     }
 }

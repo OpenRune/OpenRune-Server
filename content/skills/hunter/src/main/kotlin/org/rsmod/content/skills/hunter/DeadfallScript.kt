@@ -24,6 +24,7 @@ import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.table.FiremakingLogsRow
+import org.rsmod.api.table.hunter.HunterDeadfallRulesRow
 import org.rsmod.api.table.hunter.HunterDeadfallsRow
 import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.catchChance256
@@ -352,13 +353,14 @@ constructor(
         const val CHECK_SYNTH = "synth.hunting_trap_dismantle"
         val KNIVES = listOf("obj.knife", "obj.fletching_knife")
         val REFUSED_LOGS = setOf("obj.redwood_logs", "obj.arctic_pine_log")
-        const val LIMIT = 2
-        const val LOG_KEEP_DENOMINATOR = 4
+        private val RULES by lazy { HunterDeadfallRulesRow.getRow("dbrow.hunter_deadfall_rules") }
+        val LIMIT: Int get() = RULES.limit
+        val LOG_KEEP_DENOMINATOR: Int get() = RULES.logKeepRate
         const val ATTEMPT_START = 8
         const val LURE_RANGE = 5
         const val APPROACH_TIMEOUT = 8
         const val SETTLE_TICKS = 2
         const val CHECK_TICKS = 2
-        const val COLLAPSE_TICKS = 100
+        val COLLAPSE_TICKS: Int get() = RULES.collapseTicks
     }
 }

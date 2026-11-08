@@ -214,7 +214,7 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
         val bolts = bolt.bolts.name.lowercase()
         val count = minOf(amount, inv.count(bolt.spike.internalName), inv.count(COINS) / bolt.fee)
         if (count <= 0) {
-            mesbox("You need 1 $spike and ${bolt.fee} coins to make $BOLTS_PER_SPIKE $bolts.")
+            mesbox("You need 1 $spike and ${bolt.fee} coins to make ${bolt.count} $bolts.")
             return
         }
         val made =
@@ -222,7 +222,7 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
                 val target = select(inv)
                 delete(target, bolt.spike.id, count)
                 delete(target, COINS.asRSCM(RSCMType.OBJ), count * bolt.fee)
-                add(target, bolt.bolts.id, count * BOLTS_PER_SPIKE)
+                add(target, bolt.bolts.id, count * bolt.count)
             }
         if (made.failure) {
             mes("You don't have enough inventory space.")
@@ -231,7 +231,7 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
         objbox(
             bolt.bolts.internalName,
             "You hand the weapon designer one ${spike.replace("kebbit ", "")} and ${bolt.fee} " +
-                "coins. In return he presents you with $BOLTS_PER_SPIKE ${bolts.replace("kebbit ", "")}.",
+                "coins. In return he presents you with ${bolt.count} ${bolts.replace("kebbit ", "")}.",
         )
     }
 
@@ -241,6 +241,5 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
         const val SHOP_TITLE = "Leon's Prototype Crossbow."
         const val CROSSBOW = "obj.hunting_crossbow"
         const val COINS = "obj.coins"
-        const val BOLTS_PER_SPIKE = 12
     }
 }

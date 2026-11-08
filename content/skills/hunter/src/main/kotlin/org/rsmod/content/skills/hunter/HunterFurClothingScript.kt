@@ -50,12 +50,13 @@ class HunterFurClothingScript : PluginScript() {
 
     private fun ProtectedAccess.trade(garment: HunterCustomFursRow): Boolean {
         val fur = garment.furs.firstOrNull { inv.count(it.internalName) >= garment.count } ?: return false
+        val slot = inv.indexOfFirst { it?.id == fur.id }
         return player
             .invTransaction(inv) {
                 val target = select(inv)
                 delete(target, COINS.asRSCM(RSCMType.OBJ), garment.fee)
                 delete(target, fur.id, garment.count)
-                add(target, garment.garment.id, 1)
+                add(target, garment.garment.id, 1, slot = slot)
             }
             .success
     }

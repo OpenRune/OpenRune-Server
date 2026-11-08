@@ -474,10 +474,10 @@ constructor(
         val SPLASH_TYPE: SpotanimType get() = SpotanimType("spotanim.aerial_fishing_splash".asRSCM(RSCMType.SPOTANIM))
         const val TIMER = "timer.hunter_aerial_fishing"
         const val MOVE_TIMER = "timer.hunter_aerial_spot_move"
-        const val MOVE_MIN = 12
-        const val MOVE_MAX = 20
-        const val FRENZY_CHANCE = 50
-        const val FRENZY_TICKS = 28
+        val MOVE_MIN: Int get() = ROW.moveMin
+        val MOVE_MAX: Int get() = ROW.moveMax
+        val FRENZY_CHANCE: Int get() = ROW.frenzyChance
+        val FRENZY_TICKS: Int get() = ROW.frenzyTicks
         const val FRENZY_CATCH_TICKS = 3
         const val RANGE = 8
         val FISHING_LEVEL: Int get() = HunterAerialFishRow.all().minOf { it.fishingLevel }
@@ -488,8 +488,8 @@ constructor(
         val HERON_BASE: Int get() = ROW.heronRate
         val SPIRIT_FLAKES_CHANCE: Int get() = ROW.spiritFlakesChance
         const val GROUND_DURATION = 200
-        const val OFFCUT_EVERY_MIN = 3
-        const val OFFCUT_EVERY_MAX = 4
+        val OFFCUT_EVERY_MIN: Int get() = ROW.offcutEveryMin
+        val OFFCUT_EVERY_MAX: Int get() = ROW.offcutEveryMax
         val PEARL_BASE: Double get() = ROW.pearlBaseTenths / 10.0
         val PEARL_X_OFFSET: Int get() = ROW.pearlXOffset
         val PEARL_SLOPE: Double get() = ROW.pearlSlope.toDouble()

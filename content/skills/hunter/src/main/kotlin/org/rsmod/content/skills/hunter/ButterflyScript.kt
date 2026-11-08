@@ -2,6 +2,7 @@ package org.rsmod.content.skills.hunter
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.StatType
 import dev.openrune.types.enums.enum
 import jakarta.inject.Inject
 import kotlin.math.min
@@ -26,6 +27,7 @@ import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpPlayerU
 import org.rsmod.api.table.hunter.HunterButterfliesRow
+import org.rsmod.api.table.hunter.HunterButterflyRulesRow
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.catchChance256
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.distance
 import org.rsmod.game.entity.Npc
@@ -213,22 +215,23 @@ constructor(
         const val MOTH = "moth"
         const val RELEASE_DELAY = 45
         const val RELEASE_HEIGHT = 190
-        const val BAREHANDED_EXTRA_LEVELS = 10
-        const val RESPAWN_TICKS = 7
+        private val RULES by lazy { HunterButterflyRulesRow.getRow("dbrow.hunter_butterfly_rules") }
+        val BAREHANDED_EXTRA_LEVELS: Int get() = RULES.barehandedExtraLevels
+        val RESPAWN_TICKS: Int get() = RULES.respawnTicks
         const val REMOVE_TICKS = 1
         const val MIX_TICKS = 3
-        const val MAX_SHARED = 3
+        val MAX_SHARED: Int get() = RULES.maxShared
         const val JAR_SHARE_RANGE = 2
         const val MIX_SHARE_RANGE = 2
         const val SUNLIGHT_MOTH = "npc.moth_sunlight"
-        const val SUNLIGHT_RUN_PERCENT = 5
+        val SUNLIGHT_RUN_PERCENT: Int get() = RULES.sunlightRunPercent
 
         const val EFFECT_BOOST = 0
         const val EFFECT_HEAL = 1
         const val EFFECT_RESTORE = 2
 
         private val RESTORED_STATS: List<String> by lazy {
-            enum<Int, String>("butterfly_restored_stats").backing.values.map { checkNotNull(it) }
+            enum<Int, StatType>("butterfly_restored_stats").backing.values.map { checkNotNull(it).internalName }
         }
     }
 }

@@ -199,8 +199,8 @@ constructor(
         const val SET = 1
         const val ACTIVATED = 2
         const val CATCH_TICKS = 2
-        const val LIZARD_LIFE = 30
-        const val LIZARD_OBJ_DURATION = 100
+        val LIZARD_LIFE: Int get() = ROW.lizardLife
+        val LIZARD_OBJ_DURATION: Int get() = ROW.lizardObjDuration
 
         fun lizards(level: Int): Int = 1 + ROW.extraLizardLevels.count { level >= it }
 

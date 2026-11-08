@@ -7,12 +7,14 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.table.hunter.HunterLootSackCascadesRow
+import org.rsmod.api.table.hunter.HunterLootSackRulesRow
 import org.rsmod.api.table.hunter.HunterLootSacksRow
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.content.interfaces.collectionlog.collectionTransmit
 import org.rsmod.content.other.pets.PetRewards
 import org.rsmod.content.skills.hunter.HunterRumours.Companion.COMPLETED
+import org.rsmod.game.stat.PlayerStatMap
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -86,7 +88,7 @@ constructor(private val objRepo: ObjRepository, private val pets: PetRewards) : 
         if (random.of(UNIQUE_DEN) == 0) unique(OUTFIT.firstOrNull { !obtained(it) } ?: OUTFIT[random.of(OUTFIT.size)])
         if (!expert) return
         if (random.of(UNIQUE_DEN) == 0) unique(PERFECTED)
-        val petDen = if (player.statMap.getXP(HUNTER_STAT) >= MAX_XP) PET_DEN_MAX_XP else PET_DEN
+        val petDen = if (player.statMap.getXP(HUNTER_STAT) >= PlayerStatMap.MAX_XP) PET_DEN_MAX_XP else PET_DEN
         if (random.of(petDen) == 0) pets.give(player, PET)
     }
 
@@ -107,8 +109,9 @@ constructor(private val objRepo: ObjRepository, private val pets: PetRewards) : 
         const val TORN_BLUEPRINTS = "varp.hunter_rumour_torn_blueprints"
         const val TORN_ENHANCED = 1
         const val TORN_PERFECTED = 2
-        const val ENHANCED_MILESTONE = 100
-        const val PERFECTED_MILESTONE = 250
+        private val RULES by lazy { HunterLootSackRulesRow.getRow("dbrow.hunter_loot_sack_rules") }
+        val ENHANCED_MILESTONE: Int get() = RULES.enhancedMilestone
+        val PERFECTED_MILESTONE: Int get() = RULES.perfectedMilestone
 
         const val ENHANCED = "obj.hg_whistle_blueprint_2"
         const val PERFECTED = "obj.hg_whistle_blueprint_3"
@@ -120,9 +123,8 @@ constructor(private val objRepo: ObjRepository, private val pets: PetRewards) : 
         val OUTFIT = listOf(HunterOutfit.HOOD, HunterOutfit.TOP, HunterOutfit.LEGS, HunterOutfit.BOOTS)
         val TRADEABLE = OUTFIT.toSet() + ENHANCED + PERFECTED + HUNTSMANS_KIT
 
-        const val UNIQUE_DEN = 50
-        const val PET_DEN = 1000
-        const val PET_DEN_MAX_XP = 67
-        const val MAX_XP = 200_000_000
+        val UNIQUE_DEN: Int get() = RULES.uniqueRate
+        val PET_DEN: Int get() = RULES.petRate
+        val PET_DEN_MAX_XP: Int get() = RULES.petRateMaxXp
     }
 }

@@ -31,6 +31,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.table.FiremakingLogsRow
+import org.rsmod.api.table.hunter.HunterPitfallRulesRow
 import org.rsmod.api.table.hunter.HunterPitfallsRow
 import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.catchChance256
@@ -496,10 +497,11 @@ constructor(
         const val ON_PIT_TICKS = 2
         const val FALL_TICKS = 3
         const val LEAP_TICKS = 2
-        const val SPIKED_COLLAPSE_TICKS = 300
-        const val FULL_COLLAPSE_TICKS = 142
-        const val SPEAR_BONUS = 13
-        const val FUR_LOW = 96
-        const val FUR_HIGH = 320
+        val SPIKED_COLLAPSE_TICKS: Int get() = RULES.spikedCollapseTicks
+        val FULL_COLLAPSE_TICKS: Int get() = RULES.fullCollapseTicks
+        private val RULES by lazy { HunterPitfallRulesRow.getRow("dbrow.hunter_pitfall_rules") }
+        val SPEAR_BONUS: Int get() = RULES.spearBonus
+        val FUR_LOW: Int get() = RULES.furLow
+        val FUR_HIGH: Int get() = RULES.furHigh
     }
 }

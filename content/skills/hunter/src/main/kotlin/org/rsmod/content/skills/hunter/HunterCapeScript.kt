@@ -10,6 +10,7 @@ import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpWorn2
 import org.rsmod.api.script.onOpWorn3
+import org.rsmod.api.table.hunter.HunterCapeRow
 import org.rsmod.api.utils.time.epochMinute
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -137,12 +138,13 @@ class HunterCapeScript : PluginScript() {
     internal companion object {
         const val HUNTER = "stat.hunter"
         const val APATURA = "npc.hg_apatura"
-        const val GUILD_LEVEL = 46
+        private val RULES by lazy { HunterCapeRow.getRow("dbrow.hunter_cape") }
+        val GUILD_LEVEL: Int get() = RULES.guildLevel
         const val TELEPORTS_USED = "varbit.chinchompa_teleports"
         const val TELEPORT_DAY = "varp.hunter_cape_teleport_day"
         const val GUILD_UNLOCKED = "varp.hunter_cape_guild_teleport"
         const val APATURA_MET = "varp.hunter_guild_apatura_met"
-        const val DAILY_TELEPORTS = 5
+        val DAILY_TELEPORTS: Int get() = RULES.dailyTeleports
         const val MINUTES_PER_DAY = 1440
         const val TELEPORT_SEQ = "seq.human_castteleport"
         const val TELEPORT_SPOTANIM = "spotanim.teleport_casting"

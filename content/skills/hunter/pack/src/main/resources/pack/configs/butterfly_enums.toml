@@ -2,7 +2,7 @@
 isServerOnly = true
 id = "enum.butterfly_restored_stats"
 keyType = "INT"
-valueType = "STRING"
+valueType = "STAT"
 
 [enum.values]
 0 = "stat.attack"

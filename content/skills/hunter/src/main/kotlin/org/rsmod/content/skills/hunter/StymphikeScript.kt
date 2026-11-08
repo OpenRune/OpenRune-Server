@@ -220,17 +220,17 @@ constructor(
         const val DEATH_SEQ = "seq.stymphike_death"
         const val LAUNCH_SPOTANIM = "spotanim.stymphike_spear_launch"
         const val TRAVEL_SPOTANIM = "spotanim.stymphike_spear_travel"
-        const val PILE_TAKE = 10
-        const val BAIT_EXTRA_DEN = 3
-        const val SPAWN_TICKS = 65
-        const val PEEK_TICKS = 20
-        const val BIRD_TICKS = 100
+        val PILE_TAKE: Int get() = ROW.pileTake
+        val BAIT_EXTRA_DEN: Int get() = ROW.baitExtraRate
+        val SPAWN_TICKS: Int get() = ROW.spawnTicks
+        val PEEK_TICKS: Int get() = ROW.peekTicks
+        val BIRD_TICKS: Int get() = ROW.birdTicks
         val PEEK_XP: Double get() = ROW.peekXpTenths / 10.0
         val KILL_XP: Double get() = ROW.killXpTenths / 10.0
         val ALERTED_XP: Double get() = ROW.alertedXpTenths / 10.0
-        const val ALERTED_DAMAGE = 6
+        val ALERTED_DAMAGE: Int get() = ROW.alertedDamage
         const val BONES = "obj.bones"
-        const val LOOT_DURATION = 200
+        val LOOT_DURATION: Int get() = ROW.lootDuration
         const val TREE_COUNT = 5
     }
 }

@@ -247,8 +247,8 @@ constructor(
         val HERBLORE_LEVEL: Int get() = ROW.herbLevel
         val INSPECT_XP: Double get() = ROW.inspectXpTenths / 10.0
         val HERB_XP: Double get() = ROW.herbXpTenths / 10.0
-        const val MIN_LEGS = 3
-        const val MAX_LEGS = 6
+        val MIN_LEGS: Int get() = ROW.minLegs
+        val MAX_LEGS: Int get() = ROW.maxLegs
         const val REVEALED = 3
         const val FADED = 5
         private const val INSPECT_TICKS = 2

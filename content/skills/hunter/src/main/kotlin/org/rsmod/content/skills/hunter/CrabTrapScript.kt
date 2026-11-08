@@ -217,7 +217,7 @@ constructor(
         val BUILD_LEVEL: Int get() = ROW.level
         val BUILD_XP: Double get() = ROW.xpTenths / 10.0
         const val BUILD_TICKS = 4
-        const val NAILS_NEEDED = 2
+        val NAILS_NEEDED: Int get() = ROW.nailsNeeded
         const val REBAIT_TICKS = 3
         const val LEAVE_RANGE = 30
         const val CRAB_WALK_TICKS = 4

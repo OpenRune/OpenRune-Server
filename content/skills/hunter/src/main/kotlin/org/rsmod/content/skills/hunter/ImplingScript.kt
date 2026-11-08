@@ -11,6 +11,7 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.table.ImplingTypesRow
+import org.rsmod.api.table.hunter.HunterImplingRulesRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -138,10 +139,11 @@ constructor(
         const val MAGIC_NET_CATCH_SEQ = "seq.ii_human_net_throw"
         const val CAUGHT_SEQ = "seq.ii_impling_caught"
         const val CAUGHT_SYNTH = "synth.impling_caught"
-        const val BAREHANDED_EXTRA_LEVELS = 10
+        private val RULES by lazy { HunterImplingRulesRow.getRow("dbrow.hunter_impling_rules") }
+        val BAREHANDED_EXTRA_LEVELS: Int get() = RULES.barehandedExtraLevels
         const val ATTEMPT_TICKS = 2
         const val CAUGHT_TICKS = 2
-        const val MAX_ATTEMPTS = 20
+        val MAX_ATTEMPTS: Int get() = RULES.maxAttempts
 
         fun inPuroPuro(coords: CoordGrid): Boolean = coords.x in 2560..2623 && coords.z in 4288..4351
 

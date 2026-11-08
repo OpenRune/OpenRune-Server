@@ -31,6 +31,7 @@ import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.table.hunter.HunterGoatLuresRow
+import org.rsmod.api.table.hunter.HunterGoatPitRow
 import org.rsmod.content.other.pets.PetRewards
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
@@ -364,7 +365,8 @@ constructor(
 
     internal companion object {
         const val HUNTER = "stat.hunter"
-        const val LEVEL = 60
+        private val RULES by lazy { HunterGoatPitRow.getRow("dbrow.hunter_goat_pit") }
+        val LEVEL: Int get() = RULES.level
         const val SHEEP_HERDER = "quest_sheepherder"
         const val PIT = "loc.goat_pit"
         const val SPIKES_SUPPLY = "loc.goat_pit_spikes"
@@ -380,7 +382,7 @@ constructor(
         const val HORN = "obj.desert_goat_horn"
         const val FUR = "obj.goat_pit_fur"
         const val PET = "obj.goatpitpet"
-        const val PET_BASE = 40000
+        val PET_BASE: Int get() = RULES.petRate
         const val STATE = "varbit.goat_pit_state"
         const val IN_PIT = "varbit.goat_pit_inpit"
         const val SPIKES_VARBIT = "varbit.goat_pit_spikes"
@@ -393,11 +395,11 @@ constructor(
         const val ONE = 2
         const val SOME = 3
         const val FULL = 4
-        const val PROD_XP = 20.0
-        const val PUSH_TILES = 5
-        const val GOAT_RESPAWN_TICKS = 10
+        val PROD_XP: Double get() = RULES.prodXpTenths / 10.0
+        val PUSH_TILES: Int get() = RULES.pushTiles
+        val GOAT_RESPAWN_TICKS: Int get() = RULES.goatRespawnTicks
         const val MAGIC = "stat.magic"
-        const val LURE_XP = 10.0
+        val LURE_XP: Double get() = RULES.lureXpTenths / 10.0
         const val LURE_DEATH_SEQ = "seq.goat_hunting_telegrab_end"
         const val IMPACT_SYNTH_DELAY = 3
         const val IMPACT_SYNTH_RANGE = 10
@@ -405,7 +407,7 @@ constructor(
         const val DARK_LURE = "component.magic_spellbook:dark_lure"
         const val DARK_LURE_COOLDOWN = "varbit.arceuus_dark_lure_cooldown"
         const val DARK_LURE_COOLDOWN_QUEUE = "queue.dark_lure_cooldown"
-        const val DARK_LURE_COOLDOWN_TICKS = 17
+        val DARK_LURE_COOLDOWN_TICKS: Int get() = RULES.darkLureCooldownTicks
 
         val PIT_TILES: Set<CoordGrid> by lazy {
             enum<Int, CoordGrid>("hunter_goat_pit_tiles").backing.values.mapTo(HashSet()) { checkNotNull(it) }

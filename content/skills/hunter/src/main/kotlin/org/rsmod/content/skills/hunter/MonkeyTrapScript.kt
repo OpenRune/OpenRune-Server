@@ -335,7 +335,7 @@ constructor(
         const val ATTEMPT_START = 8
         const val APPROACH_TIMEOUT = 8
         const val LURE_RANGE = 6
-        const val COLLAPSE_TICKS = 100
-        const val REGROW_TICKS = 50
+        val COLLAPSE_TICKS: Int get() = ROW.collapseTicks
+        val REGROW_TICKS: Int get() = ROW.regrowTicks
     }
 }
