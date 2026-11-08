@@ -49,6 +49,9 @@ object LeagueTaskTriggerTable {
             rows.fishingTasks()
             rows.cookingTasks()
             rows.firemakingTasks()
+            rows.herbloreTasks()
+            rows.smithingTasks()
+            rows.craftingTasks()
         }
 }
 

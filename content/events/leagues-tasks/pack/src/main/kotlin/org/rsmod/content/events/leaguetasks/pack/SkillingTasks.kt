@@ -10,15 +10,6 @@ import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.TOOL
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.VALUE
 
 internal fun TriggerRows.skillingTasks() {
-    product("league_task_clean_a_grimy_guam", "stat.herblore", "obj.guam_leaf")
-    product(
-        "league_task_clean_25_grimy_guam_leafs",
-        "stat.herblore",
-        "obj.guam_leaf",
-        times = 25,
-        counter = "varbit.league_task_clean_grimy_guam_leafs",
-    )
-
     spell(
         "league_task_cast_home_teleport",
         "obj.48_home_teleport",
@@ -45,7 +36,11 @@ internal fun TriggerRows.skillingTasks() {
         "obj.wyvern_bones",
         "obj.dragon_bones",
     )
-    objTask("league_task_bury_some_lava_dragon_bones", LeagueTaskTrigger.Bury, "obj.lava_dragon_bones")
+    objTask(
+        "league_task_bury_some_lava_dragon_bones",
+        LeagueTaskTrigger.Bury,
+        "obj.lava_dragon_bones",
+    )
     objTask(
         "league_task_sacrifice_some_bones_at_the_chaos_temple",
         LeagueTaskTrigger.Offer,

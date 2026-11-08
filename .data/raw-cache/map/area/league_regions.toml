@@ -159,3 +159,27 @@ levels = [0, 1, 2, 3]
 
 [[area.polygons]]
 vertices = [[2304, 3648], [2367, 3648], [2367, 3711], [2304, 3711]]
+
+[[area]]
+name = "Port Phasmatys"
+area_id = "area.league_port_phasmatys"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3650, 3450], [3710, 3450], [3710, 3510], [3650, 3510]]
+
+[[area]]
+name = "Kourend Castle"
+area_id = "area.league_kourend_castle"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1590, 3650], [1640, 3650], [1640, 3700], [1590, 3700]]
+
+[[area]]
+name = "Sophanem"
+area_id = "area.league_sophanem"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3270, 2750], [3325, 2750], [3325, 2810], [3270, 2810]]

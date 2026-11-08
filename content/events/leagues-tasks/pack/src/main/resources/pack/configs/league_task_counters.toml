@@ -241,3 +241,126 @@ id = "varbit.league_counter_burn_redwood_logs"
 varp = "varp.league_counters_7"
 startBit = 0
 endBit = 7
+
+[[varbit]]
+id = "varbit.league_counter_make_stamina_potions"
+varp = "varp.league_counters_7"
+startBit = 8
+endBit = 12
+
+[[varbit]]
+id = "varbit.league_counter_make_prayer_potions"
+varp = "varp.league_counters_7"
+startBit = 13
+endBit = 17
+
+[[varbit]]
+id = "varbit.league_counter_make_ancient_brews"
+varp = "varp.league_counters_7"
+startBit = 18
+endBit = 23
+
+[[varbit]]
+id = "varbit.league_counter_make_ranging_potions"
+varp = "varp.league_counters_7"
+startBit = 24
+endBit = 28
+
+[[varp]]
+id = "varp.league_counters_8"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_make_magic_potions"
+varp = "varp.league_counters_8"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.league_counter_make_menaphite_remedies"
+varp = "varp.league_counters_8"
+startBit = 5
+endBit = 10
+
+[[varbit]]
+id = "varbit.league_counter_make_divine_ranging_potions"
+varp = "varp.league_counters_8"
+startBit = 11
+endBit = 17
+
+[[varbit]]
+id = "varbit.league_counter_make_divine_super_combat_potions"
+varp = "varp.league_counters_8"
+startBit = 18
+endBit = 24
+
+[[varbit]]
+id = "varbit.league_counter_make_forgotten_brews"
+varp = "varp.league_counters_8"
+startBit = 25
+endBit = 30
+
+[[varp]]
+id = "varp.league_counters_9"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_smith_steel_bolts"
+varp = "varp.league_counters_9"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+id = "varbit.league_counter_smith_iron_arrowtips"
+varp = "varp.league_counters_9"
+startBit = 4
+endBit = 11
+
+[[varbit]]
+id = "varbit.league_counter_craft_astral_runes"
+varp = "varp.league_counters_9"
+startBit = 12
+endBit = 17
+
+[[varbit]]
+id = "varbit.league_counter_craft_nature_runes"
+varp = "varp.league_counters_9"
+startBit = 18
+endBit = 23
+
+[[varbit]]
+id = "varbit.league_counter_blow_light_orbs"
+varp = "varp.league_counters_9"
+startBit = 24
+endBit = 30
+
+[[varp]]
+id = "varp.league_counters_10"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_craft_unpowered_orbs"
+varp = "varp.league_counters_10"
+startBit = 0
+endBit = 6
+
+[[varbit]]
+id = "varbit.league_counter_craft_blue_dragonhide_bodies"
+varp = "varp.league_counters_10"
+startBit = 7
+endBit = 11
+
+[[varbit]]
+id = "varbit.league_counter_craft_death_runes"
+varp = "varp.league_counters_10"
+startBit = 12
+endBit = 17
+
+[[varbit]]
+id = "varbit.league_counter_craft_law_runes"
+varp = "varp.league_counters_10"
+startBit = 18
+endBit = 23

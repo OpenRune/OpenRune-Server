@@ -4,8 +4,16 @@ private const val WOODCUTTING = "stat.woodcutting"
 
 internal fun TriggerRows.woodcuttingTasks() {
     product("league_task_chop_some_logs", WOODCUTTING)
-    product("league_task_chop_some_logs_with_a_steel_axe", WOODCUTTING, tools = listOf("obj.steel_axe"))
-    product("league_task_chop_some_logs_with_a_rune_axe", WOODCUTTING, tools = listOf("obj.rune_axe"))
+    product(
+        "league_task_chop_some_logs_with_a_steel_axe",
+        WOODCUTTING,
+        tools = listOf("obj.steel_axe"),
+    )
+    product(
+        "league_task_chop_some_logs_with_a_rune_axe",
+        WOODCUTTING,
+        tools = listOf("obj.rune_axe"),
+    )
     product("league_task_chop_down_an_arctic_pine_tree", WOODCUTTING, "obj.arctic_pine_log")
     product(
         "league_task_chop_100_willow_logs",
