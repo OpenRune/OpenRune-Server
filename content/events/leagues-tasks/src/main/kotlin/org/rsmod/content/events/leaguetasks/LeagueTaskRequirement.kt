@@ -24,6 +24,8 @@ public class LeagueTaskRequirement(
     public val categories: List<Int> = emptyList(),
     public val slayerTask: Int? = null,
     public val counter: VarBitType? = null,
+    /** Where an event must happen; empty means anywhere. */
+    public val areas: List<Int> = emptyList(),
 ) {
     internal companion object {
         /**
@@ -77,6 +79,12 @@ public class LeagueTaskRequirement(
                     categories = categories,
                     slayerTask = row.intOptional("dbcol.league_task_trigger:slayer_task"),
                     counter = counter,
+                    areas =
+                        row.slotsOptional(
+                                "dbcol.league_task_trigger:area",
+                                DbColumnCodec.AreaTypeCodec,
+                            )
+                            .map { it.id },
                 )
             }
 

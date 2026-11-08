@@ -5,6 +5,7 @@ import dev.openrune.definition.type.VarBitType
 import dev.openrune.types.varp.bits
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTrigger
@@ -12,7 +13,9 @@ import org.rsmod.game.entity.Player
 
 /** Decides when all of a task's requirements are met, and completes it through [LeagueTasks]. */
 @Singleton
-public class LeagueTaskProgress @Inject constructor(private val tasks: LeagueTasks) {
+public class LeagueTaskProgress
+@Inject
+constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
     private val rows: List<LeagueTaskRequirement> = LeagueTaskRequirement.loadAll(tasks.allTasks)
     private val rowsByTask: Map<Int, List<LeagueTaskRequirement>> = rows.groupBy { it.task }
     private val rowsByTrigger: Map<LeagueTaskTrigger, List<LeagueTaskRequirement>> =
@@ -23,6 +26,9 @@ public class LeagueTaskProgress @Inject constructor(private val tasks: LeagueTas
     init {
         for (row in rows) {
             if (row.trigger.isState) {
+                check(row.areas.isEmpty()) {
+                    "League task ${row.task}: a ${row.trigger} row cannot be limited to an area."
+                }
                 continue
             }
             val remembers = row.count > 1 || rowsByTask.getValue(row.task).size > 1
@@ -45,6 +51,10 @@ public class LeagueTaskProgress @Inject constructor(private val tasks: LeagueTas
         rows(trigger).flatMap { row -> row.objs.map { it to row } }
             .groupBy({ it.first }, { it.second })
 
+    /** [trigger] rows that list no obj, so any obj meets them. */
+    public fun rowsForAnyObj(trigger: LeagueTaskTrigger): List<LeagueTaskRequirement> =
+        rows(trigger).filter { it.objs.isEmpty() }
+
     /** Completes [task] if it is in the player's league, not yet done, and every row is met. */
     public fun check(player: Player, task: Int) {
         val league = tasks.leagueOf(player) ?: return
@@ -59,13 +69,17 @@ public class LeagueTaskProgress @Inject constructor(private val tasks: LeagueTas
     }
 
     /**
-     * Records one occurrence of an event [row]: completes a one-off task straight away, or advances
-     * the row's counter, capped at its count, and then checks the task.
+     * Records [amount] occurrences of an event [row], if the player is in one of its areas:
+     * completes a one-off task straight away, or advances the row's counter, capped at its count,
+     * and then checks the task.
      */
-    public fun record(player: Player, row: LeagueTaskRequirement) {
+    public fun record(player: Player, row: LeagueTaskRequirement, amount: Int = 1) {
         val league = tasks.leagueOf(player) ?: return
         val index = league.indexOf(row.task) ?: return
-        if (tasks.isComplete(player, index)) {
+        if (amount <= 0 || tasks.isComplete(player, index)) {
+            return
+        }
+        if (row.areas.isNotEmpty() && row.areas.none { areas.inArea(it, player.coords) }) {
             return
         }
         val counter = row.counter
@@ -75,7 +89,8 @@ public class LeagueTaskProgress @Inject constructor(private val tasks: LeagueTas
         }
         val progress = player.vars[counter]
         if (progress < row.count) {
-            VarPlayerIntMapSetter.set(player, counter, progress + 1)
+            val capped = (progress.toLong() + amount).coerceAtMost(row.count.toLong()).toInt()
+            VarPlayerIntMapSetter.set(player, counter, capped)
         }
         check(player, row.task)
     }
@@ -109,7 +124,14 @@ public class LeagueTaskProgress @Inject constructor(private val tasks: LeagueTas
                 val worn = player.worn.mapNotNullTo(HashSet()) { it?.id }
                 row.objs.count { it in worn } >= row.count
             }
-            LeagueTaskTrigger.Kill -> row.counter?.let { player.vars[it] >= row.count } ?: false
+            LeagueTaskTrigger.Kill,
+            LeagueTaskTrigger.Product,
+            LeagueTaskTrigger.Spell,
+            LeagueTaskTrigger.Alchemy,
+            LeagueTaskTrigger.Firemaking,
+            LeagueTaskTrigger.Bury,
+            LeagueTaskTrigger.Offer,
+            LeagueTaskTrigger.Consume -> row.counter?.let { player.vars[it] >= row.count } ?: false
         }
     }
 

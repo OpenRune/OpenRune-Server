@@ -18,11 +18,14 @@ public class AreaChecker @Inject constructor(
     private val areaBuffer = ShortArrayList()
     private val visited = ShortOpenHashSet()
 
-    public fun inArea(area: String, coords: CoordGrid): Boolean {
+    public fun inArea(area: String, coords: CoordGrid): Boolean =
+        inArea(area.asRSCM(RSCMType.AREA), coords)
+
+    public fun inArea(area: Int, coords: CoordGrid): Boolean {
         areaBuffer.clear()
         visited.clear()
 
-        val target = area.asRSCM(RSCMType.AREA).toShort()
+        val target = area.toShort()
         val normalized = coords.normalized()
 
         areaIndex.putAreas(normalized, areaBuffer)

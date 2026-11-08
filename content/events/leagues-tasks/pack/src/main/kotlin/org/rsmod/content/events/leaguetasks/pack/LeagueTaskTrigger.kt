@@ -18,7 +18,24 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     /** At least `count` of the `obj` items are worn at once. */
     Equip(6, isState = true),
     /** The player gets the kill of an `npc`, an npc of a `category`, or a `slayer_task` npc. */
-    Kill(7, isState = false);
+    Kill(7, isState = false),
+    /**
+     * A skilling action gives one of the `obj` products (any when empty) from a `stat` skill (any
+     * when empty). Progress advances by the number of items made.
+     */
+    Product(8, isState = false),
+    /** One of the `obj` spells is cast, its runes paid. */
+    Spell(9, isState = false),
+    /** An item (one of `obj`, any when empty) is alched for at least `value` coins. */
+    Alchemy(10, isState = false),
+    /** One of the `obj` logs (any when empty) is burnt, on the ground or on a fire. */
+    Firemaking(11, isState = false),
+    /** One of the `obj` bones (any when empty) is buried; scattering ashes does not count. */
+    Bury(12, isState = false),
+    /** One of the `obj` items (any when empty) is offered at an altar, the Ectofuntus or a bowl. */
+    Offer(13, isState = false),
+    /** One of the `obj` foods or potions is eaten or drunk. */
+    Consume(14, isState = false);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)
