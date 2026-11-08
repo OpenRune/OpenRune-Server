@@ -27,6 +27,44 @@ private val EMPTY_WATER_CONTAINERS =
         "obj.water_skin3",
     )
 
+/**
+ * Every bone a dog eats, from `dbtable.skill_prayer`. Shaikahan bones are left out: a dog refuses
+ * them.
+ */
+private val DOG_BONES =
+    listOf(
+        "obj.bones",
+        "obj.bones_burnt",
+        "obj.wolf_bones",
+        "obj.bat_bones",
+        "obj.big_bones",
+        "obj.tbwt_jogre_bones",
+        "obj.babywyrm_bones",
+        "obj.zogre_bones",
+        "obj.babydragon_bones",
+        "obj.wyrm_bones",
+        "obj.wyvern_bones",
+        "obj.dragon_bones",
+        "obj.dragon_bones_superior",
+        "obj.drake_bones",
+        "obj.lava_dragon_bones",
+        "obj.hydra_bones",
+        "obj.dagannoth_king_bones",
+        "obj.zogre_ancestral_bones_fayg",
+        "obj.zogre_ancestral_bones_raurg",
+        "obj.zogre_ancestral_bones_ourg",
+        "obj.alan_bones",
+        "obj.mm_normal_monkey_bones",
+        "obj.mm_skeleton_bones",
+        "obj.mm_small_zombie_monkey_bones",
+        "obj.mm_large_zombie_monkey_bones",
+        "obj.mm_small_ninja_monkey_bones",
+        "obj.mm_medium_ninja_monkey_bones",
+        "obj.mm_normal_gorilla_monkey_bones",
+        "obj.mm_bearded_gorilla_monkey_bones",
+        "obj.shade_bleached_bones",
+    )
+
 internal fun TriggerRows.useOnTasks() {
     useOnLoc(
         "league_task_fill_something_up_from_a_water_pump",
@@ -42,6 +80,7 @@ internal fun TriggerRows.useOnTasks() {
             "npc.varlamore_dog_chiribaya_2",
             "npc.varlamore_dog_chiribaya_1_indoors",
         ),
+        DOG_BONES,
     )
     useOnNpc(
         "league_task_feed_a_ghast_some_sweets",
@@ -51,7 +90,7 @@ internal fun TriggerRows.useOnTasks() {
             "npc.templetrek_ghast_vis_2",
             "npc.templetrek_ghast_vis_3",
         ),
-        listOf("obj.trail_sweets", "obj.easter_egg_2005_purple"),
+        listOf("obj.trail_sweets"),
     )
 }
 

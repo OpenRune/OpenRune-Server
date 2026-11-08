@@ -12,6 +12,7 @@ internal fun TriggerRows.cookingTasks() {
     )
     product("action_make_a_meat_pizza", COOKING, "obj.meat_pizza")
     product("league_task_cook_a_dark_crab", COOKING, "obj.dark_crab")
+    product("league_task_butter_a_potato", COOKING, "obj.potato_butter")
 
     cooked("league_task_cook_100_swordfish", "obj.swordfish", 100, "cook_swordfish")
     cooked("league_task_cook_50_tuna", "obj.tuna", 50, "cook_tuna")
