@@ -10,6 +10,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.fletchingLvl
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.table.fletching.HunterBoltFletchingRow
+import org.rsmod.api.table.hunter.HunterSunlightCrossbowRow
 import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.content.skills.skillMulti
 import org.rsmod.plugin.scripts.PluginScript
@@ -43,7 +44,7 @@ class SunlightCrossbowScript : PluginScript() {
                 player.invTransaction(inv) {
                     val target = select(inv)
                     delete(target, bolt.material.id, 1)
-                    add(target, bolt.bolts.id, BOLTS_PER_MATERIAL)
+                    add(target, bolt.bolts.id, bolt.made)
                 }
             if (made.failure) return
             statAdvance(FLETCHING, bolt.xpTenths / 10.0)
@@ -85,13 +86,13 @@ class SunlightCrossbowScript : PluginScript() {
     }
 
     private companion object {
+        private val ROW by lazy { HunterSunlightCrossbowRow.getRow("dbrow.hunter_sunlight_crossbow") }
         const val ANTLER = "obj.sunlight_antler"
         const val CROSSBOW = "obj.hunting_crossbow"
         const val SUNLIGHT_CROSSBOW = "obj.hunting_crossbow_sunlight"
         const val CHISEL = "obj.chisel"
-        const val LEVEL = 74
+        val LEVEL: Int get() = ROW.level
         const val FLETCHING = "stat.fletching"
         const val BOLT_SEQ = "seq.human_fletching_huntingbolts_chisel"
-        const val BOLTS_PER_MATERIAL = 12
     }
 }

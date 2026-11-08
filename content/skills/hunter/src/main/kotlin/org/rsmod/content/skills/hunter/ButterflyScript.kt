@@ -2,6 +2,7 @@ package org.rsmod.content.skills.hunter
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.enums.enum
 import jakarta.inject.Inject
 import kotlin.math.min
 import org.rsmod.api.area.checker.AreaChecker
@@ -84,7 +85,11 @@ constructor(
             spotanim(spot, RELEASE_DELAY, RELEASE_HEIGHT)
             soundSynth(RELEASE_SYNTH, delay = RELEASE_DELAY)
         }
-        mes("You catch and release the ${row.name}.", ChatType.Spam)
+        if (row.creature.internalName == SUNLIGHT_MOTH) {
+            mes("You release the ${row.name}.", ChatType.Spam)
+        } else {
+            mes("You catch and release the ${row.name}.", ChatType.Spam)
+        }
     }
 
     private fun ProtectedAccess.rollCatch(row: HunterButterfliesRow): Boolean {
@@ -222,11 +227,8 @@ constructor(
         const val EFFECT_HEAL = 1
         const val EFFECT_RESTORE = 2
 
-        private val RESTORED_STATS =
-            listOf(
-                "attack", "defence", "strength", "ranged", "magic", "cooking", "woodcutting", "fletching",
-                "fishing", "firemaking", "crafting", "smithing", "mining", "herblore", "agility", "thieving",
-                "slayer", "farming", "runecrafting", "hunter", "construction",
-            ).map { "stat.$it" }
+        private val RESTORED_STATS: List<String> by lazy {
+            enum<Int, String>("butterfly_restored_stats").backing.values.map { checkNotNull(it) }
+        }
     }
 }

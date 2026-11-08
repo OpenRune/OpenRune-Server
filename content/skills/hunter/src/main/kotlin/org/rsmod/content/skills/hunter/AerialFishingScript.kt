@@ -39,6 +39,7 @@ import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.shops.Shops
 import org.rsmod.api.shops.operation.ShopOperationMap
 import org.rsmod.api.table.hunter.HunterAerialFishRow
+import org.rsmod.api.table.hunter.HunterAerialRatesRow
 import org.rsmod.content.other.pets.PetRewards
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
@@ -436,6 +437,7 @@ constructor(
     internal class Flight(val spot: Npc, val coords: CoordGrid, val returnCycle: Int, val frenzied: Boolean)
 
     internal companion object {
+        private val ROW by lazy { HunterAerialRatesRow.getRow("dbrow.hunter_aerial_rates") }
         const val HUNTER = "stat.hunter"
         const val FISHING = "stat.fishing"
         const val COOKING = "stat.cooking"
@@ -478,19 +480,19 @@ constructor(
         const val FRENZY_TICKS = 28
         const val FRENZY_CATCH_TICKS = 3
         const val RANGE = 8
-        const val FISHING_LEVEL = 43
-        const val HUNTER_LEVEL = 35
-        const val TENCH_PEARLS = 100
-        const val WHOLE_FISH_COST = 20
-        const val GOLDEN_TENCH_RATE = 20_000
-        const val HERON_BASE = 636_833
-        const val SPIRIT_FLAKES_CHANCE = 50
+        val FISHING_LEVEL: Int get() = HunterAerialFishRow.all().minOf { it.fishingLevel }
+        val HUNTER_LEVEL: Int get() = HunterAerialFishRow.all().minOf { it.hunterLevel }
+        val TENCH_PEARLS: Int get() = ROW.tenchPearls
+        val WHOLE_FISH_COST: Int get() = ROW.wholeFishCost
+        val GOLDEN_TENCH_RATE: Int get() = ROW.goldenTenchRate
+        val HERON_BASE: Int get() = ROW.heronRate
+        val SPIRIT_FLAKES_CHANCE: Int get() = ROW.spiritFlakesChance
         const val GROUND_DURATION = 200
         const val OFFCUT_EVERY_MIN = 3
         const val OFFCUT_EVERY_MAX = 4
-        const val PEARL_BASE = 66.6
-        const val PEARL_X_OFFSET = 40
-        const val PEARL_SLOPE = 25.0
-        const val PEARL_SLOPE_DIVISOR = 59.0
+        val PEARL_BASE: Double get() = ROW.pearlBaseTenths / 10.0
+        val PEARL_X_OFFSET: Int get() = ROW.pearlXOffset
+        val PEARL_SLOPE: Double get() = ROW.pearlSlope.toDouble()
+        val PEARL_SLOPE_DIVISOR: Double get() = ROW.pearlSlopeDivisor.toDouble()
     }
 }

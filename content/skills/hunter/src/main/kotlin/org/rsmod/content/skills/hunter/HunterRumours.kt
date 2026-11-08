@@ -10,6 +10,7 @@ import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.table.hunter.HunterOutfitRow
 import org.rsmod.api.table.hunter.HunterRumourHuntersRow
 import org.rsmod.api.table.hunter.HunterRumoursRow
 import org.rsmod.content.quest.manager.QuestRequirements
@@ -158,8 +159,9 @@ object HunterOutfit {
     internal const val TOP = "obj.hg_hunter_top"
     internal const val LEGS = "obj.hg_hunter_legs"
     internal const val BOOTS = "obj.hg_hunter_boots"
-    private val PIECES = listOf(HOOD to 2, TOP to 8, LEGS to 6, BOOTS to 4)
-    private const val SET_BONUS = 5
+    private val ROW by lazy { HunterOutfitRow.getRow("dbrow.hunter_outfit") }
+    private val PIECES: List<Pair<String, Int>> by lazy { ROW.pieces.map { it.internalName }.zip(ROW.bonusTenths) }
+    private val SET_BONUS: Int get() = ROW.setBonusTenths
 
     private fun owns(player: Player, obj: String): Boolean =
         obj in player.worn || obj in player.inv || (player.invMap[HunterRumours.BANK]?.let { obj in it } ?: false)

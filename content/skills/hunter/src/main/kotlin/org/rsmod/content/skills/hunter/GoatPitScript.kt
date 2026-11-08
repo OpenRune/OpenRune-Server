@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.types.enums.enum
 import jakarta.inject.Inject
 import kotlin.math.sign
 import org.rsmod.api.combat.commons.magic.MagicSpell
@@ -296,7 +297,11 @@ constructor(
         anim(lure.castSeq)
         spotanim(lure.castSpotanim, height = CAST_SPOTANIM_HEIGHT)
         lure.synth?.let { soundSynth(it) }
-        val proj = worldRepo.projAnim(player, goat, SpotanimType(lure.travel.asRSCM(RSCMType.SPOTANIM)), PROJANIM)
+        val proj = worldRepo.projAnim(player, goat, SpotanimType(lure.travel.asRSCM(RSCMType.SPOTANIM)), lure.projanim)
+        lure.impactSynth?.let {
+            worldRepo.spotanimMap(SpotanimType(lure.impact.asRSCM(RSCMType.SPOTANIM)), goat.coords, lure.impactHeight, proj.endTime)
+            worldRepo.soundArea(goat.coords, it, delay = IMPACT_SYNTH_DELAY, radius = IMPACT_SYNTH_RANGE)
+        }
         statAdvance(MAGIC, spell.castXp)
         if (lure.component.packed == DARK_LURE.asRSCM(RSCMType.COMPONENT)) {
             VarPlayerIntMapSetter.set(player, DARK_LURE_COOLDOWN, 1)
@@ -305,7 +310,7 @@ constructor(
         }
         delay(maxOf(1, proj.durations.serverDelay))
         if (!goat.isSlotAssigned) return
-        goat.spotanim(lure.impact, height = lure.impactHeight)
+        if (lure.impactSynth == null) goat.spotanim(lure.impact, height = lure.impactHeight)
         val dx = (player.coords.x - goat.coords.x).sign
         val dz = (player.coords.z - goat.coords.z).sign
         val tiles = distance(goat.coords, player.coords) - 1
@@ -353,9 +358,7 @@ constructor(
         VarPlayerIntMapSetter.set(player, STATE, state)
     }
 
-    private fun inPit(coords: CoordGrid): Boolean =
-        coords.level == PIT_SW.level && coords.x in PIT_SW.x until PIT_SW.x + PIT_SIZE &&
-            coords.z in PIT_SW.z until PIT_SW.z + PIT_SIZE
+    private fun inPit(coords: CoordGrid): Boolean = coords in PIT_TILES
 
     private fun distance(a: CoordGrid, b: CoordGrid): Int = maxOf(kotlin.math.abs(a.x - b.x), kotlin.math.abs(a.z - b.z))
 
@@ -393,17 +396,20 @@ constructor(
         const val PROD_XP = 20.0
         const val PUSH_TILES = 5
         const val GOAT_RESPAWN_TICKS = 10
-        const val PIT_SIZE = 3
-        val PIT_SW = CoordGrid(2571, 2194, 0)
         const val MAGIC = "stat.magic"
         const val LURE_XP = 10.0
         const val LURE_DEATH_SEQ = "seq.goat_hunting_telegrab_end"
-        const val PROJANIM = "projanim.magic_spell"
+        const val IMPACT_SYNTH_DELAY = 3
+        const val IMPACT_SYNTH_RANGE = 10
         const val CAST_SPOTANIM_HEIGHT = 92
         const val DARK_LURE = "component.magic_spellbook:dark_lure"
         const val DARK_LURE_COOLDOWN = "varbit.arceuus_dark_lure_cooldown"
         const val DARK_LURE_COOLDOWN_QUEUE = "queue.dark_lure_cooldown"
         const val DARK_LURE_COOLDOWN_TICKS = 17
+
+        val PIT_TILES: Set<CoordGrid> by lazy {
+            enum<Int, CoordGrid>("hunter_goat_pit_tiles").backing.values.mapTo(HashSet()) { checkNotNull(it) }
+        }
 
         fun capacity(level: Int): Int = HunterTrapScript.byLevel(hunter_goat_pit_capacity, level)
 

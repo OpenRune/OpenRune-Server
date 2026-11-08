@@ -28,6 +28,7 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpWorn1
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
+import org.rsmod.api.table.hunter.HunterFalconryFeesRow
 import org.rsmod.api.table.hunter.HunterFalconryRow
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
@@ -506,6 +507,7 @@ constructor(
     }
 
     internal companion object {
+        private val ROW by lazy { HunterFalconryFeesRow.getRow("dbrow.hunter_falconry_fees") }
         const val HUNTER = "stat.hunter"
         const val COINS = "obj.coins"
         const val AREA = "area.piscatoris_falconry"
@@ -520,9 +522,9 @@ constructor(
         val MATTHIAS = listOf("npc.hunting_npc_falconer", "npc.hunting_npc_falconer_nobird")
         val GLOVES = listOf(FALCON_GLOVE, EMPTY_GLOVE)
         val HAND_SLOTS = listOf(Wearpos.RightHand.slot, Wearpos.LeftHand.slot, Wearpos.Hands.slot)
-        const val FEE = 500
-        const val INVESTMENT = 500_000
-        const val MIN_LEVEL = 43
+        val FEE: Int get() = ROW.fee
+        val INVESTMENT: Int get() = ROW.investment
+        val MIN_LEVEL: Int get() = HunterFalconryRow.all().minOf { it.level }
         const val RANGE = 7
         const val FLIGHT_START = 24
         const val FLIGHT_STEP = 8

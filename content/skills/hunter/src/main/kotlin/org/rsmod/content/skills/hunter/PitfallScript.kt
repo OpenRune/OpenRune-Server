@@ -194,7 +194,7 @@ constructor(
         val hunt = hunt(player)
         val current = hunt.chase
         if (current != null && current.npc !== npc && current.npc.isSlotAssigned && current.npc.isVisible) {
-            mes("I'm already under attack!")
+            mes("I'm already under attack!", ChatType.Spam)
             return
         }
         if (hunts.values.any { (it !== hunt && it.chase?.npc === npc) || it.pits.values.any { pit -> pit.npc === npc } }) return

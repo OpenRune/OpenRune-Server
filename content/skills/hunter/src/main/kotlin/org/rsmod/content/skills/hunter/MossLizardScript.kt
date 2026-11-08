@@ -18,6 +18,7 @@ import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
+import org.rsmod.api.table.hunter.HunterMossLizardRow
 import org.rsmod.api.table.hunter.HunterMossLizardSitesRow
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
@@ -171,6 +172,7 @@ constructor(
     }
 
     internal companion object {
+        private val ROW by lazy { HunterMossLizardRow.getRow("dbrow.hunter_moss_lizard") }
         const val HUNTER = "stat.hunter"
         const val TIMER = "timer.hunter_moss_lizards"
         const val ROCK = "loc.pmoon_lizard_rock"
@@ -193,15 +195,15 @@ constructor(
         const val TRIGGER_SYNTH = "synth.moss_lizard_trigger"
         const val CATCH_SYNTH = "synth.moss_lizard_caught"
         const val TRIGGER_RADIUS = 8
-        const val LEVEL = 20
+        val LEVEL: Int get() = ROW.level
         const val SET = 1
         const val ACTIVATED = 2
         const val CATCH_TICKS = 2
         const val LIZARD_LIFE = 30
         const val LIZARD_OBJ_DURATION = 100
 
-        fun lizards(level: Int): Int = 1 + listOf(50, 80).count { level >= it }
+        fun lizards(level: Int): Int = 1 + ROW.extraLizardLevels.count { level >= it }
 
-        fun xp(level: Int): Double = minOf(90.0, level * 0.9)
+        fun xp(level: Int): Double = minOf(ROW.xpCapTenths, level * ROW.xpTenthsPerLevel) / 10.0
     }
 }

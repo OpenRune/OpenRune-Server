@@ -15,6 +15,7 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.table.hunter.HunterCrystalImplingRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -77,15 +78,16 @@ constructor(
     }
 
     internal companion object {
-        const val LEVEL = 80
-        const val XP = 280
+        private val ROW by lazy { HunterCrystalImplingRow.getRow("dbrow.hunter_crystal_impling") }
+        val LEVEL: Int get() = ROW.level
+        val XP: Int get() = ROW.xp
         const val JAR = "obj.ii_captured_impling_12"
         const val VISIBLE_AFTER_MINUTES = 3
 
-        const val NET_LOW = 8
-        const val NET_HIGH = 141
-        const val BONUS_LOW = 28
-        const val BONUS_HIGH = 161
+        val NET_LOW: Int get() = ROW.netLow
+        val NET_HIGH: Int get() = ROW.netHigh
+        val BONUS_LOW: Int get() = ROW.bonusLow
+        val BONUS_HIGH: Int get() = ROW.bonusHigh
 
         val NAMES: List<String> by lazy {
             enum<Int, NpcServerType>("crystal_impling_npcs").backing.values.map { checkNotNull(it).internalName }

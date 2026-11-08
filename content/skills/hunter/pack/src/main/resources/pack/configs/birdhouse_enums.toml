@@ -59,3 +59,15 @@ valueType = "INT"
 "obj.wc_clue_nest_medium" = 3
 "obj.wc_clue_nest_easy" = 4
 "obj.wc_clue_nest_beginner" = 30
+
+[[enum]]
+isServerOnly = true
+id = "enum.birdhouse_feather_counts"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+0 = 30
+1 = 40
+2 = 50
+3 = 60

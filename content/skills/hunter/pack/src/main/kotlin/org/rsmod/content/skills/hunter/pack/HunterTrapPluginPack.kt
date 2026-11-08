@@ -21,5 +21,15 @@ class HunterTrapPluginPack : PluginPack() {
             HunterLeonBoltTable.leonBolts(),
             HunterLeonBoltTable.boltFletching(),
             HunterGoatLureTable.goatLures(),
+            HunterActivityTables.monkeyTrap(),
+            HunterActivityTables.crystalImpling(),
+            HunterActivityTables.stymphike(),
+            HunterActivityTables.aerialRates(),
+            HunterActivityTables.herbiboar(),
+            HunterActivityTables.falconryFees(),
+            HunterActivityTables.sunlightCrossbow(),
+            HunterActivityTables.crabTrapBuild(),
+            HunterActivityTables.mossLizard(),
+            HunterActivityTables.outfit(),
         )
 }

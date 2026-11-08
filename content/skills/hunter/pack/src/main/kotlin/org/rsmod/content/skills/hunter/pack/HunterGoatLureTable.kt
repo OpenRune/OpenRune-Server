@@ -11,6 +11,8 @@ object HunterGoatLureTable {
     const val IMPACT = 4
     const val IMPACT_HEIGHT = 5
     const val SYNTH = 6
+    const val IMPACT_SYNTH = 7
+    const val PROJANIM = 8
 
     fun goatLures() =
         dbTable("dbtable.hunter_goat_lures", serverOnly = true) {
@@ -21,6 +23,8 @@ object HunterGoatLureTable {
             column("impact", IMPACT, VarType.STRING)
             column("impact_height", IMPACT_HEIGHT, VarType.INT)
             column("synth", SYNTH, VarType.STRING)
+            column("impact_synth", IMPACT_SYNTH, VarType.STRING)
+            column("projanim", PROJANIM, VarType.STRING)
 
             row("dbrow.hunter_goat_lure_telegrab") {
                 columnRSCM(COMPONENT, "component.magic_spellbook:telegrab")
@@ -28,8 +32,10 @@ object HunterGoatLureTable {
                 column(CAST_SPOTANIM, "spotanim.telegrab_casting")
                 column(TRAVEL, "spotanim.telegrab_travel")
                 column(IMPACT, "spotanim.telegrab_impact")
-                column(IMPACT_HEIGHT, 0)
-                column(SYNTH, "synth.telegrab_all")
+                column(IMPACT_HEIGHT, 100)
+                column(SYNTH, "synth.telegrab_cast")
+                column(IMPACT_SYNTH, "synth.telegrab_impact")
+                column(PROJANIM, "projanim.telegrab")
             }
             row("dbrow.hunter_goat_lure_dark_lure") {
                 columnRSCM(COMPONENT, "component.magic_spellbook:dark_lure")
@@ -38,6 +44,7 @@ object HunterGoatLureTable {
                 column(TRAVEL, "spotanim.dark_lure_travel_projanim")
                 column(IMPACT, "spotanim.dark_lure_hit_spotanim")
                 column(IMPACT_HEIGHT, 124)
+                column(PROJANIM, "projanim.magic_spell")
             }
         }
 }

@@ -30,6 +30,7 @@ object HunterLeonBoltTable {
     const val LEVEL = 2
     const val XP_TENTHS = 3
     const val TICKS = 4
+    const val MADE = 5
 
     fun boltFletching() =
         dbTable("dbtable.hunter_bolt_fletching", serverOnly = true) {
@@ -38,6 +39,7 @@ object HunterLeonBoltTable {
             column("level", LEVEL, VarType.INT)
             column("xp_tenths", XP_TENTHS, VarType.INT)
             column("ticks", TICKS, VarType.INT)
+            column("made", MADE, VarType.INT)
 
             fun recipe(row: String, material: String, bolts: String, level: Int, xpTenths: Int, ticks: Int) =
                 row(row) {
@@ -46,6 +48,7 @@ object HunterLeonBoltTable {
                     column(LEVEL, level)
                     column(XP_TENTHS, xpTenths)
                     column(TICKS, ticks)
+                    column(MADE, 12)
                 }
 
             recipe("dbrow.hunter_bolt_fletching_kebbit", "obj.huntingbeast_spike", "obj.huntingbow_bolts", 32, 58, 3)

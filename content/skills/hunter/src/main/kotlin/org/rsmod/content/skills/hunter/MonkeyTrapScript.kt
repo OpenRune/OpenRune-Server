@@ -19,6 +19,7 @@ import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
+import org.rsmod.api.table.hunter.HunterMonkeyTrapRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.catchChance256
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.distance
@@ -296,6 +297,7 @@ constructor(
     }
 
     internal companion object {
+        private val ROW by lazy { HunterMonkeyTrapRow.getRow("dbrow.hunter_monkey_trap") }
         const val HUNTER = "stat.hunter"
         const val TIMER = "timer.hunter_monkey_traps"
         const val MM2 = "quest_monkeymadness2"
@@ -323,11 +325,11 @@ constructor(
         const val EAT_AND_PANIC_SEQ = "seq.mm2_hunter_maniacal_monkey_eat_and_panic"
         const val PERFECT = "obj.ballista_rope"
         const val DAMAGED = "obj.damaged_ballista_rope"
-        const val PERFECT_TAIL = 5000
-        const val XP = 1000.0
-        const val LEVEL = 60
-        const val LOW = -79
-        const val HIGH = 227
+        val PERFECT_TAIL: Int get() = ROW.perfectTailRate
+        val XP: Double get() = ROW.xpTenths / 10.0
+        val LEVEL: Int get() = ROW.level
+        val LOW: Int get() = ROW.low
+        val HIGH: Int get() = ROW.high
         const val SET_TICKS = 2
         const val SETTLE_TICKS = 2
         const val ATTEMPT_START = 8

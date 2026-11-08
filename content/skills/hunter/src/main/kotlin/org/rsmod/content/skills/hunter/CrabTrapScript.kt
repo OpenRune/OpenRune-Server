@@ -23,6 +23,7 @@ import org.rsmod.api.route.walkTo
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
+import org.rsmod.api.table.hunter.HunterCrabTrapBuildRow
 import org.rsmod.api.table.hunter.HunterCrabTrapsRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.distance
@@ -195,6 +196,7 @@ constructor(
     }
 
     internal companion object {
+        private val ROW by lazy { HunterCrabTrapBuildRow.getRow("dbrow.hunter_crab_trap_build") }
         const val HUNTER = "stat.hunter"
         const val SAILING = "stat.sailing"
         const val CONSTRUCTION = "stat.construction"
@@ -203,11 +205,7 @@ constructor(
         val SAWS = listOf("obj.poh_saw", "obj.eyeglo_crystal_saw")
         const val BUCKET = "obj.bucket_empty"
         const val PLANK = "obj.woodplank"
-        val NAILS =
-            listOf(
-                "obj.nails_bronze", "obj.nails_iron", "obj.nails", "obj.nails_black", "obj.nails_mithril",
-                "obj.nails_adamant", "obj.nails_rune",
-            )
+        val NAILS: List<String> get() = ROW.nails.map { it.internalName }
         const val BUILD_SEQ = "seq.human_poh_build"
         const val BAIT_SEQ = "seq.human_pickupfloor"
         const val EMPTY_SEQ = "seq.human_pickupfloor"
@@ -216,8 +214,8 @@ constructor(
         const val BUILT = 1
         const val ACTIVE = 2
         const val FULL = 3
-        const val BUILD_LEVEL = 10
-        const val BUILD_XP = 30.0
+        val BUILD_LEVEL: Int get() = ROW.level
+        val BUILD_XP: Double get() = ROW.xpTenths / 10.0
         const val BUILD_TICKS = 4
         const val NAILS_NEEDED = 2
         const val REBAIT_TICKS = 3

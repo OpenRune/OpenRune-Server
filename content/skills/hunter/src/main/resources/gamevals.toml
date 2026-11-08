@@ -1,4 +1,14 @@
 [gamevals.dbtable]
+hunter_monkey_trap = 65501
+hunter_crystal_impling = 65500
+hunter_stymphike = 65466
+hunter_aerial_rates = 65465
+hunter_herbiboar = 65464
+hunter_falconry_fees = 65463
+hunter_sunlight_crossbow = 65462
+hunter_crab_trap_build = 65461
+hunter_moss_lizard = 65460
+hunter_outfit = 65459
 hunter_goat_lures = 65488
 hunter_custom_furs = 65478
 impling_types = 56002
@@ -34,6 +44,16 @@ hunter_leon_bolts = 65468
 hunter_bolt_fletching = 65467
 
 [gamevals.dbrow]
+hunter_monkey_trap = 63892
+hunter_crystal_impling = 63891
+hunter_stymphike = 63890
+hunter_aerial_rates = 63889
+hunter_herbiboar = 63888
+hunter_falconry_fees = 63887
+hunter_sunlight_crossbow = 63886
+hunter_crab_trap_build = 63885
+hunter_moss_lizard = 63884
+hunter_outfit = 63883
 hunter_goat_lure_telegrab = 63824
 hunter_goat_lure_dark_lure = 63823
 hunter_pouch_fur_small = 63655
@@ -309,6 +329,8 @@ vampyrium_stymphikes = 32756
 hunting_antler_bolts = 584
 
 [gamevals.synth]
+telegrab_cast = 3006
+telegrab_impact = 3007
 hunting_lay_box_trap = 2636
 hunting_lay_bird_snare = 2646
 hunting_trap_dismantle = 2632
@@ -353,6 +375,11 @@ hunter_loot_sack_open = 59
 hunter_kit_open = 3616
 
 [gamevals.enum]
+hunter_guild_bar_prices = 65447
+birdhouse_feather_counts = 65446
+hunter_cape_teleports = 65445
+hunter_goat_pit_tiles = 65444
+butterfly_restored_stats = 65443
 herbiboar_spot_messages = 65455
 crystal_impling_npcs = 65454
 crystal_impling_spots = 65453
@@ -369,3 +396,6 @@ hunter_stymphike_loot = 65459
 herbiboar_spots = 65458
 herbiboar_tunnels = 65457
 herbiboar_tunnel_xp = 65456
+
+[gamevals.projanim]
+telegrab = 65534

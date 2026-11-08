@@ -16,3 +16,31 @@ valueType = "INT"
 77 = 20
 85 = 22
 93 = 24
+
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_goat_pit_tiles"
+keyType = "INT"
+valueType = "COORDGRID"
+
+[enum.values]
+0 = 42125458
+1 = 42141842
+2 = 42158226
+3 = 42125459
+4 = 42141843
+5 = 42158227
+6 = 42125460
+7 = 42141844
+8 = 42158228
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.telegrab"
+startHeight = 140
+endHeight = 80
+delay = 48
+angle = 16
+lengthAdjustment = 22
+progress = 64
+stepMultiplier = 10

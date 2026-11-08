@@ -19,6 +19,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.table.HerbiboarFossilsRow
 import org.rsmod.api.table.HerbiboarHerbsRow
 import org.rsmod.api.table.HerbiboarLegsRow
+import org.rsmod.api.table.hunter.HunterHerbiboarRow
 import org.rsmod.content.other.pets.PetRewards
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -140,17 +141,18 @@ constructor(
         if (vars[VISIBLE] != index) return
         val secateurs = SECATEURS in inv || SECATEURS in player.worn
         val count = random.of(1, 3) + if (secateurs) 1 else 0
-        val herb = rollHerb(stat(HERBLORE)) { random.of(it) }
         VarPlayerIntMapSetter.set(player, VISIBLE, 0)
         VarPlayerIntMapSetter.set(player, ANIM, index)
         npc.anim(ESCAPE_NPC_SEQ)
         npc.spotanim(ESCAPE_SPOTANIM)
         worldRepo.soundArea(npc.coords, ESCAPE_SYNTH)
-        invAddOrDrop(objRepo, herb, count)
+        repeat(count) { invAddOrDrop(objRepo, rollHerb(stat(HERBLORE)) { random.of(it) }) }
         if (count > 1) statAdvance(HERBLORE, HERB_XP * (count - 1))
         if (HORN_OF_PLENTY in player.worn && vars[HORN_CHARGES] > 0 && random.of(HORN_CHANCE) == 0) {
             VarPlayerIntMapSetter.set(player, HORN_CHARGES, vars[HORN_CHARGES] - 1)
-            invAddOrDrop(objRepo, herb, random.of(1, 3) + if (secateurs) 1 else 0)
+            repeat(random.of(1, 3) + if (secateurs) 1 else 0) {
+                invAddOrDrop(objRepo, rollHerb(stat(HERBLORE)) { random.of(it) })
+            }
         }
         val harvested = vars[HARVESTED] + 1
         VarPlayerIntMapSetter.set(player, HARVESTED, harvested)
@@ -238,12 +240,13 @@ constructor(
         }
 
     internal companion object {
+        private val ROW by lazy { HunterHerbiboarRow.getRow("dbrow.hunter_herbiboar") }
         const val HUNTER = "stat.hunter"
         const val HERBLORE = "stat.herblore"
-        const val LEVEL = 80
-        const val HERBLORE_LEVEL = 31
-        const val INSPECT_XP = 50.0
-        const val HERB_XP = 25.0
+        val LEVEL: Int get() = ROW.level
+        val HERBLORE_LEVEL: Int get() = ROW.herbLevel
+        val INSPECT_XP: Double get() = ROW.inspectXpTenths / 10.0
+        val HERB_XP: Double get() = ROW.herbXpTenths / 10.0
         const val MIN_LEGS = 3
         const val MAX_LEGS = 6
         const val REVEALED = 3
@@ -273,14 +276,14 @@ constructor(
         const val RING_OF_PURSUIT = "obj.ring_of_pursuit"
         const val HORN_OF_PLENTY = "obj.horn_of_plenty"
         const val HORN_CHARGES = "varbit.horn_of_plenty_counter"
-        const val HORN_CHANCE = 10
+        val HORN_CHANCE: Int get() = ROW.hornChance
         const val HERBI = "obj.herbiboarpet"
-        const val HERBI_RATE = 6500
+        val HERBI_RATE: Int get() = ROW.petRate
         const val HERBIBOAR_PREFIX = "fossil_herbiboar"
 
         val START_LOCS = (1..5).map { "loc.hunting_trail_spawn_fossil$it" }
 
-        private const val FOSSIL_ROLL = 3500
+        private val FOSSIL_ROLL: Int get() = ROW.fossilRate
 
         private val TUNNEL_XP by lazy { enum<Int, Int>("herbiboar_tunnel_xp") }
 

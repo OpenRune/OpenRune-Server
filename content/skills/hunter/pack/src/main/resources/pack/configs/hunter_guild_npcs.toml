@@ -22,3 +22,13 @@ wanderRange = 0
 id = "npc.hunting_falcon_onspeedy2"
 inherit = "npc.hunting_falcon_onspeedy2"
 wanderRange = 0
+
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_guild_bar_prices"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.trappers_tipple" = 3
+"obj.stew" = 20

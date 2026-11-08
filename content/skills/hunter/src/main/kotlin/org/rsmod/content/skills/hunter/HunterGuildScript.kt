@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
+import dev.openrune.types.enums.enum
 import jakarta.inject.Inject
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
@@ -438,8 +439,13 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
         const val COINS = "obj.coins"
         const val TIPPLE = "obj.trappers_tipple"
         const val STEW = "obj.stew"
-        const val TIPPLE_PRICE = 3
-        const val STEW_PRICE = 20
+        private val BAR_PRICES: Map<String, Int> by lazy {
+            enum<ItemServerType, Int>("hunter_guild_bar_prices").backing.entries.associate {
+                it.key.internalName to checkNotNull(it.value)
+            }
+        }
+        val TIPPLE_PRICE: Int get() = checkNotNull(BAR_PRICES[TIPPLE])
+        val STEW_PRICE: Int get() = checkNotNull(BAR_PRICES[STEW])
 
         fun npc(text: String) = Line(false, text)
 

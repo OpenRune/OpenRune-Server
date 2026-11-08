@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.hunter
 
+import dev.openrune.types.enums.enum
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -149,8 +150,9 @@ class HunterCapeScript : PluginScript() {
         const val TELEPORT_SYNTH = "synth.teleport_all"
         const val TELEPORT_DELAY = 4
         val CAPES = listOf("obj.skillcape_hunting", "obj.skillcape_hunting_trimmed")
-        val FELDIP = CoordGrid(2504, 2898, 0)
-        val WILDERNESS = CoordGrid(3150, 3770, 0)
-        val GUILD = CoordGrid(1557, 3046, 0)
+        private val TELEPORTS by lazy { enum<Int, CoordGrid>("hunter_cape_teleports") }
+        val FELDIP: CoordGrid get() = checkNotNull(TELEPORTS[0])
+        val WILDERNESS: CoordGrid get() = checkNotNull(TELEPORTS[1])
+        val GUILD: CoordGrid get() = checkNotNull(TELEPORTS[2])
     }
 }

@@ -15,3 +15,14 @@ isServerOnly = true
 id = "varp.hunter_guild_apatura_met"
 scope = "Perm"
 transmit = "Never"
+
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_cape_teleports"
+keyType = "INT"
+valueType = "COORDGRID"
+
+[enum.values]
+0 = 41028434
+1 = 51613370
+2 = 25512934

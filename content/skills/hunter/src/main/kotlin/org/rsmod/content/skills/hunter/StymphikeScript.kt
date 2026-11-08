@@ -21,6 +21,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.table.QuestRow
+import org.rsmod.api.table.hunter.HunterStymphikeRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -197,8 +198,9 @@ constructor(
     }
 
     internal companion object {
+        private val ROW by lazy { HunterStymphikeRow.getRow("dbrow.hunter_stymphike") }
         const val HUNTER = "stat.hunter"
-        const val LEVEL = 82
+        val LEVEL: Int get() = ROW.level
         const val BLOOD_MOON_RISES = "quest_bloodmoonrises"
         const val QUEST_VARBIT = "varbit.myq6"
         const val AREA = "area.vampyrium_stymphikes"
@@ -223,9 +225,9 @@ constructor(
         const val SPAWN_TICKS = 65
         const val PEEK_TICKS = 20
         const val BIRD_TICKS = 100
-        const val PEEK_XP = 125.0
-        const val KILL_XP = 1350.0
-        const val ALERTED_XP = 891.0
+        val PEEK_XP: Double get() = ROW.peekXpTenths / 10.0
+        val KILL_XP: Double get() = ROW.killXpTenths / 10.0
+        val ALERTED_XP: Double get() = ROW.alertedXpTenths / 10.0
         const val ALERTED_DAMAGE = 6
         const val BONES = "obj.bones"
         const val LOOT_DURATION = 200

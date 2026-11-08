@@ -219,6 +219,7 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
             return
         }
         if (TIERS.none { it.logs.internalName in inv }) {
+            delay(1)
             mes("You need logs to make a birdhouse.")
             return
         }
@@ -351,6 +352,10 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
             }
         }
 
+        private val FEATHERS: List<Int> by lazy {
+            enum<Int, Int>("birdhouse_feather_counts").backing.values.map { checkNotNull(it) }
+        }
+
         val SEEDS: List<String> by lazy { SEED_WEIGHTS.keys.toList() }
 
         fun seedWeight(seed: String): Int = SEED_WEIGHTS.getValue(seed)
@@ -367,7 +372,7 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
             canReceiveClue: (String) -> Boolean,
             nextInt: (Int) -> Int,
         ): Loot {
-            val feathers = listOf(30, 40, 50, 60)[nextInt(4)]
+            val feathers = FEATHERS[nextInt(FEATHERS.size)]
             val nests = mutableListOf<String>()
             if (nextInt(256) < chance(level, 0, 200)) nests += SEED_NEST
             var clueGiven = false
