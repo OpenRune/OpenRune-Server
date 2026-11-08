@@ -32,6 +32,9 @@ public class LeagueTaskRequirement(
     public val varp: VarpServerType? = null,
     public val varbit: VarBitType? = null,
     public val interf: Int? = null,
+    public val locs: List<Int> = emptyList(),
+    /** The interaction option slot, 1 to 5; 0 means any. */
+    public val option: Int = 0,
 ) {
     /** The varp a [varp] or [varbit] requirement is stored in. */
     public val baseVarp: Int?
@@ -114,6 +117,13 @@ public class LeagueTaskRequirement(
                             }
                         },
                     interf = row.intOptional("dbcol.league_task_trigger:interface"),
+                    locs =
+                        row.slotsOptional(
+                                "dbcol.league_task_trigger:loc",
+                                DbColumnCodec.LocTypeCodec,
+                            )
+                            .map { it.id },
+                    option = row.intOptional("dbcol.league_task_trigger:option") ?: 0,
                 )
             }
 

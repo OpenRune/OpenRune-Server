@@ -375,3 +375,27 @@ id = "varbit.league_counter_kill_godwars_bosses"
 varp = "varp.league_counters_11"
 startBit = 0
 endBit = 8
+
+[[varbit]]
+id = "varbit.league_counter_open_grubby_chests"
+varp = "varp.league_counters_11"
+startBit = 9
+endBit = 13
+
+[[varbit]]
+id = "varbit.league_counter_open_larrans_chests"
+varp = "varp.league_counters_11"
+startBit = 14
+endBit = 19
+
+[[varbit]]
+id = "varbit.league_counter_open_zombie_pirate_lockers"
+varp = "varp.league_counters_11"
+startBit = 20
+endBit = 25
+
+[[varbit]]
+id = "varbit.league_counter_open_muddy_chests"
+varp = "varp.league_counters_11"
+startBit = 26
+endBit = 29

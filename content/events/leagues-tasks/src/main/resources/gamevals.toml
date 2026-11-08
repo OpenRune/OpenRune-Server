@@ -120,3 +120,7 @@ league_counter_craft_blue_dragonhide_bodies = 62049
 league_counter_craft_death_runes = 62050
 league_counter_craft_law_runes = 62051
 league_counter_kill_godwars_bosses = 62052
+league_counter_open_grubby_chests = 62053
+league_counter_open_larrans_chests = 62054
+league_counter_open_zombie_pirate_lockers = 62055
+league_counter_open_muddy_chests = 62056
