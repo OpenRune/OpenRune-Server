@@ -275,7 +275,7 @@ class TheRestlessGhostInteractionTest {
         private val context = ProtectedAccessContextFactory.empty().copy(
             getEventBus = { events }, getAlignment = { TextAlignment() },
             getCollision = { collision }, getNpcList = { npcs },
-            getTeleportValidator = { PlayerTeleportValidator(emptySet()) },
+            getTeleportValidator = { PlayerTeleportValidator(emptySet(), EventBus()) },
             getAreaChecker = { AreaChecker(regions, AreaIndex()) },
         )
         private val movement = PlayerMovementProcessor(collision, RouteFactory(collision), StepFactory(collision), events)

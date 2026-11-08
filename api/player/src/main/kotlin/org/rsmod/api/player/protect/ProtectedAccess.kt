@@ -319,7 +319,7 @@ public class ProtectedAccess(
         collision: CollisionFlagMap,
         teleportType: TeleportType = TeleportType.Standard,
     ) {
-        if (!validateTeleport(teleportType)) {
+        if (!validateTeleport(dest, teleportType)) {
             return
         }
         if (!collision.isZoneValid(dest)) {
@@ -339,7 +339,7 @@ public class ProtectedAccess(
         collision: CollisionFlagMap,
         teleportType: TeleportType = TeleportType.Standard,
     ) {
-        if (!validateTeleport(teleportType)) {
+        if (!validateTeleport(dest, teleportType)) {
             return
         }
         if (!collision.isZoneValid(dest)) {
@@ -374,7 +374,7 @@ public class ProtectedAccess(
         dir: Int,
         teleportType: TeleportType = TeleportType.Standard,
     ) {
-        if (!validateTeleport(teleportType)) {
+        if (!validateTeleport(end, teleportType)) {
             return
         }
         val collision = context.collision
@@ -386,11 +386,12 @@ public class ProtectedAccess(
         PathingEntityCommon.exactMove(player, start, end, delay1, delay2, dir, collision)
     }
 
-    private fun validateTeleport(teleportType: TeleportType): Boolean {
+    private fun validateTeleport(dest: CoordGrid, teleportType: TeleportType): Boolean {
         if (teleportType == TeleportType.Exempt) {
             return true
         }
-        val denial = context.teleportValidator.validate(player, teleportType, context.areaChecker)
+        val denial =
+            context.teleportValidator.validate(player, dest, teleportType, context.areaChecker)
         if (denial == null) {
             return true
         }

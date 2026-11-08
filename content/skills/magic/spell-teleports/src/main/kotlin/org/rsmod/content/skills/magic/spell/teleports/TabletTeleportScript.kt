@@ -51,10 +51,10 @@ constructor(
             mes("You need to have completed the $name quest to use this spell.")
             return
         }
-        if (!canTeleport()) {
+        val centre = spellObj.param(params.spell_telecoord)
+        if (!canTeleport(centre)) {
             return
         }
-        val centre = spellObj.param(params.spell_telecoord)
 
         vars[BUSY] = 1
         player.clearMapFlag()
@@ -79,8 +79,8 @@ constructor(
     private fun ProtectedAccess.landingSquare(centre: CoordGrid): CoordGrid =
         mapFindSquareLineOfWalk(centre, minRadius = 0, maxRadius = 1) ?: centre
 
-    private fun ProtectedAccess.canTeleport(): Boolean {
-        val denial = teleportValidator.validate(player, TeleportType.Standard, areaChecker)
+    private fun ProtectedAccess.canTeleport(dest: CoordGrid): Boolean {
+        val denial = teleportValidator.validate(player, dest, TeleportType.Standard, areaChecker)
         if (denial == null) {
             return true
         }

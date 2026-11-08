@@ -84,7 +84,7 @@ constructor(
 
     private suspend fun ProtectedAccess.teleport(container: Inventory, slot: Int) {
         val amulet = container[slot] ?: return
-        if (!amulet.isType(CHARGED) || !canTeleport()) {
+        if (!amulet.isType(CHARGED) || !canTeleport(DESTINATION)) {
             return
         }
         val left = charges.getCharges(amulet, CHARGES) - 1
@@ -110,8 +110,8 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.canTeleport(): Boolean {
-        val denial = teleportValidator.validate(player, TeleportType.Standard, areaChecker)
+    private fun ProtectedAccess.canTeleport(dest: CoordGrid): Boolean {
+        val denial = teleportValidator.validate(player, dest, TeleportType.Standard, areaChecker)
         if (denial == null) {
             return true
         }

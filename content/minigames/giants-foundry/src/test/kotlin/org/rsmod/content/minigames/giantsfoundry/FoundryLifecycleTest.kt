@@ -85,13 +85,13 @@ class FoundryLifecycleTest {
     @Test
     fun `validation denied casts and invalid destinations leave carried preform and hud`() {
         val f = Fixture()
-        val validator = PlayerTeleportValidator(emptySet())
-        assertNull(validator.validate(f.player, TeleportType.Standard, mockk()))
+        val validator = PlayerTeleportValidator(emptySet(), EventBus())
+        assertNull(validator.validate(f.player, FOUNDRY_OUTSIDE, TeleportType.Standard, mockk()))
         f.assertCarried()
         val denied = mockk<PlayerTeleportValidateHook>()
         every { denied.validate(any(), any(), any()) } returns "Not now."
         val collision = CollisionFlagMap()
-        val access = f.access(PlayerTeleportValidator(setOf(denied)), collision)
+        val access = f.access(PlayerTeleportValidator(setOf(denied), EventBus()), collision)
         access.telejump(FOUNDRY_OUTSIDE)
         f.assertCarried()
         assertEquals(FOUNDRY_INSIDE, f.player.coords)
@@ -109,7 +109,7 @@ class FoundryLifecycleTest {
         f.assertCarried()
         val collision = CollisionFlagMap()
         collision.allocateIfAbsent(FOUNDRY_OUTSIDE.x, FOUNDRY_OUTSIDE.z, 0)
-        f.access(PlayerTeleportValidator(emptySet()), collision).telejump(FOUNDRY_OUTSIDE, TeleportType.Exempt)
+        f.access(PlayerTeleportValidator(emptySet(), EventBus()), collision).telejump(FOUNDRY_OUTSIDE, TeleportType.Exempt)
         assertEquals(FOUNDRY_OUTSIDE, f.player.coords)
         repeat(2) { regions.process(f.player) }
         f.assertStored()
