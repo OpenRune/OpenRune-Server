@@ -1,5 +1,6 @@
 package org.rsmod.content.events.leaguetasks.pack
 
+import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.AREA
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.COUNT
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.COUNTER
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.NPC
@@ -24,6 +25,7 @@ internal fun TriggerRows.kill(
     vararg npcs: String,
     times: Int = 1,
     counter: String? = null,
+    area: String? = null,
 ) {
     trigger("dbrow.$task", LeagueTaskTrigger.Kill) {
         columnRSCM(NPC, npcs.asList())
@@ -32,6 +34,9 @@ internal fun TriggerRows.kill(
         }
         if (counter != null) {
             columnRSCM(COUNTER, counter)
+        }
+        if (area != null) {
+            columnRSCM(AREA, area)
         }
     }
 }
