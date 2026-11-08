@@ -59,6 +59,8 @@ object LeagueTaskTriggerTable {
             rows.questTasks()
             rows.bossTasks()
             rows.combatKillTasks()
+            rows.gearTasks()
+            rows.setTasks()
         }
 }
 
