@@ -5,6 +5,7 @@ import dev.openrune.definition.type.DBRowType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.enums.enum
+import org.rsmod.map.CoordGrid
 
 /**
  * One league's task list as the client sees it: [rows] holds the `action` dbrow for each task
@@ -15,6 +16,7 @@ public class League(
     private val rows: IntArray,
     public val messageColour: String,
     public val notificationColour: Int,
+    public val home: CoordGrid?,
 ) {
     private val indexByRow: Map<Int, Int> =
         buildMap { rows.forEachIndexed { index, row -> if (row != NO_ROW) put(row, index) } }
@@ -50,6 +52,10 @@ public class League(
                             struct.getString("param.league_message_colour".asRSCM(RSCMType.PARAM)),
                         notificationColour =
                             struct.getInt("param.league_colour".asRSCM(RSCMType.PARAM)),
+                        home =
+                            (struct.params?.get("param.league_home_coord".asRSCM(RSCMType.PARAM))
+                                    as? Int)
+                                ?.let(::CoordGrid),
                     )
             }
             return leagues

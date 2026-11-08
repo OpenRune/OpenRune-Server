@@ -10,6 +10,8 @@ league_6_pact_reset_tasks = 5953
 talent_tree_nodes = 5942
 league_region_areas = 63895
 talent_effect_varbits = 63896
+league_area_unlock_thresholds = 5677
+league_area_unlock_spotanims = 63897
 
 [gamevals.param]
 league_message_colour = 2050
@@ -23,6 +25,8 @@ league_relic_name = 879
 league_relic_description = 880
 league_relic_passive_description = 1020
 league_relic_unlock_spotanim = 1021
+league_area_unlock_tasks = 1010
+league_home_coord = 864
 
 [gamevals.midi]
 yama_combat = 280
@@ -32,12 +36,20 @@ league_unlock_1 = 4215
 league_unlock_2 = 4211
 league_unlock_3 = 4213
 league_unlock_4 = 4212
+trailblazer_unlock_map = 2353
+trailblazer_unlock_power = 2344
+trailblazer_unlock_raise = 2330
+trailblazer_unlock_twunkles = 2331
 
 [gamevals.timer]
 league_points_claim = 63440
 league_task_sync = 63441
 league_chicken_window = 63442
 league_penguin_window = 63443
+league_area_notification = 63444
+
+[gamevals.queue]
+league_home_teleport = 64480
 
 [gamevals.dbtable]
 league_task_trigger = 40000
