@@ -8,6 +8,7 @@ league_6_tasks = 5950
 league_6_pact_tasks = 5952
 league_6_pact_reset_tasks = 5953
 talent_tree_nodes = 5942
+league_region_areas = 63895
 talent_effect_varbits = 63896
 
 [gamevals.param]
@@ -55,6 +56,7 @@ league_region_fremennik = 32706
 league_region_kourend = 32707
 league_region_wilderness = 32708
 league_region_varlamore = 32709
+league_region_misthalin = 32735
 league_shayzien = 32710
 league_prifddinas = 32711
 league_tlati_rainforest = 32712

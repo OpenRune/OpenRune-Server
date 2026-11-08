@@ -1,0 +1,19 @@
+# Keys are `region_data:region_id`, the values held by `varbit.league_area_selection_0..5`.
+[[enum]]
+isServerOnly = true
+id = "enum.league_region_areas"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+1 = "area.league_region_misthalin"
+2 = "area.league_region_karamja"
+3 = "area.league_region_asgarnia"
+4 = "area.league_region_kandarin"
+5 = "area.league_region_morytania"
+6 = "area.league_region_desert"
+7 = "area.league_region_tirannwn"
+8 = "area.league_region_fremennik"
+11 = "area.league_region_wilderness"
+20 = "area.league_region_kourend"
+21 = "area.league_region_varlamore"

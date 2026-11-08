@@ -102,6 +102,17 @@ vertices = [[1152, 2816], [1855, 2816], [1855, 3391], [1152, 3391]]
 [[area.polygons]]
 vertices = [[1216, 9280], [1855, 9280], [1855, 9663], [1216, 9663]]
 
+[[area]]
+name = "League region: Misthalin"
+area_id = "area.league_region_misthalin"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3072, 3136], [3263, 3136], [3263, 3519], [3072, 3519]]
+
+[[area.polygons]]
+vertices = [[3264, 3264], [3391, 3264], [3391, 3519], [3264, 3519]]
+
 # PLACEHOLDER sub-areas named by tasks.
 
 [[area]]
