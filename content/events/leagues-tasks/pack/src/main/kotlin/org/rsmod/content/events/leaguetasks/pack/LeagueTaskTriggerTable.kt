@@ -77,6 +77,7 @@ object LeagueTaskTriggerTable {
             rows.combatActionTasks()
             rows.countedKillTasks()
             rows.emoteTasks()
+            rows.useOnTasks()
         }
 }
 

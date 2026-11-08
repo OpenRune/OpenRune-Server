@@ -61,7 +61,12 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
      * The `emote` (its emote tab name) is performed, near one of the `npc` npcs or `loc` locs when
      * the row lists any.
      */
-    Emote(25, isState = false);
+    Emote(25, isState = false),
+    /**
+     * One of the `obj` items (any when empty) is used on one of the `npc` npcs or `loc` locs and its
+     * handler runs to the end. Only items with a handler on that target count.
+     */
+    UseOn(26, isState = false);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)

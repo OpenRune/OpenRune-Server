@@ -208,7 +208,8 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
             LeagueTaskTrigger.Steal,
             LeagueTaskTrigger.SpecialAttack,
             LeagueTaskTrigger.Ammo,
-            LeagueTaskTrigger.Emote ->
+            LeagueTaskTrigger.Emote,
+            LeagueTaskTrigger.UseOn ->
                 row.counter?.let { player.vars[it] >= row.count } ?: false
         }
     }
