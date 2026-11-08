@@ -41,6 +41,16 @@ league_piscatoris = 32716
 league_port_phasmatys = 32717
 league_kourend_castle = 32718
 league_sophanem = 32719
+league_wilderness_resource_area = 32729
+league_mos_leharmless = 32728
+league_harmony_island = 32727
+league_gnome_village = 32720
+league_gnome_stronghold = 32721
+league_farming_guild = 32722
+league_wizards_guild = 32723
+league_ranging_guild = 32724
+league_crafting_guild = 32725
+league_woodcutting_guild = 32726
 
 [gamevals.varp]
 league_counters_0 = 62000

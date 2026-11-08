@@ -183,3 +183,83 @@ levels = [0, 1, 2, 3]
 
 [[area.polygons]]
 vertices = [[3270, 2750], [3325, 2750], [3325, 2810], [3270, 2810]]
+
+[[area]]
+name = "Woodcutting Guild"
+area_id = "area.league_woodcutting_guild"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1560, 3470], [1660, 3470], [1660, 3520], [1560, 3520]]
+
+[[area]]
+name = "Crafting Guild"
+area_id = "area.league_crafting_guild"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2929, 3276], [2943, 3276], [2943, 3290], [2929, 3290]]
+
+[[area]]
+name = "Ranging Guild"
+area_id = "area.league_ranging_guild"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2650, 3418], [2681, 3418], [2681, 3449], [2650, 3449]]
+
+[[area]]
+name = "Wizards' Guild"
+area_id = "area.league_wizards_guild"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2585, 3082], [2597, 3082], [2597, 3094], [2585, 3094]]
+
+[[area]]
+name = "Farming Guild"
+area_id = "area.league_farming_guild"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1231, 3718], [1268, 3718], [1268, 3758], [1231, 3758]]
+
+[[area]]
+name = "Tree Gnome Stronghold"
+area_id = "area.league_gnome_stronghold"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2370, 3380], [2500, 3380], [2500, 3520], [2370, 3520]]
+
+[[area]]
+name = "Tree Gnome Village"
+area_id = "area.league_gnome_village"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2500, 3140], [2560, 3140], [2560, 3190], [2500, 3190]]
+
+[[area]]
+name = "Harmony Island"
+area_id = "area.league_harmony_island"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3780, 2830], [3830, 2830], [3830, 2880], [3780, 2880]]
+
+[[area]]
+name = "Mos Le'Harmless"
+area_id = "area.league_mos_leharmless"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3640, 2920], [3860, 2920], [3860, 3070], [3640, 3070]]
+
+[[area]]
+name = "Wilderness Resource Area"
+area_id = "area.league_wilderness_resource_area"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3174, 3924], [3196, 3924], [3196, 3944], [3174, 3944]]

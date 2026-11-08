@@ -40,7 +40,13 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     /** The `varp` or `varbit` holds at least `value`: quest progress, kill counts, unlocks. */
     Var(15, isState = true),
     /** The `interface` is opened. */
-    Interface(16, isState = false);
+    Interface(16, isState = false),
+    /** The player enters one of the `area` areas. */
+    Enter(17, isState = false),
+    /** One of the `obj` items enters the player's possession; progress advances by the amount. */
+    Obtain(18, isState = false),
+    /** One of the `obj` items is bought from a shop; progress advances by the amount. */
+    ShopBuy(19, isState = false);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)

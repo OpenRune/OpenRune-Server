@@ -64,6 +64,7 @@ object LeagueTaskTriggerTable {
             rows.gearTasks()
             rows.setTasks()
             rows.worldTasks()
+            rows.itemTasks()
         }
 }
 

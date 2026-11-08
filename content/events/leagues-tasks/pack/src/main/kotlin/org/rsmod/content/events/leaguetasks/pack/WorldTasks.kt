@@ -1,11 +1,35 @@
 package org.rsmod.content.events.leaguetasks.pack
 
+import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.AREA
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.INTERFACE
 
 internal fun TriggerRows.worldTasks() {
     opened("league_task_open_the_leagues_menu", "interface.league_side_panel")
+
+    entered("league_task_enter_the_taverley_dungeon", "area.taverley_dungeon")
+    entered("league_task_enter_the_brimhaven_dungeon", "area.brimhaven_dungeon")
+    entered("league_task_enter_the_fishing_guild", "area.fishing_guild")
+    entered("league_task_visit_ferox_enclave", "area.ferox_enclave")
+    entered("league_task_visit_port_phasmatys", "area.league_port_phasmatys")
+    entered("league_task_enter_the_woodcutting_guild", "area.league_woodcutting_guild")
+    entered("league_task_enter_the_crafting_guild", "area.league_crafting_guild")
+    entered("league_task_enter_the_ranging_guild", "area.league_ranging_guild")
+    entered("league_task_enter_the_wizards_guild", "area.league_wizards_guild")
+    entered("league_task_enter_the_farming_guild", "area.league_farming_guild")
+    entered("league_task_visit_the_tree_gnome_stronghold", "area.league_gnome_stronghold")
+    entered("league_task_visit_the_tree_gnome_village", "area.league_gnome_village")
+    entered("league_task_visit_harmony_island", "area.league_harmony_island")
+    entered("league_task_visit_mos_leharmless", "area.league_mos_leharmless")
+    entered(
+        "league_task_enter_the_wilderness_resource_area",
+        "area.league_wilderness_resource_area",
+    )
 }
 
 internal fun TriggerRows.opened(task: String, interf: String) {
     trigger("dbrow.$task", LeagueTaskTrigger.Interface) { columnRSCM(INTERFACE, interf) }
+}
+
+internal fun TriggerRows.entered(task: String, area: String) {
+    trigger("dbrow.$task", LeagueTaskTrigger.Enter) { columnRSCM(AREA, area) }
 }

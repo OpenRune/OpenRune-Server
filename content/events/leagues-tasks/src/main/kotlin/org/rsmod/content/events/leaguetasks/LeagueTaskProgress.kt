@@ -199,7 +199,10 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
             LeagueTaskTrigger.Bury,
             LeagueTaskTrigger.Offer,
             LeagueTaskTrigger.Consume,
-            LeagueTaskTrigger.Interface ->
+            LeagueTaskTrigger.Interface,
+            LeagueTaskTrigger.Enter,
+            LeagueTaskTrigger.Obtain,
+            LeagueTaskTrigger.ShopBuy ->
                 row.counter?.let { player.vars[it] >= row.count } ?: false
         }
     }
