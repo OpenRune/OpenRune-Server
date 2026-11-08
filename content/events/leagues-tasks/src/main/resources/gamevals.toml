@@ -12,6 +12,20 @@ league_6_pact_reset_tasks = 5953
 league_message_colour = 2050
 league_colour = 1027
 league_task_list = 2573
+league_relic_tiers = 870
+league_relic_tier_points = 877
+league_relic_tier_relics = 878
+league_relic_tier_passives = 2045
+league_relic_name = 879
+league_relic_description = 880
+league_relic_passive_description = 1020
+league_relic_unlock_spotanim = 1021
+
+[gamevals.synth]
+league_unlock_1 = 4215
+league_unlock_2 = 4211
+league_unlock_3 = 4213
+league_unlock_4 = 4212
 
 [gamevals.timer]
 league_points_claim = 63440
