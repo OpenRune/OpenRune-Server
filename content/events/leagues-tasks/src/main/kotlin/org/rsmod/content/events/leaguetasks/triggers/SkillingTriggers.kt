@@ -6,6 +6,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.events.prayer.PrayerSkillAction
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.script.onEvent
 import org.rsmod.content.events.leaguetasks.LeagueTaskProgress
 import org.rsmod.content.events.leaguetasks.LeagueTaskRequirement
@@ -27,17 +28,44 @@ class SkillingTriggers @Inject constructor(private val progress: LeagueTaskProgr
     private val offer = ObjRows(LeagueTaskTrigger.Offer)
     private val consume = ObjRows(LeagueTaskTrigger.Consume)
 
+    private val pickpocketByNpc: Map<Int, List<LeagueTaskRequirement>> =
+        progress.rows(LeagueTaskTrigger.Pickpocket).flatMap { row -> row.npcs.map { it to row } }
+            .groupBy({ it.first }, { it.second })
+
+    private val stealByStall: Map<Int, List<LeagueTaskRequirement>> =
+        progress.rows(LeagueTaskTrigger.Steal).flatMap { row -> row.locs.map { it to row } }
+            .groupBy({ it.first }, { it.second })
+
+    /** A pickpocket or stall theft counts once, whatever and however much it gave. */
+    private fun thieving(player: Player, source: SkillingProductSource, item: Int) {
+        when (source) {
+            is SkillingProductSource.Pickpocketing -> {
+                val npc = source.npc
+                val rows =
+                    listOf(npc.type.id, npc.visType.id).flatMap { pickpocketByNpc[it].orEmpty() }
+                record(player, rows.distinct())
+            }
+            is SkillingProductSource.StallThieving -> {
+                val rows = stealByStall[source.stall.id].orEmpty()
+                record(player, rows.filter { it.objs.isEmpty() || item in it.objs })
+            }
+            else -> Unit
+        }
+    }
+
     override fun ScriptContext.startup() {
         onEvent<SkillingActionCompleteEvent> {
             when (val context = context) {
                 is SkillingActionContext.Product -> {
+                    val item = context.item.asRSCM(RSCMType.OBJ)
                     val tool = context.source.tool?.id
                     val made =
-                        product[context.item.asRSCM(RSCMType.OBJ)].filter { row ->
+                        product[item].filter { row ->
                             (row.stats.isEmpty() || context.skill in row.stats) &&
                                 (row.tools.isEmpty() || tool in row.tools)
                         }
                     record(player, made, context.count)
+                    thieving(player, context.source, item)
                 }
                 is SkillingActionContext.SpellCast -> record(player, spell[context.spell.id])
                 is SkillingActionContext.Alchemy -> {

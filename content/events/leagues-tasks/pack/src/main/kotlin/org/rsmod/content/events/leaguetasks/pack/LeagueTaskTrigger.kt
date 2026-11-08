@@ -48,7 +48,11 @@ enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     /** One of the `obj` items is bought from a shop; progress advances by the amount. */
     ShopBuy(19, isState = false),
     /** Option `option` (any when unset) finishes on one of the `npc` npcs or `loc` locs. */
-    Interact(20, isState = false);
+    Interact(20, isState = false),
+    /** One of the `npc` npcs is pickpocketed. */
+    Pickpocket(21, isState = false),
+    /** One of the `loc` stalls is stolen from, giving one of the `obj` items when listed. */
+    Steal(22, isState = false);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)

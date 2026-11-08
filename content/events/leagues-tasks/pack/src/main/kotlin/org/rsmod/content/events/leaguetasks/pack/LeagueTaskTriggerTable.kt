@@ -70,6 +70,8 @@ object LeagueTaskTriggerTable {
             rows.worldTasks()
             rows.itemTasks()
             rows.interactTasks()
+            rows.thievingTasks()
+            rows.magicTasks()
         }
 }
 

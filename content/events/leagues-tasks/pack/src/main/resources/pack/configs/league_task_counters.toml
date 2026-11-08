@@ -399,3 +399,26 @@ id = "varbit.league_counter_open_muddy_chests"
 varp = "varp.league_counters_11"
 startBit = 26
 endBit = 29
+
+[[varp]]
+id = "varp.league_counters_12"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_pickpocket_knights_of_varlamore"
+varp = "varp.league_counters_12"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.league_counter_pickpocket_knights_of_ardougne"
+varp = "varp.league_counters_12"
+startBit = 5
+endBit = 10
+
+[[varbit]]
+id = "varbit.league_counter_pickpocket_menaphite_thugs"
+varp = "varp.league_counters_12"
+startBit = 11
+endBit = 16
