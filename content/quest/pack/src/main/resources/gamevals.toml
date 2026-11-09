@@ -63,6 +63,9 @@ grim_piano_f5 = 3703
 grim_piano_g5 = 3705
 grim_piano_a5 = 3693
 grim_piano_b5 = 3695
+romeo_juliet_collapse = 505
+romeo_juliet_crypt_door = 1816
+romeo_juliet_crypt_enter = 1815
 
 splash_and_river = 1308
 roof_collapse = 1384
@@ -92,6 +95,7 @@ gertrudes_cat_state = 63711
 daddyshome_state = 64064
 waterfall_state = 64310
 sheep_shearer_state = 65472
+romeo_juliet_return_tile = 63730
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -107,6 +111,7 @@ gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
+romeo_juliet_progress = 63730
 daddyshome_crate_opened = 64064
 dorics_quest_progress = 64470
 knights_sword_progress = 64430
@@ -136,11 +141,15 @@ restless_ghost_coffin_ghost = 123
 restless_skeleton_attack = 124
 
 [gamevals.dbtable]
+apothecary_potions = 65496
 daddys_home_furniture = 65472
 daddys_home_crate = 65473
 glarial_restrictions = 65495
 
 [gamevals.dbrow]
+apothecary_strength = 63688
+apothecary_energy = 63687
+apothecary_antipoison = 63686
 daddys_home_furniture_kitchen_stool = 63420
 daddys_home_furniture_bedroom_stool = 63421
 daddys_home_furniture_chair = 63422
