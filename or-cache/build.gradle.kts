@@ -78,6 +78,19 @@ tasks {
         args = listOf("DUMP_SEQS", (project.findProperty("seqs") ?: "").toString())
     }
 
+    register<JavaExec>("checkGamevals") {
+        group = "tools"
+        description =
+            "Reports every \"table.name\" gameval referenced in source or TOML that no gamevals table " +
+                "defines (-PfailOnMissing exits non-zero for CI)"
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.CacheToolsKt")
+        args = buildList {
+            add("CHECK_GAMEVALS")
+            if (project.hasProperty("failOnMissing")) add("--fail")
+        }
+    }
+
     register<JavaExec>("mergePluginGamevals") {
         group = "cache"
         description =
