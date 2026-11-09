@@ -10,5 +10,5 @@ maxRange = 1
 giveChase = false
 [npc.params]
 "param.attack_anim" = "seq.deadtree_attack"
-"param.attack_sound" = "synth.deadtree_attack"
+"param.attack_sound" = "synth.nasty_tree_attack"
 "param.npc_attack_type" = "category.attacktype_crush"

@@ -210,7 +210,7 @@ private const val PIT_FALL_TICKS = 2
 
 private const val HONEY_LOCUST = "obj.toa_honey_locust"
 
-private const val STOP_MUSIC = "midi.stop_music"
+private const val STOP_MUSIC = "midi.silence"
 
 private const val RAID_MIDI = "midi.toa_ambience"
 

@@ -63,7 +63,7 @@ class WizardsTowerLocs : PluginScript() {
     }
 
     private companion object {
-        const val PORTAL_SYNTH = "synth.gotr_portal_step"
+        const val PORTAL_SYNTH = "synth.portal_teleport"
         val GROUND_FLOOR = CoordGrid(3104, 3161, 0)
         val FIRST_FLOOR = CoordGrid(3104, 3161, 1)
         val SECOND_FLOOR = CoordGrid(3104, 3161, 2)

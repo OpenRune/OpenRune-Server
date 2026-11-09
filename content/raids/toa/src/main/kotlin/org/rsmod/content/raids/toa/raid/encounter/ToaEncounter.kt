@@ -423,7 +423,7 @@ open class ToaEncounter(
         const val HONEY_LOCUSTS_MIN = 4
         const val HONEY_LOCUSTS_MAX = 6
         const val PUZZLE_JINGLE = "jingle.soundscape"
-        const val STOP_MUSIC = "midi.stop_music"
+        const val STOP_MUSIC = "midi.silence"
 
         const val ROOM_POINTS_CAP = 20_000
         const val WARDENS_POINTS_CAP = 60_000

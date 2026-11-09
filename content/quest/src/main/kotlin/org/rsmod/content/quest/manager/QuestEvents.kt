@@ -21,7 +21,7 @@ class QuestEvents : PluginScript() {
     override fun ScriptContext.startup() {
         val rows = QuestRow.all()
         questCount = rows.size
-        questPointCap = rows.sumOf { it.questpoints }
+        questPointCap = rows.sumOf { it.questpointsOverride }
 
         onPlayerLogin {
             player.questTotalCount = questCount

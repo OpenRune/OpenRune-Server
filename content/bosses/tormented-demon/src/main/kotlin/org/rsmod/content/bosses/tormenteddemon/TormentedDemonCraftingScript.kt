@@ -53,7 +53,7 @@ class TormentedDemonCraftingScript : PluginScript() {
         mesbox("You set to work fusing the synapse into Arclight's blade...")
         delay(3)
         anim("seq.human_smithing")
-        soundSynth(3771)
+        soundSynth("synth.anvil02")
         delay(4)
 
         if (invDel(inv, "obj.tormented_synapse", 1).success && invDel(inv, "obj.arclight", 1).success) {
@@ -75,7 +75,7 @@ class TormentedDemonCraftingScript : PluginScript() {
         mesbox("You set to work fusing the synapse into the battlestaff...")
         delay(3)
         anim("seq.human_smithing")
-        soundSynth(3771)
+        soundSynth("synth.anvil02")
         delay(4)
 
         val consumed =
@@ -102,7 +102,7 @@ class TormentedDemonCraftingScript : PluginScript() {
         mesbox("You bind the synapse to the bow, and it begins to smoulder...")
         delay(3)
         anim("seq.stringing_magic_longbow")
-        soundSynth(3771)
+        soundSynth("synth.anvil02")
         delay(2)
 
         if (invDel(inv, "obj.tormented_synapse", 1).success &&

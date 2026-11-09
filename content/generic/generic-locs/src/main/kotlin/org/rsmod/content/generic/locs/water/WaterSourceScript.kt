@@ -90,7 +90,7 @@ class WaterSourceScript : PluginScript() {
             "You fill the ${containerNoun(container)}$sourceSuffix.",
             ChatType.Spam,
         )
-        soundSynth("synth.fill_container")
+        soundSynth("synth.tap_fill")
         return true
     }
 
@@ -102,7 +102,7 @@ class WaterSourceScript : PluginScript() {
                 anim("seq.human_pickuptable_walkmerge")
                 invReplace(inv, event.invSlot, 1, filled)
                 mes("You fill the ${containerNoun(event.objType)} from the well.", ChatType.Spam)
-                soundSynth("synth.fill_container_well")
+                soundSynth("synth.well_fill")
             }
             event.objType.id in wateringCans -> {
                 // UNVERIFIED: well can continuation follows other sources (live capture).

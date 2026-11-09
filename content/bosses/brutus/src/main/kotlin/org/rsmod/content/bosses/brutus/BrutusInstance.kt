@@ -188,7 +188,7 @@ constructor(
         if (player == null) {
             return
         }
-        player.soundSynth("synth.brutus_spawn")
+        player.soundSynth("synth.cb_boss_moo_angry_01")
         musicPlayer.unlockAndPlay(player, MusicRow.getRow(BOSS_MOOSIC))
         npc.facePlayer(player)
         deps.worldQueues.add(ARRIVE_MOO_DELAY) { if (npc.isSlotAssigned) npc.say("Moo") }

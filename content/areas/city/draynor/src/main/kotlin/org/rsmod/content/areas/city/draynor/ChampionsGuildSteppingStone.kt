@@ -61,7 +61,7 @@ class ChampionsGuildSteppingStone : PluginScript() {
         const val FACE_EAST = 1536
 
         const val AGILITY = "stat.agility"
-        const val JUMP_SOUND = "synth.varrock_fence_jump"
+        const val JUMP_SOUND = "synth.jump"
 
         val WEST_BANK = CoordGrid(3149, 3363, 0)
         val STONE = CoordGrid(3151, 3363, 0)
