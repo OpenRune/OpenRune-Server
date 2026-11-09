@@ -1,13 +1,8 @@
 # Transport data
 
-The `.tsv` files in this folder are copied unchanged from the Shortest Path RuneLite plugin,
-https://github.com/Skretzo/shortest-path (`src/main/resources/transports/`), at commit
-`af1dbb918c` (2026-11-08). They are the work of Skretzo and the plugin's contributors and are
-used under the BSD 2-Clause licence in `LICENSE-shortest-path`.
+These tables come from the [Shortest Path RuneLite plugin](https://github.com/Skretzo/shortest-path)
+and are used under the BSD 2-Clause licence in `LICENSE-shortest-path`. `COMMIT` records the
+upstream commit. The import resolves references using the current OSRS revision's gamevals.
 
-To update them, download the same files from that repository again and record the new commit
-here. `transports.tsv`, `agility_shortcuts.tsv`, `teleportation_levers.tsv` and
-`teleportation_portals.tsv` are used; the plugin's ship, glider, spirit tree and teleport files
-are left out,
-because those routes need their own content (interfaces, fares, requirements) rather than a
-straight move between two tiles.
+Run `./gradlew :or-cache:downloadTransports` to refresh the tables manually. Revision sync runs
+the same task and commits the results. The server and PR gameval checks use the committed tables.

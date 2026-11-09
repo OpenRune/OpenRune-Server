@@ -5,7 +5,7 @@ import dev.openrune.rscm.RSCMType
 import java.io.File
 
 /**
- * Collects every `"<table>.<name>"` literal in the source tree (Kotlin and TOML) and resolves each
+ * Collects gameval references in Kotlin, TOML and TSV files and resolves each
  * one against the gamevals the server loads at startup, so a symbol that no table defines shows up
  * here instead of as a runtime "Missing mapping" error.
  */
@@ -26,6 +26,7 @@ public object GamevalChecker {
         )
 
     private val NAME_CHARS = Regex("[A-Za-z0-9_:\\-]+")
+    private val TSV_REFERENCE = Regex("(?<![\\w.])[a-z]+\\.[A-Za-z0-9_:\\-]+")
 
     public fun scan(root: File): Pair<Int, List<Reference>> {
         val references = ArrayList<Reference>()
@@ -49,6 +50,16 @@ public object GamevalChecker {
                     file.extension == "toml" && file.name != "gamevals.toml" -> {
                         scanned++
                         scanToml(file, collector)
+                    }
+                    file.extension == "tsv" -> {
+                        scanned++
+                        file.useLines { lines ->
+                            lines.forEachIndexed { index, line ->
+                                if (!line.trimStart().startsWith("#")) {
+                                    TSV_REFERENCE.findAll(line).forEach { collector(it.value, index + 1) }
+                                }
+                            }
+                        }
                     }
                 }
             }

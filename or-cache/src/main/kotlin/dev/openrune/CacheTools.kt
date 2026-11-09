@@ -65,6 +65,7 @@ import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
 import dev.openrune.tools.ProjectGamevalNames
 import dev.openrune.tools.SeqDumper
+import dev.openrune.tools.ShortestPathTransports
 import dev.openrune.tools.SlayerBossKeys
 import dev.openrune.tools.SlayerTargetMonsterLoader
 import dev.openrune.types.SlayerNpcData
@@ -121,6 +122,11 @@ fun main(args: Array<String>) {
         return
     }
 
+    if (command == "DOWNLOAD_TRANSPORTS") {
+        downloadTransports(args.getOrNull(1)?.let(::File))
+        return
+    }
+
     if (command == "CHECK_GAMEVALS") {
         checkGamevals(args)
         return
@@ -133,19 +139,7 @@ fun main(args: Array<String>) {
 private fun checkGamevals(args: Array<String>) {
     val snapshot = args.firstOrNull { it.startsWith("--snapshot-dir=") }
         ?.substringAfter('=')?.let(::File)
-    val provider =
-        if (snapshot == null) {
-            GameValProvider.loadIsolated("../")
-        } else {
-            require(File(snapshot, "revision.txt").readText().trim() == revisionLabel()) {
-                "Gameval snapshot revision does not match ${revisionLabel()}"
-            }
-            require(
-                File(snapshot, "gamevals.dat").isFile &&
-                    File(snapshot, GeneratedGameVals.FILE_NAME).isFile
-            ) { "Incomplete gameval snapshot: $snapshot" }
-            GameValProvider.loadIsolated("../", snapshot)
-        }
+    val provider = loadGamevalProvider(snapshot)
     val generated =
         if (snapshot == null) {
             emptySet()
@@ -230,6 +224,23 @@ private fun freshInstall() {
 
     logger.info { "Dumping gamevals from the fresh cache" }
     GamevalDumper.dumpGamevals(Cache.load(File(getCacheLocation()).toPath()), revision.first)
+}
+
+private fun downloadTransports(snapshot: File? = null) {
+    val target = projectRoot.resolve("content/travel/map-transports/src/main/resources/transports")
+    ShortestPathTransports.download(target, File("build/reports/transports"), loadGamevalProvider(snapshot))
+}
+
+private fun loadGamevalProvider(snapshot: File?): GameValProvider {
+    if (snapshot == null) return GameValProvider.loadIsolated("../")
+    require(File(snapshot, "revision.txt").readText().trim() == revisionLabel()) {
+        "Gameval snapshot revision does not match ${revisionLabel()}"
+    }
+    require(
+        File(snapshot, "gamevals.dat").isFile &&
+            File(snapshot, GeneratedGameVals.FILE_NAME).isFile,
+    ) { "Incomplete gameval snapshot: $snapshot" }
+    return GameValProvider.loadIsolated("../", snapshot)
 }
 
 fun buildCache(type: TaskType, force: Boolean = false) {

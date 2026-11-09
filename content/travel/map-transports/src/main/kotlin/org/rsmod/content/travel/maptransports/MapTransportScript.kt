@@ -2,6 +2,8 @@ package org.rsmod.content.travel.maptransports
 
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.events.interact.LocUnimplementedEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onProtectedEvent
@@ -9,10 +11,11 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /**
- * Serves the Shortest Path plugin's transport rows - doors, stairs, caves, shortcuts, levers and
- * portals with a known start and end tile - for every loc op no other script answers. It listens
- * on the unimplemented-op fallback, which the engine only reaches once a loc has no id, content or
- * category handler, so real content always wins.
+ * Serves the Shortest Path plugin's transport rows with a known start and end tile for every loc
+ * op no other script answers. It listens on the unimplemented-op fallback, which the engine
+ * only reaches once a loc has no id, content or category handler.
+ *
+ * The bundled rows are refreshed by the revision sync workflow or `downloadTransports`.
  */
 class MapTransportScript : PluginScript() {
     private val logger = InlineLogger()
@@ -21,12 +24,13 @@ class MapTransportScript : PluginScript() {
         val rows = FILES.flatMap { file -> MapTransports.parse(read(file)) }
         val byLocAndOp = HashMap<Pair<Int, Int>, MutableList<MapTransport>>()
         for (row in rows) {
-            val type = ServerCacheManager.getObject(row.locId) ?: continue
+            val locId = row.loc.asRSCM(RSCMType.LOC)
+            val type = ServerCacheManager.getObject(locId) ?: continue
             val op =
                 (1..5).firstOrNull {
                     type.actions.getOpOrNull(it - 1).equals(row.option, ignoreCase = true)
                 } ?: continue
-            byLocAndOp.getOrPut(row.locId to op) { mutableListOf() } += row
+            byLocAndOp.getOrPut(locId to op) { mutableListOf() } += row
         }
         for ((key, transports) in byLocAndOp) {
             val (locId, op) = key

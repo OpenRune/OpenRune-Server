@@ -6,7 +6,7 @@ data class MapTransport(
     val origin: CoordGrid,
     val destination: CoordGrid,
     val option: String,
-    val locId: Int,
+    val loc: String,
     val skills: List<Pair<String, Int>>,
     val duration: Int,
 )
@@ -14,18 +14,10 @@ data class MapTransport(
 /**
  * Reads the Shortest Path plugin's transport tables: tab-separated rows whose columns are named
  * by the `# Origin Destination ...` header, which each file orders differently. Only the
- * columns a click needs are kept; quests are already treated as complete on this server, and
- * item and varbit conditions are left out for now.
+ * columns a click needs are read. The cache importer replaces loc IDs and skill names with
+ * gamevals. Item, quest and var conditions remain metadata for the transport fallback.
  */
 object MapTransports {
-    private val SKILLS =
-        setOf(
-            "attack", "defence", "strength", "hitpoints", "ranged", "prayer", "magic", "cooking",
-            "woodcutting", "fletching", "fishing", "firemaking", "crafting", "smithing", "mining",
-            "herblore", "agility", "thieving", "slayer", "farming", "runecrafting", "hunter",
-            "construction",
-        )
-
     fun parse(text: String): List<MapTransport> {
         val lines = text.lines()
         val header = lines.firstOrNull { it.startsWith("# Origin") } ?: return emptyList()
@@ -41,20 +33,21 @@ object MapTransports {
             val from = coords(cells.getOrNull(origin)) ?: return@mapNotNull null
             val to = coords(cells.getOrNull(destination)) ?: return@mapNotNull null
             val words = cells.getOrNull(menu)?.trim()?.split(' ')?.filter { it.isNotEmpty() }.orEmpty()
-            val locId = words.lastOrNull()?.toIntOrNull() ?: return@mapNotNull null
             if (words.size < 2) return@mapNotNull null
+            val loc = words.last()
+            if (!loc.startsWith("loc.")) return@mapNotNull null
             MapTransport(
                 origin = from,
                 destination = to,
                 option = words.first(),
-                locId = locId,
+                loc = loc,
                 skills = skillsOf(cells.getOrNull(skills)),
                 duration = cells.getOrNull(duration)?.trim()?.toIntOrNull() ?: 1,
             )
         }
     }
 
-    /** The row for a click on [locId]'s [option] whose origin lies closest to [standing]. */
+    /** Picks the row closest to [standing], preferring the player's floor. */
     fun pick(rows: List<MapTransport>, standing: CoordGrid): MapTransport? =
         rows.filter { it.origin.level == standing.level }
             .minByOrNull { distance(it.origin, standing) }
@@ -70,8 +63,8 @@ object MapTransports {
         cell.orEmpty().split(';').mapNotNull { requirement ->
             val parts = requirement.trim().split(' ')
             val level = parts.getOrNull(0)?.toIntOrNull() ?: return@mapNotNull null
-            val skill = parts.getOrNull(1)?.lowercase() ?: return@mapNotNull null
-            if (skill in SKILLS) "stat.$skill" to level else null
+            val skill = parts.getOrNull(1) ?: return@mapNotNull null
+            if (skill.startsWith("stat.")) skill to level else null
         }
 
     private fun distance(a: CoordGrid, b: CoordGrid): Int =

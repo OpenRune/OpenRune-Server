@@ -25,6 +25,38 @@ jobs:
   formatting:
     uses: ./.github/workflows/format.yml
 
+  check-revision:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check RsProt modules match the configured revision
+        run: |
+          revision=$(awk '/^revision:/ { print $2; exit }' game.example.yml)
+          if [[ ! "$revision" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+            echo "::error file=game.example.yml::Expected a numeric revision such as 242 or 242.2."
+            exit 1
+          fi
+          python3 - "${revision%%.*}" <<'PY'
+          import sys
+          import tomllib
+
+          with open("gradle/libs.versions.toml", "rb") as file:
+              libraries = tomllib.load(file)["libraries"]
+          major = sys.argv[1]
+          failed = False
+          for kind in ("api", "shared"):
+              alias = f"rsprot-{kind}"
+              expected = f"net.rsprot:osrs-{major}-{kind}"
+              actual = libraries.get(alias, {}).get("module")
+              if actual != expected:
+                  print(f"::error file=gradle/libs.versions.toml::{alias} must use {expected}, found {actual!r}.")
+                  failed = True
+          sys.exit(failed)
+          PY
+
   gameval-conflicts:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/gameval-conflicts.yml
@@ -35,7 +67,7 @@ jobs:
 
   check-gamevals:
     # Keep this job name stable for the required status check.
-    needs: [formatting, gameval-conflicts]
+    needs: [formatting, check-revision, gameval-conflicts]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -71,6 +103,7 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || inputs.pull_request }}
           CONFLICT_RESULT: ${{ needs.gameval-conflicts.result }}
+          REVISION_RESULT: ${{ needs.check-revision.result }}
           SNAPSHOT_RESULT: ${{ steps.snapshot.outcome }}
         run: |
           report_dir="$RUNNER_TEMP/gameval-validation"
@@ -91,6 +124,10 @@ jobs:
 
           if [[ "$CONFLICT_RESULT" == failure ]]; then
             echo "The reserved-ID conflict check failed. See the gameval-conflicts job." >> "$report_dir/report.txt"
+            status=1
+          fi
+          if [[ "$REVISION_RESULT" == failure ]]; then
+            echo "The RsProt revision check failed. See the check-revision job." >> "$report_dir/report.txt"
             status=1
           fi
           if [[ -s "$report" ]]; then
