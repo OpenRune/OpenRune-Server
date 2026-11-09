@@ -1,5 +1,9 @@
 package org.rsmod.game.loc
 
+/**
+ * A packed scenery id, shape and rotation used by the map and loc registries.
+ * The id occupies 24 bits so revision 242 scenery ids can round-trip through the registry.
+ */
 @JvmInline
 public value class LocEntity(public val packed: Int) {
     public val id: Int
@@ -30,7 +34,7 @@ public value class LocEntity(public val packed: Int) {
     public companion object {
         public val NULL: LocEntity = LocEntity(-1)
 
-        public const val ID_BIT_COUNT: Int = 17
+        public const val ID_BIT_COUNT: Int = 24
         public const val SHAPE_BIT_COUNT: Int = 5
         public const val ANGLE_BIT_COUNT: Int = 2
 

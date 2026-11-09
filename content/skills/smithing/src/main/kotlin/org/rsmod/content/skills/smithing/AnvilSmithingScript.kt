@@ -172,7 +172,7 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
         }
 
         anim("seq.human_smithing")
-        soundSynth(3771)
+        soundSynth("synth.anvil02")
         strongQueue(
             "queue.smithing_anvil",
             ANVIL_FIRST_DELAY,
@@ -199,7 +199,7 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
         }
 
         anim("seq.human_smithing")
-        soundSynth(3771)
+        soundSynth("synth.anvil02")
         weakQueue(
             "queue.smithing_anvil",
             SmithingUtils.anvilActionDelay(player),

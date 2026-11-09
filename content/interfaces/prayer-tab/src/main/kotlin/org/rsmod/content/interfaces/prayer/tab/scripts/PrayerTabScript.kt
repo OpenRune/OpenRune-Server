@@ -46,7 +46,7 @@ private constructor(
             val message = failedRequirementMessage(prayer).replace("<br>", " ")
             mes(message)
             resyncVar(prayer.enabled)
-            soundSynth("synth.prayer_disable")
+            soundSynth("synth.cancel_prayer")
             return
         }
         val toggled = protectedAccess.launch(this) { togglePrayer(prayer) }
@@ -67,7 +67,7 @@ private constructor(
         if (prayer.enabled in overheadProtectionPrayerVarbits && player.overheadsLocked) {
             player.resyncVar(prayer.enabled)
             mes("You've been injured and can't use protection prayers!")
-            soundSynth("synth.prayer_disable")
+            soundSynth("synth.cancel_prayer")
             return
         }
         if (player.prayerLvl == 0) {
@@ -94,7 +94,7 @@ private constructor(
 
     private fun ProtectedAccess.disablePrayer(prayer: Prayer) {
         vars[prayer.enabled] = 0
-        soundSynth("synth.prayer_disable")
+        soundSynth("synth.cancel_prayer")
         disablePrayerStatRegen(prayer)
         if (prayer.overhead != null && player.overheadIcon == prayer.overhead) {
             player.overheadIcon = null

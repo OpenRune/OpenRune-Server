@@ -73,9 +73,9 @@ internal object AkkhaMidis {
 }
 
 internal object AkkhaSynths {
-    const val LIGHT = "synth.toa_akkha_light"
-    const val BLAST = "synth.toa_akkha_blast"
-    const val ORB = "synth.toa_akkha_orb"
-    const val BURN = "synth.toa_akkha_burn"
-    const val STYLE_SWAP = "synth.toa_akkha_style_swap"
+    const val LIGHT = "synth.toa_akka_symbol_glow_04"
+    const val BLAST = "synth.toa_akkha_scatter_across_area_05"
+    const val ORB = "synth.toa_akkha_black_orb_spawn_02"
+    const val BURN = "synth.lore_fire_titan_hit"
+    const val STYLE_SWAP = "synth.bcs_akh_spawn_02"
 }

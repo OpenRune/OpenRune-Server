@@ -524,7 +524,7 @@ contentGroup = "content.closed_left_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.openfencegate_l"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.openfencegate_l"
@@ -532,7 +532,7 @@ inherit = "loc.openfencegate_l"
 contentGroup = "content.opened_left_picketgate"
 
 [object.params]
-"param.closesound" = "synth.picketgate_close"
+"param.closesound" = "synth.gate_close"
 "param.next_loc_stage" = "loc.fencegate_l"
 
 [[object]]
@@ -542,7 +542,7 @@ contentGroup = "content.closed_right_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.openfencegate_r"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.openfencegate_r"
@@ -550,7 +550,7 @@ inherit = "loc.openfencegate_r"
 contentGroup = "content.opened_right_picketgate"
 
 [object.params]
-"param.closesound" = "synth.picketgate_close"
+"param.closesound" = "synth.gate_close"
 "param.next_loc_stage" = "loc.fencegate_r"
 
 [[object]]
@@ -1054,6 +1054,11 @@ contentGroup = "content.spiralstaircase_option"
 [[object]]
 id = "loc.spiralstairstop"
 inherit = "loc.spiralstairstop"
+contentGroup = "content.spiralstaircase_down"
+
+[[object]]
+id = "loc.spiralstairstop_wg"
+inherit = "loc.spiralstairstop_wg"
 contentGroup = "content.spiralstaircase_down"
 
 [[object]]

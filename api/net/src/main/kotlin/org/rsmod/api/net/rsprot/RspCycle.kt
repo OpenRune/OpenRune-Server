@@ -41,7 +41,7 @@ class RspCycle(
     private val playerInfo
         get() = infos.playerInfo
 
-    private val worldId: Int
+    private val worldArea: Int
         get() = -1
 
     fun init(player: Player) {
@@ -57,7 +57,7 @@ class RspCycle(
     }
 
     private fun Player.queueRebuildLogin() {
-        val rebuild = RebuildLoginV2(x shr 3, z shr 3, worldId, playerInfo)
+        val rebuild = RebuildLoginV2(x shr 3, z shr 3, worldArea, playerInfo)
         session.queue(rebuild)
     }
 
@@ -155,7 +155,7 @@ class RspCycle(
         }
 
         if (regionUid == null) {
-            val rebuild = RebuildNormalV2(x shr 3, z shr 3, worldId)
+            val rebuild = RebuildNormalV2(x shr 3, z shr 3, worldArea)
             knownBuildArea = buildArea
             knownRegionUid = null
             cachedRegionZoneProvider = null

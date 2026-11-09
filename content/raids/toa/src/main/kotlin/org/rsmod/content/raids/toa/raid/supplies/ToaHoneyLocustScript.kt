@@ -52,7 +52,7 @@ constructor(private val activityAccess: ConsumableActivityAccess) : PluginScript
         const val QUARTER = 25
 
         const val EAT_DELAY = 3
-        const val EAT_SOUND = "synth.dom_burrow_slam"
+        const val EAT_SOUND = "synth.eat"
         const val EAT_ANIM = "seq.human_eat"
 
         const val HITPOINTS = "stat.hitpoints"

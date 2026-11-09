@@ -115,7 +115,7 @@ constructor(
 
         private const val BUSY = "varbit.busy"
         private const val BREAK_ANIM = "seq.poh_smash_magic_tablet"
-        private const val BREAK_SOUND = "synth.poh_tablet_break"
+        private const val BREAK_SOUND = "synth.poh_tablet_break_teleport"
         private const val ABSORB_SPOTANIM = "spotanim.poh_absorb_tablet_magic"
         private const val ABSORB_ANIM = "seq.poh_absorb_tablet_teleport"
     }

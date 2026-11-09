@@ -577,7 +577,7 @@ isMembers = true
 [[params]]
 id = "param.equipment_sound"
 type = "SYNTH"
-defaultInt = "synth.default_equipment"
+defaultInt = "synth.equip_fun"
 isMembers = true
 
 [[params]]

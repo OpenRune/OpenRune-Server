@@ -349,7 +349,7 @@ constructor(
         const val PRAYER_DRAIN = 8
         const val ROCKFALL_MAX_HIT = 6
         const val LANDING_RADIUS = 3
-        const val CHEST_JINGLE = 77
+        const val CHEST_JINGLE = "jingle.barrows_complete"
         const val MAX_ROOM_ENEMIES = 11
         const val DOOR_ROLL = 128
         const val DOOR_BROTHER_WEIGHT = 12

@@ -26,8 +26,10 @@ import dev.openrune.definition.type.DBTableType
 import dev.openrune.definition.type.EnumType
 import dev.openrune.definition.util.CacheVarLiteral
 import dev.openrune.filesystem.Cache
+import dev.openrune.gamevals.GameValMaxIdManifest
 import dev.openrune.gamevals.GameValProvider
 import dev.openrune.gamevals.GamevalDumper
+import dev.openrune.gamevals.GeneratedGameVals
 import dev.openrune.impl.GameframeTable
 import dev.openrune.impl.Music
 import dev.openrune.map.packing.MapPackers
@@ -57,10 +59,13 @@ import dev.openrune.tables.skills.prayer.PrayerBlessedBone
 import dev.openrune.tables.skills.prayer.PrayerTable
 import dev.openrune.toml.rsconfig.rsconfig
 import dev.openrune.toml.tomlMapper
+import dev.openrune.tools.GamevalChecker
 import dev.openrune.tools.LocSpawnDumper
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
+import dev.openrune.tools.ProjectGamevalNames
 import dev.openrune.tools.SeqDumper
+import dev.openrune.tools.ShortestPathTransports
 import dev.openrune.tools.SlayerBossKeys
 import dev.openrune.tools.SlayerTargetMonsterLoader
 import dev.openrune.types.SlayerNpcData
@@ -112,10 +117,71 @@ fun main(args: Array<String>) {
         return
     }
 
+    if (command == "EXPORT_BASE_GAMEVALS") {
+        exportBaseGamevals()
+        return
+    }
+
+    if (command == "DOWNLOAD_TRANSPORTS") {
+        downloadTransports(args.getOrNull(1)?.let(::File))
+        return
+    }
+
+    if (command == "CHECK_GAMEVALS") {
+        checkGamevals(args)
+        return
+    }
+
+    registerCacheLiterals()
+    downloadRev(TaskType.valueOf(command))
+}
+
+private fun checkGamevals(args: Array<String>) {
+    val snapshot = args.firstOrNull { it.startsWith("--snapshot-dir=") }
+        ?.substringAfter('=')?.let(::File)
+    val provider = loadGamevalProvider(snapshot)
+    val generated =
+        if (snapshot == null) {
+            emptySet()
+        } else {
+            registerCacheLiterals()
+            ConstantProvider.load(provider)
+            val packs = PluginPacks.discover(projectRoot)
+            val tables = tablesToPack(loadSlayerData(), SlayerRequirements::gearSchema)
+            ProjectGamevalNames.collect(provider, packs.active, tables)
+        }
+    val result =
+        GamevalChecker.check(
+            root = projectRoot.canonicalFile,
+            provider = provider,
+            reportFile = File("build/reports/gamevals/gameval-report.txt"),
+            generated = generated,
+        )
+    if ("--fail" in args && (result.missing.isNotEmpty() || result.unassigned.isNotEmpty())) {
+        exitProcess(1)
+    }
+}
+
+private fun registerCacheLiterals() {
     CacheVarLiteral.registerExternal(253, '[', name = "PROJANIM")
     CacheVarLiteral.registerExternal(254, ']', name = "VARBIT")
+}
 
-    downloadRev(TaskType.valueOf(args.first().uppercase()))
+private fun revisionLabel(): String =
+    if (revision.second < 0) "${revision.first}" else "${revision.first}.${revision.second}"
+
+private fun exportBaseGamevals() {
+    val output = File("build/reports/base-gamevals")
+    val work = File("build/base-gamevals-cache")
+    val live = File(work, "LIVE")
+    downloadOsrsCache(live, File(work, "SERVER"))
+    GamevalDumper.dumpGamevals(Cache.load(live.toPath()), revision.first, output)
+    GameValMaxIdManifest.writeTo(
+        File(output, "max-ids.toml"),
+        GameValMaxIdManifest.readMaxIdsFromDats(output),
+        revision.first,
+    )
+    File(output, "revision.txt").writeText("${revisionLabel()}\n")
 }
 
 fun downloadRev(type: TaskType) {
@@ -131,12 +197,12 @@ fun downloadRev(type: TaskType) {
 }
 
 @Suppress("DEPRECATION")
-private fun freshInstall() {
+private fun downloadOsrsCache(live: File, server: File) {
     val rev = revision
     Builder(
         type = TaskType.FRESH_INSTALL,
-        cacheLocation = File(getCacheLocation()),
-        serverCacheLocation = File(getServerCacheLocation())
+        cacheLocation = live,
+        serverCacheLocation = server,
     )
         .revision(rev.first)
         .subRevision(rev.second)
@@ -144,7 +210,10 @@ private fun freshInstall() {
         .environment(CacheEnvironment.valueOf(rev.third))
         .build()
         .initialize()
+}
 
+private fun freshInstall() {
+    downloadOsrsCache(File(getCacheLocation()), File(getServerCacheLocation()))
     File(getServerCacheLocation(), "xteas.json").delete()
 
     IncrementalSession.clearState(File(getCacheLocation()), incrementalStateFile(TaskType.BUILD))
@@ -154,7 +223,24 @@ private fun freshInstall() {
     )
 
     logger.info { "Dumping gamevals from the fresh cache" }
-    GamevalDumper.dumpGamevals(Cache.load(File(getCacheLocation()).toPath()), rev.first)
+    GamevalDumper.dumpGamevals(Cache.load(File(getCacheLocation()).toPath()), revision.first)
+}
+
+private fun downloadTransports(snapshot: File? = null) {
+    val target = projectRoot.resolve("content/travel/map-transports/src/main/resources/transports")
+    ShortestPathTransports.download(target, File("build/reports/transports"), loadGamevalProvider(snapshot))
+}
+
+private fun loadGamevalProvider(snapshot: File?): GameValProvider {
+    if (snapshot == null) return GameValProvider.loadIsolated("../")
+    require(File(snapshot, "revision.txt").readText().trim() == revisionLabel()) {
+        "Gameval snapshot revision does not match ${revisionLabel()}"
+    }
+    require(
+        File(snapshot, "gamevals.dat").isFile &&
+            File(snapshot, GeneratedGameVals.FILE_NAME).isFile,
+    ) { "Incomplete gameval snapshot: $snapshot" }
+    return GameValProvider.loadIsolated("../", snapshot)
 }
 
 fun buildCache(type: TaskType, force: Boolean = false) {
@@ -216,7 +302,11 @@ private fun finalizeServerCache(force: Boolean = false) {
     startEnumGeneration(enums, force)
 }
 
-fun tablesToPack(): List<DBTable> = tablesToPack(loadSlayerData(), loadSlayerBossKeys())
+fun tablesToPack(): List<DBTable> {
+    val slayerData = loadSlayerData()
+    val slayerBossKey = loadSlayerBossKeys()
+    return tablesToPack(slayerData) { SlayerRequirements.gear(slayerBossKey) }
+}
 
 private fun loadSlayerData(): Map<Int, SlayerNpcData> =
     SlayerTargetMonsterLoader.loadNpcSlayerData(
@@ -229,7 +319,7 @@ private fun loadSlayerBossKeys(): (String) -> Int =
 
 private fun tablesToPack(
     slayerData: Map<Int, SlayerNpcData>,
-    slayerBossKey: (String) -> Int,
+    slayerGear: () -> DBTable,
 ): List<DBTable> = listOf(
     GameframeTable.gameframe(),
     Music.musicClassic(),
@@ -258,7 +348,7 @@ private fun tablesToPack(
     Smithing.crystalSinging(),
     Slayer.masters(),
     Slayer.streakBonuses(),
-    SlayerRequirements.gear(slayerBossKey),
+    slayerGear(),
     SlayerRequirements.finishers(slayerData),
     SlayerRequirements.weaponRules(slayerData),
     Runecrafting.altars(),

@@ -1,0 +1,72 @@
+[gamevals.varp]
+warguild_tokens_owed = 64900
+warguild_keg_tokens_owed = 64901
+warguild_progress = 64902
+warguild_session = 64903
+warguild_dummy_round = 64904
+
+[gamevals.varbit]
+warguild_defender_earned = 64900
+warguild_lost_armour = 64901
+warguild_cyclops_room = 64902
+warguild_cyclops_tier = 64903
+warguild_cyclops_grace = 64904
+warguild_cyclops_free = 64905
+warguild_shot_dusted = 64906
+warguild_keg_ticks = 64907
+warguild_basement_unlocked = 64908
+
+[gamevals.timer]
+warguild_cyclops = 64900
+warguild_kegs = 64901
+warguild_shield = 64902
+
+[gamevals.area]
+warguild_cyclops_top = 32735
+warguild_cyclops_basement = 32736
+
+[gamevals.enum]
+warguild_defender_drops = 64900
+warguild_defender_tiers = 64901
+warguild_shotput_distance = 64902
+warguild_metal_names = 64903
+
+[gamevals.dbtable]
+warguild_animator_sets = 64900
+warguild_catapult_shots = 64901
+warguild_dummies = 64902
+
+[gamevals.dbrow]
+warguild_animator_bronze = 62400
+warguild_animator_iron = 62401
+warguild_animator_steel = 62402
+warguild_animator_black = 62403
+warguild_animator_mithril = 62404
+warguild_animator_adamant = 62405
+warguild_animator_rune = 62406
+warguild_catapult_stab = 62410
+warguild_catapult_crush = 62411
+warguild_catapult_slash = 62412
+warguild_catapult_magic = 62413
+warguild_dummy_accurate = 62420
+warguild_dummy_slash = 62421
+warguild_dummy_aggressive = 62422
+warguild_dummy_controlled = 62423
+warguild_dummy_crush = 62424
+warguild_dummy_stab = 62425
+warguild_dummy_defensive = 62426
+herblore_crush_ashes = 62430
+
+[gamevals.controller]
+warguild_dummies = 2
+warguild_catapult = 3
+warguild_chatter = 4
+
+[gamevals.projanim]
+warguild_catapult = 64900
+
+[gamevals.queue]
+warguild_catapult_shot = 64900
+
+[gamevals.bas]
+warguild_balance = 10

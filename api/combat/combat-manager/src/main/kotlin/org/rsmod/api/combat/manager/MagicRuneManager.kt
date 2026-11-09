@@ -163,8 +163,9 @@ constructor(
             consume += invObj.copy(count = required)
         }
 
-        val transaction = player.invDelAll(player.inv, consume, strict = true)
-        if (!transaction.success) {
+        // An empty transaction reports failure, and a cast paid entirely from a rune pouch or
+        // another varbit source has nothing to take from the inventory.
+        if (consume.isNotEmpty() && !player.invDelAll(player.inv, consume, strict = true).success) {
             return CastResult.Failure.NotEnoughInvObj
         }
 

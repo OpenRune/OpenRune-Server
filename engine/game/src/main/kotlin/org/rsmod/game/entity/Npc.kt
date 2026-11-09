@@ -405,8 +405,13 @@ public class Npc(
     }
 
     override fun spotanim(spot: String, delay: Int, height: Int, slot: Int) {
-        PathingEntityCommon.spotanim(this, spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot)
-        infoProtocol.setSpotanim(spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot)
+        spotanim(spot, delay, height, slot, loop = false)
+    }
+
+    override fun spotanim(spot: String, delay: Int, height: Int, slot: Int, loop: Boolean) {
+        val id = spot.asRSCM(RSCMType.SPOTANIM)
+        PathingEntityCommon.spotanim(this, id, delay, height, slot, loop)
+        infoProtocol.setSpotanim(id, delay, height, slot, loop)
     }
 
     public fun say(text: String) {
@@ -537,6 +542,15 @@ public class Npc(
 
     public fun setBodyRecolours(recolours: List<Int>) {
         infoProtocol.setBodyRecolours(recolours)
+    }
+
+    /**
+     * Replaces the current body customisation with one colour for the whole model.
+     * Call [resetBodyModel] to restore the cache appearance.
+     */
+    public fun setBodyColour(colour: Int) {
+        require(colour in 0..65534) { "Invalid NPC body colour: $colour" }
+        infoProtocol.setBodyColour(colour)
     }
 
     public fun resetBodyModel() {

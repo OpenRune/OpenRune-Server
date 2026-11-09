@@ -1,0 +1,316 @@
+[[varp]]
+id = "varp.warguild_tokens_owed"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.warguild_keg_tokens_owed"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.warguild_progress"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.warguild_defender_earned"
+varp = "varp.warguild_progress"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+id = "varbit.warguild_lost_armour"
+varp = "varp.warguild_progress"
+startBit = 4
+endBit = 6
+
+[[varbit]]
+id = "varbit.warguild_cyclops_room"
+varp = "varp.warguild_progress"
+startBit = 7
+endBit = 8
+
+[[varbit]]
+id = "varbit.warguild_cyclops_tier"
+varp = "varp.warguild_progress"
+startBit = 9
+endBit = 12
+
+[[varbit]]
+id = "varbit.warguild_cyclops_grace"
+varp = "varp.warguild_progress"
+startBit = 13
+endBit = 13
+
+[[varbit]]
+id = "varbit.warguild_cyclops_free"
+varp = "varp.warguild_progress"
+startBit = 14
+endBit = 14
+
+[[varbit]]
+id = "varbit.warguild_basement_unlocked"
+varp = "varp.warguild_progress"
+startBit = 15
+endBit = 15
+
+[[varp]]
+id = "varp.warguild_session"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.warguild_shot_dusted"
+varp = "varp.warguild_session"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.warguild_keg_ticks"
+varp = "varp.warguild_session"
+startBit = 1
+endBit = 14
+
+[[varp]]
+id = "varp.warguild_dummy_round"
+scope = "Temp"
+transmit = "Never"
+
+[[enum]]
+isServerOnly = true
+id = "enum.warguild_defender_drops"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.bronze_parryingdagger"
+1 = "obj.iron_parryingdagger"
+2 = "obj.steel_parryingdagger"
+3 = "obj.black_parryingdagger"
+4 = "obj.mithril_parryingdagger"
+5 = "obj.adamant_parryingdagger"
+6 = "obj.rune_parryingdagger"
+7 = "obj.dragon_parryingdagger"
+
+[[enum]]
+isServerOnly = true
+id = "enum.warguild_defender_tiers"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bronze_parryingdagger" = 0
+"obj.bronze_parryingdagger_trouver" = 0
+"obj.bronze_parryingdagger_broken" = 0
+"obj.iron_parryingdagger" = 1
+"obj.iron_parryingdagger_trouver" = 1
+"obj.iron_parryingdagger_broken" = 1
+"obj.steel_parryingdagger" = 2
+"obj.steel_parryingdagger_trouver" = 2
+"obj.steel_parryingdagger_broken" = 2
+"obj.black_parryingdagger" = 3
+"obj.black_parryingdagger_trouver" = 3
+"obj.black_parryingdagger_broken" = 3
+"obj.mithril_parryingdagger" = 4
+"obj.mithril_parryingdagger_trouver" = 4
+"obj.mithril_parryingdagger_broken" = 4
+"obj.adamant_parryingdagger" = 5
+"obj.adamant_parryingdagger_trouver" = 5
+"obj.adamant_parryingdagger_broken" = 5
+"obj.rune_parryingdagger" = 6
+"obj.rune_parryingdagger_trouver" = 6
+"obj.rune_parryingdagger_broken" = 6
+"obj.rune_parryingdagger_t" = 6
+"obj.rune_parryingdagger_t_trouver" = 6
+"obj.dragon_parryingdagger" = 7
+"obj.dragon_parryingdagger_trouver" = 7
+"obj.dragon_parryingdagger_broken" = 7
+"obj.dragon_parryingdagger_t" = 7
+"obj.dragon_parryingdagger_t_trouver" = 7
+"obj.infernal_defender" = 7
+"obj.infernal_defender_trouver" = 7
+"obj.infernal_defender_broken" = 7
+
+[[enum]]
+isServerOnly = true
+id = "enum.warguild_shotput_distance"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+0 = 58
+1 = 71
+2 = 84
+3 = 97
+4 = 110
+5 = 124
+6 = 137
+7 = 150
+8 = 163
+9 = 176
+10 = 190
+11 = 203
+12 = 216
+
+[[enum]]
+isServerOnly = true
+id = "enum.warguild_metal_names"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "Bronze"
+1 = "Iron"
+2 = "Steel"
+3 = "Black"
+4 = "Mithril"
+5 = "Adamant"
+6 = "Rune"
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.warguild_catapult"
+startHeight = 240
+endHeight = 60
+delay = 30
+angle = 5
+lengthAdjustment = 6
+progress = 0
+stepMultiplier = 6
+
+[[bas]]
+isServerOnly = true
+id = "bas.warguild_balance"
+readyAnim = "seq.balance_ready"
+turnOnSpot = "seq.human_turnonspot"
+walkForward = "seq.balance_walk"
+walkBack = "seq.human_walk_b"
+walkLeft = "seq.human_walk_l"
+walkRight = "seq.human_walk_r"
+running = "seq.balance_walk"
+
+[[npc]]
+id = "npc.warguild_cyclops1"
+inherit = "npc.warguild_cyclops1"
+respawnRate = 30
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops1_high"
+inherit = "npc.warguild_cyclops1_high"
+respawnRate = 15
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops2"
+inherit = "npc.warguild_cyclops2"
+respawnRate = 30
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops2_high"
+inherit = "npc.warguild_cyclops2_high"
+respawnRate = 15
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops3"
+inherit = "npc.warguild_cyclops3"
+respawnRate = 30
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops3_high"
+inherit = "npc.warguild_cyclops3_high"
+respawnRate = 15
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops4"
+inherit = "npc.warguild_cyclops4"
+respawnRate = 30
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops4_high"
+inherit = "npc.warguild_cyclops4_high"
+respawnRate = 15
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops5"
+inherit = "npc.warguild_cyclops5"
+respawnRate = 30
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops5_high"
+inherit = "npc.warguild_cyclops5_high"
+respawnRate = 15
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops6"
+inherit = "npc.warguild_cyclops6"
+respawnRate = 30
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_cyclops6_high"
+inherit = "npc.warguild_cyclops6_high"
+respawnRate = 15
+[npc.params]
+"param.attack_anim"="seq.giant_update_basic_attack"
+"param.defend_anim"="seq.giant_update_basic_defend"
+"param.death_anim"="seq.giant_update_basic_death"
+"param.npc_attack_type"="category.attacktype_crush"
+
+[[npc]]
+id = "npc.warguild_banker"
+inherit = "npc.warguild_banker"
+contentGroup = "content.banker"

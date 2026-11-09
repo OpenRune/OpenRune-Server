@@ -46,15 +46,15 @@ internal object ScabarasSpots {
 }
 
 internal object ScabarasSynths {
-    const val STEP = 6561
-    const val WRONG = 6557
-    const val COMPLETE = 2655
-    const val BUTTON = 6559
-    const val FLIP = 6560
-    const val MISMATCH = 6554
-    const val ROCKFALL = 6578
-    const val CRAWL = 2454
-    const val JUMP = 2461
+    const val STEP = "synth.toa_pos_p4_light_activate"
+    const val WRONG = "synth.toa_pos_p4_fail_puzzle_notification"
+    const val COMPLETE = "synth.found_gem"
+    const val BUTTON = "synth.toa_pos_p2_ancient_button_press"
+    const val FLIP = "synth.toa_pos_p1_flip_plate"
+    const val MISMATCH = "synth.toa_pos_p5_plate_close"
+    const val ROCKFALL = "synth.toa_shaking_pillars_01"
+    const val CRAWL = "synth.climbing_loop"
+    const val JUMP = "synth.jump"
 }
 
 internal object ScabarasMidis {

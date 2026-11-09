@@ -9,6 +9,7 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.net.rsprot.ext.setFaceTarget
 import org.rsmod.api.player.righthand
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.WornObjCustomisation
 import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
@@ -26,6 +27,8 @@ class RspAvatarSync(private val infos: Infos) {
     private var knownFaceEntity: Int? = -1
 
     private var knownNpcViewDistance: Int? = null
+
+    private val knownWornObjCustomisations = mutableMapOf<Wearpos, WornObjCustomisation>()
 
     private val playerInfo
         get() = infos.playerInfo
@@ -48,6 +51,7 @@ class RspAvatarSync(private val infos: Infos) {
         player.applySpotanims()
         player.applySay()
         player.applyTinting()
+        player.applyVisualEffects()
         player.applyHeadbars()
         player.applyHitmarks()
         player.syncAppearance()
@@ -139,14 +143,32 @@ class RspAvatarSync(private val infos: Infos) {
             return
         }
         for (packed in pendingSpotanims.longIterator()) {
-            val (id, delay, height, slot) = EntitySpotanim(packed)
-            playerExtendedInfo.setSpotAnim(slot, id, delay, height)
+            val spotanim = EntitySpotanim(packed)
+            playerExtendedInfo.setSpotAnim(
+                spotanim.slot,
+                spotanim.id,
+                spotanim.delay,
+                spotanim.height,
+                spotanim.loop,
+            )
         }
     }
 
     private fun Player.applySay() {
         val text = pendingSay ?: return
         playerExtendedInfo.setSay(text)
+    }
+
+    private fun Player.applyVisualEffects() {
+        pendingTransparency?.let { effect ->
+            playerExtendedInfo.setTransparency(
+                effect.startTime, effect.endTime, effect.startTransparency, effect.endTransparency,
+                effect.useStartTransparency,
+            )
+        }
+        pendingAnimationFreeze?.let { effect ->
+            playerExtendedInfo.setFreeze(effect.delay, effect.duration, effect.cancelSequence)
+        }
     }
 
     private fun Player.applyTinting() {
@@ -294,8 +316,22 @@ class RspAvatarSync(private val infos: Infos) {
             runAnim = runningAnim,
         )
 
+        info.setForceModelRefresh(false)
         for (wearpos in Wearpos.visibleWearpos) {
             val obj = worn[wearpos.slot]
+            val customisation = appearance.wornObjCustomisation(wearpos, obj?.id)
+            if (customisation != knownWornObjCustomisations[wearpos]) {
+                if (customisation == null) {
+                    knownWornObjCustomisations.remove(wearpos)
+                    info.resetObjTypeCustomisation(wearpos.slot)
+                } else {
+                    knownWornObjCustomisations[wearpos] = customisation
+                    info.setObjRecolours(wearpos.slot, customisation.recolours)
+                    info.setObjRetextures(wearpos.slot, customisation.retextures)
+                    info.setObjRecolAll(wearpos.slot, customisation.colour)
+                }
+                info.setForceModelRefresh(true)
+            }
             if (obj == null) {
                 info.setWornObj(wearpos.slot, -1, -1, -1)
                 continue

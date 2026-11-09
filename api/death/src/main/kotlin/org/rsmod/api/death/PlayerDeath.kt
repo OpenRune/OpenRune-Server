@@ -66,8 +66,8 @@ constructor(
         handleDeathDrops(player, deathCoords)
 
         mes("Oh dear, you are dead!")
-        midiSong("midi.stop_music")
-        midiJingle("jingle.air_guitar_jingle")
+        midiSong("midi.silence")
+        midiJingle("jingle.death")
         telejump(randomRespawn ?: respawn, TeleportType.Exempt)
         resetAnim()
         resetPlayerState()
