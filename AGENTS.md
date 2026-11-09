@@ -92,7 +92,7 @@ hardcode raw numeric ids in content code.
 - Gamevals are stated explicitly and in full. Never build one from a base plus a suffix,
   a template (`"obj.watering_can_$n"`) or a `startsWith` prefix. List every full symbol
   (a `listOf`/`setOf` of the real names), so `checkGamevals` can verify each one against
-  the cache. Run `gradlew :or-cache:checkGamevals` after touching gamevals; it reports every
+  the cache. `gradlew :or-cache:checkGamevals` it reports every
   `"<table>.<name>"` literal that no gamevals table defines, and
   `-PfailOnMissing` makes it exit non-zero for CI.
 - Custom symbols for new content: add a `gamevals.toml` in the content module's
