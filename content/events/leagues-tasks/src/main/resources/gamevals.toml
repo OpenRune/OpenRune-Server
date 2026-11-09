@@ -48,6 +48,7 @@ league_chicken_window = 63442
 league_penguin_window = 63443
 league_area_notification = 63444
 league_tutorial_resume = 63445
+league_infinite_run = 63446
 
 [gamevals.queue]
 league_home_teleport = 64480
@@ -55,6 +56,7 @@ league_home_teleport = 64480
 [gamevals.dbtable]
 league_task_trigger = 40000
 league_tutorial_hint = 40001
+league_relic_passive = 40002
 
 [gamevals.clientscript]
 league_task_override_task_wipe = 9404

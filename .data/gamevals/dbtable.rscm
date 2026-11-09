@@ -14,3 +14,4 @@ warguild_catapult_shots=64901
 warguild_dummies=64902
 league_task_trigger=40000
 league_tutorial_hint=40001
+league_relic_passive=40002

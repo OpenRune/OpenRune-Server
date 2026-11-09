@@ -20,8 +20,9 @@ public class LeagueRelics @Inject constructor() {
     private val tiersByLeague: Map<Int, List<RelicTier>> = loadAll()
     private val unlockSpotanims: Map<Int, String> = loadUnlockSpotanims()
 
-    public fun tiers(player: Player): List<RelicTier> =
-        tiersByLeague[player.vars["varbit.league_type"]].orEmpty()
+    public fun tiers(player: Player): List<RelicTier> = tiers(player.vars["varbit.league_type"])
+
+    public fun tiers(league: Int): List<RelicTier> = tiersByLeague[league].orEmpty()
 
     public fun unlockSpotanim(player: Player): String? =
         unlockSpotanims[player.vars["varbit.league_type"]]
