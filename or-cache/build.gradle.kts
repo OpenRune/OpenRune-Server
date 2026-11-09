@@ -70,6 +70,19 @@ tasks {
         args = listOf("CLEAN_CS2")
     }
 
+    register<JavaExec>("downloadTransports") {
+        group = "cache"
+        description = "Updates the bundled Shortest Path TSVs using the current revision's gamevals"
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.CacheToolsKt")
+        args = buildList {
+            add("DOWNLOAD_TRANSPORTS")
+            providers.gradleProperty("baseGamevalsDir").orNull?.let {
+                add(rootProject.file(it).absolutePath)
+            }
+        }
+    }
+
     register<JavaExec>("dumpLocs") {
         group = "tools"
         description = "Prints every placement of the locs in -Plocs (symbols, ids or x1:z1:x2:z2)"
