@@ -285,3 +285,7 @@ chaoselemental_discord_impact=350
 chaoselemental_hit=351
 chaoselemental_madness_cast=352
 chaoselemental_madness_impact=353
+new_door_open=79
+equip_body=2234
+warguild_animate=1909
+warguild_animate_alive=1904

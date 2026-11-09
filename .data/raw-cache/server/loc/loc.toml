@@ -1057,6 +1057,11 @@ inherit = "loc.spiralstairstop"
 contentGroup = "content.spiralstaircase_down"
 
 [[object]]
+id = "loc.spiralstairstop_wg"
+inherit = "loc.spiralstairstop_wg"
+contentGroup = "content.spiralstaircase_down"
+
+[[object]]
 id = "loc.laddertop"
 inherit = "loc.laddertop"
 contentGroup = "content.ladder_down"

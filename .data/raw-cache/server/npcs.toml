@@ -8714,6 +8714,13 @@ inherit = "npc.warguild_bronze_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_iron_armour"
@@ -8721,6 +8728,13 @@ inherit = "npc.warguild_iron_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_steel_armour"
@@ -8728,6 +8742,13 @@ inherit = "npc.warguild_steel_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_black_armour"
@@ -8735,6 +8756,13 @@ inherit = "npc.warguild_black_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_mithril_armour"
@@ -8742,6 +8770,13 @@ inherit = "npc.warguild_mithril_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_adamant_armour"
@@ -8749,6 +8784,13 @@ inherit = "npc.warguild_adamant_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_rune_armour"
@@ -8756,6 +8798,13 @@ inherit = "npc.warguild_rune_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.sos_pest_giantspider1"
