@@ -1,0 +1,32 @@
+[[projectile]]
+isServerOnly = true
+id = "projanim.sarachnis_bolt"
+startHeight = 120
+endHeight = 120
+delay = 39
+angle = 16
+lengthAdjustment = 7
+progress = 48
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.sarachnis_ranged"
+startHeight = 32
+endHeight = 64
+delay = 39
+angle = 16
+lengthAdjustment = 7
+progress = 48
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.sarachnis_web"
+startHeight = 32
+endHeight = 64
+delay = 39
+angle = 16
+lengthAdjustment = 7
+progress = 16
+stepMultiplier = 5
