@@ -62,6 +62,22 @@ tasks {
         args = listOf("CLEAN_CS2")
     }
 
+    register<JavaExec>("dumpLocs") {
+        group = "tools"
+        description = "Prints every placement of the locs in -Plocs (symbols, ids or x1:z1:x2:z2)"
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.CacheToolsKt")
+        args = listOf("DUMP_LOCS", (project.findProperty("locs") ?: "").toString())
+    }
+
+    register<JavaExec>("dumpSeqs") {
+        group = "tools"
+        description = "Prints how many ticks the animations in -Pseqs run for"
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.CacheToolsKt")
+        args = listOf("DUMP_SEQS", (project.findProperty("seqs") ?: "").toString())
+    }
+
     register<JavaExec>("mergePluginGamevals") {
         group = "cache"
         description =
