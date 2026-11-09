@@ -34,7 +34,7 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         },
         ItemRewardDisplay(MILK_SAMPLE_2, zoom = 400),
         questVarbit = "varbit.cowquest",
-        completeJingle = "jingle.high_seas",
+        completeJingle = "jingle.quest_complete_1",
     ) {
 
     private var Player.gillieInformation by boolVarBit("varbit.cowquest_gillie_information")
@@ -733,7 +733,7 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         }
         quest.setQuestStage(this, STAGE_FIRST_SAMPLE_DRUNK)
         anim("seq.human_eat")
-        soundSynth("synth.bucket_pour")
+        soundSynth("synth.liquid")
         startDialogue {
             // Live shows the first line with no continue, coughs and takes the hit three ticks
             // later without closing it, then shows the second line two ticks after that.

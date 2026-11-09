@@ -12,15 +12,23 @@ object WateringCans {
     private const val GRICOLLER = "obj.zeah_wateringcan"
     private const val CHARGES = "varbit.zeah_wateringcan_charges"
     private const val TANK_CAPACITY = 1000
-    private const val PREFIX = "obj.watering_can_"
-    private const val FULL_CAN = "${PREFIX}8"
+    private val CANS =
+        listOf(
+            "obj.watering_can_0",
+            "obj.watering_can_1",
+            "obj.watering_can_2",
+            "obj.watering_can_3",
+            "obj.watering_can_4",
+            "obj.watering_can_5",
+            "obj.watering_can_6",
+            "obj.watering_can_7",
+            "obj.watering_can_8",
+        )
+    private const val FULL_CAN = "obj.watering_can_8"
 
     private fun isCan(obj: String): Boolean = obj == GRICOLLER || doses(obj) != null
 
-    private fun doses(can: String): Int? =
-        if (can.length == PREFIX.length + 1 && can.startsWith(PREFIX)) {
-            can.last().digitToIntOrNull()?.takeIf { it in 0..8 }
-        } else null
+    private fun doses(can: String): Int? = CANS.indexOf(can).takeIf { it >= 0 }
 
     fun needsRefill(player: Player, can: String): Boolean =
         isCan(can) && player.inv.physicalCount(can) > 0 && when {

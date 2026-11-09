@@ -232,7 +232,7 @@ constructor(
         dyed: ItemServerType,
     ) {
         if (combine(dye.internalName, dyeSlot, mail, mailSlot, dyed.internalName)) {
-            soundSynth("synth.gobdip_dye_goblin_mail")
+            soundSynth("synth.drip_liquid")
             mes("You dye the goblin mail ${dyed.name.substringBefore(' ').lowercase()}.")
         }
     }

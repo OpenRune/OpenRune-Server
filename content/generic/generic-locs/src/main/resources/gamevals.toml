@@ -44,10 +44,5 @@ auto_trapdoor_open = 65405
 [gamevals.enum]
 water_container_fills = 64402
 
-[gamevals.synth]
-drawer_open = 64
-fill_container = 2609
-fill_container_well = 2615
-
 [gamevals.queue]
 water_source_fill = 64400

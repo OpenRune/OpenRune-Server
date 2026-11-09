@@ -41,8 +41,42 @@ internal object SlayerHelmCombatChecks {
 
     private fun String.isImbuedBlackMaskItemKey(): Boolean = this == "nzone_black_mask_i"
 
-    private fun String.isSlayerHelmItem(): Boolean = startsWith("obj.slayer_helm")
+    private fun String.isSlayerHelmItem(): Boolean =
+        this in SLAYER_HELM_KEYS || this in IMBUED_SLAYER_HELM_KEYS
 
-    private fun String.isImbuedSlayerHelmItem(): Boolean =
-        this == "obj.slayer_helm_i" || startsWith("obj.slayer_helm_i_")
+    private fun String.isImbuedSlayerHelmItem(): Boolean = this in IMBUED_SLAYER_HELM_KEYS
+
+    private val SLAYER_HELM_KEYS: Set<String> =
+        setOf(
+            "obj.slayer_helm",
+            "obj.slayer_helm_araxyte",
+            "obj.slayer_helm_black",
+            "obj.slayer_helm_green",
+            "obj.slayer_helm_hooded",
+            "obj.slayer_helm_hydra",
+            "obj.slayer_helm_jad",
+            "obj.slayer_helm_purple",
+            "obj.slayer_helm_red",
+            "obj.slayer_helm_turquoise",
+            "obj.slayer_helm_twisted",
+            "obj.slayer_helm_verzik",
+            "obj.slayer_helm_zuk",
+        )
+
+    private val IMBUED_SLAYER_HELM_KEYS: Set<String> =
+        setOf(
+            "obj.slayer_helm_i",
+            "obj.slayer_helm_i_araxyte",
+            "obj.slayer_helm_i_black",
+            "obj.slayer_helm_i_green",
+            "obj.slayer_helm_i_hooded",
+            "obj.slayer_helm_i_hydra",
+            "obj.slayer_helm_i_jad",
+            "obj.slayer_helm_i_purple",
+            "obj.slayer_helm_i_red",
+            "obj.slayer_helm_i_turquoise",
+            "obj.slayer_helm_i_twisted",
+            "obj.slayer_helm_i_verzik",
+            "obj.slayer_helm_i_zuk",
+        )
 }

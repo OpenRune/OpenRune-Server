@@ -2,9 +2,7 @@ package org.rsmod.content.raids.toa.raid
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.config.constants
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
@@ -12,7 +10,6 @@ import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.midiSong
-import org.rsmod.api.player.musicClocks
 import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -135,7 +132,7 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
     }
     fadeOut()
     player.midiSong(STOP_MUSIC)
-    player.jingle(WIPE_JINGLE.asRSCM(RSCMType.JINGLE), WIPE_JINGLE_MILLIS)
+    // player.jingle(WIPE_JINGLE.asRSCM(RSCMType.JINGLE), WIPE_JINGLE_MILLIS)
     delay(1)
     minimapHideMap()
     delay(1)
@@ -170,10 +167,10 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
     if (raid.isInside(player)) reopenHud(raid)
 }
 
-private fun Player.jingle(id: Int, lengthMillis: Int) {
-    musicClocks = 0
-    client.write(MidiJingle(id, lengthMillis))
-}
+// private fun Player.jingle(id: Int, lengthMillis: Int) {
+    // musicClocks = 0
+    // client.write(MidiJingle(id, lengthMillis))
+// }
 
 internal fun Player.toaRestore() {
     disablePrayers()
@@ -210,9 +207,9 @@ private const val PIT_FALL_TICKS = 2
 
 private const val HONEY_LOCUST = "obj.toa_honey_locust"
 
-private const val STOP_MUSIC = "midi.stop_music"
+private const val STOP_MUSIC = "midi.silence"
 
 private const val RAID_MIDI = "midi.toa_ambience"
 
-private const val WIPE_JINGLE = "jingle.lord_drakan_reveal_part_1"
-private const val WIPE_JINGLE_MILLIS = 4_718
+// private const val WIPE_JINGLE = "jingle.lord_drakan_reveal_part_1"
+// private const val WIPE_JINGLE_MILLIS = 4_718

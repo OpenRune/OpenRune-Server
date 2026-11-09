@@ -237,12 +237,19 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
     )
 
     private object SynthRefs {
-        const val CHARGE = "synth.toa_wardens_charge"
-        const val SPAWN = "synth.toa_wardens_siphon_spawn"
-        const val BEAM = "synth.toa_wardens_siphon_beam"
-        const val REVERSE = "synth.toa_wardens_siphon_reverse"
+        const val CHARGE = "synth.lunar_humidify"
+        const val SPAWN = "synth.toa_wardens_blue_orb_landing_01"
+        const val BEAM = "synth.toa_wardens_phase3_red_projectiles_01"
+        const val REVERSE = "synth.toa_wardens_skulls_travel_01"
         val STAGGER =
-            (1..6).map { "synth.toa_wardens_stagger_$it" }
+            listOf(
+                "synth.toa_wardens_staggered_orb_hit_warden_01",
+                "synth.toa_wardens_staggers_whoosh_01",
+                "synth.toa_wardens_staggers_fall_back_impact_01",
+                "synth.toa_wardens_staggered_impact_01",
+                "synth.toa_wardens_staggers_dizzy_01",
+                "synth.toa_wardens_staggers_particles_appear_01",
+            )
     }
 
     private companion object {

@@ -79,7 +79,7 @@ internal class MisthalinPuzzles(private val quest: Quest) {
 
     private suspend fun ProtectedAccess.flipSwitch(gem: GemSwitch) {
         mes("You flip the ${gem.label} switch.")
-        soundSynth("synth.interface_select")
+        soundSynth("synth.interface_select1")
 
         showFlippedGem(gem)
 

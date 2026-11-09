@@ -7,7 +7,6 @@ import org.rsmod.api.bosses.runtime.forceNext
 import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.instances.InstanceSession
-import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.Camera
 import org.rsmod.content.raids.toa.raid.ToaRaid
@@ -168,7 +167,7 @@ class WardensSecondEncounter(
         siphons.reset()
         schedule(MUSIC_DELAY) {
             for (player in players) {
-                player.midiJingle(COMPLETE_JINGLE)
+                // player.midiJingle(COMPLETE_JINGLE)
                 player.midiSong(COMPLETE_MUSIC)
             }
         }
@@ -226,8 +225,8 @@ class WardensSecondEncounter(
         private val SIPHON_THRESHOLDS = listOf(0.8, 0.6, 0.4, 0.2)
         private const val ENRAGE_FRACTION = 0.05
         private const val WARDEN_BUSY = "You can't attack the warden right now."
-        private const val COMPLETE_JINGLE = "jingle.grumpy"
-        private const val COMPLETE_MUSIC = "midi.toa_laid_to_rest"
+        // private const val COMPLETE_JINGLE = "jingle.grumpy"
+        private const val COMPLETE_MUSIC = "midi.toa_victory"
         private const val MUSIC_DELAY = 2
         private const val CRYSTAL_DELAY = 13
         private const val PHANTOM_CLEAR_DELAY = 3

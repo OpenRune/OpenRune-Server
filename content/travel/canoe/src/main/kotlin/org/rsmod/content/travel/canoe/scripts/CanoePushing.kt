@@ -32,7 +32,7 @@ class CanoePushing @Inject constructor(private val worldRepo: WorldRepository) :
 
         this[station, canoe] = CanoeState.Pushing
         anim("seq.canoeing_pushing_into_water")
-        soundSynth("synth.canoe_pushed")
+        soundSynth("synth.canoe_roll")
         worldRepo.locAnim(loc, "seq.canoeing_station_animations")
         delay(1)
         faceSquare(loc.adjustedCentre)

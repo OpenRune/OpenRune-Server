@@ -15,7 +15,11 @@ class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
     }
 
     override fun setSpotanim(spotanim: Int, delay: Int, height: Int, slot: Int) {
-        rspAvatar.extendedInfo.setSpotAnim(slot, spotanim, delay, height)
+        setSpotanim(spotanim, delay, height, slot, loop = false)
+    }
+
+    override fun setSpotanim(spotanim: Int, delay: Int, height: Int, slot: Int, loop: Boolean) {
+        rspAvatar.extendedInfo.setSpotAnim(slot, spotanim, delay, height, loop)
     }
 
     override fun setSay(text: String) {
@@ -50,6 +54,15 @@ class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
 
     override fun setBodyRecolours(recolours: List<Int>) {
         rspAvatar.extendedInfo.setBodyCustomisation(emptyList(), recolours, emptyList())
+    }
+
+    override fun setBodyColour(colour: Int) {
+        rspAvatar.extendedInfo.setBodyCustomisation(
+            emptyList(),
+            emptyList(),
+            emptyList(),
+            recolAll = colour,
+        )
     }
 
     override fun resetBodyModel() {

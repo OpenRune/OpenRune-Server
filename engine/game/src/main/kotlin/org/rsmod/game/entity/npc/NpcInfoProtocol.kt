@@ -9,6 +9,11 @@ public interface NpcInfoProtocol {
 
     public fun setSpotanim(spotanim: Int, delay: Int, height: Int, slot: Int)
 
+    /** Sends a spot animation with optional looping for sequences that support it. */
+    public fun setSpotanim(spotanim: Int, delay: Int, height: Int, slot: Int, loop: Boolean) {
+        setSpotanim(spotanim, delay, height, slot)
+    }
+
     public fun setSay(text: String)
 
     public fun setFacePathingEntity(slot: Int)
@@ -24,6 +29,9 @@ public interface NpcInfoProtocol {
     public fun setBodyModels(models: List<Int>) {}
 
     public fun setBodyRecolours(recolours: List<Int>)
+
+    /** Sends a single colour for all triangles in the NPC's body model. */
+    public fun setBodyColour(colour: Int) {}
 
     public fun resetBodyModel()
 
