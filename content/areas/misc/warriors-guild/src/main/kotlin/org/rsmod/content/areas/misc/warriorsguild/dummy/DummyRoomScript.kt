@@ -1,8 +1,8 @@
 package org.rsmod.content.areas.misc.warriorsguild.dummy
 
 import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.SequenceServerType
 import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject

@@ -76,6 +76,7 @@ class GuildDoors @Inject constructor(private val locRepo: LocRepository) {
         const val DOOR_SOUND = "synth.big_wooden_door_open"
         const val FRONT_DOOR_SOUND = "synth.new_door_open"
         private const val OPEN_CYCLES = 2
+
         /** Scripts resume before movement, so a one-tile step is only visible a tick later. */
         private const val APPROACH_TICKS = 2
     }
