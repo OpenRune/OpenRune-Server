@@ -1,9 +1,12 @@
 package org.rsmod.api.specials.energy
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.specials.events.SpecialAttackEvents
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 
-public class SpecialAttackEnergy {
+public class SpecialAttackEnergy @Inject constructor(private val eventBus: EventBus) {
     private var Player.specialEnergy by intVarp("varp.sa_energy")
 
     public fun hasSpecialEnergy(
@@ -13,7 +16,7 @@ public class SpecialAttackEnergy {
         val cost =
             SpecialAttackEnergyModifier.adjustedCost(
                 player = player,
-                baseCost = energyInHundreds,
+                baseCost = eventAdjusted(player, energyInHundreds),
             )
 
         return player.specialEnergy >= cost
@@ -26,7 +29,7 @@ public class SpecialAttackEnergy {
         val cost =
             SpecialAttackEnergyModifier.adjustedCost(
                 player = player,
-                baseCost = energyInHundreds,
+                baseCost = eventAdjusted(player, energyInHundreds),
             )
 
         require(player.specialEnergy >= cost) {
@@ -35,6 +38,12 @@ public class SpecialAttackEnergy {
         }
 
         player.specialEnergy -= cost
+    }
+
+    private fun eventAdjusted(player: Player, baseCost: Int): Int {
+        val event = SpecialAttackEvents.AdjustCost(player, baseCost)
+        eventBus.publish(event)
+        return event.cost
     }
 
     public fun addSpecialEnergy(player: Player, energyInHundreds: Int) {

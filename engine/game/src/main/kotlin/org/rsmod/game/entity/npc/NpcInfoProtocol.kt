@@ -1,5 +1,6 @@
 package org.rsmod.game.entity.npc
 
+import org.rsmod.game.entity.util.EntityTinting
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
 
@@ -35,6 +36,8 @@ public interface NpcInfoProtocol {
     public fun toggleOps(ops: OpVisibility)
 
     public fun setHeadIcon(slot: Int, graphic: Int, index: Int)
+
+    public fun setTinting(tinting: EntityTinting)
 
     public fun exactMove(
         deltaX1: Int,
@@ -93,6 +96,8 @@ public data object NoopNpcInfo : NpcInfoProtocol {
     override fun toggleOps(ops: OpVisibility) {}
 
     override fun setHeadIcon(slot: Int, graphic: Int, index: Int) {}
+
+    override fun setTinting(tinting: EntityTinting) {}
 
     override fun exactMove(
         deltaX1: Int,
