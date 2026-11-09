@@ -9,24 +9,33 @@ import org.rsmod.game.entity.Player
  * host.
  *
  * [hint] is written to `varbit.hnt_selected_hint` on start; the client never reads it. [onFinish]
- * runs on `continue` from the last page; without it that click shows the last page again.
- * [onClose] runs when `screenhighlight` closes.
+ * runs with the page index on `continue` from the last page or from a [HighlightPage.pause] page;
+ * without it that click shows the page again. [onPage] runs before each page is sent. [onClose]
+ * runs when `screenhighlight` closes.
  */
 public class ScreenHighlightTour(
     public val host: Int,
     public val pages: List<HighlightPage>,
     public val hint: Int? = null,
-    public val onFinish: ((Player) -> Unit)? = null,
+    public val onFinish: ((Player, Int) -> Unit)? = null,
+    public val onPage: (Player, Int) -> Unit = { _, _ -> },
     public val onClose: (Player) -> Unit = {},
 )
 
-/** [showClose] shows `screenhighlight:close`; [defaultTextbox] sends `highlight_textbox_default`. */
+/**
+ * [showClose] shows `screenhighlight:close`; [defaultTextbox] sends `highlight_textbox_default`.
+ * [lastPage] overrides the textbox's last-page flag, which otherwise marks the final page.
+ * [pause] ends the tour's run at this page; [previousButton] shows `screenhighlight:previous`.
+ */
 public data class HighlightPage(
     val frame: HighlightFrame,
     val text: String,
     val textColour: Int = -1,
     val showClose: Boolean = false,
     val defaultTextbox: Boolean = false,
+    val lastPage: Boolean? = null,
+    val pause: Boolean = false,
+    val previousButton: Boolean = false,
 )
 
 public sealed interface HighlightFrame {

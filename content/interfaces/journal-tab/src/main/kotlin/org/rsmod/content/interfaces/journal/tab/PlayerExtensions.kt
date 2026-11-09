@@ -95,7 +95,7 @@ internal fun Player.closeJournalTab(tab: SideJournalTab, eventBus: EventBus) =
         SideJournalTab.League -> ifCloseSub("interface.league_side_panel", eventBus)
     }
 
-internal fun Player.switchJournalTab(open: SideJournalTab, eventBus: EventBus) {
+public fun Player.switchJournalTab(open: SideJournalTab, eventBus: EventBus) {
     val previous = sideJournalTab
     sideJournalTab = open
     closeJournalTab(previous, eventBus)

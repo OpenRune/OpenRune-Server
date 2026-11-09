@@ -36,11 +36,13 @@ public class ScreenHighlightTours @Inject constructor(private val eventBus: Even
         player.ifSetEvents("component.screenhighlight:pausebutton", -1..-1, IfEvent.PauseButton)
     }
 
-    public fun show(player: Player, tour: ScreenHighlightTour, page: Int) {
+    /** Sends [page]; [step] is the `hnt_hint_step` it is shown under, normally the page itself. */
+    public fun show(player: Player, tour: ScreenHighlightTour, page: Int, step: Int = page) {
         val shown = tour.pages[page]
-        VarPlayerIntMapSetter.set(player, "varbit.hnt_hint_step", page)
+        tour.onPage(player, page)
+        VarPlayerIntMapSetter.set(player, "varbit.hnt_hint_step", step)
         player.sendFrame(tour.host, shown.frame)
-        val lastPage = if (page == tour.pages.lastIndex) 1 else 0
+        val lastPage = if (shown.lastPage ?: (page == tour.pages.lastIndex)) 1 else 0
         val showClose = if (shown.showClose) 1 else 0
         if (shown.defaultTextbox) {
             player.runClientScript(
@@ -60,6 +62,15 @@ public class ScreenHighlightTours @Inject constructor(private val eventBus: Even
                 lastPage,
                 showClose,
                 tour.host,
+            )
+        }
+        if (shown.previousButton) {
+            player.runClientScript(
+                "clientscript.highlight_button".asRSCM(RSCMType.CLIENTSCRIPT),
+                "component.screenhighlight:previous".asRSCM(RSCMType.COMPONENT),
+                PREVIOUS_BUTTON_MODE,
+                "Previous",
+                0,
             )
         }
     }
@@ -112,5 +123,6 @@ public class ScreenHighlightTours @Inject constructor(private val eventBus: Even
 
     private companion object {
         const val DEFAULT_TEXTBOX_MODE = 1
+        const val PREVIOUS_BUTTON_MODE = 1
     }
 }

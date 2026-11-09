@@ -21,11 +21,16 @@ class ScreenHighlightScript @Inject constructor(private val tours: ScreenHighlig
         val current = vars["varbit.hnt_hint_step"]
         val page = if (forward) current + 1 else current - 1
         val finish = tour.onFinish
+        val paused = forward && tour.pages.getOrNull(current)?.pause == true
         when {
+            paused && finish != null -> {
+                VarPlayerIntMapSetter.set(this, "varbit.hnt_hint_step", page)
+                finish(this, current)
+            }
             page in tour.pages.indices -> tours.show(this, tour, page)
             forward && finish != null -> {
                 VarPlayerIntMapSetter.set(this, "varbit.hnt_hint_step", tour.pages.size)
-                finish(this)
+                finish(this, current)
             }
             else -> tours.show(this, tour, current.coerceIn(tour.pages.indices))
         }
