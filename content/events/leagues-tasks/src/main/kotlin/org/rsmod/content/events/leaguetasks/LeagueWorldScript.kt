@@ -13,13 +13,10 @@ class LeagueWorldScript @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPlayerInit {
             VarPlayerIntMapSetter.set(player, "varp.map_flags_cached", LEAGUE_WORLD_FLAGS)
-            // Stand-in for the league tutorial; the journal hides the league tab below 3.
-            VarPlayerIntMapSetter.set(player, "varbit.league_tutorial_completed", TUTORIAL_COMPLETE)
         }
     }
 
     private companion object {
         const val LEAGUE_WORLD_FLAGS = 0x40000001
-        const val TUTORIAL_COMPLETE = 14
     }
 }

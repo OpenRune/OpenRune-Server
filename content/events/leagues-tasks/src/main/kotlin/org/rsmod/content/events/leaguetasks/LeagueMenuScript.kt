@@ -9,6 +9,8 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
+import org.rsmod.content.events.leaguetasks.tutorial.LeagueMenu
+import org.rsmod.content.events.leaguetasks.tutorial.LeagueTutorial
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.world.WorldType
@@ -22,17 +24,30 @@ import org.rsmod.plugin.scripts.ScriptContext
  */
 class LeagueMenuScript
 @Inject
-constructor(private val tasks: LeagueTasks, private val eventBus: EventBus) : PluginScript() {
+constructor(
+    private val tasks: LeagueTasks,
+    private val tutorial: LeagueTutorial,
+    private val eventBus: EventBus,
+) : PluginScript() {
     override val worldTypes = WorldType.entries.filter { it.isLeague }
 
     override fun ScriptContext.startup() {
-        onIfOpen("interface.league_side_panel") { tasks.updateProgressBar(player) }
-
-        onIfOverlayButton("component.league_side_panel:tasks_button") {
-            player.ifOpenOverlay("interface.league_tasks", eventBus)
+        onIfOpen("interface.league_side_panel") {
+            tasks.updateProgressBar(player)
+            tutorial.onSidePanelOpened(player)
         }
 
-        onIfOpen("interface.league_tasks") { player.setTaskMenuEvents() }
+        onIfOverlayButton("component.league_side_panel:tasks_button") {
+            if (!tutorial.onMenuButton(player, LeagueMenu.Tasks)) {
+                player.ifOpenOverlay("interface.league_tasks", eventBus)
+            }
+        }
+
+        onIfOpen("interface.league_tasks") {
+            if (!tutorial.isActive(player)) {
+                player.setTaskMenuEvents()
+            }
+        }
 
         for ((dropdown, filter) in FILTERS) {
             onIfOverlayButton(dropdown) {

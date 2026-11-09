@@ -17,6 +17,8 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.content.events.leaguetasks.LeagueTasks
+import org.rsmod.content.events.leaguetasks.tutorial.LeagueMenu
+import org.rsmod.content.events.leaguetasks.tutorial.LeagueTutorial
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.world.WorldType
@@ -33,12 +35,17 @@ class LeagueRelicsScript
 constructor(
     private val relics: LeagueRelics,
     private val tasks: LeagueTasks,
+    private val tutorial: LeagueTutorial,
     private val eventBus: EventBus,
 ) : PluginScript() {
     override val worldTypes = WorldType.entries.filter { it.isLeague }
 
     override fun ScriptContext.startup() {
-        onIfOverlayButton("component.league_side_panel:relics_button") { player.openRelics() }
+        onIfOverlayButton("component.league_side_panel:relics_button") {
+            if (!tutorial.onMenuButton(player, LeagueMenu.Relics)) {
+                player.openRelics()
+            }
+        }
         onIfModalButton("component.league_relics:clickzones") { player.viewRelic(it.comsub) }
         onIfModalButton("component.league_relics:confirm_button") { confirmRelic() }
     }

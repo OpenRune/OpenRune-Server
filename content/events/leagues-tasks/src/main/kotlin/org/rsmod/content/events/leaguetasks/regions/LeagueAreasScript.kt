@@ -22,6 +22,8 @@ import org.rsmod.api.script.onProtectedEvent
 import org.rsmod.api.table.RegionDataRow
 import org.rsmod.content.events.leaguetasks.LeagueTaskCompletedEvent
 import org.rsmod.content.events.leaguetasks.LeagueTasks
+import org.rsmod.content.events.leaguetasks.tutorial.LeagueMenu
+import org.rsmod.content.events.leaguetasks.tutorial.LeagueTutorial
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.world.WorldType
@@ -40,12 +42,17 @@ constructor(
     private val regions: LeagueRegions,
     private val tasks: LeagueTasks,
     private val homeTeleport: LeagueHomeTeleport,
+    private val tutorial: LeagueTutorial,
     private val eventBus: EventBus,
 ) : PluginScript() {
     override val worldTypes = WorldType.entries.filter { it.isLeague }
 
     override fun ScriptContext.startup() {
-        onIfOverlayButton("component.league_side_panel:areas_button") { player.openAreas() }
+        onIfOverlayButton("component.league_side_panel:areas_button") {
+            if (!tutorial.onMenuButton(player, LeagueMenu.Areas)) {
+                player.openAreas()
+            }
+        }
 
         onEvent<LeagueTaskCompletedEvent> { announceNewArea(player) }
 

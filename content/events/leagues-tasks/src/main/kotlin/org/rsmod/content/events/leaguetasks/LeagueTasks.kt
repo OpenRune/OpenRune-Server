@@ -26,6 +26,8 @@ public class LeagueTasks @Inject constructor(private val eventBus: EventBus) {
 
     public fun leagueOf(player: Player): League? = leagues[player.vars["varbit.league_type"]]
 
+    public fun league(type: Int): League? = leagues[type]
+
     public fun isComplete(player: Player, index: Int): Boolean =
         LeagueTaskBits.isSet(player.vars[completedVarp(index)], index)
 

@@ -5,6 +5,7 @@ import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTriggerTable.INTERFAC
 
 internal fun TriggerRows.worldTasks() {
     opened("league_task_open_the_leagues_menu", "interface.league_side_panel")
+    variable("league_task_complete_the_leagues_tutorial", "varbit.league_tutorial_completed", 14)
     opened("league_task_use_the_bank_in_nardah", "interface.bankmain", "area.league_nardah_bank")
     opened(
         "league_task_use_the_bank_at_the_mage_arena",

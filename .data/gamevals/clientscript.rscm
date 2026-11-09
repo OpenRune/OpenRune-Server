@@ -7889,7 +7889,7 @@
 [proc,skill_guide_subsection_runecraft]=7889
 [proc,skill_guide_data_runecraft]=7890
 [proc,skill_guide_subsection_fishing]=7891
-[proc,skill_guide_data_fishing]=7892
+[clientscript,talent_tree_init]=7892
 [proc,skill_guide_subsection_cooking]=7893
 [proc,skill_guide_data_cooking]=7894
 [proc,skill_guide_subsection_hitpoints]=7895
@@ -7918,3 +7918,7 @@
 [clientscript,script7919]=7919
 [clientscript,script7920]=7920
 quest_policy_complete_set=45553
+highlight_button=9445
+league_task_override_task_wipe=9404
+script9397=9397
+script9431=9431
