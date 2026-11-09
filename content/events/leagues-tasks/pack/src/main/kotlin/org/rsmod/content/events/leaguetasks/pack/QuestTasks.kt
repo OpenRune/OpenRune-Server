@@ -39,7 +39,6 @@ internal fun TriggerRows.questTasks() {
     variable("league_task_complete_sins_of_the_father", "varbit.myq5", 138)
 }
 
-/** Met once [symbol], a varp or varbit, holds at least [atLeast]. */
 internal fun TriggerRows.variable(task: String, symbol: String, atLeast: Int) {
     trigger("dbrow.$task", LeagueTaskTrigger.Var) {
         columnRSCM(if (symbol.startsWith("varp.")) VARP else VARBIT, symbol)

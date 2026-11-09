@@ -5,8 +5,6 @@ import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
 
 /**
- * The Demonic Pacts tutorial's `screenhighlight` pages, one row per page, copied from the
- * `highlight_screen` / `highlight_screen_component` and `highlight_textbox` calls in `rsprox-1098`.
  * [HINT] is the `hnt_selected_hint` the tour runs under. A row frames either a fixed box
  * ([OFF_X]..[OFF_W]) or, when [FOCUS] is set, the box around [FOCUS] (child [FOCUS_SUB]) laid out
  * in [FOCUS_OUTER]. Every column is written on every row; unused component columns hold -1.

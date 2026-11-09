@@ -31,7 +31,6 @@ public class LeagueTasks @Inject constructor(private val eventBus: EventBus) {
     public fun isComplete(player: Player, index: Int): Boolean =
         LeagueTaskBits.isSet(player.vars[completedVarp(index)], index)
 
-    /** Completes [task], an `action` dbrow, if it is in the player's league and not yet done. */
     public fun complete(player: Player, task: Int): Boolean {
         val league = leagueOf(player) ?: return false
         val index = league.indexOf(task) ?: return false

@@ -18,9 +18,8 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /**
- * The league side panel in the journal tab and the task menu it opens. The list, its colours,
- * counts and search are drawn by the client from the cache; the server only keeps the filter and
- * search varbits, as in the Demonic Pacts captures.
+ * The client draws the task list, its colours, counts and search from the cache; the server only
+ * keeps the filter and search varbits.
  */
 class LeagueMenuScript
 @Inject
@@ -38,7 +37,7 @@ constructor(
         }
 
         onIfOverlayButton("component.league_side_panel:tasks_button") {
-            if (!tutorial.onMenuButton(player, LeagueMenu.Tasks)) {
+            if (!tutorial.takesMenuButton(player, LeagueMenu.Tasks)) {
                 player.ifOpenOverlay("interface.league_tasks", eventBus)
             }
         }

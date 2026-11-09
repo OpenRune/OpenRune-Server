@@ -1,6 +1,5 @@
 package org.rsmod.content.events.leaguetasks.pack
 
-/** Teleport spells other than home teleports; every one of them costs law runes. */
 private val LAW_TELEPORTS =
     arrayOf(
         "obj.25_varrock_teleport",
@@ -37,8 +36,8 @@ private val LAW_TELEPORTS =
     )
 
 /**
- * Spell tasks. Several spells reuse odd obj symbols (`br_`, `placeholder_`, `cert_`) that the
- * cache gives them; these are the objs `SpellTeleportScript` casts.
+ * Several spells reuse odd obj symbols (`br_`, `placeholder_`, `cert_`) that the cache gives them;
+ * these are the objs `SpellTeleportScript` casts.
  */
 internal fun TriggerRows.magicTasks() {
     spell("league_task_teleport_using_law_runes", *LAW_TELEPORTS)

@@ -43,7 +43,6 @@ public class LeagueRegions @Inject constructor(private val areas: AreaChecker) {
     public fun isUnlocked(player: Player, region: Int): Boolean =
         SELECTIONS.any { player.vars[it] == region }
 
-    /** The region that locks [coords] for [player], or null when it is open to them. */
     public fun lockedRegion(player: Player, coords: CoordGrid): RegionDataRow? {
         var locked: Int? = null
         for ((region, area) in areaByRegion) {
@@ -58,7 +57,6 @@ public class LeagueRegions @Inject constructor(private val areas: AreaChecker) {
         return locked?.let(rowByRegion::get)
     }
 
-    /** The first slot whose threshold [player] has reached but which holds no region yet. */
     public fun pendingSlot(player: Player): Int? {
         val total = player.vars["varbit.league_total_tasks_completed"]
         for ((slot, threshold) in slotThresholds.withIndex()) {
@@ -75,7 +73,6 @@ public class LeagueRegions @Inject constructor(private val areas: AreaChecker) {
     public fun allSlotsUsed(player: Player): Boolean =
         slotThresholds.indices.all { player.vars[SELECTIONS[it]] != 0 }
 
-    /** The only region [slot] accepts, as `[proc,league_force_region_choice]` decides. */
     public fun forcedRegion(player: Player, slot: Int): Int? =
         if (player.vars["varbit.league_type"] == DEMONIC_PACTS) {
             DEMONIC_PACTS_FORCED.getOrNull(slot)
@@ -83,7 +80,6 @@ public class LeagueRegions @Inject constructor(private val areas: AreaChecker) {
             MISTHALIN.takeIf { slot == 0 }
         }
 
-    /** Regions the area menu hides for this league (`[proc,script3101]`). */
     public fun isHidden(player: Player, region: Int): Boolean =
         player.vars["varbit.league_type"] == DEMONIC_PACTS && region == MISTHALIN
 

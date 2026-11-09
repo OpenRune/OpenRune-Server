@@ -36,7 +36,6 @@ public class League(
     internal companion object {
         const val NO_ROW = -1
 
-        /** Every league whose struct names a task enum, keyed by `varbit.league_type`. */
         fun loadAll(): Map<Int, League> {
             val leagues = mutableMapOf<Int, League>()
             for ((type, structId) in enum<Int, Int>("league_types")) {

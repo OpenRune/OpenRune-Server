@@ -238,7 +238,6 @@ internal fun TriggerRows.interactTasks() {
     )
 }
 
-/** Met when option [option] (any when 0) finishes on one of [targets], npcs or locs. */
 private fun TriggerRows.interact(
     task: String,
     option: Int,

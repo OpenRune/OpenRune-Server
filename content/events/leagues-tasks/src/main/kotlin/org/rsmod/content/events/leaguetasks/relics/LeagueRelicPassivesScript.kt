@@ -61,7 +61,7 @@ class LeagueRelicPassivesScript @Inject constructor(private val passives: League
         }
     }
 
-    /** The drain runs after timers, so the orb shows 98-99% while running (accepted, 2026-11-05). */
+    /** The drain runs after timers, so the orb shows 98-99% while running. */
     private fun Player.refillRunEnergy() {
         if (runEnergy < constants.run_max_energy) {
             runEnergy = constants.run_max_energy

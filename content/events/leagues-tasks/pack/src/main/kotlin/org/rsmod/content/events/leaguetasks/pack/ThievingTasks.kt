@@ -243,7 +243,6 @@ private fun TriggerRows.pickpocket(
     }
 }
 
-/** Met by stealing from one of [stalls]; [obj] limits it to that item. */
 private fun TriggerRows.steal(
     task: String,
     vararg stalls: String,

@@ -70,10 +70,6 @@ internal fun TriggerRows.skillingTasks() {
     objTask("league_task_bury_ourg_bone", LeagueTaskTrigger.Bury, "obj.zogre_ancestral_bones_ourg")
 }
 
-/**
- * Met by making one of [objs] (any product of [stat] when none are given) with any of [tools], in
- * any of [areas].
- */
 internal fun TriggerRows.product(
     task: String,
     stat: String,
@@ -102,7 +98,6 @@ internal fun TriggerRows.spell(task: String, vararg spells: String) {
     trigger("dbrow.$task", LeagueTaskTrigger.Spell) { columnRSCM(OBJ, spells.asList()) }
 }
 
-/** A [trigger] row met by any of [objs], or by any item when none are given. */
 internal fun TriggerRows.objTask(
     task: String,
     trigger: LeagueTaskTrigger,

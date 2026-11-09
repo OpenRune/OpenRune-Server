@@ -45,7 +45,7 @@ constructor(
 
         onIfModalButton("component.league_tutorial_main:button_1") {
             if (tutorial.step(player) == WELCOME) {
-                // UNVERIFIED: "Exit Leagues" was never clicked in a capture; logging out is a guess.
+                // UNVERIFIED: logging out on "Exit Leagues" is a guess.
                 logOut()
             } else {
                 tutorial.finish(player)

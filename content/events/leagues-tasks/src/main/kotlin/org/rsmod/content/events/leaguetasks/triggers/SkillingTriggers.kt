@@ -95,7 +95,6 @@ class SkillingTriggers @Inject constructor(private val progress: LeagueTaskProgr
     private fun record(player: Player, rows: List<LeagueTaskRequirement>, amount: Int = 1) =
         progress.record(player, rows, amount)
 
-    /** One kind's rows by the obj they name, plus the rows that take any obj. */
     private inner class ObjRows(trigger: LeagueTaskTrigger) {
         private val byObj = progress.rowsByObj(trigger)
         private val anyObj = progress.rowsForAnyObj(trigger)

@@ -18,11 +18,6 @@ import org.rsmod.game.world.WorldType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Pact points and the pact tree as captured in `rsprox-1098` and `rsprox-1102`: each task in
- * `enum.league_6_pact_tasks` earns a point, and a spend arrives as the node list the client sends
- * from `talent_tree:data_layer` (`[proc,talent_tree_apply_changes]`).
- */
 class LeaguePactsScript
 @Inject
 constructor(
@@ -40,7 +35,7 @@ constructor(
         }
 
         onIfOverlayButton("component.league_side_panel:mastery_button") {
-            if (!tutorial.onMenuButton(player, LeagueMenu.Pacts)) {
+            if (!tutorial.takesMenuButton(player, LeagueMenu.Pacts)) {
                 pacts.openTree(player)
             }
         }

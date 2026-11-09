@@ -31,10 +31,8 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /**
- * The area menu (`trailblazer_areas`) as captured in `rsprox-1098` (Karamja at 80 tasks) and
- * `rsprox-1102` (Tirannwn): the milestone announcement, the per-region view, "Teleport to" for an
- * unlocked region and the unlock itself. The map, shields and confirm panel are client-side; the
- * server only gets shield clicks, `select_button` and `confirm_button`.
+ * The map, shields and confirm panel of `trailblazer_areas` are client-side; the server only gets
+ * shield clicks, `select_button` and `confirm_button`.
  */
 class LeagueAreasScript
 @Inject
@@ -49,7 +47,7 @@ constructor(
 
     override fun ScriptContext.startup() {
         onIfOverlayButton("component.league_side_panel:areas_button") {
-            if (!tutorial.onMenuButton(player, LeagueMenu.Areas)) {
+            if (!tutorial.takesMenuButton(player, LeagueMenu.Areas)) {
                 player.openAreas()
             }
         }
@@ -121,13 +119,12 @@ constructor(
             component("confirm_cancel"),
             component("loading"),
             component("header"),
-            // UNVERIFIED: no capture of a state-3 view; empty falls back to the client's
-            // "That area is unavailable."
+            // UNVERIFIED: the state-3 text; empty falls back to the client's "That area is
+            // unavailable."
             "",
         )
     }
 
-    /** The select button's mode in `[proc,league_areas_show_detailed]`. */
     private fun viewState(player: Player, region: Int): Int {
         if (regions.isUnlocked(player, region)) {
             return VIEW_UNLOCKED
@@ -174,9 +171,9 @@ constructor(
             return
         }
         regions.select(player, slot, region.regionId)
-        // UNVERIFIED: the captures never show this reset; it re-arms the next milestone message.
+        // UNVERIFIED: this reset re-arms the next milestone message.
         vars["varbit.league_area_available"] = 0
-        // TODO: quests and diary tasks the area auto-completes (rsprox-1098 line 364661 onward).
+        // TODO: quests and diary tasks the area auto-completes.
         val name = region.name
         mes("Congratulations, you've unlocked a new area: ${league.messageColour}$name</col>.")
         tasks.updateProgressBar(player)

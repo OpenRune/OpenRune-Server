@@ -93,16 +93,13 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
     public fun rows(trigger: LeagueTaskTrigger): List<LeagueTaskRequirement> =
         rowsByTrigger[trigger].orEmpty()
 
-    /** [trigger] rows keyed by each obj they list. */
     public fun rowsByObj(trigger: LeagueTaskTrigger): Map<Int, List<LeagueTaskRequirement>> =
         rows(trigger).flatMap { row -> row.objs.map { it to row } }
             .groupBy({ it.first }, { it.second })
 
-    /** [trigger] rows that list no obj, so any obj meets them. */
     public fun rowsForAnyObj(trigger: LeagueTaskTrigger): List<LeagueTaskRequirement> =
         rows(trigger).filter { it.objs.isEmpty() }
 
-    /** Completes [task] if it is in the player's league, not yet done, and every row is met. */
     public fun check(player: Player, task: Int) {
         val league = tasks.leagueOf(player) ?: return
         val index = league.indexOf(task) ?: return
@@ -158,7 +155,6 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
         }
     }
 
-    /** Completes every task whose requirements are all state the player already has. */
     public fun checkState(player: Player) {
         for (trigger in LeagueTaskTrigger.entries) {
             if (trigger.isState) {

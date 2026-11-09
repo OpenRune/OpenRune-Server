@@ -17,7 +17,7 @@ class LeagueRegionLockScript @Inject constructor(private val regions: LeagueRegi
                 return@onEvent
             }
             val locked = regions.lockedRegion(player, dest) ?: return@onEvent
-            // UNVERIFIED: wording borrowed from the charter refusal; no teleport refusal captured.
+            // UNVERIFIED: wording borrowed from the charter refusal.
             refusal = "You haven't unlocked access to the <col=ff0000>${locked.name}</col> area."
         }
     }

@@ -14,7 +14,6 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.ui.UserInterface
 
-/** Runs [ScreenHighlightTour]s: opens `screenhighlight` in a tour's host and pages through it. */
 @Singleton
 public class ScreenHighlightTours @Inject constructor(private val eventBus: EventBus) {
     private val tours = HashMap<Int, ScreenHighlightTour>()
@@ -36,7 +35,7 @@ public class ScreenHighlightTours @Inject constructor(private val eventBus: Even
         player.ifSetEvents("component.screenhighlight:pausebutton", -1..-1, IfEvent.PauseButton)
     }
 
-    /** Sends [page]; [step] is the `hnt_hint_step` it is shown under, normally the page itself. */
+    /** [step] is the `hnt_hint_step` the page is shown under, normally the page itself. */
     public fun show(player: Player, tour: ScreenHighlightTour, page: Int, step: Int = page) {
         val shown = tour.pages[page]
         tour.onPage(player, page)

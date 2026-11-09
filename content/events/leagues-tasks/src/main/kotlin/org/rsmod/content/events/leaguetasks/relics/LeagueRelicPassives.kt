@@ -6,10 +6,8 @@ import org.rsmod.api.table.LeagueRelicPassiveRow
 import org.rsmod.game.entity.Player
 
 /**
- * The relic tier passives a player has, from `dbtable.league_relic_passive`. A tier's passives
- * apply once `league_points_claimed` reaches its points, whether or not its relic was picked:
- * in `rsprox-1102` Abundance's bonus xp went from 16 (2 x 8) to 24 (2 x 12) when the player
- * crossed 2,600 points, about two thousand lines before they chose their tier 4 relic.
+ * A tier's passives apply once `league_points_claimed` reaches its points, whether or not its relic
+ * was picked.
  */
 @Singleton
 public class LeagueRelicPassives @Inject constructor(relics: LeagueRelics) {

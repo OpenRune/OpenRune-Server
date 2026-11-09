@@ -23,8 +23,8 @@ constructor(private val homeTeleport: LeagueHomeTeleport, private val tasks: Lea
                 homeTeleport.start(this, YAMAS_LAIR, YAMAS_LAIR_RADIUS)
                 return@onIfOverlayButton
             }
-            // UNVERIFIED: Cast landed in Civitas 4 times out of 5 in rsprox-1098 and once in
-            // Yama's Lair; what picks between them is unknown.
+            // UNVERIFIED: Cast usually lands in Civitas but sometimes in Yama's Lair; the rule is
+            // unknown.
             val home = tasks.leagueOf(player)?.home ?: return@onIfOverlayButton
             homeTeleport.start(this, home, CIVITAS_RADIUS)
         }
@@ -35,7 +35,7 @@ constructor(private val homeTeleport: LeagueHomeTeleport, private val tasks: Lea
     }
 
     private companion object {
-        // UNVERIFIED: captured landings were x 1502, y 5591 to 5594; centre and radius fitted.
+        // UNVERIFIED: centre and radius are fitted to a handful of landings.
         val YAMAS_LAIR = CoordGrid(1502, 5592, 0)
         const val YAMAS_LAIR_RADIUS = 2
         const val CIVITAS_RADIUS = 1

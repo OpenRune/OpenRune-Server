@@ -41,7 +41,6 @@ public class LeagueTaskRequirement(
     /** `dbtable.collection_log_categories` rows; empty means the whole log. */
     public val collections: List<Int> = emptyList(),
 ) {
-    /** The varp a [varp] or [varbit] requirement is stored in. */
     public val baseVarp: Int?
         get() = varbit?.varp ?: varp?.id
 

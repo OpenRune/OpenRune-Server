@@ -5,10 +5,9 @@ import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
 
 /**
- * The passive effects each relic tier grants once its points are reached, from the tier passive
- * structs' `league_relic_passive_description` (Demonic Pacts: structs 1144-1152). A row only sets
- * what changes at its tier; 0 and false mean "keep the lower tier's value". Passives with no game
- * system behind them yet (farming ticks, minigame points, clue scroll boxes) have no column.
+ * A row only sets what changes at its tier; 0 and false mean "keep the lower tier's value".
+ * Passives with no game system behind them yet (farming ticks, minigame points, clue scroll boxes)
+ * have no column.
  */
 object LeagueRelicPassiveTable {
     const val LEAGUE = 0

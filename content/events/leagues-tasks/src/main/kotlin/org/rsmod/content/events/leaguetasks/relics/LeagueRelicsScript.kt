@@ -25,11 +25,7 @@ import org.rsmod.game.world.WorldType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The relic menu: open, view a relic and confirm a choice, as in `rsprox-1098`. The client draws
- * the grid itself; only `clickzones` and `confirm_button` reach the server. Relic effects are not
- * part of this script.
- */
+/** The client draws the relic grid itself; only `clickzones` and `confirm_button` reach the server. */
 class LeagueRelicsScript
 @Inject
 constructor(
@@ -42,7 +38,7 @@ constructor(
 
     override fun ScriptContext.startup() {
         onIfOverlayButton("component.league_side_panel:relics_button") {
-            if (!tutorial.onMenuButton(player, LeagueMenu.Relics)) {
+            if (!tutorial.takesMenuButton(player, LeagueMenu.Relics)) {
                 player.openRelics()
             }
         }
@@ -89,7 +85,7 @@ constructor(
         )
     }
 
-    /** 2 can be picked, 1 is the tier's pick, 0 otherwise (another pick in the tier is a guess). */
+    /** UNVERIFIED: the state for a relic whose tier already has another pick. */
     private fun Player.viewState(tier: LeagueRelics.RelicTier, relic: LeagueRelics.Relic): Int {
         val selected = relics.selected(this, tier)
         return when {

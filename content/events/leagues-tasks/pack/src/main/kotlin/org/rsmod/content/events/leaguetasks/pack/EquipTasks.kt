@@ -24,7 +24,6 @@ internal fun TriggerRows.equipTasks() {
     )
 }
 
-/** Met when [worn] of [objs] are worn at once; a full set lists one item per slot. */
 internal fun TriggerRows.equip(task: String, vararg objs: String, worn: Int = 1) {
     trigger("dbrow.$task", LeagueTaskTrigger.Equip) {
         columnRSCM(OBJ, objs.asList())

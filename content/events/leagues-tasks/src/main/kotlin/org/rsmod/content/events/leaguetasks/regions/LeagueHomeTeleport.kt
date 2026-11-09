@@ -13,9 +13,8 @@ import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.map.CoordGrid
 
 /**
- * The Demonic Pacts home teleport, used by the spellbook's league home teleport and the area
- * menu's "Teleport to" (`rsprox-1102`): eight stages three ticks apart, each a player seq plus a
- * map anim on the caster's tile, then the move one tick after the last stage. Walking cancels it.
+ * Eight stages three ticks apart, each a player seq plus a map anim on the caster's tile, then the
+ * move one tick after the last stage. Walking cancels it.
  */
 @Singleton
 public class LeagueHomeTeleport
@@ -27,7 +26,7 @@ constructor(
 ) {
     public fun start(access: ProtectedAccess, dest: CoordGrid, landingRadius: Int) {
         with(access) {
-            // UNVERIFIED: captured refusals came while moving or in combat; other causes unknown.
+            // UNVERIFIED: refusal causes other than moving and combat.
             if (player.routeDestination.isNotEmpty() || isInCombat()) {
                 mes("You can't use that teleport at the moment.")
                 return

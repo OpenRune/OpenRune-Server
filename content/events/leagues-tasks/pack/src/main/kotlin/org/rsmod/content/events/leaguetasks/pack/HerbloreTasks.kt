@@ -2,9 +2,8 @@ package org.rsmod.content.events.leaguetasks.pack
 
 private const val HERBLORE = "stat.herblore"
 
-/** The four doses of a potion, from a symbol pattern with `#` where the dose digit goes. */
-private fun doses(pattern: String): Array<String> =
-    (1..4).map { "obj." + pattern.replace("#", it.toString()) }.toTypedArray()
+private fun doses(patternWithDoseHash: String): Array<String> =
+    (1..4).map { "obj." + patternWithDoseHash.replace("#", it.toString()) }.toTypedArray()
 
 internal fun TriggerRows.herbloreTasks() {
     product("league_task_clean_a_grimy_guam", HERBLORE, "obj.guam_leaf")

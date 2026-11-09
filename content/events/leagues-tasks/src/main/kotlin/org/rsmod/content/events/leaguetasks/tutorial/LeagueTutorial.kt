@@ -31,10 +31,9 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 
 /**
- * The Demonic Pacts tutorial from `rsprox-1098`, driven by `varbit.league_tutorial_completed`
- * (the step). The client draws the welcome modal's text for each step from the cache, so the
- * server only moves the step on, opens the menus with their tutorial events and runs the four
- * `screenhighlight` tours whose pages are `dbtable.league_tutorial_hint`.
+ * The step is `varbit.league_tutorial_completed`. The client draws the welcome modal's text for each
+ * step from the cache, so the server only moves the step on, opens the menus with their tutorial
+ * events and runs the four `screenhighlight` tours whose pages are `dbtable.league_tutorial_hint`.
  *
  * Steps 0, 3, 4, 5, 7, 9, 11 and 13 wait on the modal; 6, 8, 10 and 12 are the tours. A relog
  * resumes at the last modal step, so the player repeats the click that opens the tour.
@@ -57,8 +56,7 @@ constructor(
 
     public fun isActive(player: Player): Boolean = step(player) < COMPLETE
 
-    /** Called by each side panel button; true when the tutorial took the click. */
-    public fun onMenuButton(player: Player, menu: LeagueMenu): Boolean {
+    public fun takesMenuButton(player: Player, menu: LeagueMenu): Boolean {
         if (!isActive(player)) {
             return false
         }
@@ -223,7 +221,7 @@ constructor(
         tours.show(player, relicsTour, last, step = relicsTour.pages.size)
     }
 
-    /** UNVERIFIED: reopening after a close without a pick was never captured. */
+    /** UNVERIFIED: how the menu reopens after a close without a pick. */
     private fun reopenRelics(player: Player) {
         player.ifOpenMainModal("interface.league_relics", eventBus, -1, -3)
         player.ifSetEvents("component.league_relics:clickzones", 0..23, IfEvent.Op1)
