@@ -62,6 +62,7 @@ import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.hit.takeInstantHit
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.input.ResumePCountDialogInput
+import org.rsmod.api.player.input.ResumePLongDialogInput
 import org.rsmod.api.player.input.ResumePObjDialogInput
 import org.rsmod.api.player.input.ResumePStringDialogInput
 import org.rsmod.api.player.input.ResumePauseButtonInput
@@ -2910,6 +2911,21 @@ public class ProtectedAccess(
         mesLayerMode7(player, title)
         val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
         val input = coroutine.pause(ResumePCountDialogInput::class)
+        return resumeWithMainModalProtectedAccess(input.count, modal)
+    }
+
+    /**
+     * Suspends the current script until the player submits a signed 64-bit value.
+     *
+     * Open the long input dialog through a clientscript before calling this method. The
+     * response resumes this coroutine only while it is awaiting long input.
+     *
+     * @return The submitted value, including its sign.
+     * @throws ProtectedAccessLostException If protected access was lost while waiting.
+     */
+    public suspend fun awaitLongDialog(): Long {
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
+        val input = coroutine.pause(ResumePLongDialogInput::class)
         return resumeWithMainModalProtectedAccess(input.count, modal)
     }
 

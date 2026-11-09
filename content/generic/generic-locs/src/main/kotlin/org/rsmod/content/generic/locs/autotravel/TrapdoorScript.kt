@@ -25,7 +25,7 @@ class TrapdoorScript @Inject constructor(private val locRepo: LocRepository, pri
     private suspend fun ProtectedAccess.swap(loc: BoundLocInfo, next: dev.openrune.types.ObjectServerType) {
         arriveDelay()
         locRepo.del(loc, DURATION)
-        locRepo.add(loc.coords, next, DURATION, loc.angle, loc.shape)
+        locRepo.add(loc.coords, next.internalName, DURATION, loc.angle, loc.shape)
     }
 
     private companion object {

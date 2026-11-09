@@ -60,12 +60,26 @@ public fun locAddChangePacket(coords: CoordGrid, id: Int, shape: Int, angle: Int
     }
 }
 
-/** @see [PrivateLocs.addChange] */
+/**
+ * Displays scenery from the [loc] gameval at [coords] for this player.
+ *
+ * [shape] selects the scenery layer and [angle] sets its rotation. The update applies
+ * within the player's current build area.
+ *
+ * @see PrivateLocs.addChange
+ */
 public fun Player.locAddChangePrivate(coords: CoordGrid, loc: String, shape: Int, angle: Int) {
     PrivateLocs.addChange(this, coords, loc.asRSCM(RSCMType.LOC), shape, angle)
 }
 
-/** @see [PrivateLocs.del] */
+/**
+ * Hides scenery at [coords] for this player, using [shape] and [angle] to identify its layer
+ * and rotation.
+ *
+ * Use [locAddChangePrivate] to restore the scenery before the client rebuilds the zone.
+ *
+ * @see PrivateLocs.del
+ */
 public fun Player.locDelPrivate(coords: CoordGrid, shape: Int, angle: Int) {
     PrivateLocs.del(this, coords, shape, angle)
 }

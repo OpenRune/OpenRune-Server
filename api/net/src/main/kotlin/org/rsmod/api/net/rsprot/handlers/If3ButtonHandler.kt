@@ -29,29 +29,14 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
     private val If3Button.asComponent: Component
         get() = Component(interfaceId, componentId)
 
-    private val If3Button.buttonOp: IfButtonOp
-        get() =
-            when (op) {
-                1 -> IfButtonOp.Op1
-                2 -> IfButtonOp.Op2
-                3 -> IfButtonOp.Op3
-                4 -> IfButtonOp.Op4
-                5 -> IfButtonOp.Op5
-                6 -> IfButtonOp.Op6
-                7 -> IfButtonOp.Op7
-                8 -> IfButtonOp.Op8
-                9 -> IfButtonOp.Op9
-                10 -> IfButtonOp.Op10
-                else -> throw NotImplementedError("Unhandled If3Button op: $this")
-            }
-
     @OptIn(InternalApi::class)
     override fun handle(player: Player, message: If3Button) {
+        // RsProt normalizes IF_BUTTONX and the older button packets to If3Button.
+        val buttonOp = IfButtonOp.entries.getOrNull(message.op - 1) ?: return
         val source = player.ui.gameframeSources.getOrNull(message.asComponent) ?: message.asComponent
         val componentType = ServerCacheManager.fromComponent(source.packed)
         val interfaceType = ServerCacheManager.fromInterface(message.asComponent.packed)
         val comsub = message.sub
-        val buttonOp = message.buttonOp
 
         if (player.componentClickDebug) {
             val name = RSCM.getReverseMapping(RSCMType.COMPONENT, message.asComponent.packed)
