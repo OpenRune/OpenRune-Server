@@ -1,8 +1,10 @@
 package org.rsmod.api.bosses.dsl
 
+import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.combat.commons.types.MeleeAttackType as EngineMeleeAttackType
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
@@ -20,8 +22,13 @@ fun resetAnim(): Effect = Effect.ResetAnim
 fun forceNext(ability: AbilityRef): Effect = Effect.ForceNext(ability.name)
 
 /** Plays [spot] on the caster (the boss npc itself), not on the target. */
-fun spotanim(spot: String, height: Int = 0, delay: Int = 0, slot: Int = 0): Effect =
-    Effect.Spotanim(spot, height, delay, slot)
+fun spotanim(
+    spot: String,
+    height: Int = 0,
+    delay: Int = 0,
+    slot: Int = 0,
+    target: TargetExpr? = null,
+): Effect = Effect.Spotanim(spot, height, delay, slot, target)
 fun say(text: String): Effect = Effect.Say(text)
 fun sound(synth: String, radius: Int = 10, at: TargetExpr.Single? = null, delay: Int = 0): Effect =
     Effect.Sound(synth, radius, at, delay)
@@ -145,6 +152,27 @@ fun debris(
 ): Effect =
     Effect.Debris(telegraph, damage, type, impact, windup, targetRadius, scatterRadius, count, center)
 
+fun bleed(
+    duration: Int,
+    movingDamage: DamageExpr,
+    applyDamage: DamageExpr? = null,
+    stillDamage: DamageExpr? = null,
+    stillInterval: Int = 0,
+    hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
+    onApply: Effect? = null,
+    onMovingHit: Effect? = null,
+): Effect =
+    Effect.Bleed(
+        duration,
+        movingDamage,
+        applyDamage,
+        stillDamage,
+        stillInterval,
+        hitmark,
+        onApply,
+        onMovingHit,
+    )
+
 fun summon(
     npc: String,
     count: Int = 1,
@@ -246,6 +274,8 @@ fun randomOf(name: String): TargetExpr.Single = TargetExpr.RandomOfBound(name)
 
 fun tilesEmpty(name: String): Condition = Condition.TilesEmpty(name)
 
+fun chance(chance: Int, outOf: Int): Condition = Condition.Chance(chance, outOf)
+
 fun hitStyle(type: HitType): Condition = Condition.HitStyle(type)
 
 fun hitDemonbane(): Condition = Condition.HitDemonbane
@@ -345,10 +375,17 @@ class WeightedRandomBuilder internal constructor() {
         private val weight: Int,
         private val requires: Condition,
         private val cooldown: Int,
+        private val persistCooldown: Boolean,
     ) {
         operator fun unaryPlus() {
             this@WeightedRandomBuilder.entries +=
-                WeightedRef(ability = abilityName, weight = weight, cooldown = cooldown, requires = requires)
+                WeightedRef(
+                    ability = abilityName,
+                    weight = weight,
+                    cooldown = cooldown,
+                    persistCooldown = persistCooldown,
+                    requires = requires,
+                )
         }
     }
 
@@ -357,14 +394,16 @@ class WeightedRandomBuilder internal constructor() {
         weight: Int,
         requires: Condition = Condition.Always,
         cooldown: Int = 0,
-    ): RandomPending = RandomPending(ability.name, weight, requires, cooldown)
+        persistCooldown: Boolean = false,
+    ): RandomPending = RandomPending(ability.name, weight, requires, cooldown, persistCooldown)
 
     fun random(
         ability: String,
         weight: Int,
         requires: Condition = Condition.Always,
         cooldown: Int = 0,
-    ): RandomPending = RandomPending(ability, weight, requires, cooldown)
+        persistCooldown: Boolean = false,
+    ): RandomPending = RandomPending(ability, weight, requires, cooldown, persistCooldown)
 
     internal fun build(): Selector.WeightedRandom = Selector.WeightedRandom(entries)
 }
@@ -422,3 +461,4 @@ val Dragonfire: HitType = HitType.Dragonfire
 val DragonfireMetal: HitType = HitType.DragonfireMetal
 val WyvernIce: HitType = HitType.WyvernIce
 val Typeless: HitType = HitType.Typeless
+val MagicalRanged: AccuracyKind = AccuracyKind.MagicalRanged

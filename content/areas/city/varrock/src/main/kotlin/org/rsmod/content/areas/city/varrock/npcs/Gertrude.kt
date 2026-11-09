@@ -18,6 +18,7 @@ import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest.Compa
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest.Companion.STAGE_KITTEN_RETURNED
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -103,13 +104,12 @@ constructor(private val care: CatCare, private val gertrudesCat: GertrudesCatQue
             return false
         }
         val raisingAnother = hasYoungCat(player)
-        if (access.invAdd(inv, kitten, 1).failure) {
+        if (!gertrudesCat.quest.setQuestStage(access, STAGE_COMPLETE, listOf(InvObj(kitten)))) {
             return false
         }
         if (!raisingAnother) {
             care.resetKitten(player)
         }
-        gertrudesCat.quest.setQuestStage(access, STAGE_COMPLETE)
         return true
     }
 

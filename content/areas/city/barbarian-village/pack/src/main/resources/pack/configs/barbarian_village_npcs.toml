@@ -1,0 +1,8 @@
+[[npc]]
+id = "npc.peksa"
+inherit = "npc.peksa"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 600
+"param.shop_change_percentage" = 10

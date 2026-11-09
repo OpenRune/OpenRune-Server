@@ -1,0 +1,6 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.knights_sword_progress"
+varp = "varp.squire"
+startBit = 0
+endBit = 2

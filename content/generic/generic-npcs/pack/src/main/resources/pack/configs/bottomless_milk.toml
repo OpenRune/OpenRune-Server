@@ -1,0 +1,23 @@
+[[enum]]
+isServerOnly = true
+id = "enum.bottomless_milk_types"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.bucket_milk"
+1 = "obj.chocolaty_milk"
+2 = "obj.chickenquest_milky_mixture"
+3 = "obj.hangover_cure"
+
+[[enum]]
+isServerOnly = true
+id = "enum.bottomless_milk_names"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "regular milk"
+1 = "chocolatey milk"
+2 = "creamy milk"
+3 = "hangover cure"

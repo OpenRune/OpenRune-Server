@@ -117,7 +117,7 @@ object SlayerAssignmentDialogue {
                 return
             }
             is AssignmentRoll.Boss -> {
-                if (offerBossTaskAssignment(masterNpcId, roll.masterTask, onAssigned)) {
+                if (offerBossTaskAssignment(masterNpcId, roll.boss, onAssigned)) {
                     return
                 }
                 when (

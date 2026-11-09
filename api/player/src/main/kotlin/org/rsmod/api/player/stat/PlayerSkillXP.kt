@@ -12,10 +12,15 @@ import org.rsmod.game.stat.PlayerSkillXPTable
 import org.rsmod.game.stat.PlayerStatMap
 
 public object PlayerSkillXP {
-    public fun internalAddXP(player: Player, stat: String, xp: Double, rate: Double): Int =
-        player.addXP(stat, xp, rate)
+    public fun internalAddXP(
+        player: Player,
+        stat: String,
+        xp: Double,
+        rate: Double,
+        source: XpSource = XpSource.Natural,
+    ): Int = player.addXP(stat, xp, rate, source)
 
-    private fun Player.addXP(stat: String, xp: Double, rate: Double): Int {
+    private fun Player.addXP(stat: String, xp: Double, rate: Double, source: XpSource): Int {
         val fineXp = PlayerStatMap.toFineXP(xp * rate)
         if (fineXp.isInfinite()) {
             throw IllegalArgumentException("Total XP being added is too high! (xp=$xp, rate=$rate)")
@@ -26,7 +31,7 @@ public object PlayerSkillXP {
             updateStat(stat)
             return 0
         }
-        checkLevelUp(stat)
+        checkLevelUp(stat, source)
         updateStat(stat)
         return PlayerStatMap.normalizeFineXP(addedFineXp)
     }
@@ -42,7 +47,7 @@ public object PlayerSkillXP {
     }
 
     @OptIn(InternalApi::class)
-    private fun Player.checkLevelUp(internal: String) {
+    private fun Player.checkLevelUp(internal: String, source: XpSource) {
         val baseLevel = statBase(internal)
 
         val stat = ServerCacheManager.getStats(internal.asRSCM(RSCMType.STAT))
@@ -63,7 +68,9 @@ public object PlayerSkillXP {
             }
 
             engineQueueChangeStat(stat)
-            engineQueueAdvanceStat(stat)
+            if (source == XpSource.Natural) {
+                engineQueueAdvanceStat(stat, previousLevel = baseLevel)
+            }
         }
 
         val combatLevel = calculateCombatLevel(this)
@@ -72,7 +79,7 @@ public object PlayerSkillXP {
             appearance.combatLevel = combatLevel
             // TODO: Should this update the entire combat tab or just the combat level vars?
             PlayerInterfaceUpdates.updateCombatLevel(this)
-            if (advanced) {
+            if (advanced && source == XpSource.Natural) {
                 engineQueueAdvanceCombat(combatLevel)
             }
         }

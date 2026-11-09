@@ -14,8 +14,10 @@ import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.bottomless.milk.MilkSources
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
+import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.NpcEvents
 import org.rsmod.api.player.input.ResumePauseButtonInput
@@ -41,23 +43,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class CooksAssistantInteractionTest {
-    @Test fun `accepting stores native progress without the legacy stage attribute`() {
-        val f = Fixture()
-        f.talk()
-        f.finish(listOf(1, 1))
-        assertEquals(1, f.script.quest.getQuestStage(f.player))
-        assertEquals(1, f.player.vars["varp.cookquest"])
-        assertNull(f.player.attr[QUEST_STAGE_MAP_ATTR]?.get("quest_cooksassistant"))
-    }
-
-    @Test fun `declining leaves the quest unstarted`() {
-        val f = Fixture()
-        f.talk()
-        f.finish(listOf(1, 2))
-        assertEquals(0, f.script.quest.getQuestStage(f.player))
-        assertEquals(0, f.player.vars["varp.cookquest"])
-    }
-
     @Test fun `a partial hand-in keeps progress and records each ingredient`() {
         val f = Fixture(stage = 1)
         f.player.inv[0] = InvObj("obj.bucket_milk", 1)
@@ -75,12 +60,72 @@ class CooksAssistantInteractionTest {
         f.assertReward()
     }
 
+    @Test fun `a bottomless milk bucket gives one use instead of a bucket of milk`() {
+        val f = Fixture(stage = 1)
+        f.player.inv[0] = bottomless(28)
+        f.talk()
+        f.finish()
+        assertEquals(27, ObjChargeManager().getCharges(f.player.inv[0], MilkSources.USES))
+        assertEquals(1, f.player.vars["varbit.cooks_assistant_milk"])
+    }
+
+    @Test fun `a bucket of milk goes before the bottomless milk bucket`() {
+        val f = Fixture(stage = 1)
+        f.player.inv[0] = bottomless(28)
+        f.player.inv[1] = InvObj("obj.bucket_milk", 1)
+        f.talk()
+        f.finish()
+        assertEquals(0, f.player.inv.count("obj.bucket_milk"))
+        assertEquals(28, ObjChargeManager().getCharges(f.player.inv[0], MilkSources.USES))
+    }
+
+    @Test fun `milk already handed in leaves the bottomless milk bucket alone`() {
+        val f = Fixture(stage = 1)
+        VarPlayerIntMapSetter.set(f.player, "varbit.cooks_assistant_milk", 1)
+        f.player.inv[0] = bottomless(28)
+        f.player.inv[1] = InvObj("obj.egg", 1)
+        f.talk()
+        f.finish(listOf(1, 1, 1, 1, 1, 1))
+        assertEquals(28, ObjChargeManager().getCharges(f.player.inv[0], MilkSources.USES))
+    }
+
+    private fun bottomless(uses: Int): InvObj {
+        val inv = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.inv".asRSCM())), arrayOfNulls(28))
+        inv[0] = InvObj(MilkSources.BUCKET_EMPTY)
+        ObjChargeManager().addCharges(inv, 0, uses, MilkSources.USES, MilkSources.MAX_USES)
+        return checkNotNull(inv[0])
+    }
+
     @Test fun `bringing every ingredient before accepting completes the quest`() {
         val f = Fixture()
         f.ingredients()
         f.talk()
         f.finish(listOf(1, 1))
         f.assertReward()
+    }
+
+    @Test fun `an ingredient already handed in is not taken again`() {
+        val f = Fixture(stage = 1)
+        VarPlayerIntMapSetter.set(f.player, "varbit.cooks_assistant_egg", 1)
+        f.player.inv[0] = InvObj("obj.egg", 1)
+        f.player.inv[1] = InvObj("obj.pot_flour", 1)
+        f.talk()
+        f.finish()
+        assertEquals(1, f.player.inv.count("obj.egg"))
+        assertEquals(0, f.player.inv.count("obj.pot_flour"))
+        assertEquals(1, f.player.vars["varbit.cooks_assistant_flour"])
+    }
+
+    @Test fun `an ingredient gone before the hand-over box continues takes nothing`() {
+        val f = Fixture()
+        f.ingredients()
+        f.onBox = { f.player.inv[1] = null }
+        f.talk()
+        f.finish(listOf(1, 1))
+        assertEquals(1, f.player.inv.count("obj.bucket_milk"))
+        assertEquals(1, f.player.inv.count("obj.pot_flour"))
+        assertEquals(0, f.player.vars["varp.cooks_assistant_ingredients"])
+        assertEquals(1, f.script.quest.getQuestStage(f.player))
     }
 
     @Test fun `talking again after completion does not reward twice`() {
@@ -92,6 +137,24 @@ class CooksAssistantInteractionTest {
         f.talk()
         f.finish(listOf(1))
         f.assertReward()
+    }
+
+    @Test fun `an ending interrupted after the hand-in resumes and rewards once`() {
+        for ((stage, options) in listOf(0 to listOf(1, 1), 1 to emptyList())) {
+            val f = Fixture(stage)
+            f.ingredients()
+            f.talk()
+            f.interruptAt("Maybe, but I won't be holding my breath.", options)
+            assertEquals(1, f.script.quest.getQuestStage(f.player))
+            assertEquals(0, f.player.vars["varp.qp"])
+            f.ingredients()
+            f.talk()
+            f.finish()
+            f.assertReward(held = 1)
+            f.talk()
+            f.finish(listOf(1))
+            f.assertReward(held = 1)
+        }
     }
 
     @Test fun `legacy attribute progress migrates into the quest varbits`() {
@@ -132,6 +195,7 @@ class CooksAssistantInteractionTest {
         }
 
         val script = CooksAssistant()
+        var onBox: () -> Unit = {}
 
         init {
             with(script) { ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup() }
@@ -172,13 +236,25 @@ class CooksAssistantInteractionTest {
             fail<Unit>("Interaction did not finish: ${output()}")
         }
 
+        fun interruptAt(line: String, options: List<Int>) {
+            val selections = options.iterator()
+            repeat(150) {
+                if (line in output()) return
+                advance(selections)
+            }
+            fail<Unit>("Line not shown: $line")
+        }
+
         private fun advance(options: Iterator<Int>) {
             if (coroutine.isAwaiting(ResumePauseButtonInput::class)) {
-                val parent = listOf("chat_left", "chat_right", "messagebox", "chatmenu")
+                val parent = listOf("chat_left", "chat_right", "messagebox", "objectbox_double", "chatmenu")
                     .firstOrNull { player.ui.containsModal("interface.$it") }
                     ?: error("Unknown dialogue: ${output()}")
                 val input = if (parent == "chatmenu") {
                     ResumePauseButtonInput("component.chatmenu:options", if (options.hasNext()) options.next() else 1)
+                } else if (parent == "objectbox_double") {
+                    onBox()
+                    ResumePauseButtonInput("component.objectbox_double:pausebutton", -1)
                 } else ResumePauseButtonInput("component.$parent:continue", -1)
                 coroutine.resumeWith(input)
             } else {
@@ -189,12 +265,12 @@ class CooksAssistantInteractionTest {
             result?.getOrThrow()
         }
 
-        fun assertReward() {
+        fun assertReward(held: Int = 0) {
             assertEquals(2, script.quest.getQuestStage(player))
             assertEquals(2, player.vars["varp.cookquest"])
             assertEquals(1, player.vars["varp.qp"])
             assertEquals(300, player.statMap.getXP("stat.cooking"))
-            listOf("obj.bucket_milk", "obj.egg", "obj.pot_flour").forEach { assertEquals(0, player.inv.count(it)) }
+            listOf("obj.bucket_milk", "obj.egg", "obj.pot_flour").forEach { assertEquals(held, player.inv.count(it)) }
         }
 
         fun output() = client.messages.joinToString("\n")

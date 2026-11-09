@@ -2,8 +2,8 @@ package org.rsmod.content.skills.runecrafting.essencepouch
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseRunecraftingLvl
 import org.rsmod.api.script.onOpHeld1
@@ -117,7 +117,7 @@ class EssencePouchScript : PluginScript() {
 
         val amount = EssencePouch.storedAmount(player, tier)
         if (amount <= 0) {
-            mes("There are no essences in this pouch.")
+            mes(EMPTY_POUCH)
             return
         }
 
@@ -149,7 +149,7 @@ class EssencePouchScript : PluginScript() {
 
         val amount = EssencePouch.storedAmount(player, tier)
         if (amount <= 0) {
-            mes("There are no essences in this pouch.")
+            mes(EMPTY_POUCH)
             return
         }
 
@@ -157,11 +157,33 @@ class EssencePouchScript : PluginScript() {
         val essenceType =
             EssencePouch.storedEssenceTypeName(player, tier)
                 ?: EssencePouch.preferredEssenceType(player, tier)
-        val essenceName =
-            ServerCacheManager.getItem(essenceType.asRSCM(RSCMType.OBJ))?.name?.lowercase() ?: "essence"
-        mes("There ${if (amount == 1) "is" else "are"} $amount $essenceName in this pouch.")
+        val name = ServerCacheManager.getItem(essenceType.asRSCM(RSCMType.OBJ))?.name?.lowercase() ?: "essence"
+        val kind = name.removeSuffix("essence").trim().takeUnless { it.isEmpty() || it == "rune" }
+        val noun = if (amount == 1) "essence" else "essences"
+        val count = listOfNotNull(numberWord(amount), kind, noun).joinToString(" ")
+        mes("There ${if (amount == 1) "is" else "are"} $count in this pouch.")
         if (tier == EssencePouch.Tier.Colossal) {
             mes("It can hold up to $capacity essence.")
         }
+    }
+
+    private companion object {
+        const val EMPTY_POUCH = "There is no essence in this pouch."
+
+        val UNITS =
+            listOf(
+                "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+                "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
+                "eighteen", "nineteen",
+            )
+        val TENS = listOf("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety")
+
+        fun numberWord(n: Int): String =
+            when {
+                n >= 100 -> n.toString()
+                n < 20 -> UNITS[n]
+                n % 10 == 0 -> TENS[n / 10]
+                else -> "${TENS[n / 10]}-${UNITS[n % 10]}"
+            }
     }
 }

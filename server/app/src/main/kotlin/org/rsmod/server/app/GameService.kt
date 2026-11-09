@@ -11,6 +11,7 @@ import kotlin.system.measureNanoTime
 import kotlinx.coroutines.delay
 import org.rsmod.api.game.process.PluginScriptBootGate
 import org.rsmod.game.GameProcess
+import org.rsmod.plugin.loader.ExternalPluginLoader
 import org.rsmod.server.services.concurrent.ScheduledListenerService
 
 class GameService
@@ -80,6 +81,8 @@ constructor(
             logger.info { "Game service successfully shut down." }
         } catch (t: Throwable) {
             logger.error(t) { "Game service failed to shut down." }
+        } finally {
+            ExternalPluginLoader.releaseAllClassLoaders()
         }
     }
 

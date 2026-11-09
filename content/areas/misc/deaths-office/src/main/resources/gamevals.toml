@@ -1,0 +1,38 @@
+[gamevals.area]
+death_office = 32440
+
+[gamevals.dbtable]
+death_office_entrances = 64420
+
+[gamevals.dbrow]
+death_office_entrance_lumbridge = 59000
+death_office_entrance_falador = 59001
+death_office_entrance_seers = 59002
+death_office_entrance_edgeville = 59003
+death_office_entrance_ferox = 59004
+death_office_entrance_kourend = 59005
+death_office_entrance_prifddinas = 59006
+death_office_entrance_civitas = 59007
+music_modern_death_office = 59008
+
+[gamevals.varp]
+death_office_entrance = 64444
+death_office_tutorial = 64446
+death_office_coord = 64447
+
+[gamevals.varbit]
+death_tutorial_heard_gravestones = 64464
+death_tutorial_heard_fees = 64465
+death_tutorial_heard_timer = 64466
+death_tutorial_heard_kept_on_death = 64467
+
+[gamevals.queue]
+death_office_tutorial = 64420
+death_office_return = 64421
+death_office_drop = 64422
+
+[gamevals.droptrigger]
+death_office = 64420
+
+[gamevals.synth]
+deaths_domain_portal = 3952

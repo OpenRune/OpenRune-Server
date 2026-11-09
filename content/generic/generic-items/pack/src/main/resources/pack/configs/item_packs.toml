@@ -7,7 +7,7 @@ valueType = "OBJ"
 [enum.values]
 "obj.pack_fishing_bait" = "obj.fishing_bait"
 "obj.pack_compost" = "obj.bucket_compost"
-"obj.pack_plant_pot_compost" = "obj.plantpot_empty"
+"obj.pack_plant_pot_compost" = "obj.plantpot_compost"
 "obj.pack_sack" = "obj.sack_empty"
 "obj.pack_basket" = "obj.basket_empty"
 "obj.pack_feather" = "obj.feather"

@@ -24,9 +24,26 @@ gameplay:
     # Server-wide multiplier for drops flagged `boosted` (2.0 turns 1/512 into 1/256). Stacks with
     # each player's own multiplier (varp.drop_rate_multiplier, percent; 0 = unset).
     multiplier: 1.0
+  # Where new accounts start the "Level-up pop-up notifications" setting. false starts it at
+  # "Disabled": no level-up interface, but the message, fireworks and jingle still play. true starts
+  # it at "Show level only", as on live. Players can change it in the settings either way.
+  level-up-popups: false
+  # Log players out when their client reports them idle (its AFK timer, as on live). false keeps
+  # idle players logged in.
+  idle-logout: true
+  # Minutes between home teleport casts (Lumbridge, Edgeville, Arceuus), shared by all of them. 30
+  # as on live; 0 removes the cooldown.
+  home-teleport-cooldown: 30
+  # Random events (the Genie) appear during play, as on live. false turns the schedule off;
+  # `::randomevent` still summons one.
+  random-events: true
+  gravestones:
+    # Lost items go to a gravestone the player can reclaim; false drops them on the floor instead.
+    enabled: true
   quest-requirements:
-    # Temporary core-mechanics default. Use "respect-progress" when quest gates should use real
-    # quest state, or "virtual-completions" for league-style profiles.
+    # Bypass quest gates by default. Use "respect-progress" for saved quest progress,
+    # or "virtual-completions" to unlock selected quests for league-style profiles.
+    # Sleeping Giants persists completion when either bypass policy completes it.
     mode: "assume-completed"
     virtual-completions: []
     virtual-lines: []

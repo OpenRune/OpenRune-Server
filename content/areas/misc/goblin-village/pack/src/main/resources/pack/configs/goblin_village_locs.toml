@@ -1,0 +1,55 @@
+[[object]]
+id = "loc.goblin_outpost_poordoor"
+inherit = "loc.goblin_outpost_poordoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.goblin_outpost_openpoordoor"
+
+[[object]]
+id = "loc.goblin_outpost_openpoordoor"
+inherit = "loc.goblin_outpost_openpoordoor"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.goblin_outpost_poordoor"
+
+[[object]]
+id = "loc.goblin_outpost_poordoor_double_inner"
+inherit = "loc.goblin_outpost_poordoor_double_inner"
+contentGroup = "content.closed_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.goblin_outpost_openpoordoor_double_inner"
+"param.opensound" = "synth.nicedoor_open"
+"param.closesound" = "synth.nicedoor_close"
+
+[[object]]
+id = "loc.goblin_outpost_openpoordoor_double_inner"
+inherit = "loc.goblin_outpost_openpoordoor_double_inner"
+contentGroup = "content.opened_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.goblin_outpost_poordoor_double_inner"
+"param.opensound" = "synth.nicedoor_open"
+"param.closesound" = "synth.nicedoor_close"
+
+[[object]]
+id = "loc.goblin_outpost_poordoor_doubler_inner"
+inherit = "loc.goblin_outpost_poordoor_doubler_inner"
+contentGroup = "content.closed_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.goblin_outpost_openpoordoor_doubler_inner"
+"param.opensound" = "synth.nicedoor_open"
+"param.closesound" = "synth.nicedoor_close"
+
+[[object]]
+id = "loc.goblin_outpost_openpoordoor_doubler_inner"
+inherit = "loc.goblin_outpost_openpoordoor_doubler_inner"
+contentGroup = "content.opened_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.goblin_outpost_poordoor_doubler_inner"
+"param.opensound" = "synth.nicedoor_open"
+"param.closesound" = "synth.nicedoor_close"

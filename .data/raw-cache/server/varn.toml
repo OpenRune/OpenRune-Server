@@ -180,3 +180,117 @@ id = "varn.dom_rotation_step"
 
 [[varn]]
 id = "varn.dom_step_attacks"
+
+[[varn]]
+id = "varn.hunllef_style"
+
+[[varn]]
+id = "varn.hunllef_cycle"
+
+[[varn]]
+id = "varn.hunllef_protect"
+
+[[varn]]
+id = "varn.hunllef_off_prayer"
+
+[[varn]]
+id = "varn.disguise_idle"
+
+[[varn]]
+id = "varn.brutus_next_special"
+
+[[varn]]
+id = "varn.brutus_aim"
+
+[[varn]]
+id = "varn.brutus_unreached"
+
+[[varn]]
+id = "varn.brutus_death_said"
+
+[[varn]]
+id = "varn.brutus_bell_rung"
+
+[[varn]]
+id = "varn.slayer_engaged_target"
+
+[[varn]]
+id = "varn.slayer_engaged_clock"
+
+[[varn]]
+id = "varn.slayer_finishing_until"
+
+[[varn]]
+id = "varn.toa_baba_rolls"
+
+[[varn]]
+id = "varn.toa_baba_rows"
+
+[[varn]]
+id = "varn.toa_baba_roll_exit"
+
+[[varn]]
+id = "varn.toa_baba_weak_lane"
+
+[[varn]]
+id = "varn.toa_baba_autos"
+
+[[varn]]
+id = "varn.toa_baba_throw_at"
+
+[[varn]]
+id = "varn.toa_baba_rockfall_ready"
+
+[[varn]]
+id = "varn.toa_baba_last_special"
+
+[[varn]]
+id = "varn.toa_baba_under"
+
+[[varn]]
+id = "varn.toa_baba_stomp_ready"
+
+[[varn]]
+id = "varn.toa_kephri_eggs_next"
+
+[[varn]]
+id = "varn.forced_max_hit_styles"
+
+[[varn]]
+id = "varn.toa_baba_baboon_next_bash"
+
+[[varn]]
+id = "varn.toa_baba_baboon_next_pick"
+
+[[varn]]
+id = "varn.toa_croc_wake_at"
+
+[[varn]]
+id = "varn.toa_warden_orb_hits"
+
+[[varn]]
+id = "varn.toa_zebak_wave_dz"
+
+[[varn]]
+id = "varn.toa_zebak_wave_ticks"
+
+[[varn]]
+id = "varn.toa_zebak_jug_dx"
+
+[[varn]]
+id = "varn.toa_zebak_jug_dz"
+
+[[varn]]
+id = "varn.toa_zebak_jug_left"
+
+[[varn]]
+id = "varn.toa_zebak_cloud_switch"
+
+[[varn]]
+id = "varn.toa_zebak_cloud_delay"
+
+[[varn]]
+id = "varn.toa_zebak_cloud_last"
+
+[[varn]]
+id = "varn.toa_zebak_cloud_target"

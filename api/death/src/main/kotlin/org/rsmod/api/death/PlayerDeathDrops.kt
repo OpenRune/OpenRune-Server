@@ -8,7 +8,9 @@ import org.rsmod.api.player.SupplyItems
 import org.rsmod.api.player.hook.GroundItemDropContext
 import org.rsmod.api.player.hook.GroundItemDropResolver
 import org.rsmod.api.player.hook.GroundItemDropSource
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -24,6 +26,8 @@ constructor(
     private val objRepo: ObjRepository,
     private val marketPrices: MarketPrices,
     private val groundItemDrops: GroundItemDropResolver,
+    private val graveHooks: Set<PlayerGraveHook>,
+    private val config: ServerConfig,
 ) {
     public fun selectDrops(
         player: Player,
@@ -56,7 +60,7 @@ constructor(
         }
 
         val keptNormal = normal.take(handling.keepCount)
-        val lost = normal.drop(handling.keepCount)
+        val lost = normal.drop(handling.keepCount).filterNot { handling.deleteSupplies && isDeletedSupply(it) }
 
         val (supply, lostRemainder) = if (handling.supplyPile) {
             lost.partition { isSupplyPileItem(it) }
@@ -125,6 +129,17 @@ constructor(
         )
     }
 
+    public fun withLost(result: DeathDropResult, items: List<InvObj>): DeathDropResult {
+        if (items.isEmpty()) {
+            return result
+        }
+        val (untradeable, tradeable) = items.partition { isUntradeable(it) }
+        return result.copy(
+            lostTradeable = result.lostTradeable + tradeable,
+            lostUntradeable = result.lostUntradeable + untradeable,
+        )
+    }
+
     public fun spawnRemains(coords: CoordGrid, handling: PlayerDeathHandling) {
         val obj = Obj.fromServer(mapClock, coords, InvObj(BONES_OBJ, 1))
         objRepo.add(obj, handling.dropDuration, handling.revealDelay)
@@ -136,6 +151,16 @@ constructor(
         handling: PlayerDeathHandling,
         coords: CoordGrid,
     ) {
+        val lost =
+            when (handling.untradeableHandling) {
+                UntradeableHandling.DROP -> result.lostTradeable + result.lostUntradeable
+                else -> result.lostTradeable
+            }
+        if (result.supplyPile.isNotEmpty()) {
+            player.mes("Some supplies have been dropped where you died.")
+        }
+        val dropped = storeInGrave(player, coords, handling, lost)
+
         player.inv.fillNulls()
         player.worn.fillNulls()
 
@@ -147,25 +172,29 @@ constructor(
             dropItem(player, item, coords, handling, receiver = null)
         }
 
-        for (item in result.lostTradeable) {
+        for (item in dropped) {
             dropItem(player, item, coords, handling, handling.dropReceiver)
         }
 
-        when (handling.untradeableHandling) {
-            UntradeableHandling.DROP -> {
-                for (item in result.lostUntradeable) {
-                    dropItem(player, item, coords, handling, handling.dropReceiver)
-                }
-            }
-            UntradeableHandling.COINS -> {
-                if (result.coinsForKiller > 0) {
-                    val count = result.coinsForKiller.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
-                    dropItem(player, InvObj(COINS_OBJ, count), coords, handling, handling.dropReceiver)
-                }
-            }
-            UntradeableHandling.DESTROY -> Unit
-            UntradeableHandling.KEEP -> Unit
+        if (handling.untradeableHandling == UntradeableHandling.COINS && result.coinsForKiller > 0) {
+            val count = result.coinsForKiller.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+            dropItem(player, InvObj(COINS_OBJ, count), coords, handling, handling.dropReceiver)
         }
+    }
+
+    private fun storeInGrave(
+        player: Player,
+        coords: CoordGrid,
+        handling: PlayerDeathHandling,
+        lost: List<InvObj>,
+    ): List<InvObj> {
+        if (!config.gameplay.gravestones.enabled) {
+            return lost
+        }
+        val grave = handling.grave ?: return lost
+        val hook = graveHooks.firstOrNull() ?: return lost
+        // Called with nothing lost too: a death still prunes an existing grave.
+        return hook.store(player, coords, grave, lost)
     }
 
     private fun dropItem(
@@ -239,6 +268,13 @@ constructor(
         internalName.startsWith("rune_pouch") || internalName.startsWith("bh_rune_pouch") ||
             internalName.startsWith("divine_rune_pouch")
 
+    // In the Wilderness and on PvP worlds "food, potions, and phoenix necklaces cannot be sent to a
+    // grave or dropped, and are instead deleted".
+    private fun isDeletedSupply(obj: InvObj): Boolean {
+        val type = getInvObj(obj)
+        return SupplyItems.isFoodOrPotion(type) || type.isType(PHOENIX_NECKLACE)
+    }
+
     private fun isSupplyPileItem(obj: InvObj): Boolean {
         return SupplyItems.isFoodOrPotion(getInvObj(obj))
     }
@@ -273,6 +309,7 @@ constructor(
         public const val PVP_REVEAL_DELAY: Int = 100
 
         private const val COINS_OBJ = "obj.coins"
+        private const val PHOENIX_NECKLACE = "obj.jewl_necklace_of_phoenix"
         private const val BONES_OBJ = "obj.bones"
 
         public fun standardKeepCount(hasProtectItem: Boolean): Int = if (hasProtectItem) 4 else 3

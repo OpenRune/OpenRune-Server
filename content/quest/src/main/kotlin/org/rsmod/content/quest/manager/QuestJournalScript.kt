@@ -4,6 +4,7 @@ import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.ui.ifCloseModals
+import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.script.onIfModalButton
@@ -30,8 +31,8 @@ class QuestJournalScript : PluginScript() {
             player.ifCloseModals(eventBus)
         }
 
-        onIfModalButton("component.questjournal:close") {
-            player.ifCloseModals(eventBus)
+        onIfOverlayButton("component.questjournal:close") {
+            player.ifCloseOverlay("interface.questjournal", eventBus)
         }
 
         onIfModalButton("component.questjournal_overview:content_inner") {
@@ -56,8 +57,8 @@ class QuestJournalScript : PluginScript() {
             }
         }
 
-        onIfModalButton("component.questjournal:switch") {
-            val quest = QuestJournalRegistry.activeQuest(player) ?: return@onIfModalButton
+        onIfOverlayButton("component.questjournal:switch") {
+            val quest = QuestJournalRegistry.activeQuest(player) ?: return@onIfOverlayButton
             QuestJournalRegistry.openJournal(this, quest, JournalState.OVERVIEW)
         }
 

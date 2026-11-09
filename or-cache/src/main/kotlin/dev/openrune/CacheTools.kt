@@ -34,6 +34,7 @@ import dev.openrune.map.packing.MapPackers
 import dev.openrune.pack.PluginPacks
 import dev.openrune.tables.CollectionLogCategoriesTable
 import dev.openrune.tables.DidYouKnow
+import dev.openrune.tables.GauntletRoomSlotsTable
 import dev.openrune.tables.InstanceSettingsTable
 import dev.openrune.tables.PickableObjects
 import dev.openrune.tables.SettingConfigs
@@ -49,12 +50,20 @@ import dev.openrune.tables.skills.Mining
 import dev.openrune.tables.skills.Motherlode
 import dev.openrune.tables.skills.Runecrafting
 import dev.openrune.tables.skills.Slayer
+import dev.openrune.tables.skills.SlayerRequirements
 import dev.openrune.tables.skills.Smithing
 import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
 import dev.openrune.tables.skills.prayer.PrayerBlessedBone
 import dev.openrune.tables.skills.prayer.PrayerTable
+import dev.openrune.toml.rsconfig.rsconfig
+import dev.openrune.toml.tomlMapper
+import dev.openrune.tools.LocSpawnDumper
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
+import dev.openrune.tools.SeqDumper
+import dev.openrune.tools.SlayerBossKeys
+import dev.openrune.tools.SlayerTargetMonsterLoader
+import dev.openrune.types.SlayerNpcData
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -80,6 +89,26 @@ fun main(args: Array<String>) {
 
     if (command == "CLEAN_CS2") {
         DirectoryConstants.cleanCs2()
+        return
+    }
+
+    if (command == "DUMP_SEQS") {
+        GameValProvider.load("../")
+        SeqDumper.dump(
+            Cache.load(File(getServerCacheLocation()).toPath()),
+            args.drop(1).flatMap { it.split(',') }.map(String::trim).filter(String::isNotEmpty),
+        )
+        return
+    }
+
+    if (command == "DUMP_LOCS") {
+        GameValProvider.load("../")
+        LocSpawnDumper.dump(
+            Cache.load(File(getCacheLocation()).toPath()),
+            Cache.load(File(getServerCacheLocation()).toPath()),
+            revision.first,
+            args.drop(1).flatMap { it.split(',') }.map(String::trim).filter(String::isNotEmpty),
+        )
         return
     }
 
@@ -187,7 +216,21 @@ private fun finalizeServerCache(force: Boolean = false) {
     startEnumGeneration(enums, force)
 }
 
-fun tablesToPack(): List<DBTable> = listOf(
+fun tablesToPack(): List<DBTable> = tablesToPack(loadSlayerData(), loadSlayerBossKeys())
+
+private fun loadSlayerData(): Map<Int, SlayerNpcData> =
+    SlayerTargetMonsterLoader.loadNpcSlayerData(
+        File("../.data/raw-cache/server/slayer"),
+        tomlMapper { rsconfig { enableConstantProvider() } },
+    )
+
+private fun loadSlayerBossKeys(): (String) -> Int =
+    SlayerBossKeys.load(Cache.load(File(getCacheLocation()).toPath()), revision.first)
+
+private fun tablesToPack(
+    slayerData: Map<Int, SlayerNpcData>,
+    slayerBossKey: (String) -> Int,
+): List<DBTable> = listOf(
     GameframeTable.gameframe(),
     Music.musicClassic(),
     Music.musicModern(),
@@ -214,6 +257,10 @@ fun tablesToPack(): List<DBTable> = listOf(
     Smithing.dragonForge(),
     Smithing.crystalSinging(),
     Slayer.masters(),
+    Slayer.streakBonuses(),
+    SlayerRequirements.gear(slayerBossKey),
+    SlayerRequirements.finishers(slayerData),
+    SlayerRequirements.weaponRules(slayerData),
     Runecrafting.altars(),
     Runecrafting.runes(),
     Runecrafting.tiara(),
@@ -224,6 +271,7 @@ fun tablesToPack(): List<DBTable> = listOf(
     SettingConfigs.settings(),
     DidYouKnow.didYouknow(),
     InstanceSettingsTable.instanceSettings(),
+    GauntletRoomSlotsTable.table(),
     CollectionLogCategoriesTable.collectionLogCategories(),
     ShopCurrencyTable.shopCurrencies(),
 )

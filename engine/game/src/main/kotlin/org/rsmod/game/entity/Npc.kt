@@ -18,6 +18,7 @@ import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.npc.OpVisibility
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.util.EntityFaceTarget
+import org.rsmod.game.entity.util.EntityTinting
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hero.HeroPoints
@@ -422,6 +423,10 @@ public class Npc(
 
     public fun showHitmark(hitmark: Hitmark) {
         infoProtocol.showHitmark(hitmark)
+    }
+
+    public fun tint(tinting: EntityTinting) {
+        infoProtocol.setTinting(tinting)
     }
 
     public fun showAllOps() {

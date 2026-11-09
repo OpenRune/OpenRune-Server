@@ -28,10 +28,10 @@ len4="seq.chathap4"
 
 [[mesanim]]
 id="mesanim.shocked"
-len1="seq.chathap1"
-len2="seq.chathap2"
-len3="seq.chathap3"
-len4="seq.chathap4"
+len1="seq.chatshock1"
+len2="seq.chatshock2"
+len3="seq.chatshock3"
+len4="seq.chatshock4"
 
 [[mesanim]]
 id="mesanim.confused"

@@ -51,7 +51,7 @@ public class NpcInteractions @Inject constructor(private val eventBus: EventBus)
             }
         }
 
-        val typeEvent = npc.toOp(op)
+        val typeEvent = npc.toOp(op, type)
         if (eventBus.contains(typeEvent::class.java, type.id)) {
             return typeEvent
         }
@@ -61,7 +61,7 @@ public class NpcInteractions @Inject constructor(private val eventBus: EventBus)
             return contentEvent
         }
 
-        val unimplEvent = npc.toUnimplementedOp(op)
+        val unimplEvent = npc.toUnimplementedOp(op, type)
         if (eventBus.contains(unimplEvent::class.java, type.id)) {
             return unimplEvent
         }
@@ -91,7 +91,7 @@ public class NpcInteractions @Inject constructor(private val eventBus: EventBus)
             }
         }
 
-        val typeEvent = npc.toAp(op)
+        val typeEvent = npc.toAp(op, type)
         if (eventBus.contains(typeEvent::class.java, type.id)) {
             return typeEvent
         }
@@ -130,13 +130,13 @@ public class NpcInteractions @Inject constructor(private val eventBus: EventBus)
         }
     }
 
-    private fun Npc.toOp(op: InteractionOp): NpcEvents.Op =
+    private fun Npc.toOp(op: InteractionOp, type: NpcServerType): NpcEvents.Op =
         when (op) {
-            InteractionOp.Op1 -> NpcEvents.Op1(this)
-            InteractionOp.Op2 -> NpcEvents.Op2(this)
-            InteractionOp.Op3 -> NpcEvents.Op3(this)
-            InteractionOp.Op4 -> NpcEvents.Op4(this)
-            InteractionOp.Op5 -> NpcEvents.Op5(this)
+            InteractionOp.Op1 -> NpcEvents.Op1(this, type)
+            InteractionOp.Op2 -> NpcEvents.Op2(this, type)
+            InteractionOp.Op3 -> NpcEvents.Op3(this, type)
+            InteractionOp.Op4 -> NpcEvents.Op4(this, type)
+            InteractionOp.Op5 -> NpcEvents.Op5(this, type)
         }
 
     private fun Npc.toContentOp(contentGroup: Int, op: InteractionOp): NpcContentEvents.Op =
@@ -148,13 +148,16 @@ public class NpcInteractions @Inject constructor(private val eventBus: EventBus)
             InteractionOp.Op5 -> NpcContentEvents.Op5(this, contentGroup)
         }
 
-    private fun Npc.toUnimplementedOp(op: InteractionOp): NpcUnimplementedEvents.Op =
+    private fun Npc.toUnimplementedOp(
+        op: InteractionOp,
+        type: NpcServerType,
+    ): NpcUnimplementedEvents.Op =
         when (op) {
-            InteractionOp.Op1 -> NpcUnimplementedEvents.Op1(this)
-            InteractionOp.Op2 -> NpcUnimplementedEvents.Op2(this)
-            InteractionOp.Op3 -> NpcUnimplementedEvents.Op3(this)
-            InteractionOp.Op4 -> NpcUnimplementedEvents.Op4(this)
-            InteractionOp.Op5 -> NpcUnimplementedEvents.Op5(this)
+            InteractionOp.Op1 -> NpcUnimplementedEvents.Op1(this, type)
+            InteractionOp.Op2 -> NpcUnimplementedEvents.Op2(this, type)
+            InteractionOp.Op3 -> NpcUnimplementedEvents.Op3(this, type)
+            InteractionOp.Op4 -> NpcUnimplementedEvents.Op4(this, type)
+            InteractionOp.Op5 -> NpcUnimplementedEvents.Op5(this, type)
         }
 
     private fun Npc.toDefaultOp(op: InteractionOp): NpcDefaultEvents.Op =
@@ -166,13 +169,13 @@ public class NpcInteractions @Inject constructor(private val eventBus: EventBus)
             InteractionOp.Op5 -> NpcDefaultEvents.Op5(this)
         }
 
-    private fun Npc.toAp(op: InteractionOp): NpcEvents.Ap =
+    private fun Npc.toAp(op: InteractionOp, type: NpcServerType): NpcEvents.Ap =
         when (op) {
-            InteractionOp.Op1 -> NpcEvents.Ap1(this)
-            InteractionOp.Op2 -> NpcEvents.Ap2(this)
-            InteractionOp.Op3 -> NpcEvents.Ap3(this)
-            InteractionOp.Op4 -> NpcEvents.Ap4(this)
-            InteractionOp.Op5 -> NpcEvents.Ap5(this)
+            InteractionOp.Op1 -> NpcEvents.Ap1(this, type)
+            InteractionOp.Op2 -> NpcEvents.Ap2(this, type)
+            InteractionOp.Op3 -> NpcEvents.Ap3(this, type)
+            InteractionOp.Op4 -> NpcEvents.Ap4(this, type)
+            InteractionOp.Op5 -> NpcEvents.Ap5(this, type)
         }
 
     private fun Npc.toContentAp(contentGroup: Int, op: InteractionOp): NpcContentEvents.Ap =

@@ -12,6 +12,7 @@ import org.rsmod.api.script.onOpLocCategoryU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.smithing.SmithingBarsRow
+import org.rsmod.content.quest.area.falador.doricsquest.DoricsQuest
 import org.rsmod.content.skills.crafting.interfaces.MakeQuantity
 import org.rsmod.content.skills.crafting.interfaces.MakeQuantityColumn
 import org.rsmod.content.skills.crafting.interfaces.makeQuantity
@@ -24,7 +25,9 @@ import org.rsmod.content.skills.smithing.util.SmithingUtils.hasHammer
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class AnvilSmithingScript @Inject constructor(private val xpMods: XpModifiers) : PluginScript() {
+class AnvilSmithingScript
+@Inject
+constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : PluginScript() {
 
     private val hammers = setOf(
         "obj.hammer",
@@ -45,14 +48,21 @@ class AnvilSmithingScript @Inject constructor(private val xpMods: XpModifiers) :
 
         SmithingData.barOutputInternals.forEach { barInternal ->
             onOpLocCategoryU(SmithingData.ANVIL_CATEGORY, barInternal) {
+                // TODO(content): [verify:in_game] Whether Doric also stops a bar used on his anvil.
+                if (!with(dorics) { mayUseAnvil(it.type) }) return@onOpLocCategoryU
                 SmithingData.barsByOutput[barInternal]?.let { queueOpenSmithing(it) }
             }
         }
 
         onOpLocCategory1(SmithingData.ANVIL_CATEGORY) {
+            if (!with(dorics) { mayUseAnvil(it.type) }) return@onOpLocCategory1
             val bar = selectedBar()
             if (bar == null) {
-                mesbox("You need a bronze bar and a hammer to smith equipment on this anvil.")
+                if (!hasHammer()) {
+                    mesbox("You need a hammer to work the metal with.")
+                } else {
+                    mesbox("You should select an item from your inventory and use it on the anvil.")
+                }
                 return@onOpLocCategory1
             }
             queueOpenSmithing(bar)
@@ -207,8 +217,8 @@ class AnvilSmithingScript @Inject constructor(private val xpMods: XpModifiers) :
 
         if (invAdd(inv, meta.product.internalName, meta.numProduced).success) {
             spam(forgedMessage(meta))
-            val xp = meta.barCount * meta.bar.smithxp * xpMods.get(player, "stat.smithing")
-            statAdvance("stat.smithing", xp.toDouble())
+            val xp = meta.barCount * meta.bar.smithxp / 10.0 * xpMods.get(player, "stat.smithing")
+            statAdvance("stat.smithing", xp)
         }
     }
 

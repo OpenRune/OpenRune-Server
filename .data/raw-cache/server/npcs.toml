@@ -1,12 +1,14 @@
 [[npc]]
 id = "npc.0_50_50_freshfish"
 inherit = "npc.0_50_50_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
 moveRestrict = "NoMove"
 wanderRange = 0
 
 [[npc]]
 id = "npc.0_50_49_saltfish"
 inherit = "npc.0_50_49_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
 moveRestrict = "NoMove"
 wanderRange = 0
 respawnRate = 50
@@ -3458,6 +3460,8 @@ inherit = "npc.slayer_kraken"
 [[npc]]
 id = "npc.slayer_kraken_boss"
 inherit = "npc.slayer_kraken_boss"
+defenceOverride = 1
+magicOverride = 1
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=50
@@ -3466,8 +3470,21 @@ inherit = "npc.slayer_kraken_boss"
 [[npc]]
 id = "npc.slayer_kraken_boss_whirlpool"
 inherit = "npc.slayer_kraken_boss_whirlpool"
+respawnRate = 10
 [npc.params]
 "param.killcount_varp"="varp.total_kraken_boss_kills"
+"param.death_anim"="seq.swan_queen_death"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.slayer_kraken_boss_tentacle_whirlpool"
+inherit = "npc.slayer_kraken_boss_tentacle_whirlpool"
+respawnRate = 2147483647
+defenceOverride = 1
+magicOverride = 1
+[npc.params]
+"param.death_anim"="seq.tentacle_monster_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.slayer_kraken_sub"
@@ -3475,6 +3492,8 @@ inherit = "npc.slayer_kraken_sub"
 [npc.params]
 "param.killcount_varp"="varp.kc_cave_kraken"
 "param.killcount_notify"=false
+"param.death_anim"="seq.swan_queen_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.slayer_kursk_1"
@@ -5461,11 +5480,6 @@ moveRestrict = "Indoors"
 [[npc]]
 id = "npc.sir_amik_varze"
 inherit = "npc.sir_amik_varze"
-moveRestrict = "Indoors"
-
-[[npc]]
-id = "npc.sir_vyvin"
-inherit = "npc.sir_vyvin"
 moveRestrict = "Indoors"
 
 [[npc]]
@@ -7816,6 +7830,7 @@ attackRange = 10
 "param.proj_type"="projanim.magic_spell"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=50
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.barrows_dharok"
@@ -7827,6 +7842,7 @@ inherit = "npc.barrows_dharok"
 "param.npc_attack_type"="category.attacktype_slash"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=50
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.barrows_guthan"
@@ -7838,6 +7854,7 @@ inherit = "npc.barrows_guthan"
 "param.npc_attack_type"="category.attacktype_crush"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=50
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.barrows_karil"
@@ -7852,6 +7869,7 @@ attackRange = 7
 "param.proj_type"="projanim.bolt"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=50
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.barrows_torag"
@@ -7863,6 +7881,7 @@ inherit = "npc.barrows_torag"
 "param.npc_attack_type"="category.attacktype_crush"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=50
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.barrows_verac"
@@ -7874,6 +7893,7 @@ inherit = "npc.barrows_verac"
 "param.npc_attack_type"="category.attacktype_stab"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=50
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.barrows_bloodworm"
@@ -7883,6 +7903,7 @@ inherit = "npc.barrows_bloodworm"
 "param.defend_anim"="seq.bloodworm_block"
 "param.death_anim"="seq.bloodworm_death"
 "param.npc_attack_type"="category.attacktype_stab"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.barrows_rat"
@@ -7930,6 +7951,7 @@ inherit = "npc.barrows_spider"
 "param.npc_attack_type"="category.attacktype_stab"
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.barrows_giantspider"
@@ -7941,6 +7963,7 @@ inherit = "npc.barrows_giantspider"
 "param.npc_attack_type"="category.attacktype_stab"
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=40
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.ntk_scarab_swarm"
@@ -8187,9 +8210,20 @@ inherit = "npc.black_demon5"
 [[npc]]
 id = "npc.chaoselemental"
 inherit = "npc.chaoselemental"
+huntMode = 2
+huntRange = 30
+maxRange = 30
+attackRange = 10
+wanderRange = 5
+respawnRate = 14
+defaultMode = "Wander"
+
 [npc.params]
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=50
+"param.venom_immunity"=1
+"param.death_anim"="seq.chaoselemental_death"
+"param.boss_hp_bar_mode"=1
 
 [[npc]]
 id = "npc.firegiant_big"
@@ -10281,6 +10315,8 @@ inherit = "npc.dungeonspider"
 [[npc]]
 id = "npc.slayer_kraken_boss_tentacle"
 inherit = "npc.slayer_kraken_boss_tentacle"
+rangedOverride = 150
+magicOverride = 1
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=50
@@ -15973,9 +16009,20 @@ inherit = "npc.league_6_gg_dawn_alive"
 "param.elemental_weakness_percent"=70
 
 [[npc]]
+id = "npc.cowboss_mapped"
+inherit = "npc.cowboss_mapped"
+wanderRange = 2
+
+[[npc]]
 id = "npc.cowboss"
 inherit = "npc.cowboss"
+respawnRate = 36
 [npc.params]
+"param.defend_sound"=24
+"param.dropped_remains"="obj.bull_bones"
+"param.killcount_varp"="varp.total_cowboss_kills"
+"param.death_anim"="seq.cow_boss_death"
+"param.boss_hp_bar_mode"=2
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=25
 
@@ -15983,6 +16030,9 @@ inherit = "npc.cowboss"
 id = "npc.cowboss_routefind"
 inherit = "npc.cowboss_routefind"
 [npc.params]
+"param.defend_sound"=24
+"param.death_anim"="seq.cow_boss_death"
+"param.boss_hp_bar_mode"=2
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=25
 
@@ -16798,4 +16848,291 @@ id = "npc.kittens_mew"
 inherit = "npc.kittens_mew"
 timer = 1
 moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.crystal_rat"
+inherit = "npc.crystal_rat"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.death_anim"="seq.giant_rat_update_death_fast"
+
+[[npc]]
+id = "npc.crystal_rat_hm"
+inherit = "npc.crystal_rat_hm"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.death_anim"="seq.giant_rat_update_death_fast"
+
+[[npc]]
+id = "npc.crystal_spider"
+inherit = "npc.crystal_spider"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.sote_gauntlet_spider_attack_melee"
+"param.death_anim"="seq.sote_gauntlet_spider_death"
+
+[[npc]]
+id = "npc.crystal_spider_hm"
+inherit = "npc.crystal_spider_hm"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.sote_gauntlet_spider_attack_melee"
+"param.death_anim"="seq.sote_gauntlet_spider_death"
+
+[[npc]]
+id = "npc.crystal_bat"
+inherit = "npc.crystal_bat"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.bat_rework_attack"
+"param.death_anim"="seq.bat_rework_death"
+
+[[npc]]
+id = "npc.crystal_bat_hm"
+inherit = "npc.crystal_bat_hm"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.bat_rework_attack"
+"param.death_anim"="seq.bat_rework_death"
+
+[[npc]]
+id = "npc.crystal_unicorn"
+inherit = "npc.crystal_unicorn"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.unicorn_rework_attack"
+"param.death_anim"="seq.unicorn_rework_death"
+
+[[npc]]
+id = "npc.crystal_unicorn_hm"
+inherit = "npc.crystal_unicorn_hm"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.unicorn_rework_attack"
+"param.death_anim"="seq.unicorn_rework_death"
+
+[[npc]]
+id = "npc.crystal_scorpion"
+inherit = "npc.crystal_scorpion"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.scorpion_update_attack_tail"
+"param.death_anim"="seq.scorpion_update_death"
+
+[[npc]]
+id = "npc.crystal_scorpion_hm"
+inherit = "npc.crystal_scorpion_hm"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.scorpion_update_attack_tail"
+"param.death_anim"="seq.scorpion_update_death"
+
+[[npc]]
+id = "npc.crystal_wolf"
+inherit = "npc.crystal_wolf"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.dog_update_wolf_attack"
+"param.death_anim"="seq.dog_update_wolf_death_quick"
+
+[[npc]]
+id = "npc.crystal_wolf_hm"
+inherit = "npc.crystal_wolf_hm"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.dog_update_wolf_attack"
+"param.death_anim"="seq.dog_update_wolf_death_quick"
+
+[[npc]]
+id = "npc.crystal_bear"
+inherit = "npc.crystal_bear"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.bear_rework_attack"
+"param.death_anim"="seq.bear_rework_death"
+
+[[npc]]
+id = "npc.crystal_bear_hm"
+inherit = "npc.crystal_bear_hm"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.attack_anim"="seq.bear_rework_attack"
+"param.death_anim"="seq.bear_rework_death"
+
+[[npc]]
+id = "npc.crystal_dragon"
+inherit = "npc.crystal_dragon"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.npc_attack_type"="category.attacktype_magic"
+"param.attack_anim"="seq.dragon_firebreath_all_attack"
+"param.death_anim"="seq.dragon_death"
+"param.proj_type"="projanim.crystal_dragon_magic"
+"param.proj_travel"="spotanim.crystal_dragon_magic_travel"
+
+[[npc]]
+id = "npc.crystal_dragon_hm"
+inherit = "npc.crystal_dragon_hm"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.npc_attack_type"="category.attacktype_magic"
+"param.attack_anim"="seq.dragon_firebreath_all_attack"
+"param.death_anim"="seq.dragon_death"
+"param.proj_type"="projanim.crystal_dragon_magic"
+"param.proj_travel"="spotanim.crystal_dragon_magic_travel_hm"
+
+[[npc]]
+id = "npc.crystal_dark_beast"
+inherit = "npc.crystal_dark_beast"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.npc_attack_type"="category.attacktype_standard"
+"param.attack_anim"="seq.dark_beast_update_attack"
+"param.death_anim"="seq.dark_beast_update_death"
+"param.proj_type"="projanim.crystal_dark_beast_ranged"
+"param.proj_travel"="spotanim.crystal_dark_beast_range_travel"
+
+[[npc]]
+id = "npc.crystal_dark_beast_hm"
+inherit = "npc.crystal_dark_beast_hm"
+maxRange = 20
+wanderRange = 10
+[npc.params]
+"param.dropped_remains"=-1
+"param.npc_attack_type"="category.attacktype_standard"
+"param.attack_anim"="seq.dark_beast_update_attack"
+"param.death_anim"="seq.dark_beast_update_death"
+"param.proj_type"="projanim.crystal_dark_beast_ranged"
+"param.proj_travel"="spotanim.crystal_dark_beast_range_travel_hm"
+
+[[npc]]
+id = "npc.crystal_hunllef_melee"
+inherit = "npc.crystal_hunllef_melee"
+[npc.params]
+"param.boss_hp_bar_mode"=1
+"param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
+
+[[npc]]
+id = "npc.crystal_hunllef_melee_hm"
+inherit = "npc.crystal_hunllef_melee_hm"
+[npc.params]
+"param.boss_hp_bar_mode"=1
+"param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
+
+[[npc]]
+id = "npc.crystal_hunllef_ranged"
+inherit = "npc.crystal_hunllef_ranged"
+[npc.params]
+"param.boss_hp_bar_mode"=1
+"param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
+
+[[npc]]
+id = "npc.crystal_hunllef_ranged_hm"
+inherit = "npc.crystal_hunllef_ranged_hm"
+[npc.params]
+"param.boss_hp_bar_mode"=1
+"param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
+
+[[npc]]
+id = "npc.crystal_hunllef_magic"
+inherit = "npc.crystal_hunllef_magic"
+[npc.params]
+"param.boss_hp_bar_mode"=1
+"param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
+
+[[npc]]
+id = "npc.crystal_hunllef_magic_hm"
+inherit = "npc.crystal_hunllef_magic_hm"
+[npc.params]
+"param.boss_hp_bar_mode"=1
+"param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
+
+[[npc]]
+id = "npc.crystal_hunllef_death"
+inherit = "npc.crystal_hunllef_death"
+[npc.params]
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.crystal_hunllef_death_hm"
+inherit = "npc.crystal_hunllef_death_hm"
+[npc.params]
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.crystal_hunllef_crystals"
+inherit = "npc.crystal_hunllef_crystals"
+[npc.params]
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.crystal_hunllef_crystals_hm"
+inherit = "npc.crystal_hunllef_crystals_hm"
+[npc.params]
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.death_office_death"
+inherit = "npc.death_office_death"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.poh_sawmill_opp"
+inherit = "npc.poh_sawmill_opp"
 wanderRange = 0

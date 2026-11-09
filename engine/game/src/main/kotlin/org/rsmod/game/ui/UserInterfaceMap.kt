@@ -19,6 +19,7 @@ public class UserInterfaceMap(
     public val modals: ComponentTargetMap = ComponentTargetMap(),
     public val events: ComponentEventMap = ComponentEventMap(),
     public val gameframe: ComponentTranslationMap = ComponentTranslationMap(),
+    public val gameframeSources: ComponentTranslationMap = ComponentTranslationMap(),
     public val closeQueue: IntArraySet = IntArraySet(),
 ) {
     @InternalApi public var closeModal: Boolean = false

@@ -1,21 +1,21 @@
 package org.rsmod.content.slayer.dialogue
 
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.api.table.slayer.SlayerMasterTaskRow
 import org.rsmod.api.table.slayer.SlayerTaskRow
+import org.rsmod.api.table.slayer.SlayerTaskSublistRow
 import org.rsmod.content.slayer.core.SlayerBossTasks
 import org.rsmod.content.slayer.core.SlayerTaskManager
 object SlayerBossDialogue {
 
     suspend fun Dialogue.offerBossTaskAssignment(
         masterNpcId: String,
-        bossTask: SlayerMasterTaskRow,
+        boss: SlayerTaskSublistRow,
         onAssigned: suspend Dialogue.(taskName: String, count: Int) -> Unit,
     ): Boolean {
-        val taskName = bossTask.task.nameUppercase
+        val taskName = boss.task.nameUppercase
         chatNpc(neutral, "You're assigned to kill $taskName as a boss task.")
 
-        val amount = promptBossKillCount(bossTask.task) ?: return false
+        val amount = promptBossKillCount(boss.task) ?: return false
 
         when (
             choice2(
@@ -27,7 +27,7 @@ object SlayerBossDialogue {
         ) {
             1 -> {
                 chatPlayer(neutral, "Yes, that's fine.")
-                if (!SlayerTaskManager.assignBossTask(access, masterNpcId, bossTask.task.id, amount)) {
+                if (!SlayerTaskManager.assignBossTask(access, masterNpcId, boss.taskSubtableId, amount)) {
                     chatNpc(neutral, "I can't assign that task right now.")
                     return false
                 }

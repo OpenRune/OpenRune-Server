@@ -26,3 +26,263 @@ max = 500
 prompt = "Set energy threshold for auto-enabling run mode:"
 min = 0
 max = 100
+
+[defaults]
+
+[defaults.2]
+default = 1
+
+[defaults.7]
+default = 1
+
+[defaults.9]
+default = 1
+
+[defaults.16]
+default = 1
+
+[defaults.17]
+default = 5
+
+[defaults.18]
+default = 10
+
+[defaults.19]
+default = 2
+
+[defaults.20]
+default = 6
+
+[defaults.21]
+default = 11
+
+[defaults.22]
+default = 3
+
+[defaults.23]
+default = 8
+
+[defaults.24]
+default = 7
+
+[defaults.25]
+default = 13
+
+[defaults.26]
+default = 9
+
+[defaults.27]
+default = 12
+
+[defaults.28]
+default = 4
+
+[defaults.35]
+default = 1
+
+[defaults.38]
+default = 1
+
+[defaults.39]
+default = 20000
+
+[defaults.40]
+default = 1
+
+[defaults.42]
+default = 1
+
+[defaults.43]
+default = 30000
+
+[defaults.47]
+default = 1
+
+[defaults.50]
+default = 1
+
+[defaults.51]
+default = 1
+
+[defaults.55]
+default = 1
+
+[defaults.56]
+default = 2
+
+[defaults.57]
+default = 1
+
+[defaults.59]
+default = 1
+
+[defaults.61]
+default = 1
+
+[defaults.62]
+default = 1
+
+[defaults.63]
+default = 1
+
+[defaults.64]
+default = 1
+
+[defaults.65]
+default = 1
+
+[defaults.66]
+default = 30000
+
+[defaults.82]
+default = 1
+
+[defaults.119]
+default = 1
+
+[defaults.150]
+default = 5
+
+[defaults.164]
+default = 1
+
+[defaults.165]
+default = 2
+
+[defaults.171]
+default = 3
+
+[defaults.181]
+default = 1
+
+[defaults.187]
+default = 1
+
+[defaults.188]
+default = 1
+
+[defaults.195]
+default = 1
+
+[defaults.206]
+default = 1
+
+[defaults.207]
+default = 3
+
+[defaults.214]
+default = 11
+
+[defaults.215]
+default = 1
+
+[defaults.216]
+default = 1
+
+[defaults.233]
+default = 300
+
+[defaults.234]
+default = 1
+
+[defaults.235]
+default = 1
+
+[defaults.236]
+default = 25
+
+[defaults.237]
+default = 81
+
+[defaults.248]
+default = 1
+
+[defaults.249]
+default = 10
+
+[defaults.250]
+default = 1
+
+[defaults.252]
+default = 1
+
+[defaults.280]
+default = 2
+
+[defaults.305]
+default = 1
+
+[defaults.306]
+default = 1
+
+[defaults.316]
+default = 1
+
+[defaults.321]
+default = 1
+
+[defaults.328]
+default = 10000000
+
+[defaults.329]
+default = 1000000
+
+[defaults.330]
+default = 100000
+
+[defaults.331]
+default = 20000
+
+[defaults.332]
+default = 1000
+
+[defaults.334]
+default = 2
+
+[defaults.338]
+default = 2
+
+[defaults.340]
+default = 82
+
+[defaults.348]
+default = 1
+
+[defaults.350]
+default = 5
+
+[defaults.360]
+default = 1
+
+[defaults.367]
+default = 2
+
+[defaults.368]
+default = 1
+
+[defaults.371]
+default = 1
+
+[defaults.389]
+default = 20
+
+[defaults.417]
+default = 1
+
+[defaults.447]
+default = 1
+
+[defaults.449]
+default = 1000
+
+[defaults.466]
+default = 1
+
+[defaults.472]
+default = 1
+
+[defaults.473]
+default = 1
+
+[defaults.493]
+default = 1

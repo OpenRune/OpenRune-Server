@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
+import java.util.concurrent.ConcurrentLinkedQueue
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.obj.ObjRegistryResult
 import org.rsmod.api.registry.obj.isSuccess
@@ -15,7 +16,6 @@ import org.rsmod.game.obj.ObjScope
 import org.rsmod.game.type.getObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
-import java.util.concurrent.ConcurrentLinkedQueue
 
 public class ObjRepository
 @Inject
@@ -31,6 +31,7 @@ constructor(private val mapClock: MapClock, private val registry: ObjRegistry) {
 
     private fun register(obj: Obj, duration: Int, reveal: Int): ObjRegistryResult.Add {
         require(obj.count > 0) { "Obj must have a `count` higher than 0: $obj" }
+        obj.setTimers(mapClock.cycle, mapClock + reveal, mapClock + duration)
         val register = registry.add(obj)
         when (register) {
             // TODO: Check how the duration is supposed to be calculated. Does it take the
@@ -142,6 +143,7 @@ constructor(private val mapClock: MapClock, private val registry: ObjRegistry) {
         val oldDuration = addDurations.firstOrNull { it.obj === obj } ?: return
         oldDuration.triggerCycle = mapClock + newDuration
         oldDuration.revealCycle = mapClock + newReveal
+        obj.setTimers(mapClock.cycle, oldDuration.revealCycle, oldDuration.triggerCycle)
     }
 
     internal fun processDurations() {
@@ -171,7 +173,7 @@ constructor(private val mapClock: MapClock, private val registry: ObjRegistry) {
         while (iterator.hasNext()) {
             val duration = iterator.next()
             if (mapClock.cycle == duration.revealCycle) {
-                registry.reveal(duration.obj)
+                registry.reveal(duration.obj, mapClock.cycle)
             }
             if (duration.shouldTrigger()) {
                 registry.del(duration.obj)

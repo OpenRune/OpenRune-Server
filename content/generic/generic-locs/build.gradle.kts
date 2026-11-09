@@ -11,4 +11,10 @@ dependencies {
     testImplementation(projects.api.invStorage)
     testImplementation(projects.api.registry)
     testImplementation(libs.fastutil)
+    integrationImplementation(projects.content.interfaces.bank)
+    integrationImplementation(projects.content.interfaces.equipment)
+    integrationImplementation(projects.api.combat.combatWeapon)
+    integrationImplementation(projects.api.death)
+    integrationImplementation(projects.api.deathPlugin)
+    integrationImplementation(projects.api.hitPlugin)
 }

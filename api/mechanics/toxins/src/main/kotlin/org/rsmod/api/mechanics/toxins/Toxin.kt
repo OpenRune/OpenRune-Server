@@ -1,5 +1,6 @@
 package org.rsmod.api.mechanics.toxins
 
+import org.rsmod.api.mechanics.toxins.impl.PlayerBleed
 import org.rsmod.api.mechanics.toxins.impl.PlayerDisease
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
@@ -98,6 +99,7 @@ public object Toxin {
         PlayerPoison.clear(this)
         PlayerVenom.clear(this)
         PlayerDisease.clear(this)
+        PlayerBleed.clear(this)
     }
 
     private const val POISON_VARP: String =

@@ -1,0 +1,48 @@
+[[npc]]
+id = "npc.cassie"
+inherit = "npc.cassie"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 600
+"param.shop_change_percentage" = 20
+
+[[npc]]
+id = "npc.flynn"
+inherit = "npc.flynn"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 600
+"param.shop_change_percentage" = 10
+
+[[npc]]
+id = "npc.wayne"
+inherit = "npc.wayne"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 650
+"param.shop_change_percentage" = 10
+
+[[npc]]
+id = "npc.herquin"
+inherit = "npc.herquin"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 700
+"param.shop_change_percentage" = 30
+
+[[npc]]
+id = "npc.poh_garden_supplier"
+inherit = "npc.poh_garden_supplier"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 400
+"param.shop_change_percentage" = 30

@@ -1,0 +1,100 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_cooking_dairy"
+name = "Logava Gricoller's Cooking Supplies"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 550
+delta = 10
+
+size = 16
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.piedish"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.cake_tin"
+count = 5
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.bowl_empty"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 3
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.jug_empty"
+count = 3
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.pack_jug_empty"
+count = 4
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pot_empty"
+count = 12
+restockCycles = 25
+
+[[inventory.stock]]
+obj = "obj.cup_empty"
+count = 3
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.knife"
+count = 3
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.ball_of_wool"
+count = 30
+restockCycles = 5
+
+[[inventory.stock]]
+obj = "obj.potato"
+count = 5
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.cooking_apple"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.bread"
+count = 2
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.chocolate_bar"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.cheese"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.pot_flour"
+count = 8
+restockCycles = 100
+

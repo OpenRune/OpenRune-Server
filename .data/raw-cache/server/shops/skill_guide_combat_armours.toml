@@ -1,0 +1,80 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_combat_armours"
+name = "Blair's Armour"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 10
+
+size = 12
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_chainbody"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_chainbody"
+count = 3
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_chainbody"
+count = 3
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.bronze_platelegs"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_platelegs"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_platelegs"
+count = 2
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.bronze_plateskirt"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_plateskirt"
+count = 2
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_plateskirt"
+count = 2
+restockCycles = 400
+
+[[inventory.stock]]
+obj = "obj.bronze_med_helm"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.iron_med_helm"
+count = 3
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.steel_med_helm"
+count = 3
+restockCycles = 400
+

@@ -6,11 +6,11 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.repo.loc.LocRepository
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.table.PickableObjectsRow
@@ -20,7 +20,6 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class Pickables @Inject constructor(
-    private val objRepo: ObjRepository,
     private val locRepo: LocRepository,
 ) : PluginScript() {
 
@@ -55,13 +54,16 @@ class Pickables @Inject constructor(
             return
         }
         if (inv.isFull()) {
-            mes("You don't have enough inventory space.")
+            mes(TAILORED_BUSH_INV_FULL)
             return
         }
         anim("seq.picking_low")
         delay(1)
+        if (!player.invAdd(inv, "obj.cadavaberries").success) {
+            mes(TAILORED_BUSH_INV_FULL)
+            return
+        }
         player.tailoredCadavaPicks++
-        invAddOrDrop(objRepo, "obj.cadavaberries")
     }
 
     private suspend fun ProtectedAccess.pick(
@@ -81,9 +83,7 @@ class Pickables @Inject constructor(
         }
 
         val rolledSeed = rollSeed(row)
-        val giveSeedOnly = rolledSeed && inv.freeSpace() <= 1
-
-        if (!canPickItem(giveSeedOnly)) {
+        if (inv.freeSpace() == 0 && !rolledSeed) {
             mes(invFullMessage(row.itemgiven))
             return
         }
@@ -94,7 +94,7 @@ class Pickables @Inject constructor(
             playerWalkWithMinDelay(loc.coords)
         }
 
-        givePickables(row, rolledSeed, giveSeedOnly)
+        if (locRepo.findExact(loc.coords, type) == null || !givePickables(row, rolledSeed)) return
 
         soundSynth("synth.pick")
 
@@ -116,25 +116,21 @@ class Pickables @Inject constructor(
     private fun ProtectedAccess.givePickables(
         row: PickableObjectsRow,
         rolledSeed: Boolean,
-        giveSeedOnly: Boolean,
-    ) {
-        if (!giveSeedOnly) {
-            mes(pickMessage(row.itemgiven))
-            invAddOrDropType(objRepo, row.itemgiven, row.itemamount)
+    ): Boolean {
+        if (!player.collectPickable(row, rolledSeed)) {
+            mes(invFullMessage(row.itemgiven))
+            return false
         }
-
         if (rolledSeed) {
-            val seed = requireNotNull(row.seed)
-            mes("You pick a ${seed.name.lowercase()}.")
-            invAddOrDropType(objRepo, seed)
+            mes("You pick a ${requireNotNull(row.seed).name.lowercase()}.")
+        } else {
+            mes(pickMessage(row.itemgiven))
         }
+        return true
     }
 
-    private fun ProtectedAccess.canPickItem(giveSeedOnly: Boolean): Boolean =
-        inv.freeSpace() > 0 || giveSeedOnly
-
     private fun ProtectedAccess.rollSeed(row: PickableObjectsRow): Boolean =
-        row.seed != null && rollChance(100, 3433)
+        row.seed != null && rollChance(row.seedchance[0], row.seedchance[1])
 
     private fun ProtectedAccess.advanceLoc(
         loc: BoundLocInfo,
@@ -253,6 +249,7 @@ class Pickables @Inject constructor(
         const val TAILORED_BUSH_BERRIES = 2
         const val TAILORED_BUSH_EMPTY =
             "There are no berries on this bush. Maybe you should try another bush."
+        const val TAILORED_BUSH_INV_FULL = "You don't have enough inventory space."
     }
 
     private fun invFullMessage(item: ItemServerType): String =
@@ -266,4 +263,10 @@ class Pickables @Inject constructor(
             "obj.pineapple" -> "There are no pineapples left on this plant."
             else -> "There is nothing to pick here at the moment."
         }
+}
+
+internal fun Player.collectPickable(row: PickableObjectsRow, seed: Boolean): Boolean {
+    val item = if (seed) requireNotNull(row.seed) else row.itemgiven
+    val count = if (seed) 1 else row.itemamount
+    return invAdd(inv, item.id, count).success
 }

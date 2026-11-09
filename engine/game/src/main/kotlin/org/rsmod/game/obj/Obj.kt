@@ -100,6 +100,34 @@ public class Obj(
     public val nullableOwnerId: Long?
         get() = if (ownerId == NULL_OBSERVER_ID) null else ownerId
 
+    public var timerCycle: Int = NO_TIMER
+        private set
+
+    public var revealCycle: Int = NO_TIMER
+        private set
+
+    public var despawnCycle: Int = NO_TIMER
+        private set
+
+    public val neverBecomesPublic: Boolean
+        get() = isPrivate && despawnCycle != NO_TIMER && revealCycle == NO_TIMER
+
+    public fun setTimers(cycle: Int, revealCycle: Int, despawnCycle: Int) {
+        this.timerCycle = cycle
+        this.revealCycle = revealCycle
+        this.despawnCycle = despawnCycle
+    }
+
+    public fun copyTimers(from: Obj) {
+        setTimers(from.timerCycle, from.revealCycle, from.despawnCycle)
+    }
+
+    public fun timeUntilPublic(cycle: Int): Int =
+        if (isPrivate && revealCycle != NO_TIMER) (revealCycle - cycle).coerceIn(0, MAX_TIMER) else 0
+
+    public fun timeUntilDespawn(cycle: Int): Int =
+        if (despawnCycle != NO_TIMER) (despawnCycle - cycle).coerceIn(0, MAX_TIMER) else 0
+
     public fun reveal() {
         val entity = entity.copy(scope = ObjScope.Temp.id)
         this.entity = entity
@@ -131,6 +159,8 @@ public class Obj(
 
     public companion object {
         public const val NULL_OBSERVER_ID: Long = Long.MIN_VALUE
+        public const val NO_TIMER: Int = Int.MAX_VALUE
+        public const val MAX_TIMER: Int = 65535
 
         // TODO: Need to investigate certain interactions when it comes to ironman in pvp.
         //  - Can they pick up any of their death pile loot if the killer does not take it and
@@ -182,7 +212,6 @@ public class Obj(
         ): Obj {
             return fromOwner(player, coords, obj.id, count)
         }
-
 
         public fun fromOwner(
             player: Player,

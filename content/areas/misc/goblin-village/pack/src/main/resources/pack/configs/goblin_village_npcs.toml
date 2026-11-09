@@ -1,0 +1,16 @@
+[[npc]]
+id = "npc.goblin_cook_charred"
+inherit = "npc.goblin_cook_charred"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.goblin_cook"
+inherit = "npc.goblin_cook"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.catwalk_goblin"
+inherit = "npc.catwalk_goblin"
+wanderRange = 2

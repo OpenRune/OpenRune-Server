@@ -61,6 +61,17 @@ public data class InstanceEndedEvent(
     override val id: Long = instanceEventId(key),
 ) : KeyedEvent
 
+/**
+ * A player's boss kill time, after it was reported to them; [personalBest] if it beat their best.
+ */
+public data class InstanceKillTimeEvent(
+    public val player: Player,
+    public val key: String,
+    public val ticks: Int,
+    public val personalBest: Boolean,
+    override val id: Long = instanceEventId(key),
+) : KeyedEvent
+
 public data class InstanceTimeTickEvent(
     public val key: String,
     public val instanceId: InstanceId,

@@ -31,7 +31,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         onOpNpc1("npc.aggie") { startDialogue(it.npc) { aggie() } }
         onOpNpc3("npc.aggie") { startDialogue(it.npc) { aggieDyes() } }
         onOpNpc1("npc.ned") { startDialogue(it.npc) { ned() } }
-        onOpNpc3("npc.ned") { startDialogue(it.npc) { nedRope() } }
+        onOpNpc3("npc.ned") { openRopeShop() }
         onOpNpc1("npc.leela") { startDialogue(it.npc) { leela() } }
         onOpNpc1("npc.wom_gossip") { startDialogue(it.npc) { missSchism() } }
         onOpNpc1("npc.wom_bankguard") { startDialogue(it.npc) { bankGuard() } }
@@ -263,7 +263,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
                     "you some rope?",
             )
             if (menu("Yes, I would like some rope." to true, NED_DECLINE to false)) {
-                nedRope()
+                access.openRopeShop()
             } else {
                 nedDecline()
             }
@@ -307,6 +307,20 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             NedTopic.Rope -> nedRope()
             NedTopic.Leave -> nedDecline()
         }
+    }
+
+    private fun ProtectedAccess.openRopeShop() {
+        val completedIsles = QuestRequirements.hasCompleted(player, FREMENNIK_ISLES)
+        shops.open(
+            player = player,
+            title =
+                if (completedIsles) "Ned's Handmade Rope (100% Wool - not yak, honest!)"
+                else "Ned's Handmade Rope (100% Wool)",
+            shopInv = "inv.skill_guide_crafting_weaving",
+            buyPercentage = 20.0,
+            sellPercentage = if (completedIsles) 90.0 else 100.0,
+            changePercentage = 2.0,
+        )
     }
 
     private suspend fun Dialogue.nedRope() {

@@ -869,3 +869,63 @@ isServerOnly = true
 id = "varp.dom_loot_claimed"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.gauntlet_reward_tier"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.gauntlet_flags"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.gauntlet_points"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.hpbar_open_generation"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.aggression_tolerance_start"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.aggression_tolerance_anchor"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.aggression_tolerance_seen"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.brutus_deaths"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.brutus_best_time"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.mcannon_ornament"
+scope = "Perm"
+transmit = "Never"

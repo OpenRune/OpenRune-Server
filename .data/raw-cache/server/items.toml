@@ -8592,6 +8592,7 @@ weaponCategory="Blunt"
 [[item]]
 id = "obj.slayer_leafbladed_spear"
 inherit = "obj.slayer_leafbladed_spear"
+contentGroup = "content.slayer_leaf_weapon"
 weaponCategory="Spear"
 tradeable = false
 [item.params]
@@ -13413,6 +13414,7 @@ inherit = "obj.aide_shortbow"
 weaponCategory="Bow"
 tradeable = false
 [item.params]
+"param.required_ammo"="category.arrows_training"
 "param.proj_type"="projanim.arrow"
 "param.equipment_sound"=2244
 "param.attack_range"=7
@@ -15510,6 +15512,7 @@ tradeable = false
 [[item]]
 id = "obj.leafbladed_sword"
 inherit = "obj.leafbladed_sword"
+contentGroup = "content.slayer_leaf_weapon"
 weaponCategory="StabSword"
 [item.params]
 "param.equipment_sound"=2248
@@ -15529,6 +15532,7 @@ id = "obj.tots"
 inherit = "obj.tots"
 weaponCategory="PoweredStaff"
 [item.params]
+"param.charged_variant"="obj.tots_charged"
 "param.bas_walk_l"="seq.human_halberdwalk_l"
 "param.bas_walk_r"="seq.human_halberdwalk_r"
 "param.bas_running"="seq.human_halberdrunning"
@@ -15552,6 +15556,7 @@ inherit = "obj.tots_charged"
 weaponCategory="PoweredStaff"
 tradeable = false
 [item.params]
+"param.uncharged_variant"="obj.tots_uncharged"
 "param.bas_walk_l"="seq.human_halberdwalk_l"
 "param.bas_walk_r"="seq.human_halberdwalk_r"
 "param.bas_running"="seq.human_halberdrunning"
@@ -15574,6 +15579,7 @@ id = "obj.tots_uncharged"
 inherit = "obj.tots_uncharged"
 weaponCategory="PoweredStaff"
 [item.params]
+"param.charged_variant"="obj.tots_charged"
 "param.bas_walk_l"="seq.human_halberdwalk_l"
 "param.bas_walk_r"="seq.human_halberdwalk_r"
 "param.bas_running"="seq.human_halberdrunning"
@@ -17957,6 +17963,7 @@ tradeable = false
 [[item]]
 id = "obj.leafbladed_battleaxe"
 inherit = "obj.leafbladed_battleaxe"
+contentGroup = "content.slayer_leaf_weapon"
 weaponCategory="Axe"
 [item.params]
 "param.equipment_sound"=2248
@@ -20062,8 +20069,11 @@ tradeable = false
 id = "obj.gauntlet_axe_hm"
 inherit = "obj.gauntlet_axe_hm"
 weaponCategory="Axe"
+contentGroup = "content.woodcutting_axe"
 tradeable = false
 [item.params]
+"param.levelrequire"=1
+"param.skill_anim"="seq.human_woodcutting_gauntlet_axe_hm"
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -20081,8 +20091,12 @@ tradeable = false
 id = "obj.gauntlet_pickaxe_hm"
 inherit = "obj.gauntlet_pickaxe_hm"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 tradeable = false
 [item.params]
+"param.levelrequire"=1
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_gauntlet_pickaxe_hm"
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
 "param.attack_sound_stance1"=2498
@@ -20319,8 +20333,11 @@ tradeable = false
 id = "obj.gauntlet_axe"
 inherit = "obj.gauntlet_axe"
 weaponCategory="Axe"
+contentGroup = "content.woodcutting_axe"
 tradeable = false
 [item.params]
+"param.levelrequire"=1
+"param.skill_anim"="seq.human_woodcutting_crystal_axe"
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_axe_hack"
 "param.attack_sound_stance1"=2498
@@ -20338,8 +20355,12 @@ tradeable = false
 id = "obj.gauntlet_pickaxe"
 inherit = "obj.gauntlet_pickaxe"
 weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
 tradeable = false
 [item.params]
+"param.levelrequire"=1
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_crystal_pickaxe"
 "param.equipment_sound"=2229
 "param.attack_anim_stance1"="seq.human_blunt_pound"
 "param.attack_sound_stance1"=2498
@@ -25491,6 +25512,7 @@ inherit = "obj.rune_armoured_boots"
 [[item]]
 id = "obj.slayer_mirror_shield"
 inherit = "obj.slayer_mirror_shield"
+contentGroup = "content.slayer_mirror_shield"
 [item.params]
 "param.equipment_sound"=2245
 
@@ -28618,6 +28640,8 @@ id = "obj.aide_arrow"
 inherit = "obj.aide_arrow"
 tradeable = false
 [item.params]
+"param.proj_travel"="spotanim.aide_arrow_travel"
+"param.proj_launch"="spotanim.aide_arrow_launch"
 "param.equipment_sound"=2244
 "param.destroy_note_desc"="You can get more Training arrows by talking to the Ranged Combat skill tutor north of Lumbridge Castle."
 
@@ -29428,6 +29452,7 @@ inherit = "obj.dragon_boots"
 [[item]]
 id = "obj.slayer_helm"
 inherit = "obj.slayer_helm"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -29436,6 +29461,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i"
 inherit = "obj.slayer_helm_i"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -30760,6 +30786,7 @@ inherit = "obj.dragon_javelin_p++"
 [[item]]
 id = "obj.slayer_helm_black"
 inherit = "obj.slayer_helm_black"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -30768,6 +30795,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i_black"
 inherit = "obj.slayer_helm_i_black"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -30776,6 +30804,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_green"
 inherit = "obj.slayer_helm_green"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -30784,6 +30813,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i_green"
 inherit = "obj.slayer_helm_i_green"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -30792,6 +30822,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_red"
 inherit = "obj.slayer_helm_red"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -30800,6 +30831,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i_red"
 inherit = "obj.slayer_helm_i_red"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -31400,6 +31432,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_purple"
 inherit = "obj.slayer_helm_purple"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -31408,6 +31441,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i_purple"
 inherit = "obj.slayer_helm_i_purple"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -31613,6 +31647,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_turquoise"
 inherit = "obj.slayer_helm_turquoise"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -31621,6 +31656,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i_turquoise"
 inherit = "obj.slayer_helm_i_turquoise"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -32423,6 +32459,7 @@ inherit = "obj.mystic_boots_dusk"
 [[item]]
 id = "obj.slayer_helm_hydra"
 inherit = "obj.slayer_helm_hydra"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -32431,6 +32468,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i_hydra"
 inherit = "obj.slayer_helm_i_hydra"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33193,6 +33231,7 @@ tradeable = false
 [[item]]
 id = "obj.v_shield"
 inherit = "obj.v_shield"
+contentGroup = "content.slayer_mirror_shield"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2245
@@ -33237,6 +33276,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_twisted"
 inherit = "obj.slayer_helm_twisted"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33314,6 +33354,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i_twisted"
 inherit = "obj.slayer_helm_i_twisted"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33456,6 +33497,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i"
 inherit = "obj.sw_slayer_helm_i"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33464,6 +33506,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i_black"
 inherit = "obj.sw_slayer_helm_i_black"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33472,6 +33515,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i_green"
 inherit = "obj.sw_slayer_helm_i_green"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33480,6 +33524,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i_red"
 inherit = "obj.sw_slayer_helm_i_red"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33488,6 +33533,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i_purple"
 inherit = "obj.sw_slayer_helm_i_purple"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33496,6 +33542,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i_turquoise"
 inherit = "obj.sw_slayer_helm_i_turquoise"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33504,6 +33551,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i_hydra"
 inherit = "obj.sw_slayer_helm_i_hydra"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33512,6 +33560,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i_twisted"
 inherit = "obj.sw_slayer_helm_i_twisted"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33768,6 +33817,7 @@ weaponCategory="Thrown"
 [[item]]
 id = "obj.slayer_helm_jad"
 inherit = "obj.slayer_helm_jad"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33776,6 +33826,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i_jad"
 inherit = "obj.slayer_helm_i_jad"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33784,6 +33835,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i_jad"
 inherit = "obj.sw_slayer_helm_i_jad"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33792,6 +33844,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_verzik"
 inherit = "obj.slayer_helm_verzik"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33800,6 +33853,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i_verzik"
 inherit = "obj.slayer_helm_i_verzik"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33808,6 +33862,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i_verzik"
 inherit = "obj.sw_slayer_helm_i_verzik"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33816,6 +33871,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_zuk"
 inherit = "obj.slayer_helm_zuk"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33824,6 +33880,7 @@ tradeable = false
 [[item]]
 id = "obj.slayer_helm_i_zuk"
 inherit = "obj.slayer_helm_i_zuk"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -33832,6 +33889,7 @@ tradeable = false
 [[item]]
 id = "obj.sw_slayer_helm_i_zuk"
 inherit = "obj.sw_slayer_helm_i_zuk"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34090,6 +34148,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i"
 inherit = "obj.pvpa_slayer_helm_i"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34098,6 +34157,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i_black"
 inherit = "obj.pvpa_slayer_helm_i_black"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34106,6 +34166,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i_green"
 inherit = "obj.pvpa_slayer_helm_i_green"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34114,6 +34175,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i_red"
 inherit = "obj.pvpa_slayer_helm_i_red"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34122,6 +34184,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i_purple"
 inherit = "obj.pvpa_slayer_helm_i_purple"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34130,6 +34193,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i_turquoise"
 inherit = "obj.pvpa_slayer_helm_i_turquoise"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34138,6 +34202,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i_hydra"
 inherit = "obj.pvpa_slayer_helm_i_hydra"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34146,6 +34211,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i_twisted"
 inherit = "obj.pvpa_slayer_helm_i_twisted"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34154,6 +34220,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i_jad"
 inherit = "obj.pvpa_slayer_helm_i_jad"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34162,6 +34229,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i_verzik"
 inherit = "obj.pvpa_slayer_helm_i_verzik"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -34170,6 +34238,7 @@ tradeable = false
 [[item]]
 id = "obj.pvpa_slayer_helm_i_zuk"
 inherit = "obj.pvpa_slayer_helm_i_zuk"
+contentGroup = "content.slayer_helmet"
 tradeable = false
 [item.params]
 "param.equipment_sound"=2240
@@ -41714,6 +41783,7 @@ tradeable = false
 [[item]]
 id = "obj.vikingexile_v_shield"
 inherit = "obj.vikingexile_v_shield"
+contentGroup = "content.slayer_mirror_shield"
 tradeable = false
 [item.params]
 "param.destroy_note_desc"="You'll have to recover the individual components and then make it again."
@@ -50104,6 +50174,14 @@ inherit = "obj.gauntlet_sceptre_hm"
 weaponCategory="Blunt"
 tradeable = false
 [item.params]
+"param.equipment_sound"=2233
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2567
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2567
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2567
+"param.defend_anim"="seq.human_blunt_block"
 "param.attackrate"=5
 
 
@@ -51609,6 +51687,14 @@ inherit = "obj.gauntlet_sceptre"
 weaponCategory="Blunt"
 tradeable = false
 [item.params]
+"param.equipment_sound"=2233
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2567
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2567
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2567
+"param.defend_anim"="seq.human_blunt_block"
 "param.attackrate"=5
 
 
@@ -52852,3 +52938,79 @@ contentGroup = "content.max_cape"
 id = "obj.skillcape_max_mythical"
 inherit = "obj.skillcape_max_mythical"
 contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.osrs_bond"
+inherit = "obj.osrs_bond"
+[item.params]
+"param.bond_item"=1
+
+[[item]]
+id = "obj.osrs_bond_untradeable"
+inherit = "obj.osrs_bond_untradeable"
+[item.params]
+"param.bond_item"=1
+
+[[item]]
+id = "obj.cowbell_amulet"
+inherit = "obj.cowbell_amulet"
+[item.params]
+"param.uncharged_variant"="obj.cowbell_amulet_empty"
+
+[[item]]
+id = "obj.cowbell_amulet_empty"
+inherit = "obj.cowbell_amulet_empty"
+[item.params]
+"param.charged_variant"="obj.cowbell_amulet"
+
+[[item]]
+id = "obj.bottomless_milk_bucket_filled"
+inherit = "obj.bottomless_milk_bucket_filled"
+[item.params]
+"param.uncharged_variant"="obj.bottomless_milk_bucket"
+
+[[item]]
+id = "obj.bottomless_milk_bucket"
+inherit = "obj.bottomless_milk_bucket"
+[item.params]
+"param.charged_variant"="obj.bottomless_milk_bucket_filled"
+
+[[item]]
+id = "obj.slayer_helm_araxyte"
+inherit = "obj.slayer_helm_araxyte"
+contentGroup = "content.slayer_helmet"
+
+[[item]]
+id = "obj.slayer_helm_i_araxyte"
+inherit = "obj.slayer_helm_i_araxyte"
+contentGroup = "content.slayer_helmet"
+
+[[item]]
+id = "obj.sw_slayer_helm_i_araxyte"
+inherit = "obj.sw_slayer_helm_i_araxyte"
+contentGroup = "content.slayer_helmet"
+
+[[item]]
+id = "obj.pvpa_slayer_helm_i_araxyte"
+inherit = "obj.pvpa_slayer_helm_i_araxyte"
+contentGroup = "content.slayer_helmet"
+
+[[item]]
+id = "obj.slayer_helm_hooded"
+inherit = "obj.slayer_helm_hooded"
+contentGroup = "content.slayer_helmet"
+
+[[item]]
+id = "obj.slayer_helm_i_hooded"
+inherit = "obj.slayer_helm_i_hooded"
+contentGroup = "content.slayer_helmet"
+
+[[item]]
+id = "obj.sw_slayer_helm_i_hooded"
+inherit = "obj.sw_slayer_helm_i_hooded"
+contentGroup = "content.slayer_helmet"
+
+[[item]]
+id = "obj.pvpa_slayer_helm_i_hooded"
+inherit = "obj.pvpa_slayer_helm_i_hooded"
+contentGroup = "content.slayer_helmet"

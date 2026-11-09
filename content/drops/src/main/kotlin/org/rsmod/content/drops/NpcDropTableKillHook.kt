@@ -15,6 +15,7 @@ import org.rsmod.api.death.NpcDeathDropContext
 import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
+import org.rsmod.api.death.NpcDropReceiveHook
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropTableRegistry
 import org.rsmod.api.droptable.KillRollContext
@@ -36,10 +37,14 @@ constructor(
     private val objRepo: ObjRepository,
     private val random: GameRandom,
     private val deathDropHooks: Set<NpcDeathDropHook>,
+    private val receiveHooks: Set<NpcDropReceiveHook>,
 ) : NpcDeathKillHook {
 
     override fun onKill(context: NpcDeathKillContext) {
         val table = registry.forNpc(context.npc, areaChecker) ?: return
+        if (deathDropHooks.any { it.suppressesDropTable(context) }) {
+            return
+        }
 
         val player = context.hero
         val duration = player.lootDropDuration ?: constants.lootdrop_duration
@@ -96,7 +101,10 @@ constructor(
         val obj = drop.transformObj(receiver) ?: drop.obj
         val count = drop.rollCount(random)
         CollectionLog.grant(receiver, obj, count)
-        if (!consumedByHook(obj, count, coords, duration, receiver)) {
+        if (
+            !receiveHooks.any { it.tryReceive(receiver, obj, count) } &&
+                !consumedByHook(obj, count, coords, duration, receiver)
+        ) {
             val spawned = objRepo.add(obj, coords, duration, receiver, count)
             ClientScripts.lootTrackerAddLoot(receiver, npc.id, eventId, spawned.type, spawned.count)
         }

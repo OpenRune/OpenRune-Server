@@ -82,7 +82,7 @@ public class RouteFinding(
         locShape: Int = -1,
         moveNear: Boolean = true,
         blockAccessFlags: Int = 0,
-        maxWaypoints: Int = 25,
+        maxWaypoints: Int = searchMapSize * searchMapSize,
         collision: CollisionStrategy = CollisionStrategy.Normal,
     ): Route {
         require(srcX in 0..0x7FFF && srcZ in 0..0x7FFF)
@@ -209,7 +209,7 @@ public class RouteFinding(
                 return Route.FAILED
             }
         }
-        val waypoints = ArrayDeque<RouteCoordinates>(maxWaypoints + 1)
+        val waypoints = ArrayDeque<RouteCoordinates>(minOf(maxWaypoints, 32) + 1)
         var nextDir = directions[currLocalX, currLocalZ]
         var currDir = -1
         for (i in directions.indices) {

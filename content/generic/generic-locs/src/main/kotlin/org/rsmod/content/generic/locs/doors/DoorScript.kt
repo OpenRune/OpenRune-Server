@@ -1,7 +1,5 @@
 package org.rsmod.content.generic.locs.doors
 
-import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
@@ -70,8 +68,13 @@ class DoorScript @Inject constructor(private val locRepo: LocRepository) : Plugi
             delay(2)
         }
 
+        val original = locRepo.findPendingRespawn(closedCoords, closed.layer)
         locRepo.del(closed, DoorConstants.DURATION)
-        locRepo.add(closedCoords, closedLoc, DoorConstants.DURATION, closedAngle, closed.shape)
+        if (original != null) {
+            locRepo.add(original, DoorConstants.DURATION)
+        } else {
+            locRepo.add(closedCoords, closedLoc, DoorConstants.DURATION, closedAngle, closed.shape)
+        }
     }
 
     private fun BoundLocInfo.closeAngle(): LocAngle = turnAngle(rotations = -1)

@@ -11,6 +11,7 @@ object Cooking {
     const val COL_LOW = 10
     const val COL_HIGH = 11
     const val COL_GAUNTLET = 12
+    const val COL_COOK_TICKS = 13
 
     const val COL_VAT_OFFSET = 7
     const val COL_BARREL_OFFSET = 8
@@ -146,6 +147,7 @@ object Cooking {
             column("low", COL_LOW, VarType.INT)
             column("high", COL_HIGH, VarType.INT)
             column("supports_gauntlet", COL_GAUNTLET, VarType.BOOLEAN)
+            column("cook_ticks", COL_COOK_TICKS, VarType.INT)
         },
     ) {
         row("dbrow.cooking_shrimp") {
@@ -743,6 +745,21 @@ object Cooking {
             column(COL_STOP_BURN_RANGE, 58)
             column(COL_LOW, 50)
             column(COL_HIGH, 256)
+        }
+        row("dbrow.cooking_paddlefish") {
+            production {
+                input("obj.gauntlet_raw_food")
+                statReq("stat.cooking", 1)
+                xp(15)
+                output("obj.gauntlet_food")
+                category("Fish")
+            }
+            columnRSCM(COL_BURNT, "obj.gauntlet_burnt_food")
+            column(COL_STOP_BURN_FIRE, 47)
+            column(COL_STOP_BURN_RANGE, 47)
+            column(COL_LOW, 155)
+            column(COL_HIGH, 368)
+            column(COL_COOK_TICKS, 1)
         }
         row("dbrow.cooking_cake") {
             production {

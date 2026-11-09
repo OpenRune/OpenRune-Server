@@ -4,12 +4,14 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.HealthBarServerType
 import jakarta.inject.Inject
+import kotlin.math.max
 import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.npc.headbar.InternalNpcHeadbars
 import org.rsmod.api.npc.hit.NpcDamageContributor
+import org.rsmod.api.npc.hit.NpcHitpointsFloorHook
 import org.rsmod.api.player.ironman.shouldBlockNpcCombatXp
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.events.EventBus
@@ -24,11 +26,14 @@ constructor(
     private val playerList: PlayerList,
     private val eventBus: EventBus,
     private val damageContributors: Set<NpcDamageContributor>,
+    private val hitpointsFloors: Set<NpcHitpointsFloorHook>,
 ) : NpcHitProcessor {
     override fun StandardNpcAccess.process(hit: Hit) {
         var changedDamage: Int? = null
-        if (!npc.hitpointsLocked && hit.damage > npc.hitpoints) {
-            changedDamage = npc.hitpoints
+        val floor = hitpointsFloors.maxOfOrNull { it.floor(npc, hit) } ?: 0
+        val survivable = max(npc.hitpoints - floor, 0)
+        if (!npc.hitpointsLocked && hit.damage > survivable) {
+            changedDamage = survivable
         }
 
         if (changedDamage == 0) {
@@ -101,9 +106,12 @@ constructor(
 
         npc.showHitmark(hit.hitmark)
 
-        val visHeadbar = npc.visHeadbar(params.headbar)
-        val headbar = hit.createHeadbar(npc.hitpoints, npc.baseHitpointsLvl, visHeadbar)
-        npc.showHeadbar(headbar)
+        if (npc.visType.paramOrNull(params.headbar_hidden) != true) {
+            val inverted = npc.visType.paramOrNull(params.headbar_inverted) == true
+            val currHp = if (inverted) npc.baseHitpointsLvl - npc.hitpoints else npc.hitpoints
+            val visHeadbar = npc.visHeadbar(params.headbar)
+            npc.showHeadbar(hit.createHeadbar(currHp, npc.baseHitpointsLvl, visHeadbar))
+        }
 
         npc.publishHitEvent(hit)
     }

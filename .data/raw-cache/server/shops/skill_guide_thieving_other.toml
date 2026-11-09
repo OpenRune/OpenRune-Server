@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_thieving_other"
+name = "Mairin's Market"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 1000
+delta = 0
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.fossil_small_unid"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.fossil_medium_unid"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.fossil_large_unid"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.merfolk_trident"
+count = 10
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.seaweed_seed"
+count = 100
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bowl_of_fish"
+count = 100
+restockCycles = 100
+

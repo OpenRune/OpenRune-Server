@@ -50,7 +50,10 @@ private constructor(
         loadSkillCapeEmotes()
         onIfOpen("interface.emote") { player.onTabOpen() }
         onIfOverlayButton("component.emote:contents") { player.selectEmote(it.comsub, it.op) }
-        onPlayerWalkTrigger("walktrigger.emote_cancelanim") { player.resetAnim() }
+        onPlayerWalkTrigger("walktrigger.emote_cancelanim") {
+            player.resetAnim()
+            player.resetSpotanim()
+        }
     }
 
     private fun loadEmotesEnum() {

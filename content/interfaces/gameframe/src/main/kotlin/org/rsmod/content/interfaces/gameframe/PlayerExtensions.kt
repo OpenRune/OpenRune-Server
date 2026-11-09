@@ -41,7 +41,9 @@ internal fun Player.moveGameframe(from: Gameframe, dest: Gameframe, eventBus: Ev
 
 private fun UserInterfaceMap.setGameframe(mappings: Map<Component, Component>) {
     gameframe.clear()
+    gameframeSources.clear()
     for ((original, translated) in mappings) {
         gameframe[original] = translated
+        gameframeSources[translated] = original
     }
 }

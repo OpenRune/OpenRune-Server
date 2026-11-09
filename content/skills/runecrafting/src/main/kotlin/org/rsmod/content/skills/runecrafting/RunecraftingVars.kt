@@ -19,3 +19,5 @@ internal var Player.colossalPouchDegradeThreshold by intVarBit("varbit.rcu_pouch
 internal var Player.magicImbueActive by intVarBit("varbit.magic_imbue_active")
 
 internal var Player.cordeliaPouchRepairUnlocked by intVarBit("varbit.cordelia_pouch_repair_unlocked")
+
+internal var Player.essenceMineTeleporter by intVarp("varp.essence_mine_teleporter")

@@ -4,5 +4,11 @@ import dev.openrune.definition.dbtables.DBTable
 import dev.openrune.pack.PluginPack
 
 class QuestPluginPack : PluginPack() {
-    override fun dbTables(): List<DBTable> = listOf(ApothecaryPotionsTable.potions())
+    override fun dbTables(): List<DBTable> =
+        listOf(
+            DaddysHomeFurnitureTable.daddysHomeFurniture(),
+            DaddysHomeCrateTable.daddysHomeCrate(),
+            GlarialRestrictionsTable.restrictions(),
+            ApothecaryPotionsTable.potions(),
+        )
 }

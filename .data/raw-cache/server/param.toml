@@ -30,6 +30,12 @@ defaultInt = 0
 isMembers = true
 
 [[params]]
+id = "param.min_defence"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
 id = "param.xerician"
 type = "INT"
 defaultInt = 0
@@ -86,6 +92,29 @@ isMembers = true
 [[params]]
 id = "param.slayer_task_tip"
 type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.slayer_task_ids"
+type = "STRING"
+isMembers = true
+
+[[params]]
+id = "param.slayer_variant"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.slayer_level"
+type = "INT"
+defaultInt = -1
+isMembers = true
+
+[[params]]
+id = "param.slayer_superior_form"
+type = "INT"
+defaultInt = 0
 isMembers = true
 
 [[params]]
@@ -875,6 +904,27 @@ isMembers = true
 
 [[params]]
 id = "param.attackable_on_cooldown"
+isServerOnly = true
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.woodcutting_fixed_yields"
+isServerOnly = true
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.headbar_hidden"
+isServerOnly = true
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.headbar_inverted"
 isServerOnly = true
 type = "BOOLEAN"
 defaultInt = 0

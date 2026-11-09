@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_thieving_stalls"
+name = "Ivan's Supplies"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 500
+delta = 0
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.silver_sickle"
+count = 20
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.silver_sickle_blessed"
+count = 20
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.burgh_rod_command_final_10"
+count = 20
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.ivandis_flail"
+count = 20
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.blisterwood_flail"
+count = 20
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.blisterwood_sickle"
+count = 20
+restockCycles = 1
+

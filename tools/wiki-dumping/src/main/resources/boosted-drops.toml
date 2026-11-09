@@ -8,8 +8,12 @@ objs = ["obj.blowpipe_fang", "obj.magic_fang", "obj.serpentine_visage", "obj.unc
 npcs = ["npc.snakeboss_boss_*"]
 
 [[boosted]]
-objs = ["obj.kraken_tentacle"]
+objs = ["obj.kraken_tentacle", "obj.tots"]
 npcs = ["npc.slayer_kraken_boss*"]
+
+[[boosted]]
+objs = ["obj.tots_uncharged"]
+npcs = ["npc.slayer_kraken", "npc.slayer_kraken_sub"]
 
 [[boosted]]
 objs = ["obj.dragon_chainbody", "obj.dragon_2h_sword", "obj.dragon_pickaxe"]

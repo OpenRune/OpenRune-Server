@@ -46,6 +46,7 @@ import org.rsmod.api.net.rsprot.handlers.OpNpcHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePCountDialogHandler
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.hit.NpcDamageContributor
+import org.rsmod.api.npc.hit.NpcHitpointsFloorHook
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.processor.NpcHitProcessor
@@ -140,6 +141,7 @@ import org.rsmod.game.map.LocZoneStorage
 import org.rsmod.game.map.collision.addLoc
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.game.queue.EngineQueueCache
+import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.game.region.Region
 import org.rsmod.game.region.RegionListLarge
 import org.rsmod.game.region.RegionListSmall
@@ -890,6 +892,7 @@ constructor(
 
             bind(CheatCommandMap::class.java).`in`(Scopes.SINGLETON)
             bind(EngineQueueCache::class.java).`in`(Scopes.SINGLETON)
+            bind(WorldQueueList::class.java).`in`(Scopes.SINGLETON)
 
             Multibinder.newSetBinder(binder(), InvisibleLevelMod::class.java)
             bind(InvisibleLevels::class.java).`in`(Scopes.SINGLETON)
@@ -906,6 +909,7 @@ constructor(
                 .`in`(Scopes.SINGLETON)
 
             Multibinder.newSetBinder(binder(), NpcDamageContributor::class.java)
+            Multibinder.newSetBinder(binder(), NpcHitpointsFloorHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerInvUpdateHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerPostTickHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerGroundItemDropHook::class.java)

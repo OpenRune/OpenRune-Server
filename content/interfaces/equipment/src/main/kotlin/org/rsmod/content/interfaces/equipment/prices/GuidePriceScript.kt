@@ -1,6 +1,5 @@
 package org.rsmod.content.interfaces.equipment.prices
 
-import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
@@ -16,6 +15,7 @@ import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifClose
+import org.rsmod.api.player.ui.ifCloseModal
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
@@ -158,7 +158,7 @@ constructor(
     private suspend fun ProtectedAccess.searchObj() {
         val search = objDialog("Select an item to ask about its price:")
 
-        val searchInternalName = RSCM.getReverseMapping(RSCMType.OBJ,search.id)
+        val searchInternalName = RSCM.getReverseMapping(RSCMType.OBJ, search.id)
 
         ifSetObj("component.ge_pricechecker:otheritem", searchInternalName, zoom = 1)
         player.updateSearchPrice(search)
@@ -223,8 +223,17 @@ constructor(
 
     private fun Player.closeGuide() {
         val tempInv = invMap["inv.tradeoffer"] ?: return
-        val result = invMoveAll(from = tempInv, into = inv)
-        check(result.success) { "Could not move `tempInv` into `inv`: $tempInv" }
+        if (tempInv.isEmpty()) {
+            return
+        }
+        ifCloseModal("interface.ge_pricechecker_side", eventBus)
+        val result = invMoveAll(from = tempInv, into = inv, autoCommit = false)
+        val returnedAll =
+            result.inventories.any {
+                it.output === tempInv.objs && it.image.all { obj -> obj == null }
+            }
+        check(result.success && returnedAll) { "Could not move `tempInv` into `inv`: $tempInv" }
+        result.commitAll()
     }
 
     private fun Player.examine(obj: InvObj) {

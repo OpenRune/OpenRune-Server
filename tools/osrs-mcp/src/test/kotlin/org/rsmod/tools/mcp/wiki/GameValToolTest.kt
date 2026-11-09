@@ -40,13 +40,13 @@ class GameValToolTest {
         writeMockDat(
             binaryDir.resolve("gamevals.dat"),
             mapOf(
-                "npc" to listOf("kraken=1234", "cave_kraken=5678", "kraken_boss=7777"),
+                "npc" to listOf("testbeast=1234", "cave_testbeast=5678", "testbeast_boss=7777"),
             ),
         )
         writeMockDat(binaryDir.resolve("gamevals_columns.dat"), mapOf("dbcolumn" to emptyList()))
 
         val index = GameValTool.load(root.toString())
-        val result = index.search(query = "kraken", table = "npc", id = null, limit = 2)
+        val result = index.search(query = "testbeast", table = "npc", id = null, limit = 2)
 
         assertEquals(3, result.totalMatches)
         assertEquals(2, result.matches.size)
@@ -91,6 +91,3 @@ class GameValToolTest {
         output.write(bytes)
     }
 }
-
-
-

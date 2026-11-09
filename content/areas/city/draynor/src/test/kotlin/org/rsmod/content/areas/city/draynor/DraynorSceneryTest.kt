@@ -23,6 +23,7 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.game.process.npc.NpcMovementProcessor
 import org.rsmod.api.game.process.npc.hunt.NpcPlayerHuntProcessor
 import org.rsmod.api.hunt.Hunt
+import org.rsmod.api.npc.aggression.AggressionTolerance
 import org.rsmod.api.player.events.interact.LocContentEvents
 import org.rsmod.api.player.events.interact.NpcEvents
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -177,6 +178,7 @@ class DraynorSceneryTest {
         }
         val hunting = NpcPlayerHuntProcessor(
             random, clock, Hunt(RayCastValidator(collision), players, npcs, ObjRegistry(updates), locRegistry),
+            AggressionTolerance(clock),
         )
 
         init {

@@ -3,6 +3,7 @@ package org.rsmod.api.instances
 import dev.openrune.types.NpcServerType
 import org.rsmod.api.instances.region.regionIdsGrid
 import org.rsmod.api.repo.region.RegionStaticTemplate
+import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
 public const val INSTANCE_TICKS_PER_MINUTE: Int = 100
@@ -151,6 +152,7 @@ public sealed class InstanceArea {
 
 public data class InstanceSettings(
     val fee: Int = 0,
+    val feeFromBank: Boolean = false,
     val maxPlayers: Int = 1,
     val reclaimTicks: Int = DEFAULT_EMPTY_INSTANCE_RECLAIM_TICKS,
     val graceTicks: Int = DEFAULT_INSTANCE_GRACE_TICKS,
@@ -173,6 +175,7 @@ public data class InstanceSettings(
     public fun withArea(area: InstanceArea, settingsRowId: Int): InstanceSpec =
         InstanceSpec(
             fee = fee,
+            feeFromBank = feeFromBank,
             maxPlayers = maxPlayers,
             reclaimTicks = reclaimTicks,
             graceTicks = graceTicks,
@@ -192,6 +195,7 @@ public data class InstanceSettings(
 
 public data class InstanceSpec(
     val fee: Int,
+    val feeFromBank: Boolean = false,
     val maxPlayers: Int,
     val reclaimTicks: Int,
     val graceTicks: Int,
@@ -206,6 +210,9 @@ public data class InstanceSpec(
     val description: String = "",
     val timeLimitTicks: Int? = null,
     val spawnOnFirstJoin: Boolean = false,
+    val recordsKillTime: (Player) -> Boolean = { true },
+    /** A varp that keeps each player's best kill time in ticks; null keeps it for the session. */
+    val bestTimeVarp: String? = null,
 )
 
 public sealed interface InstanceAccess {

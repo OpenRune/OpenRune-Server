@@ -1,0 +1,25 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_hunting_eagles"
+name = "Leon's Prototype Crossbow."
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 200
+delta = 20
+
+size = 1
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.hunting_crossbow"
+count = 2
+restockCycles = 8
+

@@ -42,6 +42,7 @@ internal class Pickpocket(
     val loot: LootTable? = null,
     val pouch: CoinPouch? = null,
     val lowercaseName: Boolean = false,
+    val pocketName: String? = null,
 )
 
 internal object ThievingTables {
@@ -178,6 +179,17 @@ internal object ThievingTables {
                 caughtShout = "What do you think you're doing?",
                 pouch = CoinPouch("obj.pickpocket_coin_pouch_citizen", coins = 3),
                 lowercaseName = true,
+            ),
+            Pickpocket(
+                npcs = listOf("npc.al_kharid_warrior"),
+                level = 25,
+                xp = 26.0,
+                lowChance = 130,
+                highChance = 240,
+                stunDamage = 2,
+                caughtShout = "What do you think you're doing?",
+                pouch = CoinPouch("obj.pickpocket_coin_pouch_warrior", coins = 18),
+                pocketName = "the warrior",
             ),
             Pickpocket(
                 npcs = listOf("npc.master_farmer_1", "npc.martin_the_master_farmer"),

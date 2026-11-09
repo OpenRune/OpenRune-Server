@@ -1,0 +1,12 @@
+[[varp]]
+isServerOnly = true
+id = "varp.daddyshome_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.daddyshome_crate_opened"
+varp = "varp.daddyshome_state"
+startBit = 0
+endBit = 0

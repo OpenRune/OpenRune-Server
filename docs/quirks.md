@@ -66,6 +66,13 @@ example, if `zone(0, 1, 0)` receives a `soundarea` update first and
 to fixed iteration order; whereas the official game would send `zone(0, 1, 0)`
 first since it was the earliest update.
 
+## Level-up popups
+
+`LevelUpScript` sets `varbit.busy` while `levelup_display` is open and clears
+it through the interface close hook. Keep cleanup tied to the interface,
+not the suspended dialogue: walking or a hit can cancel that dialogue.
+Disabled popups do not set the flag.
+
 ## Types
 ```
 engine
@@ -102,5 +109,38 @@ mutable, and nullable.
   - TODO:
 - Pros
   - TODO:
+
+## Account save snapshots
+
+`AccountManager.save` requests capture at the end-of-tick gameplay boundary. Persistent
+varps, serialized attributes, inventories, stats, identity and world type are detached
+before background SQL runs. `CharacterDataStage.Pipeline.capture` must return a
+`CharacterDataStage.Save` that consumes captured values, never the live player.
+
+Mutations during an in-flight autosave remain dirty for a subsequent snapshot. Retries
+consume the same snapshot before newer requests. Shutdown drains an interrupted batch
+before queued requests, retaining each request until it succeeds or reports failure.
+
+## Player timer phases
+
+Soft timers normally run before interactions. `softTimer(..., afterInteractions = true)`
+opts a timer into the pass immediately after player interactions. Foundry work uses this
+phase so a tool re-click can affect the work consumed on that same tick. Rescheduling
+moves a timer between phases; clearing it removes either registration.
+
+Global effects tied to player work use `StartCycle`, before the map clock advances,
+so their animations and sounds share the player's work tick.
+
+## Foundry item safety
+
+`PlayerDeathPreDropHook` runs before carried items are captured for death drops,
+including administrator deaths that bypass drops. Foundry stores the preform here,
+before a grave or ground stack can claim it. Equipment replacements store displaced
+preforms after the equipment transaction commits. Teleport validation does not
+store a preform; a successful coordinate change does.
+
+Sword hand-in and ore-pack conversion use all-or-nothing inventory transactions.
+Failed payment leaves the sword, commission and reward state unchanged. Coins go
+to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
 
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)

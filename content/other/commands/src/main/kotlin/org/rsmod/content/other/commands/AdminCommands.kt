@@ -38,6 +38,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.PlayerSkillXP
+import org.rsmod.api.player.stat.XpSource
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.stat.statSub
@@ -756,7 +757,7 @@ constructor(
             }
             val xpDelta = xp - statMap.getXP(statInternal)
             statMap.setCurrentLevel(statInternal, targetLevel.toByte())
-            statAdvance(statInternal, xpDelta.toDouble(), rate = 1.0)
+            statAdvance(statInternal, xpDelta.toDouble(), rate = 1.0, source = XpSource.Manual)
         }
     }
 
@@ -1071,7 +1072,15 @@ constructor(
         if (id != null) {
             return ServerCacheManager.getItem(id)
         }
-        return ServerCacheManager.getItem("obj.$input".asRSCM(RSCMType.OBJ))
+        val mapped = RSCM.getRSCMOrNull("obj.$input", RSCMType.OBJ)
+        if (mapped != null) {
+            return ServerCacheManager.getItem(mapped)
+        }
+        val name = input.replace('_', ' ')
+        return ServerCacheManager.getItems()
+            .values
+            .filter { it.name.equals(name, ignoreCase = true) && !it.isCert && !it.isPlaceholder }
+            .minByOrNull { it.id }
     }
 
     private fun List<String>.asTypeName(): String = joinToString("_")

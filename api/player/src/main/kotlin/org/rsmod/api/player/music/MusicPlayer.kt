@@ -3,7 +3,6 @@ package org.rsmod.api.player.music
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.aconverted.AreaType
 import jakarta.inject.Inject
 import org.rsmod.api.music.Music
 import org.rsmod.api.music.MusicRepository
@@ -24,8 +23,13 @@ import org.rsmod.game.entity.Player
 public class MusicPlayer
 @Inject
 internal constructor(private val random: GameRandom, private val repo: MusicRepository) {
-    private val Player.playMode by enumVarp<MusicPlayMode>("varp.musicplay")
+    private var Player.playMode by enumVarp<MusicPlayMode>("varp.musicplay")
     private val Player.areaMode by enumVarBit<MusicAreaMode>("varbit.music_area_mode")
+    private var Player.selectedPlaylist by intVarBit("varbit.music_current_playlist")
+    private val Player.keepPlaylistOnModeChange by
+        boolVarBit("varbit.dont_update_music_on_playlist_change")
+    private val Player.masterVolume by intVarBit("varbit.option_master_volume_desktop")
+    private val Player.musicVolume by intVarBit("varbit.option_music_desktop")
 
     private var Player.lastMusicId by intVarBit("varbit.music_last_id")
     private var Player.currMusicId by intVarBit("varbit.music_curr_id")
@@ -156,6 +160,30 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
         return repo.forRow(row) ?: error("DbRow is not a valid music row: '${row.rowId}'")
     }
 
+    public fun isMuted(player: Player): Boolean {
+        return player.masterVolume == 0 || player.musicVolume == 0
+    }
+
+    public fun selectPlayMode(player: Player, mode: MusicPlayMode) {
+        player.playMode = mode
+        val leavePlaylist = mode == MusicPlayMode.Area && !player.keepPlaylistOnModeChange
+        if (leavePlaylist && player.selectedPlaylist != 0) {
+            player.selectedPlaylist = 0
+        }
+    }
+
+    public fun playNextIfIdle(player: Player) {
+        if (player.currMusicId == 0 && !isMuted(player)) {
+            playNext(player)
+        }
+    }
+
+    public fun skip(player: Player) {
+        if (player.playMode == MusicPlayMode.Random && !isMuted(player)) {
+            playNextRandom(player)
+        }
+    }
+
     public fun playNext(player: Player) {
         when (player.playMode) {
             MusicPlayMode.Area -> playNextArea(player)
@@ -168,7 +196,7 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
         if (player.currMusicArea == 0) {
             return
         }
-        val area = RSCM.getReverseMapping(RSCMType.AREA,player.currMusicArea - 1)
+        val area = RSCM.getReverseMapping(RSCMType.AREA, player.currMusicArea - 1)
         when (player.areaMode) {
             MusicAreaMode.Modern -> {
                 val modernMusic = repo.getModernArea(area)
@@ -195,8 +223,8 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
     private fun playNextRandom(player: Player) {
         val unlocked =
             repo.getAll().filter { hasUnlocked(player, it) && it.id != player.currMusicId }
-        val random = random.pickOrNull(unlocked) ?: repo.getAll().first()
-        play(player, random)
+        val next = random.pickOrNull(unlocked) ?: return
+        play(player, next)
     }
 
     public fun enterArea(player: Player, area: String) {

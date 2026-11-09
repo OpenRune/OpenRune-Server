@@ -24,9 +24,11 @@ class XMarksTheSpotQuest @Inject constructor(private val objRepo: ObjRepository)
         "quest_xmarksthespot",
         "varp.cluequest_main",
         rewards {
-            item("obj.coins", COIN_REWARD, label = "$COIN_REWARD Coins")
-            item(LAMP, label = "An antique lamp")
-            extra("A beginner scroll box")
+            extra("An Antique Lamp")
+            extra("$COIN_REWARD Coins")
+            extra("Ability to receive Clue Scroll")
+            extra("Boxes")
+            extra("A Beginner Clue Scroll Box")
         },
         ItemRewardDisplay(CASKET, zoom = 400),
         questVarbit = "varbit.cluequest",
@@ -261,7 +263,7 @@ class XMarksTheSpotQuest @Inject constructor(private val objRepo: ObjRepository)
 
         private const val QUEST_KEY = "quest_xmarksthespot"
 
-        private const val COIN_REWARD = 200
+        internal const val COIN_REWARD = 200
         private const val LAMP_XP = 300.0
 
         private const val VEOS_LUMBRIDGE_VISIBLE = 2

@@ -33,44 +33,44 @@ class SlayerEvents @Inject constructor(private val shops: Shops) : PluginScript(
         val npcIds = SlayerTaskManager.slayerMasterNpcs.map { it.id }.toSet()
         for (npcId in npcIds) {
             val npcName = RSCM.getReverseMapping(RSCMType.NPC, npcId)
-            onOpNpc1(npcName) { handleOp1(it.npc, npcName) }
-            onOpNpc3(npcName) { handleOp3(it.npc, npcName) }
+            onOpNpc1(npcName) { handleOp1(it.npc, npcId, npcName) }
+            onOpNpc3(npcName) { handleOp3(it.npc, npcId, npcName) }
             onOpNpc4(npcName) { openSlayerShop() }
             onOpNpc5(npcName) { handleOp5(npcName) }
         }
     }
 
-    private suspend fun ProtectedAccess.handleOp1(npc: Npc, internalName: String) {
+    private suspend fun ProtectedAccess.handleOp1(npc: Npc, npcId: Int, internalName: String) {
         focusMaster(internalName)
         startDialogue(npc) {
-            when (npc.id) {
+            when (npcId) {
                 SlayerMasters.Npc.turael -> turaelStart()
                 SlayerMasters.Npc.krystilia -> krystiliaStart()
                 SlayerMasters.Npc.konar -> konarStart()
                 SlayerMasters.Npc.mortimer -> mortimerStart()
                 SlayerMasters.Npc.spria, SlayerMasters.Npc.spriaActive -> spriaStart()
                 SlayerMasters.Npc.steve -> steveStart()
-                else -> openMain(npc.id,
-                    extras = SlayerMasters.extraMenuOptions(this, npc.id)
+                else -> openMain(npcId,
+                    extras = SlayerMasters.extraMenuOptions(this, npcId)
                 )
             }
         }
     }
 
-    private suspend fun ProtectedAccess.handleOp3(npc: Npc, internalName: String) {
+    private suspend fun ProtectedAccess.handleOp3(npc: Npc, npcId: Int, internalName: String) {
         focusMaster(internalName)
         startDialogue(npc) {
-            when (npc.id) {
+            when (npcId) {
                 SlayerMasters.Npc.turael -> requestAssignment(SlayerMasters.Npc.turael)
                 SlayerMasters.Npc.krystilia -> krystiliaNeedAssignment()
                 SlayerMasters.Npc.konar -> konarNeedAssignment()
                 SlayerMasters.Npc.mortimer -> mortimerNeedAssignment()
                 SlayerMasters.Npc.spria, SlayerMasters.Npc.spriaActive -> requestAssignment(
-                    if (npc.id == SlayerMasters.Npc.spria) SlayerMasters.Npc.spria
+                    if (npcId == SlayerMasters.Npc.spria) SlayerMasters.Npc.spria
                     else SlayerMasters.Npc.spriaActive
                 )
                 SlayerMasters.Npc.steve -> requestAssignment(SlayerMasters.Npc.steve)
-                else -> requestAssignment(npc.id)
+                else -> requestAssignment(npcId)
             }
         }
     }

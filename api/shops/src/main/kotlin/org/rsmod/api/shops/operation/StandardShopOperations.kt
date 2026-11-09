@@ -24,7 +24,7 @@ public interface StandardShopOperations : ShopOperations {
         op: IfButtonOp,
     ) {
         when (op) {
-            IfButtonOp.Op1 -> examineShopValue(player, shop, slot)
+            IfButtonOp.Op1, IfButtonOp.Op6 -> examineShopValue(player, shop, slot)
             IfButtonOp.Op2 -> shopBuy(player, sideInv, shop, slot, request = 1)
             IfButtonOp.Op3 -> shopBuy(player, sideInv, shop, slot, request = 5)
             IfButtonOp.Op4 -> shopBuy(player, sideInv, shop, slot, request = 10)
@@ -42,7 +42,7 @@ public interface StandardShopOperations : ShopOperations {
         op: IfButtonOp,
     ) {
         when (op) {
-            IfButtonOp.Op1 -> examineInvValue(player, sideInv, shop, slot)
+            IfButtonOp.Op1, IfButtonOp.Op6 -> examineInvValue(player, sideInv, shop, slot)
             IfButtonOp.Op2 -> invSell(player, sideInv, shop, slot, request = 1)
             IfButtonOp.Op3 -> invSell(player, sideInv, shop, slot, request = 5)
             IfButtonOp.Op4 -> invSell(player, sideInv, shop, slot, request = 10)

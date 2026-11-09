@@ -8,6 +8,7 @@ import kotlin.math.abs
 import kotlin.random.Random
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.spec.*
+import org.rsmod.api.random.GameRandom
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -40,9 +41,17 @@ class BossEncounter(
 
     internal var timersStarted: Boolean = false
 
+    internal var standTickRunning: Boolean = false
+
     private val ownedLocs = mutableMapOf<CoordGrid, OwnedLoc>()
 
     fun ownsLocAt(tile: CoordGrid): Boolean = tile in ownedLocs
+
+    internal fun ownedLocAt(tile: CoordGrid): OwnedLoc? = ownedLocs[tile]
+
+    internal fun hasStandLocs(): Boolean = ownedLocs.values.any { it.onStand != null }
+
+    internal fun releaseOwnedLocAt(tile: CoordGrid): OwnedLoc? = ownedLocs.remove(tile)
 
     internal fun addOwnedLoc(tile: CoordGrid, loc: OwnedLoc) {
         ownedLocs[tile] = loc
@@ -114,6 +123,7 @@ class BossEncounter(
     internal val firedTriggers = mutableSetOf<Int>()
     internal val firedPhaseEntries = mutableSetOf<String>()
     private val cooldowns = mutableMapOf<String, Int>()
+    private val persistentCooldowns = mutableSetOf<String>()
     private val forcedTickLastFired = mutableMapOf<String, Int>()
     private var rotationCursor = 0
     private var rotationStarted = false
@@ -136,7 +146,7 @@ class BossEncounter(
         phaseEpoch++
         rotationCursor = 0
         rotationStarted = false
-        cooldowns.clear()
+        cooldowns.keys.retainAll(persistentCooldowns)
         forcedTickLastFired.clear()
         basicAttackCount = 0
         forceAttackThreshold = -1
@@ -150,7 +160,7 @@ class BossEncounter(
 
         npc.movementLocked = phase?.lockMovement == true
 
-        npc.clearFacingLock()
+        if (phase?.keepFacingLock != true) npc.clearFacingLock()
     }
 
     fun selectAbility(selector: Selector, tick: Int, target: Player? = null): String? {
@@ -232,6 +242,7 @@ class BossEncounter(
             roll -= ref.weight
             if (roll < 0) {
                 cooldowns[ref.ability] = tick
+                if (ref.persistCooldown) persistentCooldowns += ref.ability
                 return ref.ability
             }
         }
@@ -261,8 +272,9 @@ class BossEncounter(
         target: Player? = null,
         tiles: TileScope? = null,
         hit: HitContext? = null,
+        random: GameRandom? = null,
     ): Boolean {
-        fun eval(inner: Condition) = evaluate(inner, target, tiles, hit)
+        fun eval(inner: Condition) = evaluate(inner, target, tiles, hit, random)
         fun requireHit(): HitContext =
             checkNotNull(hit) { "$condition evaluated outside an incoming hit." }
         return when (condition) {
@@ -295,6 +307,10 @@ class BossEncounter(
                 val name = condition.name
                 val scope = checkNotNull(tiles) { "tilesEmpty(\"$name\") evaluated outside an effect." }
                 scope.set(name).isEmpty()
+            }
+            is Condition.Chance -> {
+                val rng = checkNotNull(random) { "$condition evaluated outside a whenever effect." }
+                rng.of(condition.outOf) < condition.chance
             }
             is Condition.Custom -> condition.test(npc, target)
             is Condition.Not -> !eval(condition.c)

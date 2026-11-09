@@ -27,7 +27,7 @@ public fun Player.clearInteractionRoute() {
 }
 
 public fun Player.queueDeath() {
-    queue("queue.death", 1)
+    strongQueue("queue.death", 1)
 }
 
 public fun Player.combatClearQueue() {

@@ -1,7 +1,5 @@
 package org.rsmod.content.interfaces.gameframe
 
-import dev.openrune.cache.filestore.definition.InterfaceType
-import dev.openrune.definition.type.widget.ComponentType
 import org.rsmod.game.ui.Component
 
 data class Gameframe(
@@ -12,7 +10,10 @@ data class Gameframe(
     val resizable: Boolean,
     val isDefault: Boolean,
     val stoneArrangement: Boolean,
-)
+) {
+    val isGameplay: Boolean
+        get() = topLevel != "interface.toplevel_display"
+}
 
 data class GameframeOverlay(val interf: String, val target: String)
 

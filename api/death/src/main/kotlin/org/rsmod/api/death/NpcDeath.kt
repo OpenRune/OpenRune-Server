@@ -30,8 +30,9 @@ constructor(
     private val players: PlayerList,
     private val objRepo: ObjRepository,
     private val deathDropHooks: Set<NpcDeathDropHook>,
-    private val deathKillHooks: Set<NpcDeathKillHook>,
+    deathKillHooks: Set<NpcDeathKillHook>,
 ) {
+    private val deathKillHooks = deathKillHooks.sortedByDescending { it.priority }
     private var lootTrackerEventId: Int = 0
 
     public suspend fun deathNoDrops(access: StandardNpcAccess) {

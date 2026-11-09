@@ -1,0 +1,6 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.dorics_quest_progress"
+varp = "varp.doricquest"
+startBit = 0
+endBit = 6

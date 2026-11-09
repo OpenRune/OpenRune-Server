@@ -216,6 +216,28 @@ class ChildrenOfTheSunInteractionTest {
         assertTrue(f.output().contains("already marked enough guards"), f.output())
     }
 
+    @Test fun `marking the four bandits moves to the report stage and an unmark moves back`() {
+        val f = Fixture(CotsStage.Marking)
+        f.script.syncGuards(f.player)
+        for (guard in 1..3) f.mark(guard)
+        assertEquals(CotsStage.Marking, f.stage())
+        f.mark(4)
+        assertEquals(CotsStage.MarkedAll, f.stage())
+        assertEquals(2, f.player.vars["varbit.vmq1_guard_4"])
+        f.talk("npc.vmq1_guard_4")
+        f.finish()
+        assertEquals(CotsStage.Marking, f.stage())
+        assertEquals(1, f.player.vars["varbit.vmq1_guard_4"])
+        assertEquals(1, f.player.vars["varbit.vmq1_guard_5"])
+    }
+
+    @Test fun `four marks with an honest guard stay in the marking stage`() {
+        val f = Fixture(CotsStage.Marking)
+        f.script.syncGuards(f.player)
+        for (guard in listOf(1, 2, 3, 5)) f.mark(guard)
+        assertEquals(CotsStage.Marking, f.stage())
+    }
+
     @Test fun `Tobyn repeats his instructions until four guards are marked`() {
         val f = Fixture(CotsStage.Marking)
         f.script.syncGuards(f.player)

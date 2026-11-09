@@ -3,6 +3,7 @@ package org.rsmod.tools.wiki.dumping.wiki.bucket
 import org.rsmod.tools.wiki.dumping.wiki.ParsedStoreLine
 import org.rsmod.tools.wiki.dumping.wiki.ParsedStoreTable
 import org.rsmod.tools.wiki.dumping.wiki.ParsedWikiShopInfobox
+import org.rsmod.tools.wiki.dumping.wiki.WikiShopInfoboxParser
 import org.rsmod.tools.wiki.dumping.wiki.WikiShopStoreParser
 
 /**
@@ -20,16 +21,23 @@ data class ItemVersion(
 class ShopBuckets(private val source: BucketSource) {
 
     suspend fun listShops(): List<ParsedWikiShopInfobox> =
-        source.rows("infobox_shop", listOf("page_name", "shop_name"), cacheKey = "all-shops").map {
-            row ->
-            val page = row.requireText("page_name", "infobox_shop")
-            val name = row.get("shop_name")?.takeIf { it.isTextual }?.asText().orEmpty()
-            ParsedWikiShopInfobox(
-                pageTitle = page,
-                rsName = null,
-                infoboxName = name.ifBlank { page },
+        source
+            .rows(
+                "infobox_shop",
+                listOf("page_name", "shop_name", "specialty"),
+                cacheKey = "all-shops-specialty",
             )
-        }
+            .map { row ->
+                val page = row.requireText("page_name", "infobox_shop")
+                val name = row.get("shop_name")?.takeIf { it.isTextual }?.asText().orEmpty()
+                val specialty = row.get("specialty")?.takeIf { it.isTextual }?.asText()
+                ParsedWikiShopInfobox(
+                    pageTitle = page,
+                    rsName = null,
+                    infoboxName = name.ifBlank { page },
+                    generalStore = WikiShopInfoboxParser.isGeneralStore(specialty),
+                )
+            }
 
     suspend fun storeTables(pageTitle: String): List<ParsedStoreTable> {
         val rows =

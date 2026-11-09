@@ -2,23 +2,21 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
-import org.rsmod.api.droptable.rsPlayerGuaranteedTable
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.dropRollable
+import org.rsmod.api.droptable.ringNothing
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.api.droptable.dropRollable
-import org.rsmod.content.drops.tables.shared.SharedDropTables
-import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.ringNothing
-import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
 @JvmField
 public val ammoniteCrabDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tableIdentifier = "Ammonite Crab Drops",
-    npcs = npcs("npc.fossil_ammonitecrab"),
+    npcs = npcs("npc.fossil_ammonitecrab", "npc.fossil_ammonitecrab_inactive"),
     mainTable = rsPlayerWeightedTable(total = 128) {
         name("Ammonite Crab Drops")
         5 weight "obj.iron_pickaxe" count 1

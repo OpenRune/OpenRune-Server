@@ -7,13 +7,19 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
+import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.content.quest.area.lumbridge.rmTalisman
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class DukeHoracio @Inject constructor(private val runeMysteries: RuneMysteriesQuest) : PluginScript() {
+class DukeHoracio
+@Inject
+constructor(
+    private val runeMysteries: RuneMysteriesQuest,
+    private val idesOfMilk: IdesOfMilkQuest,
+) : PluginScript() {
 
     private val quest
         get() = runeMysteries.quest
@@ -30,6 +36,9 @@ class DukeHoracio @Inject constructor(private val runeMysteries: RuneMysteriesQu
 
     private suspend fun Dialogue.dukeDialogue(npc: Npc) {
         chatNpc(happy, "Greetings. Welcome to my castle.")
+        if (with(idesOfMilk) { dukeDialogue() }) {
+            return
+        }
 
         val hasShield = player.inv.contains(ANTI_DRAGON_SHIELD)
         val showShieldOption = !hasShield && player.dragonQuest >= 1

@@ -1,0 +1,15 @@
+[[enum]]
+isServerOnly = true
+id = "enum.gobdip_mail_dyes"
+keyType = "OBJ"
+valueType = "OBJ"
+
+[enum.values]
+"obj.reddye" = "obj.goblin_armour_red"
+"obj.yellowdye" = "obj.goblin_armour_yellow"
+"obj.bluedye" = "obj.goblin_armour_darkblue"
+"obj.orangedye" = "obj.goblin_armour_orange"
+"obj.greendye" = "obj.goblin_armour_green"
+"obj.purpledye" = "obj.goblin_armour_purple"
+"obj.handsand_pink_dye" = "obj.goblin_armour_pink"
+"obj.golem_ink" = "obj.goblin_armour_black"

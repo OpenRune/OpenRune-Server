@@ -4,18 +4,23 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import net.rsprot.protocol.game.outgoing.sound.MidiJingle
+import java.util.Locale
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetPosition
 import org.rsmod.api.attr.AttributeKey
-import org.rsmod.api.player.musicClocks
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
+import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.table.QuestRow
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
-private const val QUEST_COMPLETE_JINGLE = 153
+const val QUEST_COMPLETE_JINGLE = "jingle.gaol"
 
 internal const val QUEST_DIALOGUE_CLOSE_TIMER = "timer.quest_dialogue_close"
 internal const val QUEST_SCROLL_CLOSE_TIMER = "timer.quest_scroll_close"
@@ -32,7 +37,13 @@ private fun scheduleClose(
 
 val QUEST_STAGE_MAP_ATTR = AttributeKey<MutableMap<String, Int>>("quest_stages")
 
-data class ItemRewardDisplay(val item: String, val zoom: Int = 10)
+/** [x] and [y] move the model on the quest scroll when the cache's default spot doesn't suit it. */
+data class ItemRewardDisplay(
+    val item: String,
+    val zoom: Int = 10,
+    val x: Int? = null,
+    val y: Int? = null,
+)
 
 data class Quest(
     val id: Int,
@@ -49,6 +60,7 @@ data class Quest(
     val questVarbit: String? = null,
     val closeDialogue: QuestClose = QuestClose.OnFinished,
     val closeScroll: QuestClose = QuestClose.Never,
+    val completeJingle: String = QUEST_COMPLETE_JINGLE,
 ) {
 
     private var Player.questState: Int
@@ -58,6 +70,7 @@ data class Quest(
     private var Player.questsCompleted by intVarBit("varbit.quests_completed_count")
 
     private val attributeRegistry = mutableMapOf<String, QuestAttribute<*>>()
+    private val itemRewards = rewards.items.map { (item, amount) -> InvObj(item, amount) }
 
     companion object {
         private val logger = InlineLogger()
@@ -77,6 +90,7 @@ data class Quest(
             varbit: String? = null,
             closeDialogue: QuestClose = QuestClose.OnFinished,
             closeScroll: QuestClose = QuestClose.Never,
+            completeJingle: String = QUEST_COMPLETE_JINGLE,
         ): Quest {
 
             val rowKeyID = "dbrow.${rowKey}".asRSCM()
@@ -96,6 +110,7 @@ data class Quest(
                 rewards = rewards,
                 closeDialogue = closeDialogue,
                 closeScroll = closeScroll,
+                completeJingle = completeJingle,
             )
             questsByKey[rowKey.normalizedQuestKey()] = quest
             return quest
@@ -132,7 +147,7 @@ data class Quest(
 
     fun isQuestCompleted(player: Player): Boolean = questState(player).isCompleted
 
-    fun advanceQuestStage(access: ProtectedAccess, amount: Int = 1): Int {
+    fun advanceQuestStage(access: ProtectedAccess, amount: Int = 1): Boolean {
         val currentStage = getQuestStage(access.player)
         val attemptedStage = currentStage + amount
 
@@ -148,11 +163,24 @@ data class Quest(
         return setQuestStage(access, attemptedStage.coerceIn(0, maxSteps))
     }
 
-    fun completeQuest(access: ProtectedAccess): Int = setQuestStage(access, maxSteps)
+    fun completeQuest(
+        access: ProtectedAccess,
+        additionalRewards: List<InvObj> = emptyList(),
+        onCompleted: ProtectedAccess.() -> Unit = {},
+    ): Boolean = setQuestStage(access, maxSteps, additionalRewards, onCompleted)
 
-    fun setQuestStage(access: ProtectedAccess, newStage: Int): Int {
+    fun setQuestStage(
+        access: ProtectedAccess,
+        newStage: Int,
+        additionalRewards: List<InvObj> = emptyList(),
+        onCompleted: ProtectedAccess.() -> Unit = {},
+    ): Boolean {
         require(newStage in 0..maxSteps) { "Quest '$key' stage must be within 0..$maxSteps." }
-        val wasCompleted = getQuestStage(access.player) >= maxSteps
+        val oldStage = getQuestStage(access.player)
+        val wasCompleted = oldStage >= maxSteps
+        if (!wasCompleted && newStage == maxSteps && !grantItemRewards(access, additionalRewards)) {
+            return false
+        }
         storeQuestStage(access, newStage)
 
         // Quest varps store the real stage (0..endstate). Multinpc / journal clients depend on
@@ -161,11 +189,32 @@ data class Quest(
             access.player.questState = newStage
         }
 
+        if (oldStage == 0 && newStage > 0) {
+            access.mes("You've started a new quest: @q_mes@$displayName</col>")
+        }
+
         if (!wasCompleted && newStage >= maxSteps) {
+            access.onCompleted()
             completedQuest(access)
         }
 
-        return newStage
+        return true
+    }
+
+    private fun grantItemRewards(access: ProtectedAccess, additionalRewards: List<InvObj>): Boolean {
+        if (itemRewards.isEmpty() && additionalRewards.isEmpty()) return true
+        val transaction = access.player.invTransaction(access.inv, autoCommit = false) {
+            val inventory = select(access.inv)
+            for (reward in additionalRewards) {
+                add(inventory, reward.id, reward.count, vars = reward.vars)
+            }
+            for (reward in itemRewards) {
+                add(inventory, reward.id, reward.count, vars = reward.vars)
+            }
+        }
+        if (transaction.failure) return false
+        transaction.commitAll()
+        return true
     }
 
     fun <T> attribute(
@@ -199,9 +248,9 @@ data class Quest(
 
         access.player.questPoints += questPoints
         access.player.questsCompleted++
+        access.mes("Congratulations, you've completed a quest: @q_mes@$displayName</col>")
 
-        access.player.musicClocks = 0
-        access.player.client.write(MidiJingle(QUEST_COMPLETE_JINGLE))
+        access.player.midiJingle(completeJingle)
 
         scheduleClose(access, closeDialogue, QUEST_DIALOGUE_CLOSE_TIMER) { ifCloseChat() }
         access.ifOpenMain("interface.questscroll")
@@ -209,12 +258,14 @@ data class Quest(
             ifCloseSub("interface.questscroll")
         }
         access.ifSetText("component.questscroll:quest_title", "You have completed ${displayName}!")
-        access.ifSetText(
-            "component.questscroll:quest_reward1",
-            "$questPoints Quest Point${if (questPoints == 1) "" else "s"}",
-        )
+        val questPointLabel = if (questPoints == 1) "Quest Point" else "Quest Points"
+        access.ifSetText("component.questscroll:quest_reward1", "$questPoints $questPointLabel")
 
         access.ifSetObj("component.questscroll:quest_model", obj = itemDisplay.item, zoom = itemDisplay.zoom)
+        if (itemDisplay.x != null && itemDisplay.y != null) {
+            val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
+            access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
+        }
 
         val rewardLines = mutableListOf<String>()
 
@@ -223,18 +274,16 @@ data class Quest(
                 ?: error("No stat found for $skill")
 
             access.statAdvance(skill, amount)
-            rewardLines.add("${amount.toInt()} ${stat.displayName} XP")
+            val skillName = stat.displayName.replaceFirstChar { it.uppercase() }
+            rewardLines.add("${"%,d".format(Locale.US, amount.toInt())} $skillName XP")
         }
 
         rewards.items.forEach { (item, amount) ->
-            access.invAdd(access.inv, item, amount)
             val type = ServerCacheManager.getItem(item.asRSCM(RSCMType.OBJ)) ?: error("No item found for $item")
             rewardLines.add(rewards.itemLabels[item] ?: "$amount x ${type.name}")
         }
 
-        rewards.extraText?.let {
-            rewardLines.add(it)
-        }
+        rewardLines += rewards.extraLines
 
         val linesToShow = rewardLines.take(6)
 

@@ -30,6 +30,9 @@ fish_swim = 2601
 iron_door_open = 71
 swan_rumble = 1790
 unlock = 2419
+poh_build_furniture = 938
+poh_remove_furniture = 2097
+poh_remove_furniture_alt = 2098
 
 locked = 2402
 pyramid_block = 1395
@@ -65,14 +68,34 @@ romeo_juliet_crypt_door = 1816
 romeo_juliet_crypt_enter = 1815
 romeo_juliet_drink = 2401
 
+splash_and_river = 1308
+roof_collapse = 1384
+big_wooden_door_open = 44
+big_wooden_door_close = 43
+watersplash = 2496
+smokepuff = 1930
+chest_open = 52
+chest_close = 51
+irondoor_locked = 72
+gobdip_dye_goblin_mail = 2392
+gobdip_soldier_attack1 = 3514
+gobdip_soldier_attack2 = 3515
+gobdip_soldier_attack3 = 3521
+gobdip_soldier_hit1 = 3517
+gobdip_soldier_hit2 = 472
+
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
 restless_ghost_return_tile = 63704
 misthalin_return_tile = 63700
+gobdip_return_tile = 65471
 misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
 gertrudes_cat_state = 63711
+daddyshome_state = 64064
+waterfall_state = 64310
+sheep_shearer_state = 65472
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -83,11 +106,27 @@ cooks_assistant_progress = 63704
 cooks_assistant_milk = 63705
 cooks_assistant_egg = 63706
 cooks_assistant_flour = 63707
+witchs_potion_progress = 65447
 gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
 romeo_juliet_progress = 63730
+daddyshome_crate_opened = 64064
+dorics_quest_progress = 64470
+knights_sword_progress = 64430
+waterfall_progress = 64310
+waterfall_heard_of_treasure = 64311
+waterfall_met_golrie = 64312
+waterfall_pillar_runes = 64313
+sheep_shearer_progress = 65449
+sheep_shearer_saw_thing = 65448
+
+[gamevals.bas]
+waterfall_wading = 1
+waterfall_swimming = 2
+waterfall_drowning = 3
+waterfall_whirlpool = 4
 
 [gamevals.models]
 misthalin_gem_diamond = 32333
@@ -103,8 +142,41 @@ restless_skeleton_attack = 124
 
 [gamevals.dbtable]
 apothecary_potions = 65496
+daddys_home_furniture = 65472
+daddys_home_crate = 65473
+glarial_restrictions = 65495
 
 [gamevals.dbrow]
 apothecary_strength = 63688
 apothecary_energy = 63687
 apothecary_antipoison = 63686
+daddys_home_furniture_kitchen_stool = 63420
+daddys_home_furniture_bedroom_stool = 63421
+daddys_home_furniture_chair = 63422
+daddys_home_furniture_kitchen_table = 63423
+daddys_home_furniture_bedroom_table = 63424
+daddys_home_furniture_bed = 63425
+daddys_home_furniture_carpet = 63426
+daddys_home_crate_planks = 63430
+daddys_home_crate_nails = 63431
+daddys_home_crate_steel_bars = 63432
+daddys_home_crate_oak_planks = 63433
+daddys_home_crate_cloth = 63434
+daddys_home_crate_house_tablets = 63435
+daddys_home_crate_falador_tablet = 63436
+glarial_forbidden_names = 63685
+glarial_forbidden_parts = 63684
+glarial_allowed_parts = 63679
+
+[gamevals.enum]
+daddys_home_hammers = 65460
+daddys_home_saws = 65461
+daddys_home_nails = 65462
+daddys_home_house_cities = 65463
+gobdip_mail_dyes = 65469
+
+[gamevals.clientscript]
+poh_furniture_creation_entry_old = 7988
+
+[gamevals.category]
+goblin_armour = 528

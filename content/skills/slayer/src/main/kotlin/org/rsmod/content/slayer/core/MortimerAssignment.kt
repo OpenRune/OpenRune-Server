@@ -1,5 +1,6 @@
 package org.rsmod.content.slayer.core
 
+import org.rsmod.api.config.SlayerTaskCredit
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.slayer.SlayerMasterTaskRow
@@ -170,7 +171,7 @@ object MortimerAssignment {
         if (modifier.id != MortimerModifiers.MODIFIER_CLUES) return 0
         val taskId = player.vars["varp.slayer_target"]
         if (taskId == 0) return 0
-        if (npc != null && !SlayerTaskManager.countsAsTaskKill(npc, taskId)) return 0
+        if (npc != null && !SlayerTaskManager.countsAsTaskKill(npc, SlayerTaskCredit.taskKey(player))) return 0
         return modifier.absoluteValue
     }
 

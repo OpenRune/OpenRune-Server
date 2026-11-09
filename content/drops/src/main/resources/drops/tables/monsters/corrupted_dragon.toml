@@ -1,17 +1,13 @@
-id = "Corrupted Dragon Drops"
+id = "Corrupted dragon Drops"
 npcs = ["npc.crystal_dragon_hm"]
 
 [[guaranteed]]
 obj = "obj.gauntlet_crystal_shard_hm"
-count = "30..60"
-
-[[guaranteed]]
-obj = "obj.gauntlet_generic_component_hm"
-count = 1
+count = "50..60"
 
 [main]
 total = 18
-name = "Corrupted Dragon Drops"
+name = "Corrupted dragon Drops"
 
 [[main.entries]]
 weight = 3
@@ -36,8 +32,3 @@ count = 1
 weight = 1
 obj = "obj.gauntlet_teleport_crystal_hm"
 count = 1
-
-
-# Unknown wiki drop rate: Corrupted orb [main/Weapon components/Varies]
-# Unknown wiki drop rate: Corrupted spike [main/Weapon components/Varies]
-# Unknown wiki drop rate: Corrupted bowstring [main/Weapon components/Varies]

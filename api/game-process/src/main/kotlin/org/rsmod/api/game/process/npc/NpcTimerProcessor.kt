@@ -37,7 +37,7 @@ constructor(
             val packed = timerMap.packValues(clockCounter = counter, interval = interval)
             entry.setValue(packed)
             if (publish) {
-                publishEvent(timerType.toInt())
+                publishEvent(timerType.toInt() and 0xFFFF)
             }
         }
     }

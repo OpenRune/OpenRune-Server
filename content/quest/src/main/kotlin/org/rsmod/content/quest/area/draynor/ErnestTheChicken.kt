@@ -32,7 +32,9 @@ constructor(
     QuestScript(
         "quest_ernestthechicken",
         "varp.haunted",
-        rewards { item("obj.coins", ErnestProgress.CoinReward) },
+        rewards {
+            item("obj.coins", ErnestProgress.CoinReward, label = "${ErnestProgress.CoinReward} Coins")
+        },
         ItemRewardDisplay("obj.coins"),
     ) {
 
@@ -304,6 +306,9 @@ constructor(
             )
             chatPlayer(happy, "Well a cash reward is always nice...")
             chatNpcSpecific("Ernest", "npc.ernest", happy, "Of course, of course.")
+        }
+        if (!quest.isQuestCompleted(player)) {
+            chatNpc(neutral, "Make some room for your reward, then speak to me again.")
         }
     }
 

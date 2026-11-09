@@ -45,6 +45,12 @@ constructor(
     }
 
     private fun Player.processZoneUpdates() {
+        if (regionRebuildPending) {
+            regionRebuildPending = false
+            visibleZoneKeys.clear()
+            lastProcessedZone = ZoneKey.NULL
+        }
+
         val currZone = ZoneKey.from(coords)
         val visibleZones = visibleZoneKeys
         val prevZone = lastProcessedZone
@@ -122,7 +128,7 @@ constructor(
     ) {
         val updates = ArrayList<ZoneProt>()
         for (obj in objs) {
-            val prot = ZoneUpdateTransformer.toPersistentObjAdd(obj, observerId) ?: continue
+            val prot = ZoneUpdateTransformer.toPersistentObjAdd(obj, observerId, currentMapClock) ?: continue
             updates += prot
         }
         if (updates.isNotEmpty()) {

@@ -329,9 +329,8 @@ public class Dialogue(
     /** @see [ProtectedAccess.delay] */
     public suspend fun delay(cycles: Int = 1): Unit = access.delay(cycles)
 
-    /** @see [ProtectedAccess.invContentTotal] */
-    public fun invTotal(inv: Inventory, content: String): Int =
-        access.invContentTotal(inv, content)
+    /** @see [ProtectedAccess.invTotal] */
+    public fun invTotal(inv: Inventory, obj: String): Int = access.invTotal(inv, obj)
 
     /** @see [ProtectedAccess.invContains] */
     public operator fun Inventory.contains(content: String): Boolean =

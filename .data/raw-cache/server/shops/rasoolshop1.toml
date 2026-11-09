@@ -10,12 +10,12 @@ sellMultiplier = 2000
 buyMultiplier = 50
 delta = 30
 
-size = 25
+size = 40
 
 protect = false
 runWeight = false
 restock = true
-allStock = false
+allStock = true
 placeholders = false
 
 [[inventory.stock]]

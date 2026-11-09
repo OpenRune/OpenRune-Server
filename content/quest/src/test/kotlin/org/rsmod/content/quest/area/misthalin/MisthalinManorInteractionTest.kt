@@ -2,7 +2,6 @@ package org.rsmod.content.quest.area.misthalin
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.types.InventoryServerType
 import dev.openrune.util.Wearpos
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
@@ -24,12 +23,14 @@ import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.HeldEquipEvents
+import org.rsmod.api.player.events.interact.NpcEvents
 import org.rsmod.api.player.events.interact.OpEvent
 import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.interact.LocTInteractions
 import org.rsmod.api.player.interact.LocUInteractions
+import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -57,7 +58,6 @@ import org.rsmod.api.route.BoundValidator
 import org.rsmod.api.route.RouteFactory
 import org.rsmod.api.route.StepFactory
 import org.rsmod.content.quest.manager.Quest
-import org.rsmod.content.quest.manager.rewards
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -65,6 +65,7 @@ import org.rsmod.game.area.AreaIndex
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
 import org.rsmod.game.entity.ControllerList
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
@@ -219,6 +220,45 @@ class MisthalinManorInteractionTest {
         }
     }
 
+    @Test fun `Mandy withholds rewards with a full pack or two free slots and grants them once after retry`() {
+        val f = Fixture(MisthalinStage.MandyWaiting)
+        for (slot in 0 until f.player.inv.size) f.player.inv[slot] = InvObj("obj.bucket_empty", 1)
+        f.talkMandy()
+        f.finishScene()
+        f.assertPendingReward()
+
+        f.player.inv[0] = null
+        f.player.inv[1] = null
+        f.talkMandy()
+        f.finishScene()
+        f.assertPendingReward()
+
+        f.player.inv[2] = null
+        f.talkMandy()
+        f.finishScene()
+        f.assertMandyReward()
+        f.talkMandy()
+        f.finishScene()
+        f.assertMandyReward()
+    }
+
+    @Test fun `Mandy rechecks inventory capacity after the final reward dialogue`() {
+        val f = Fixture(MisthalinStage.MandyWaiting)
+        for (slot in 3 until f.player.inv.size) f.player.inv[slot] = InvObj("obj.bucket_empty", 1)
+        f.player.inv[0] = null
+        f.talkMandy()
+        f.pauseAtMandyHandover()
+        f.assertPendingReward()
+        for (slot in 0..2) f.player.inv[slot] = InvObj("obj.bucket_empty", 1)
+        f.finishScene()
+        f.assertPendingReward()
+
+        for (slot in 0..2) f.player.inv[slot] = null
+        f.talkMandy()
+        f.finishScene()
+        f.assertMandyReward()
+    }
+
     @Test fun `native quest progress updates preserve the adjacent puzzle flags`() {
         val f = Fixture(MisthalinStage.CandlesLit)
         VarPlayerIntMapSetter.set(f.player, "varbit.mistmyst_candles", 15)
@@ -356,12 +396,7 @@ class MisthalinManorInteractionTest {
     }
 
     private class Fixture(stage: Int) {
-        val quest = Quest(
-            id = 128, key = "quest_misthalinmystery", rowID = 0, displayName = "Misthalin Mystery",
-            mapElement = null, startCoord = null, maxSteps = MisthalinStage.Complete, questPoints = 1,
-            questVarp = "varp.mistmyst_main", questVarbit = "varbit.mistmyst_progress",
-            rewards = rewards {}, itemDisplay = org.rsmod.content.quest.manager.ItemRewardDisplay("obj.mistmyst_cutscene_knife"),
-        )
+        val quest: Quest
         private val client = RecordingClient()
 
         @OptIn(InternalApi::class)
@@ -375,8 +410,8 @@ class MisthalinManorInteractionTest {
             processedMapClock = 100
             pendingSequence = EntitySeq.NULL
             pendingFaceAngle = EntityFaceAngle.NULL
-            inv = Inventory(InventoryServerType(size = 28), arrayOfNulls(28))
-            worn = Inventory(InventoryServerType(size = 14), arrayOfNulls(14))
+            inv = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.inv".asRSCM())), arrayOfNulls(28))
+            worn = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.worn".asRSCM())), arrayOfNulls(14))
             inv[0] = InvObj(checkNotNull(ServerCacheManager.getItem("obj.knife".asRSCM())), 1)
         }
         private val events = EventBus()
@@ -385,6 +420,7 @@ class MisthalinManorInteractionTest {
         private val context = ProtectedAccessContextFactory.empty().copy(
             getEventBus = { events }, getAlignment = { TextAlignment() },
             getCollision = { collision },
+            getNpcInteractions = { NpcInteractions(events) },
             getTeleportValidator = { PlayerTeleportValidator(emptySet()) },
             getAreaChecker = { AreaChecker(regions, AreaIndex()) },
         )
@@ -415,15 +451,13 @@ class MisthalinManorInteractionTest {
                 npcRegistry, ControllerRegistry(clock, ControllerList()), ZonePlayerActivityBitSet())
             val locs = LocRepository(clock, LocRegistry(storage, normal,
                 LocRegistryRegion(updates, collision, storage, regions)), regions)
-            val cutscenes = MisthalinCutscenes(quest, RegionRepository(regions), locs,
-                NpcRepository(clock, npcRegistry, npcs), ObjRepository(clock, ObjRegistry(updates)), collision)
-            MisthalinManor(quest, locs, cutscenes, MisthalinPuzzles(quest))
-                .register(ScriptContext(events, CheatCommandMap(), EngineQueueCache()))
-            MisthalinBossFight(quest, NpcRepository(clock, npcRegistry, npcs),
-                ObjRepository(clock, ObjRegistry(updates)), locs, RegionRepository(regions), WorldRepository(updates),
+            val script = MisthalinMystery(RegionRepository(regions), locs,
+                NpcRepository(clock, npcRegistry, npcs), ObjRepository(clock, ObjRegistry(updates)),
+                WorldRepository(updates),
                 PlayerRepository(PlayerRegistry(PlayerList(), collision, ZonePlayerActivityBitSet(), events)),
-                unused<ProtectedAccessLauncher>(), collision)
-                .register(ScriptContext(events, CheatCommandMap(), EngineQueueCache()))
+                collision, unused<ProtectedAccessLauncher>())
+            quest = script.quest
+            with(script) { ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup() }
             events.subscribeUnbound(HeldEquipEvents.WearposChange::class.java) { wornChanges++ }
             val knife = checkNotNull(ServerCacheManager.getItem(KillerKnife.asRSCM()))
             events.subscribeKeyed(HeldEquipEvents.Unequip::class.java, knife.contentGroup.toLong()) { unequips++ }
@@ -434,6 +468,44 @@ class MisthalinManorInteractionTest {
 
         fun setStage(stage: Int) {
             quest.setQuestStage(ProtectedAccess(player, coroutine, context), stage)
+        }
+
+        fun talkMandy() {
+            while (player.isDelayed) tick()
+            dispatch(NpcEvents.Op1(Npc("npc.mistmyst_mandy_post", player.coords.translateZ(1))))
+        }
+
+        fun pauseAtMandyHandover() {
+            for (parent in listOf("chat_left", "chat_right", "chat_left", "chat_right")) {
+                assertTrue(coroutine.isAwaiting(ResumePauseButtonInput::class))
+                assertTrue(player.ui.containsModal("interface.$parent"))
+                coroutine.resumeWith(ResumePauseButtonInput("component.$parent:continue", -1))
+                result?.getOrThrow()
+            }
+            assertTrue(coroutine.isAwaiting(ResumePauseButtonInput::class))
+            assertTrue(player.ui.containsModal("interface.chat_left"))
+        }
+
+        fun assertPendingReward() {
+            assertEquals(MisthalinStage.MandyWaiting, quest.getQuestStage(player))
+            assertEquals(0, player.vars["varbit.mistmyst_xpreward"])
+            assertEquals(0, player.vars["varp.qp"])
+            assertEquals(0, player.vars["varbit.quests_completed_count"])
+            assertEquals(0, player.statMap.getXP("stat.crafting"))
+            for (gem in listOf("obj.uncut_ruby", "obj.uncut_emerald", "obj.uncut_sapphire")) {
+                assertEquals(0, player.inv.count(gem))
+            }
+        }
+
+        fun assertMandyReward() {
+            assertEquals(MisthalinStage.Complete, quest.getQuestStage(player))
+            assertEquals(1, player.vars["varbit.mistmyst_xpreward"])
+            assertEquals(1, player.vars["varp.qp"])
+            assertEquals(1, player.vars["varbit.quests_completed_count"])
+            assertEquals(600, player.statMap.getXP("stat.crafting"))
+            for (gem in listOf("obj.uncut_ruby", "obj.uncut_emerald", "obj.uncut_sapphire")) {
+                assertEquals(1, player.inv.count(gem), "$gem: ${player.inv.objs.contentToString()}")
+            }
         }
 
         fun searchBarrel() {

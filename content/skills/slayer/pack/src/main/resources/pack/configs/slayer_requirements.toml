@@ -1,0 +1,179 @@
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_drain_nose_peg"
+keyType = "STAT"
+valueType = "INT"
+
+[enum.values]
+"stat.attack" = 80
+"stat.strength" = 80
+"stat.magic" = 80
+"stat.ranged" = 80
+"stat.defence" = 40
+"stat.prayer" = 40
+"stat.agility" = 40
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_drain_earmuffs"
+keyType = "STAT"
+valueType = "INT"
+
+[enum.values]
+"stat.attack" = 20
+"stat.strength" = 20
+"stat.magic" = 20
+"stat.ranged" = 20
+"stat.defence" = 10
+"stat.prayer" = 10
+"stat.agility" = 10
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_drain_dust_devil"
+keyType = "STAT"
+valueType = "INT"
+
+[enum.values]
+"stat.attack" = 100
+"stat.strength" = 100
+"stat.magic" = 100
+"stat.ranged" = 100
+"stat.defence" = 50
+"stat.agility" = 50
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_drain_smoke_devil"
+keyType = "STAT"
+valueType = "INT"
+
+[enum.values]
+"stat.attack" = 85
+"stat.strength" = 85
+"stat.magic" = 85
+"stat.ranged" = 85
+"stat.defence" = 50
+"stat.agility" = 50
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_drain_gaze_cockatrice"
+keyType = "STAT"
+valueType = "INT"
+
+[enum.values]
+"stat.attack" = 40
+"stat.strength" = 40
+"stat.magic" = 40
+"stat.ranged" = 40
+"stat.defence" = 20
+"stat.prayer" = 20
+"stat.agility" = 20
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_drain_gaze_basilisk"
+keyType = "STAT"
+valueType = "INT"
+
+[enum.values]
+"stat.attack" = 60
+"stat.strength" = 60
+"stat.magic" = 60
+"stat.ranged" = 60
+"stat.defence" = 30
+"stat.prayer" = 30
+"stat.agility" = 30
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_drain_gaze_basilisk_knight"
+keyType = "STAT"
+valueType = "INT"
+
+[enum.values]
+"stat.attack" = 70
+"stat.strength" = 70
+"stat.magic" = 70
+"stat.ranged" = 70
+"stat.defence" = 35
+"stat.prayer" = 35
+"stat.agility" = 35
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_finisher_gargoyle_items"
+keyType = "OBJ"
+valueType = "OBJ"
+
+[enum.values]
+"obj.slayer_rock_hammer" = "obj.slayer_rock_hammer"
+"obj.slayer_rock_thrownhammer" = "obj.slayer_rock_thrownhammer"
+"obj.granite_hammer" = "obj.granite_hammer"
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_finisher_rockslug_items"
+keyType = "OBJ"
+valueType = "OBJ"
+
+[enum.values]
+"obj.slayer_bag_of_salt" = "obj.slayer_bag_of_salt"
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_finisher_desert_lizard_items"
+keyType = "OBJ"
+valueType = "OBJ"
+
+[enum.values]
+"obj.slayer_icy_water" = "obj.slayer_icy_water"
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_finisher_zygomite_items"
+keyType = "OBJ"
+valueType = "OBJ"
+
+[enum.values]
+"obj.slayer_spray_pump_10" = "obj.slayer_spray_pump_9"
+"obj.slayer_spray_pump_9" = "obj.slayer_spray_pump_8"
+"obj.slayer_spray_pump_8" = "obj.slayer_spray_pump_7"
+"obj.slayer_spray_pump_7" = "obj.slayer_spray_pump_6"
+"obj.slayer_spray_pump_6" = "obj.slayer_spray_pump_5"
+"obj.slayer_spray_pump_5" = "obj.slayer_spray_pump_4"
+"obj.slayer_spray_pump_4" = "obj.slayer_spray_pump_3"
+"obj.slayer_spray_pump_3" = "obj.slayer_spray_pump_2"
+"obj.slayer_spray_pump_2" = "obj.slayer_spray_pump_1"
+"obj.slayer_spray_pump_1" = "obj.slayer_spray_pump_0"
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_leafy_ammo"
+keyType = "OBJ"
+valueType = "BOOLEAN"
+
+[enum.values]
+"obj.slayer_broad_arrows" = true
+"obj.slayer_broad_arrows_2" = true
+"obj.slayer_broad_arrows_3" = true
+"obj.slayer_broad_arrows_4" = true
+"obj.slayer_broad_arrows_5" = true
+"obj.seeking_slayer_broad_arrows" = true
+"obj.seeking_slayer_broad_arrows_2" = true
+"obj.seeking_slayer_broad_arrows_3" = true
+"obj.seeking_slayer_broad_arrows_4" = true
+"obj.seeking_slayer_broad_arrows_5" = true
+"obj.slayer_broad_bolt" = true
+"obj.slayer_broad_bolt_amethyst" = true
+
+[[enum]]
+isServerOnly = true
+id = "enum.slayer_leafy_spells"
+keyType = "OBJ"
+valueType = "BOOLEAN"
+
+[enum.values]
+"obj.50_magic_dart" = true
+"obj.50_slayer_dart" = true

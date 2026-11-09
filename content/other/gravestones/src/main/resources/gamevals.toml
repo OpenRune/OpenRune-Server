@@ -1,0 +1,19 @@
+[gamevals.timer]
+gravestone = 4442
+
+[gamevals.enum]
+gravestone_resources = 64420
+
+[gamevals.varp]
+gravestone_coord = 64423
+gravestone_state = 64424
+gravestone_npc = 64425
+death_coffer = 64445
+gravestone_last_input = 64448
+
+[gamevals.varbit]
+gravestone_fee_paid = 64420
+gravestone_death_tutorial = 64463
+
+[gamevals.inv]
+gravestone_layout = 64400

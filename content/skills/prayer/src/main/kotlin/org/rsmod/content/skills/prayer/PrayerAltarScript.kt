@@ -27,6 +27,12 @@ class PrayerAltarScript : PluginScript() {
     }
 
     private companion object {
-        val ALTARS = listOf("loc.altar", "loc.altarv2", "loc.fai_varrock_church_altar")
+        val ALTARS =
+            listOf(
+                "loc.altar",
+                "loc.altarv2",
+                "loc.fai_varrock_church_altar",
+                "loc.chaosaltar",
+            )
     }
 }

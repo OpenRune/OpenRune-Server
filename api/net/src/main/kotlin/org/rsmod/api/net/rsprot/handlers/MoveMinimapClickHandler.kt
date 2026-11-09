@@ -6,6 +6,7 @@ import org.rsmod.api.net.rsprot.player.modLevelTeleMoveSpeed
 import org.rsmod.api.net.rsprot.player.protectedTelejump
 import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.protect.clearPendingAction
+import org.rsmod.api.player.vars.autoEnableRunOnMove
 import org.rsmod.api.player.vars.ctrlMoveSpeed
 import org.rsmod.api.realm.Realm
 import org.rsmod.events.EventBus
@@ -31,6 +32,7 @@ constructor(
             player.clearMapFlag()
             return
         }
+        player.autoEnableRunOnMove()
         val dest = CoordGrid(message.x, message.z, player.level)
         val speed =
             when (message.keyCombination) {

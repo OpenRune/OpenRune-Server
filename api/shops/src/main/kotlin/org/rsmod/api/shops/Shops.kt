@@ -9,9 +9,11 @@ import dev.openrune.types.InvScope
 import jakarta.inject.Inject
 import org.rsmod.api.player.output.ClientScripts.interfaceInvInit
 import org.rsmod.api.player.output.ClientScripts.shopMainInit
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.startInvTransmit
 import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.player.ui.ifSetEvents
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.shops.config.ShopParams
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
@@ -37,7 +39,7 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         open(
             player = player,
             title = title,
-            shopInv = RSCM.getReverseMapping(RSCMType.INV,inventoryID),
+            shopInv = RSCM.getReverseMapping(RSCMType.INV, inventoryID),
             buyPercentage = buyPercentage,
             sellPercentage = sellPercentage,
             changePercentage = changePercentage,
@@ -45,14 +47,12 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         )
     }
 
-
     public fun open(
         player: Player,
         activeNpc: Npc,
         title: String,
         shopInv: String,
         currency: String = "currency.standard_gp",
-        subtext: String = DEFAULT_SUBTEXT,
     ) {
         val buyPercentage = activeNpc.type.param(ShopParams.shop_buy_percentage) / 10.0
         val sellPercentage = activeNpc.type.param(ShopParams.shop_sell_percentage) / 10.0
@@ -65,7 +65,6 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
             sellPercentage = sellPercentage,
             changePercentage = changePercentage,
             currency = currency,
-            subtext = subtext,
         )
     }
 
@@ -77,7 +76,6 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         sellPercentage: Double,
         changePercentage: Double,
         currency: String = "currency.standard_gp",
-        subtext: String = DEFAULT_SUBTEXT,
     ) {
         val inv = shopInv.toInventory(player)
         open(
@@ -89,7 +87,6 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
             buyPercentage = buyPercentage,
             sellPercentage = sellPercentage,
             changePercentage = changePercentage,
-            subtext = subtext,
         )
     }
 
@@ -102,9 +99,9 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         buyPercentage: Double,
         sellPercentage: Double,
         changePercentage: Double,
-        subtext: String,
     ) {
         player.openedShop = Shop(shopInv, currency, buyPercentage, sellPercentage, changePercentage)
+        VarPlayerIntMapSetter.set(player, "varbit.shop_quantity", 0)
 
         player.startInvTransmit(shopInv)
         player.startInvTransmit(sideInv)
@@ -116,7 +113,6 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
             eventBus = eventBus,
         )
         shopMainInit(player, shopInv.type, title)
-
         player.ifSetEvents(
             "component.shopmain:items",
             1..shopInv.size,
@@ -129,28 +125,7 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
             IfEvent.Op10,
         )
 
-        interfaceInvInit(
-            player = player,
-            inv = sideInv,
-            target = "component.shopside:items",
-            objRowCount = 4,
-            objColCount = 7,
-            op1 = "Value<col=ff9040>",
-            op2 = "Sell 1<col=ff9040>",
-            op3 = "Sell 5<col=ff9040>",
-            op4 = "Sell 10<col=ff9040>",
-            op5 = "Sell 50<col=ff9040>",
-        )
-        player.ifSetEvents(
-            "component.shopside:items",
-            0 until sideInv.size,
-            IfEvent.Op1,
-            IfEvent.Op2,
-            IfEvent.Op3,
-            IfEvent.Op4,
-            IfEvent.Op5,
-            IfEvent.Op10,
-        )
+        player.initShopSideInv(sideInv)
     }
 
     private fun String.toInventory(observer: Player): Inventory {
@@ -180,9 +155,69 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         }
         return player.invMap.getOrPut(RSCM.getReverseMapping(RSCMType.INV, unpacked.id))
     }
+}
 
-    public companion object {
-        public const val DEFAULT_SUBTEXT: String =
-            "Right click on shop to buy item - Right-click on inventory to sell item"
+internal fun Player.initShopSideInv(sideInv: Inventory) {
+    val selectedOp =
+        when (vars["varbit.shop_quantity"]) {
+            1 -> "Sell 1"
+            2 -> "Sell 5"
+            3 -> "Sell 10"
+            4 -> "Sell 50"
+            else -> null
+        }
+    if (selectedOp == null) {
+        interfaceInvInit(
+            player = this,
+            inv = sideInv,
+            target = "component.shopside:items",
+            objRowCount = 4,
+            objColCount = 7,
+            op1 = "Value<col=ff9040>",
+            op2 = "Sell 1<col=ff9040>",
+            op3 = "Sell 5<col=ff9040>",
+            op4 = "Sell 10<col=ff9040>",
+            op5 = "Sell 50<col=ff9040>",
+        )
+        ifSetEvents(
+            "component.shopside:items",
+            0 until sideInv.size,
+            IfEvent.Op1,
+            IfEvent.Op2,
+            IfEvent.Op3,
+            IfEvent.Op4,
+            IfEvent.Op5,
+            IfEvent.Op10,
+        )
+        return
     }
+    runClientScript(
+        "clientscript.[clientscript,interface_inv_init_big]".asRSCM(RSCMType.CLIENTSCRIPT),
+        "component.shopside:items".asRSCM(RSCMType.COMPONENT),
+        sideInv.type.id,
+        4,
+        7,
+        0,
+        -1,
+        "$selectedOp<col=ff9040>",
+        "Sell 1<col=ff9040>",
+        "Sell 5<col=ff9040>",
+        "Sell 10<col=ff9040>",
+        "Sell 50<col=ff9040>",
+        "Value<col=ff9040>",
+        "",
+        "",
+        "",
+    )
+    ifSetEvents(
+        "component.shopside:items",
+        0 until sideInv.size,
+        IfEvent.Op1,
+        IfEvent.Op2,
+        IfEvent.Op3,
+        IfEvent.Op4,
+        IfEvent.Op5,
+        IfEvent.Op6,
+        IfEvent.Op10,
+    )
 }
