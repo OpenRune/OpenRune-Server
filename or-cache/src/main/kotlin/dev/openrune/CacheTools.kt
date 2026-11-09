@@ -61,6 +61,7 @@ import dev.openrune.tools.LocSpawnDumper
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
 import dev.openrune.tools.SeqDumper
+import dev.openrune.tools.ShortestPathTransports
 import dev.openrune.tools.SlayerBossKeys
 import dev.openrune.tools.SlayerTargetMonsterLoader
 import dev.openrune.types.SlayerNpcData
@@ -98,6 +99,11 @@ fun main(args: Array<String>) {
             Cache.load(File(getServerCacheLocation()).toPath()),
             args.drop(1).flatMap { it.split(',') }.map(String::trim).filter(String::isNotEmpty),
         )
+        return
+    }
+
+    if (command == "DOWNLOAD_TRANSPORTS") {
+        ShortestPathTransports.download(File("../.data/transports"))
         return
     }
 
@@ -155,6 +161,8 @@ private fun freshInstall() {
 
     logger.info { "Dumping gamevals from the fresh cache" }
     GamevalDumper.dumpGamevals(Cache.load(File(getCacheLocation()).toPath()), rev.first)
+
+    ShortestPathTransports.download(File("../.data/transports"))
 }
 
 fun buildCache(type: TaskType, force: Boolean = false) {

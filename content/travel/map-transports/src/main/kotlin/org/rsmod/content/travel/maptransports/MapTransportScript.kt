@@ -2,6 +2,8 @@ package org.rsmod.content.travel.maptransports
 
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
+import java.nio.file.Files
+import java.nio.file.Path
 import org.rsmod.api.player.events.interact.LocUnimplementedEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onProtectedEvent
@@ -9,16 +11,25 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /**
- * Serves the Shortest Path plugin's transport rows - doors, stairs, caves, shortcuts, levers and
- * portals with a known start and end tile - for every loc op no other script answers. It listens
- * on the unimplemented-op fallback, which the engine only reaches once a loc has no id, content or
+ * Serves the Shortest Path plugin's transport rows - caves, stairs, shortcuts, levers and portals
+ * with a known start and end tile - for every loc op no other script answers. It listens on the
+ * unimplemented-op fallback, which the engine only reaches once a loc has no id, content or
  * category handler, so real content always wins.
+ *
+ * The rows are downloaded into `.data/transports/` by `freshCache` (or `downloadTransports`).
  */
 class MapTransportScript : PluginScript() {
     private val logger = InlineLogger()
 
     override fun ScriptContext.startup() {
-        val rows = FILES.flatMap { file -> MapTransports.parse(read(file)) }
+        val missing = FILES.filterNot { Files.isRegularFile(DIR.resolve(it)) }
+        if (missing.isNotEmpty()) {
+            logger.warn {
+                "Map transports off: $missing not in $DIR. Run `gradlew :or-cache:downloadTransports`."
+            }
+            return
+        }
+        val rows = FILES.flatMap { file -> MapTransports.parse(Files.readString(DIR.resolve(file))) }
         val byLocAndOp = HashMap<Pair<Int, Int>, MutableList<MapTransport>>()
         for (row in rows) {
             val type = ServerCacheManager.getObject(row.locId) ?: continue
@@ -54,13 +65,8 @@ class MapTransportScript : PluginScript() {
         telejump(transport.destination)
     }
 
-    private fun read(file: String): String =
-        MapTransportScript::class.java.classLoader.getResourceAsStream("transports/$file")
-            ?.bufferedReader()
-            ?.use { it.readText() }
-            .orEmpty()
-
     private companion object {
+        val DIR: Path = Path.of(".data", "transports")
         val FILES =
             listOf(
                 "transports.tsv",

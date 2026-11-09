@@ -62,6 +62,14 @@ tasks {
         args = listOf("CLEAN_CS2")
     }
 
+    register<JavaExec>("downloadTransports") {
+        group = "cache"
+        description = "Downloads the Shortest Path transport tables into .data/transports (freshCache does this too)"
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.CacheToolsKt")
+        args = listOf("DOWNLOAD_TRANSPORTS")
+    }
+
     register<JavaExec>("dumpLocs") {
         group = "tools"
         description = "Prints every placement of the locs in -Plocs (symbols, ids or x1:z1:x2:z2)"

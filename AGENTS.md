@@ -19,6 +19,8 @@ touching.
 - `gradlew :or-cache:dumpSeqs -Pseqs=seq.name,1234` prints how many ticks an animation runs for.
   Anything that carries a player has to last as long as its animation, or they arrive ahead of their
   own feet.
+- `gradlew :or-cache:downloadTransports` fetches the Shortest Path plugin's transport tables into
+  `.data/transports/` for the map-transports plugin; `freshCache` does this too.
 - Typical content loop: edit Kotlin in `content/` → `gradlew run` and test. If you
   touched a `-pack` module's resources or a `gamevals.toml`, rebuild the cache
   (`buildCache`) before running.
