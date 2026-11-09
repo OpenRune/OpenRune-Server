@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     implementation(projects.api.pluginCommons)
+    implementation(projects.api.bosses)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
     implementation(projects.api.music)

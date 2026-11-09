@@ -52,8 +52,8 @@ import org.rsmod.plugin.scripts.ScriptContext
  * - Elite: `trail_clue_elite_music001`, `trail_clue_elite_music002`.
  *
  * Other clue objs:
- * - `trail_elite_riddle_puzzlebox`: `ClueSlidePuzzle` only accepts the hard puzzle boxes, so the
- *   elite step completes with no puzzle.
+ * - `trail_elite_riddle_puzzlebox`: no elite step row references a puzzle box, so nothing hands it
+ *   out and it needs no handling.
  * - `trail_easy_emote_sail`, `trail_elite_emote_sail`, `trail_elite_riddle_sail`,
  *   `trail_elite_sextant_sail`, `trail_hard_riddle_sail`, `trail_hard_sextant_sail`,
  *   `trail_medium_anagram_sail`, `trail_medium_sextant_sail`: sailing steps, excluded on purpose.
