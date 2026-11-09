@@ -2673,7 +2673,7 @@ contentGroup = "content.bank_chest"
 [[object]]
 id = "loc.snakeboss_bankchest"
 inherit = "loc.snakeboss_bankchest"
-contentGroup = "content.bank_chest"
+contentGroup = "content.bank_deposit_box"
 
 [[object]]
 id = "loc.soul_wars_bankchest"
