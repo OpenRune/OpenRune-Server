@@ -65,6 +65,7 @@ constructor(
                 npc.coords,
             )
             npc.assignSpawnOwner(player, mapClock.cycle)
+            if (npc.type.id in DOUBLE_AGENTS) npc.say("I expect you to die!")
             if (npc.type.id in RANGED_ENCOUNTERS) {
                 npc.apPlayer2(player, aiPlayerInteractions)
             } else {
@@ -132,6 +133,11 @@ constructor(
                     "npc.trail_zaros_range",
                     "npc.trail_cabbage_mage",
                 )
+                .map { it.asRSCM(RSCMType.NPC) }
+                .toSet()
+
+        val DOUBLE_AGENTS =
+            listOf("npc.double_agent_1", "npc.double_agent_2", "npc.double_agent_master")
                 .map { it.asRSCM(RSCMType.NPC) }
                 .toSet()
     }
