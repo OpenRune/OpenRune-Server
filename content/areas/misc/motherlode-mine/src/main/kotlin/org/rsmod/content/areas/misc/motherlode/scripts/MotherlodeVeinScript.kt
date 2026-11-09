@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.baseMiningLvl
 import org.rsmod.api.player.stat.miningLvl
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc3
@@ -89,7 +90,7 @@ constructor(
         if (!veins.isActive(vein.coords)) {
             return false
         }
-        if (player.miningLvl < MotherlodeMine.PAYDIRT_MINING_LEVEL) {
+        if (player.baseMiningLvl < MotherlodeMine.PAYDIRT_MINING_LEVEL) {
             mes("You need a Mining level of ${MotherlodeMine.PAYDIRT_MINING_LEVEL} to mine this vein.")
             return false
         }
