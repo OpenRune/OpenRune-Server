@@ -55,7 +55,12 @@ public object GamevalChecker {
         return scanned to references
     }
 
-    public fun check(root: File, provider: GameValProvider, reportFile: File? = null): Result {
+    public fun check(
+        root: File,
+        provider: GameValProvider,
+        reportFile: File? = null,
+        generated: Set<String> = emptySet(),
+    ): Result {
         val (scanned, references) = scan(root)
         val missing = LinkedHashMap<String, MutableList<Reference>>()
         val unassigned = LinkedHashMap<String, MutableList<Reference>>()
@@ -65,7 +70,10 @@ public object GamevalChecker {
             val entries = provider.mappings[table]
             when (val id = entries?.get(reference.key)) {
                 null ->
-                    if (entries?.keys?.any { it.startsWith("${reference.key}:") } != true) {
+                    if (
+                        reference.key !in generated &&
+                        entries?.keys?.any { it.startsWith("${reference.key}:") } != true
+                    ) {
                         missing.getOrPut(reference.key) { ArrayList() } += reference
                     }
                 GameValProvider.UNASSIGNED_ID ->

@@ -28,7 +28,11 @@ object GameValMaxIdManifest {
         maxIds: Map<String, Int>,
         revision: Int? = null,
     ) {
-        val file = path(rootDir).apply { parentFile?.mkdirs() }
+        writeTo(path(rootDir), maxIds, revision)
+    }
+
+    fun writeTo(file: File, maxIds: Map<String, Int>, revision: Int? = null) {
+        file.parentFile?.mkdirs()
         val body =
             buildString {
                 appendLine("# OSRS cache gameval max IDs per table.")

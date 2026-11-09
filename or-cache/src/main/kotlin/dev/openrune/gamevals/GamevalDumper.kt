@@ -30,7 +30,7 @@ object GamevalDumper {
 
     private class Entry(val raw: String, val standardized: String, val id: Int)
 
-    fun dumpGamevals(cache: Cache, rev: Int) {
+    fun dumpGamevals(cache: Cache, rev: Int, snapshotDir: File? = null) {
         val gamevals = mutableMapOf<String, List<String>>()
 
         GameValGroupTypes.entries.forEach { group ->
@@ -56,14 +56,21 @@ object GamevalDumper {
             }
         }
 
-        val outputDir = File("../.data/gamevals-binary").apply { mkdirs() }
+        val outputDir = snapshotDir ?: File("../.data/gamevals-binary")
         GameValDat.write(File(outputDir, "gamevals.dat"), gamevals.remapNames())
-
-        dumpCols(cache, rev)
-        dumpComponents(cache,rev)
+        val generated = mapOf("dbcol" to columnEntries(cache, rev), "component" to componentEntries(cache, rev))
+        if (snapshotDir == null) {
+            GeneratedGameVals.replaceTables(generated)
+        } else {
+            GameValDat.write(File(outputDir, GeneratedGameVals.FILE_NAME), generated)
+        }
     }
 
     fun dumpComponents(cache: Cache, rev: Int) {
+        GeneratedGameVals.replaceTables(mapOf("component" to componentEntries(cache, rev)))
+    }
+
+    private fun componentEntries(cache: Cache, rev: Int): List<String> {
         val elements = GameValHandler.readGameVal(GameValGroupTypes.IFTYPES_V2, cache = cache, rev)
         val data = mutableListOf<Entry>()
 
@@ -74,10 +81,14 @@ object GamevalDumper {
             }
         }
 
-        GeneratedGameVals.replaceTables(mapOf("component" to data.resolveNames()))
+        return data.resolveNames()
     }
 
     fun dumpCols(cache: Cache, rev: Int) {
+        GeneratedGameVals.replaceTables(mapOf("dbcol" to columnEntries(cache, rev)))
+    }
+
+    private fun columnEntries(cache: Cache, rev: Int): List<String> {
         val elements = GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, rev)
         val data = mutableListOf<Entry>()
 
@@ -88,7 +99,7 @@ object GamevalDumper {
             }
         }
 
-        GeneratedGameVals.replaceTables(mapOf("dbcol" to data.resolveNames()))
+        return data.resolveNames()
     }
 
     private fun entry(name: String, id: Int): Entry = Entry(name, standardizeName(name), id)
@@ -103,7 +114,12 @@ object GamevalDumper {
             Entry("$name:$index", "${standardizeName(name)}:$index", id)
         }
 
-    private fun standardizeName(name: String): String {
+    internal fun childNames(parent: String, children: List<Pair<String, Int>>): List<String> =
+        children.map { (name, id) -> entry(parent, name, id) }
+            .resolveNames()
+            .map { it.substringBeforeLast('=') }
+
+    internal fun standardizeName(name: String): String {
         val expanded =
             MEANINGFUL_CHARS.entries.fold(name) { acc, (char, word) -> acc.replace(char, word) }
         return GameValHandler.standardizeGamevalName(expanded)

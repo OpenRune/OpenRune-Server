@@ -53,6 +53,14 @@ tasks {
         args = listOf("FRESH_INSTALL")
     }
 
+    register<JavaExec>("exportBaseGamevals") {
+        group = "cache"
+        description = "Download the OSRS cache and export only its revision-specific gameval symbols"
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.CacheToolsKt")
+        args = listOf("EXPORT_BASE_GAMEVALS")
+    }
+
     register("cleanCs2", JavaExec::class) {
         group = "tools"
         description = "Deletes the generated CS2 directory from user app data."
@@ -88,6 +96,9 @@ tasks {
         args = buildList {
             add("CHECK_GAMEVALS")
             if (project.hasProperty("failOnMissing")) add("--fail")
+            providers.gradleProperty("baseGamevalsDir").orNull?.let {
+                add("--snapshot-dir=${rootProject.file(it).absolutePath}")
+            }
         }
     }
 
