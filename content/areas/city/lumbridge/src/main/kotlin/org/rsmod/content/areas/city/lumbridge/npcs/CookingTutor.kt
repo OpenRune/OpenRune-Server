@@ -165,7 +165,7 @@ class CookingTutor : PluginScript() {
                 }
                 3 -> {
                     chatPlayer(quiz, "Tell me about Vegetables.")
-                    objbox("obj.tuna_potato", "Baked potatoes are a more advanced food and are healthy too!")
+                    objbox("obj.potato_baked", "Baked potatoes are a more advanced food and are healthy too!")
                     chatNpc(
                         happy,
                         "They require many different ingredients to make, such as butter and vegetables, but " +

@@ -89,6 +89,12 @@ hardcode raw numeric ids in content code.
   `gamevals_components.dat`, `max-ids.toml`), produced from the cache.
 - Reference format in scripts: `"<table>.<name>"`, e.g. `onOpNpc1("npc.bob")`,
   `onOpLoc1("loc.winch")`, and the same symbols in drop tables and TOML configs.
+- Gamevals are stated explicitly and in full. Never build one from a base plus a suffix,
+  a template (`"obj.watering_can_$n"`) or a `startsWith` prefix. List every full symbol
+  (a `listOf`/`setOf` of the real names), so `checkGamevals` can verify each one against
+  the cache. `gradlew :or-cache:checkGamevals` it reports every
+  `"<table>.<name>"` literal that no gamevals table defines, and
+  `-PfailOnMissing` makes it exit non-zero for CI.
 - Custom symbols for new content: add a `gamevals.toml` in the content module's
   `src/main/resources` with `[gamevals.<table>]` sections:
 

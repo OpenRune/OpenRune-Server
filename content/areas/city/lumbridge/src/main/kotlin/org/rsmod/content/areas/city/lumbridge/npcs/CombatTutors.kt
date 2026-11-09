@@ -626,7 +626,7 @@ class CombatTutors : PluginScript() {
                     "sell you the essence.",
             )
         }
-        if (access.statBase("stat.runecraft") < EXPERIENCED_LEVEL) {
+        if (access.statBase("stat.runecrafting") < EXPERIENCED_LEVEL) {
             chatNpc(neutral, "As you're fairly new to runecrafting you should start with air runes and mind runes.")
         } else {
             chatNpc(
@@ -859,7 +859,7 @@ class CombatTutors : PluginScript() {
                 "stat.prayer", "stat.magic", "stat.cooking", "stat.woodcutting", "stat.fletching",
                 "stat.fishing", "stat.firemaking", "stat.crafting", "stat.smithing", "stat.mining",
                 "stat.herblore", "stat.agility", "stat.thieving", "stat.slayer", "stat.farming",
-                "stat.runecraft", "stat.hunter", "stat.construction",
+                "stat.runecrafting", "stat.hunter", "stat.construction",
             )
     }
 }

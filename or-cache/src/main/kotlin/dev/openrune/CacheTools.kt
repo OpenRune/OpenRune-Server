@@ -57,6 +57,7 @@ import dev.openrune.tables.skills.prayer.PrayerBlessedBone
 import dev.openrune.tables.skills.prayer.PrayerTable
 import dev.openrune.toml.rsconfig.rsconfig
 import dev.openrune.toml.tomlMapper
+import dev.openrune.tools.GamevalChecker
 import dev.openrune.tools.LocSpawnDumper
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
@@ -109,6 +110,19 @@ fun main(args: Array<String>) {
             revision.first,
             args.drop(1).flatMap { it.split(',') }.map(String::trim).filter(String::isNotEmpty),
         )
+        return
+    }
+
+    if (command == "CHECK_GAMEVALS") {
+        val result =
+            GamevalChecker.check(
+                root = projectRoot.canonicalFile,
+                provider = GameValProvider.loadIsolated("../"),
+                reportFile = File("build/reports/gamevals/gameval-report.txt"),
+            )
+        if ("--fail" in args && (result.missing.isNotEmpty() || result.unassigned.isNotEmpty())) {
+            exitProcess(1)
+        }
         return
     }
 

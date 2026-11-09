@@ -253,7 +253,7 @@ class MiningTutor : PluginScript() {
                 "Lumbridge Castle for more information on what you can make with clay.",
         )
         objbox(
-            "obj.rune_essence",
+            "obj.blankrune",
             "Rune Essence can only be mined at secret places... I don't " +
                 "know where these are but you can speak to the Duke of " +
                 "Lumbridge to find out more.",
