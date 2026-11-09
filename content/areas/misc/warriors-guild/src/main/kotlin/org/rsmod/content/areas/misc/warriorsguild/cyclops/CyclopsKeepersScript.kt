@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.misc.warriorsguild.cyclops
 
+import org.rsmod.api.enums.WarguildEnums
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
@@ -119,7 +120,7 @@ class CyclopsKeepersScript : PluginScript() {
             return
         }
         Defenders.remember(player, tier)
-        val name = METALS[tier]
+        val name = WarguildEnums.warguild_metal_names.getValue(tier)
         val article = if (name.first() in "AEIOU") "an" else "a"
         chatPlayer(
             happy,
@@ -299,9 +300,5 @@ class CyclopsKeepersScript : PluginScript() {
         Arrival,
         Purpose,
         Bye,
-    }
-
-    private companion object {
-        val METALS = listOf("Bronze", "Iron", "Steel", "Black", "Mithril", "Adamant", "Rune")
     }
 }

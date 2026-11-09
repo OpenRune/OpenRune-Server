@@ -12,7 +12,6 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/** Overhead sayings: Shanomi works through hers in order, everyone else picks one at random. */
 class ChatterScript
 @Inject
 constructor(private val conRepo: ControllerRepository, private val npcs: NpcList) :

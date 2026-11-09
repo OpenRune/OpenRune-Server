@@ -16,12 +16,10 @@ internal object ShotPutFormula {
     fun distance(power: Int, thresholds: Collection<Int>): Int =
         minOf(MAX_DISTANCE, 1 + thresholds.count { power >= it })
 
-    /** Chance out of [SUCCESS_DIVISOR] that the shot leaves the hand instead of landing on a toe. */
     fun successNumerator(power: Int): Int = power.coerceIn(0, SUCCESS_DIVISOR)
 
     fun xp(power: Int): Double = power * 0.7
 
-    /** Run energy spent, in the 0..10000 units the server stores. */
     fun energyCost(power: Int): Int = power * 10
 
     fun tokens(distance: Int, baseTokens: Int): Int = distance + baseTokens

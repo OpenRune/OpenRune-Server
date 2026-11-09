@@ -29,7 +29,6 @@ internal object Defenders {
     fun bestOwned(player: Player): Int =
         maxOf(bestCarried(player), player.invMap["inv.bank"]?.let(::best) ?: NONE)
 
-    /** Remembers the best defender seen, so Kamfreena knows when one has been lost. */
     fun remember(player: Player, tier: Int) {
         if (tier + 1 > player.defenderEarned) player.defenderEarned = tier + 1
     }

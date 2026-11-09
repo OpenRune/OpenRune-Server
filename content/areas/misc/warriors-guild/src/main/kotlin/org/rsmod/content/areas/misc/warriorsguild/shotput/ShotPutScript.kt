@@ -3,7 +3,7 @@ package org.rsmod.content.areas.misc.warriorsguild.shotput
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import org.rsmod.api.enums.NamedEnums
+import org.rsmod.api.enums.WarguildEnums
 import org.rsmod.api.player.hands
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.output.UpdateRun
@@ -32,7 +32,7 @@ constructor(
     private val random: GameRandom,
 ) : PluginScript() {
     private val thresholds: List<Int> =
-        NamedEnums.warguild_shotput_distance.backing.entries
+        WarguildEnums.warguild_shotput_distance.backing.entries
             .sortedBy { it.key }
             .mapNotNull { it.value }
 

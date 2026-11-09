@@ -27,7 +27,6 @@ internal object AnimatorSets {
     fun isPiece(obj: Int): Boolean =
         all().any { obj == it.helm.id || obj == it.body.id || obj == it.legs.id }
 
-    /** Takes one carried set and puts it in Shanomi's hold; null when none could be taken. */
     fun take(player: Player): WarguildAnimatorSetsRow? {
         if (player.lostArmour != 0) return null
         val set = carried(player) ?: return null

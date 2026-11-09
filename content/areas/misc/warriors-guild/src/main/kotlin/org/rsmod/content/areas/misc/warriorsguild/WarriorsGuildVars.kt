@@ -8,10 +8,8 @@ import org.rsmod.game.entity.Player
 internal var Player.tokensOwed by intVarp("varp.warguild_tokens_owed")
 internal var Player.kegTokensOwed by intVarp("varp.warguild_keg_tokens_owed")
 
-/** Best defender tier ever owned plus one; 0 when the player has never had one. */
 internal var Player.defenderEarned by intVarBit("varbit.warguild_defender_earned")
 
-/** Animator set index (1 bronze .. 7 rune) Shanomi is holding; 0 when nothing is held. */
 internal var Player.lostArmour by intVarBit("varbit.warguild_lost_armour")
 
 internal var Player.cyclopsRoom by intVarBit("varbit.warguild_cyclops_room")

@@ -259,7 +259,6 @@ constructor(private val npcs: NpcList, private val random: GameRandom) : PluginS
             player.rebuildAppearance()
         }
 
-        /** Takes the kegs off the player's head and puts every lifted keg back in the room. */
         fun clearKegs(player: Player) {
             if (player.kegCount() > 0) player.hat = null
             for (keg in 1..MAX_KEGS) VarPlayerIntMapSetter.set(player, kegVar(keg), 0)

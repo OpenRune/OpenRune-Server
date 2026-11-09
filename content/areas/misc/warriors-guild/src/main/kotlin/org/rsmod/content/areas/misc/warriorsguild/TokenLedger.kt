@@ -14,7 +14,6 @@ internal object TokenLedger {
         player.kegTokensOwed = saturatingAdd(player.kegTokensOwed, amount)
     }
 
-    /** Jimmy signs his ledger over to the training staff. */
     fun transferKegs(player: Player): Int {
         val kegs = player.kegTokensOwed
         if (kegs <= 0) return 0

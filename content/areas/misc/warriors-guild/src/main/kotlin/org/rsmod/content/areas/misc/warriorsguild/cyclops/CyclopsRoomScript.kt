@@ -51,7 +51,6 @@ constructor(private val doors: GuildDoors, private val areas: AreaChecker) : Plu
         onPlayerLogin { resumeRoom(player) }
     }
 
-    /** The same door pair leads into Shanomi's animation room and Kamfreena's cyclopes. */
     private suspend fun ProtectedAccess.armourDoor(
         door: BoundLocInfo,
         openLoc: String,
@@ -121,7 +120,6 @@ constructor(private val doors: GuildDoors, private val areas: AreaChecker) : Plu
         return false
     }
 
-    /** Re-checked after the welcome, which the player may have sat through while dropping tokens. */
     private fun ProtectedAccess.charge(): Boolean {
         if (player.wearsAttackCape()) return true
         if (inv.count(TokenLedger.TOKEN) < ENTRY_TOKENS) return false

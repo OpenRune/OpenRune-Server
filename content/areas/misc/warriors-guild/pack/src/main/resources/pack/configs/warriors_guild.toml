@@ -153,6 +153,21 @@ valueType = "INT"
 11 = 203
 12 = 216
 
+[[enum]]
+isServerOnly = true
+id = "enum.warguild_metal_names"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "Bronze"
+1 = "Iron"
+2 = "Steel"
+3 = "Black"
+4 = "Mithril"
+5 = "Adamant"
+6 = "Rune"
+
 [[projectile]]
 isServerOnly = true
 id = "projanim.warguild_catapult"

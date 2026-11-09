@@ -8,7 +8,6 @@ import org.rsmod.game.hit.HitType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/** The guild's cyclopes and animated armour only take damage from melee. */
 class MeleeOnlyScript : PluginScript() {
     override fun ScriptContext.startup() {
         for (npc in MELEE_ONLY) {
