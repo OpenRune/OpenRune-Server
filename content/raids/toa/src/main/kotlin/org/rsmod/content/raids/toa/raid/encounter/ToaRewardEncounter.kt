@@ -245,7 +245,7 @@ class ToaRewardEncounter(
         private const val DUNG = "obj.cert_toa_loot_poo"
         private const val OSMUMTEN = "npc.toa_osmumten_vis"
         private const val JINGLE = "jingle.in_the_pits"
-        private const val MUSIC = "midi.toa_laid_to_rest"
+        private const val MUSIC = "midi.toa_victory"
 
         val Player.rewardChest
             get() = invMap.getOrPut(CHEST_INV)
