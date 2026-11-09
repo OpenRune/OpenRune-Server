@@ -261,11 +261,13 @@ class ConsumePrepareEventTest {
                 mockk<PotionSpecialEffectService>(relaxed = true) {
                     every { handles(any()) } returns true
                 }
+            val access = ConsumableActivityAccess(emptySet())
             with(
                 ConsumeFoodScript(
                     areas,
                     FoodEffectService(),
                     FoodSpecialEffectService(SpicyStewEffect(), KebabEffect()),
+                    access,
                 )
             ) {
                 script.startup()
@@ -274,7 +276,7 @@ class ConsumePrepareEventTest {
                 ConsumePotionScript(
                     areas,
                     PotionEffectService(special, MapClock()),
-                    ConsumableActivityAccess(),
+                    access,
                 )
             ) {
                 script.startup()
