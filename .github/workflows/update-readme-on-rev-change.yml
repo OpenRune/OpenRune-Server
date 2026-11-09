@@ -69,6 +69,7 @@ jobs:
   update-files:
     needs: [resolve-revision, publish-gamevals]
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     env:
       REVISION: ${{ needs.resolve-revision.outputs.revision }}
     outputs:
@@ -110,16 +111,50 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Refresh and validate transport gamevals
+      - name: Refresh Shortest Path transports
         run: |
-          ./gradlew :or-cache:downloadTransports :or-cache:checkGamevals -PfailOnMissing \
+          ./gradlew :or-cache:downloadTransports \
             "-PbaseGamevalsDir=$RUNNER_TEMP/osrs-gamevals" --console=plain
+
+      - name: Regenerate travel tags
+        env:
+          TRAVEL_CONFIGS: content/generic/generic-locs/pack/src/main/resources/pack/configs
+        run: |
+          # Existing generated tags would make their locations look handled to the report.
+          rm -- "$TRAVEL_CONFIGS"/{auto_doors,auto_ladders,auto_travel}.toml
+          cp game.example.yml game.yml
+          ./gradlew :or-cache:freshCache :or-cache:mergePluginGamevals generateRsa --console=plain
+          ./gradlew :server:app:travelReport --console=plain
+
+          report=build/reports/travel-coverage
+          cp "$report/door-tags.toml" "$TRAVEL_CONFIGS/auto_doors.toml"
+          cp "$report/ladder-tags.toml" "$TRAVEL_CONFIGS/auto_ladders.toml"
+          cp "$report/auto-travel-tags.toml" "$TRAVEL_CONFIGS/auto_travel.toml"
+
+      - name: Validate updated gamevals
+        run: |
+          ./gradlew :or-cache:checkGamevals -PfailOnMissing \
+            "-PbaseGamevalsDir=$RUNNER_TEMP/osrs-gamevals" --console=plain
+
+      # The build job can repack the new tags from this cache without downloading OSRS again.
+      - name: Save game cache for verification
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            .data/cache
+            .data/xteas.json
+            .data/gamevals-binary/gamevals.dat
+            .data/gamevals-binary/gamevals_generated.dat
+          key: game-cache-v2-${{ hashFiles('game.example.yml') }}
 
       - name: Commit and push revision
         id: push
+        env:
+          TRAVEL_CONFIGS: content/generic/generic-locs/pack/src/main/resources/pack/configs
         run: |
           git add -- README.md game.example.yml .data/gamevals-binary/max-ids.toml
           git add -- content/travel/map-transports/src/main/resources/transports
+          git add -- "$TRAVEL_CONFIGS"/{auto_doors,auto_ladders,auto_travel}.toml
           if ! git diff --cached --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
