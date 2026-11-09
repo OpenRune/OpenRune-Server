@@ -8,8 +8,8 @@ import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
-import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTrigger
+import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.game.entity.Player
 
 /** Decides when all of a task's requirements are met, and completes it through [LeagueTasks]. */

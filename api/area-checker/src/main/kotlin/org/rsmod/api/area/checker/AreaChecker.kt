@@ -1,9 +1,7 @@
 package org.rsmod.api.area.checker
 
-import dev.openrune.map.MapSingletons
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.aconverted.AreaType
 import it.unimi.dsi.fastutil.shorts.ShortArrayList
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet
 import jakarta.inject.Inject
