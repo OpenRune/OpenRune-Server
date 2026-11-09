@@ -40,6 +40,22 @@ gameplay:
   gravestones:
     # Lost items go to a gravestone the player can reclaim; false drops them on the floor instead.
     enabled: true
+  grand-exchange:
+    enabled: true
+    # Fetch prices from the OSRS Wiki real-time prices API (prices.runescape.wiki) in the
+    # background. false, or the wiki being unreachable, uses the shipped price snapshot.
+    live-prices: true
+    refresh-minutes: 10
+    # The wiki asks every client to identify itself; name your server and a contact here.
+    user-agent: "OpenRune-Server Grand Exchange (github.com/osrs-solo/OpenRune-Server)"
+    # Offers within this percent of the average price fill against the simulated market.
+    # A buy further below it, or a sell further above it, waits for a player to match.
+    wiggle-room-percent: 5.0
+    # "instant" fills a matching offer in full at once. "gradual" fills
+    # gradual-fill-percent of the offer every gradual-fill-seconds.
+    fill-mode: "instant"
+    gradual-fill-percent: 10.0
+    gradual-fill-seconds: 30
   quest-requirements:
     # Bypass quest gates by default. Use "respect-progress" for saved quest progress,
     # or "virtual-completions" to unlock selected quests for league-style profiles.

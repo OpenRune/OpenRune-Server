@@ -1,0 +1,7 @@
+# The client holds the new-offer price as a 64-bit varp. The server keeps its own int copy and
+# sends the value with `VarpLong` itself, so the standard int transmit must stay off.
+[[varp]]
+isServerOnly = true
+id = "varp.ge_newoffer_price"
+scope = "Temp"
+transmit = "Never"

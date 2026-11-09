@@ -60,6 +60,27 @@ public data class GameplayConfig(
     @JsonProperty("random-events")
     val randomEvents: Boolean = true,
     val gravestones: GravestonesYaml = GravestonesYaml(),
+    @JsonProperty("grand-exchange")
+    val grandExchange: GrandExchangeYaml = GrandExchangeYaml(),
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public data class GrandExchangeYaml(
+    val enabled: Boolean = true,
+    @JsonProperty("live-prices")
+    val livePrices: Boolean = true,
+    @JsonProperty("refresh-minutes")
+    val refreshMinutes: Int = 10,
+    @JsonProperty("user-agent")
+    val userAgent: String = "OpenRune-Server Grand Exchange (github.com/osrs-solo/OpenRune-Server)",
+    @JsonProperty("wiggle-room-percent")
+    val wiggleRoomPercent: Double = 5.0,
+    @JsonProperty("fill-mode")
+    val fillMode: String = "instant",
+    @JsonProperty("gradual-fill-percent")
+    val gradualFillPercent: Double = 10.0,
+    @JsonProperty("gradual-fill-seconds")
+    val gradualFillSeconds: Int = 30,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
