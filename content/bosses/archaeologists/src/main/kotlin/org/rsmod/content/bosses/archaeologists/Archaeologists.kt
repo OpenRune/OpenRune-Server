@@ -1,17 +1,11 @@
 package org.rsmod.content.bosses.archaeologists
 
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Effect
-import org.rsmod.api.bosses.spec.ProjectileConfig
-import org.rsmod.api.player.isValidTarget
-import org.rsmod.api.script.onEvent
-import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -30,15 +24,14 @@ private const val SPECIAL_COOLDOWN = 25
 private const val NORMAL_WEIGHT = 2
 private const val ADJACENT_WEIGHT = 1
 private const val SPECIAL_WEIGHT = 1
-private const val RANGED_ATTACK_RANGE = 10
 
 private const val BOOK_THROW_SEQ = "seq.book_chuck"
 private const val BOOK_MELEE_SEQ = "seq.human_unarmedpunch"
 private const val BOOK_PROJECTILE = "spotanim.crazy_archaeologist_book"
+private const val BOOK_PROJECTILE_TYPE = "projanim.crazy_archaeologist_book"
 private const val BOOK_IMPACT_SPOTANIM = "spotanim.castlewars_catapult_splash"
 private const val BOOK_THROW_SYNTH = "synth.archaeologist_book_throw"
 private const val BOOK_IMPACT_SYNTH = "synth.archaeologist_book_impact"
-private const val BOOK_IMPACT_EXTENSION = "archaeologists.book_impact"
 
 private const val CRAZY_SPECIAL_QUOTE = "Rain of knowledge!"
 private const val CRAZY_DEATH_QUOTE = "Ow!"
@@ -65,21 +58,7 @@ private val DERANGED_QUOTES =
         "They're cheering! Why are they cheering?",
     )
 
-private val NORMAL_BOOK_PROJECTILE =
-    ProjectileConfig(
-        startHeight = 40,
-        endHeight = 36,
-        startDelay = 41,
-        travelTime = 5,
-        angle = 15,
-        progress = 11,
-        stepMultiplier = 5,
-    )
-
 class Archaeologists @Inject constructor(private val deps: BossDeps) : PluginScript() {
-    private val crazyId by lazy { CRAZY_ARCHAEOLOGIST.asRSCM(RSCMType.NPC) }
-    private val derangedId by lazy { DERANGED_ARCHAEOLOGIST.asRSCM(RSCMType.NPC) }
-
     private val crazySpec =
         archaeologistSpec(
             npc = CRAZY_ARCHAEOLOGIST,
@@ -104,11 +83,6 @@ class Archaeologists @Inject constructor(private val deps: BossDeps) : PluginScr
         deps.extensionRegistry.register(BookRain.EXTENSION) { _, npc, target, params ->
             BookRain.launch(deps, npc, target, params)
         }
-        deps.extensionRegistry.register(BOOK_IMPACT_EXTENSION) { _, _, target, _ ->
-            if (!target.isValidTarget()) return@register
-            target.spotanim(BOOK_IMPACT_SPOTANIM)
-            deps.worldRepo.soundArea(target.coords, BOOK_IMPACT_SYNTH, radius = 1)
-        }
         BossCombat.register(this, crazySpec, deps, onLethal = { npc -> npc.say(CRAZY_DEATH_QUOTE) })
         BossCombat.register(
             this,
@@ -116,14 +90,6 @@ class Archaeologists @Inject constructor(private val deps: BossDeps) : PluginScr
             deps,
             onLethal = { npc -> npc.say(DERANGED_DEATH_QUOTE) },
         )
-
-        onEvent<NpcStateEvents.Spawn>(crazyId) { npc.apRangeOverride = RANGED_ATTACK_RANGE }
-        onEvent<NpcStateEvents.Spawn>(derangedId) { npc.apRangeOverride = RANGED_ATTACK_RANGE }
-        onEvent<NpcStateEvents.Respawn> {
-            if (npc.type.id == crazyId || npc.type.id == derangedId) {
-                npc.apRangeOverride = RANGED_ATTACK_RANGE
-            }
-        }
     }
 }
 
@@ -157,13 +123,15 @@ private fun archaeologistSpec(
                 sound(BOOK_THROW_SYNTH, radius = 8)
                 projectile(
                     spotanim = BOOK_PROJECTILE,
-                    config = NORMAL_BOOK_PROJECTILE,
+                    travel = BOOK_PROJECTILE_TYPE,
+                    onImpact = sound(BOOK_IMPACT_SYNTH, radius = 1, at = ImpactTile),
                     resolveOnImpact = true,
-                    onImpact = external(BOOK_IMPACT_EXTENSION),
                     hit =
                         Effect.Hit(
                             damage = Accuracy(Roll(0..maxHit)),
                             type = Ranged,
+                            spotanim = BOOK_IMPACT_SPOTANIM,
+                            missSpotanim = BOOK_IMPACT_SPOTANIM,
                         ),
                 )
             }

@@ -1,5 +1,6 @@
 package org.rsmod.content.bosses.archaeologists
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.SpotanimType
@@ -32,18 +33,9 @@ internal object BookRain {
     private const val PROJECTILE_STAGGER = 2
     private const val THROW_SOUND_RADIUS = 10
 
-    private const val PRIMARY_START_HEIGHT = 40
-    private const val PRIMARY_END_HEIGHT = 2
-    private const val PRIMARY_START_DELAY = 41
-    private const val PRIMARY_TRAVEL_TIME = 79
-    private const val SECONDARY_START_HEIGHT = 2
-    private const val SECONDARY_END_HEIGHT = 2
-    private const val SECONDARY_START_DELAY = 0
-    private const val SECONDARY_TRAVEL_TIME = 120
-    private const val BOOK_CURVE = 40
-    private const val BOOK_PROGRESS = 11
-
     private const val BOOK_PROJECTILE = "spotanim.crazy_archaeologist_book_special"
+    private const val PRIMARY_PROJECTILE = "projanim.crazy_archaeologist_book_rain"
+    private const val SECONDARY_PROJECTILE = "projanim.crazy_archaeologist_book_rain_secondary"
     private const val EXPLOSION_SPOTANIM = "spotanim.firewave_impact"
     private const val THROW_SYNTH = "synth.archaeologist_book_throw"
     private const val IMPACT_SYNTH = "synth.archaeologist_book_impact"
@@ -66,10 +58,7 @@ internal object BookRain {
             deps = deps,
             source = npc.coords,
             tiles = primary,
-            startHeight = PRIMARY_START_HEIGHT,
-            endHeight = PRIMARY_END_HEIGHT,
-            startDelay = PRIMARY_START_DELAY,
-            travelTime = PRIMARY_TRAVEL_TIME,
+            travel = PRIMARY_PROJECTILE,
             delayStep = PROJECTILE_STAGGER,
         )
 
@@ -100,10 +89,7 @@ internal object BookRain {
             deps = deps,
             source = centre,
             tiles = secondary,
-            startHeight = SECONDARY_START_HEIGHT,
-            endHeight = SECONDARY_END_HEIGHT,
-            startDelay = SECONDARY_START_DELAY,
-            travelTime = SECONDARY_TRAVEL_TIME,
+            travel = SECONDARY_PROJECTILE,
             travelStep = PROJECTILE_STAGGER,
         )
         deps.worldQueues.add(SPLIT_TICKS) { explode(deps, npc, secondary, config) }
@@ -113,13 +99,13 @@ internal object BookRain {
         deps: BossDeps,
         source: CoordGrid,
         tiles: List<CoordGrid>,
-        startHeight: Int,
-        endHeight: Int,
-        startDelay: Int,
-        travelTime: Int,
+        travel: String,
         delayStep: Int = 0,
         travelStep: Int = 0,
     ) {
+        val type =
+            ServerCacheManager.getProjectile(travel.asRSCM(RSCMType.PROJANIM))
+                ?: error("Projectile not found: $travel")
         deps.worldRepo.soundArea(
             source,
             THROW_SYNTH,
@@ -131,12 +117,12 @@ internal object BookRain {
                 spotanim = BOOK_PROJECTILE.asRSCM(RSCMType.SPOTANIM),
                 src = source,
                 target = tile,
-                startHeight = startHeight,
-                endHeight = endHeight,
-                delay = startDelay + index * delayStep,
-                travel = travelTime + index * travelStep,
-                curve = BOOK_CURVE,
-                progress = BOOK_PROGRESS,
+                startHeight = type.startHeight,
+                endHeight = type.endHeight,
+                delay = type.delay + index * delayStep,
+                travel = type.lengthAdjustment + index * travelStep,
+                curve = type.angle,
+                progress = type.progress,
             )
         }
     }
