@@ -73,11 +73,18 @@ smokepuff = 1930
 chest_open = 52
 chest_close = 51
 irondoor_locked = 72
+gobdip_dye_goblin_mail = 2392
+gobdip_soldier_attack1 = 3514
+gobdip_soldier_attack2 = 3515
+gobdip_soldier_attack3 = 3521
+gobdip_soldier_hit1 = 3517
+gobdip_soldier_hit2 = 472
 
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
 restless_ghost_return_tile = 63704
 misthalin_return_tile = 63700
+gobdip_return_tile = 65471
 misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
@@ -157,6 +164,10 @@ daddys_home_hammers = 65460
 daddys_home_saws = 65461
 daddys_home_nails = 65462
 daddys_home_house_cities = 65463
+gobdip_mail_dyes = 65469
 
 [gamevals.clientscript]
 poh_furniture_creation_entry_old = 7988
+
+[gamevals.category]
+goblin_armour = 528
