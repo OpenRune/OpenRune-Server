@@ -16,4 +16,5 @@ dependencies {
     integrationImplementation(projects.api.spells)
     integrationImplementation(projects.api.utils.utilsTime)
     integrationImplementation(projects.api.combat.combatCommons)
+    integrationImplementation(projects.api.spellsRunes)
 }

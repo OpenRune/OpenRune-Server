@@ -1,6 +1,7 @@
 package org.rsmod.api.stats.plugin.levelup
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -59,7 +60,7 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
         }
         mes(LevelUpText.message(stat.label, level, maxed = level >= type.maxLevel))
         fireworks(fireworksSpotanim(level, type.maxLevel))
-        playJingle(jingle)
+        playJingle(RSCM.getReverseMapping(RSCMType.JINGLE, jingle))
 
         if (vars[POPUP_DISABLED_VARBIT] == 0) {
             levelUpDisplay(
@@ -127,7 +128,7 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
         val label = LevelUpStat.COMBAT_LABEL
         mes(LevelUpText.message(label, level, maxed = false))
         fireworks(LEVELUP_SPOTANIM)
-        playJingle(LevelUpStat.COMBAT_JINGLE.asRSCM(RSCMType.JINGLE))
+        playJingle(LevelUpStat.COMBAT_JINGLE)
 
         if (vars[POPUP_DISABLED_VARBIT] == 0) {
             levelUpDisplay(
@@ -149,7 +150,7 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
         )
     }
 
-    private fun ProtectedAccess.playJingle(jingle: Int) {
+    private fun ProtectedAccess.playJingle(jingle: String) {
         player.midiSong(STOP_MUSIC)
         player.midiJingle(jingle)
     }
@@ -166,10 +167,10 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
         const val LEVELUP_SPOTANIM = "spotanim.levelup_anim"
         const val FIREWORKS_HEIGHT = 124
         const val FIREWORKS_SYNTH = "synth.firework"
-        const val FIREWORKS_TAIL_SYNTH = "synth.firework_tail"
+        const val FIREWORKS_TAIL_SYNTH = "synth.burst"
         const val FIREWORKS_TAIL_DELAY = 25
         const val FIREWORKS_RADIUS = 1
-        const val STOP_MUSIC = "midi.stop_music"
+        const val STOP_MUSIC = "midi.silence"
         const val POPUP_DISABLED_VARBIT = "varbit.option_level_up_message_disabled"
         const val GUIDE_LIST_DISABLED_VARBIT = "varbit.option_level_up_guide_list_disabled"
         const val CHATBOX_LIST_VARBIT = "varbit.option_level_up_chatbox_list"

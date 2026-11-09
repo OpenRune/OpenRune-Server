@@ -1,0 +1,88 @@
+name: Report Gameval Failures
+
+on:
+  workflow_run:
+    workflows: ["PR Checks"]
+    types: [completed]
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  actions: read
+  pull-requests: write
+
+jobs:
+  report:
+    if: >-
+      github.event.workflow_run.conclusion == 'failure' &&
+      (github.event.workflow_run.event == 'pull_request' ||
+       github.event.workflow_run.event == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      # Treat artifacts as data. This job never checks out or runs PR code.
+      - name: Comment on gameval failures
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+          RUN_HEAD: ${{ github.event.workflow_run.head_sha }}
+          RUN_HEAD_REPO: ${{ github.event.workflow_run.head_repository.id }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          report_dir="$RUNNER_TEMP/gameval-validation"
+          artifact="gameval-validation-$RUN_ATTEMPT"
+          if ! gh run download "$RUN_ID" --name "$artifact" --dir "$report_dir"; then
+            echo "No gameval failure report was uploaded for this run."
+            exit 0
+          fi
+
+          [[ -f "$report_dir/pr-number.txt" && ! -L "$report_dir/pr-number.txt" ]]
+          [[ -f "$report_dir/report.txt" && ! -L "$report_dir/report.txt" ]]
+          pr_number=$(head -c 20 "$report_dir/pr-number.txt")
+          [[ "$pr_number" =~ ^[1-9][0-9]{0,9}$ ]] || exit 1
+
+          # Fork workflow_run events may omit pull_requests. Verify the artifact's
+          # PR number against GitHub and skip reports for superseded commits.
+          if ! gh api "repos/$GH_REPO/pulls/$pr_number" |
+            jq -e --arg sha "$RUN_HEAD" --arg repo "$RUN_HEAD_REPO" \
+              '.state == "open" and .head.sha == $sha and (.head.repo.id | tostring) == $repo' > /dev/null; then
+            exit 0
+          fi
+
+          if grep -q '^The reserved-ID conflict check failed' "$report_dir/report.txt"; then
+            if gh run download "$RUN_ID" --name "gameval-conflicts-$RUN_ATTEMPT" --dir "$report_dir" &&
+              [[ -f "$report_dir/gameval-fix-log.txt" && ! -L "$report_dir/gameval-fix-log.txt" ]]; then
+              printf '\nReserved-ID conflicts:\n' >> "$report_dir/report.txt"
+              cat "$report_dir/gameval-fix-log.txt" >> "$report_dir/report.txt"
+            fi
+          fi
+
+          marker='<!-- openrune-check-gamevals -->'
+          {
+            echo "$marker"
+            echo "## Gameval check failed"
+            echo
+            printf 'Commit `%s` · [Full report and logs](%s)\n\n' "$RUN_HEAD" "$RUN_URL"
+            # Indent untrusted text as code so paths cannot inject Markdown or mentions.
+            head -c 10000 "$report_dir/report.txt" | tr '\r' ' ' | sed 's/^/    /'
+            echo
+            if [[ $(wc -c < "$report_dir/report.txt") -gt 10000 ]]; then
+              echo "Download the gameval-validation artifact for the complete report."
+            fi
+          } > "$RUNNER_TEMP/gameval-comment.md"
+
+          comment_id=$(gh api --paginate "repos/$GH_REPO/issues/$pr_number/comments" |
+            jq -r --arg marker "$marker" \
+              '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith($marker))) | .id' |
+            tail -1)
+          if [[ -n "$comment_id" ]]; then
+            gh api --method PATCH "repos/$GH_REPO/issues/comments/$comment_id" \
+              -F "body=@$RUNNER_TEMP/gameval-comment.md" > /dev/null
+          else
+            gh pr comment "$pr_number" --body-file "$RUNNER_TEMP/gameval-comment.md"
+          fi

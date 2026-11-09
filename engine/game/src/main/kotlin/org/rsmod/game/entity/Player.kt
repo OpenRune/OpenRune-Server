@@ -518,7 +518,11 @@ public class Player(
     }
 
     override fun spotanim(spot: String, delay: Int, height: Int, slot: Int) {
-        PathingEntityCommon.spotanim(this, spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot)
+        spotanim(spot, delay, height, slot, loop = false)
+    }
+
+    override fun spotanim(spot: String, delay: Int, height: Int, slot: Int, loop: Boolean) {
+        PathingEntityCommon.spotanim(this, spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot, loop)
     }
 
     public fun resetSpotanim(height: Int = 0, slot: Int = 0) {

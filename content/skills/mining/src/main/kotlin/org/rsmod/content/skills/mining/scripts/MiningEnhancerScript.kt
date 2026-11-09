@@ -14,6 +14,20 @@ import org.rsmod.events.EventBus
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+private val UNCUT_GEMS =
+    setOf(
+        "obj.uncut_opal",
+        "obj.uncut_jade",
+        "obj.uncut_red_topaz",
+        "obj.uncut_sapphire",
+        "obj.uncut_emerald",
+        "obj.uncut_ruby",
+        "obj.uncut_diamond",
+        "obj.uncut_dragonstone",
+        "obj.uncut_onyx",
+        "obj.uncut_zenyte",
+    )
+
 class MiningEnhancerScript
 @Inject
 constructor(private val random: GameRandom, private val eventBus: EventBus) : PluginScript() {
@@ -26,7 +40,7 @@ constructor(private val random: GameRandom, private val eventBus: EventBus) : Pl
             val source = product.source as? SkillingProductSource.Mining ?: return@onEvent
             val data = source.rockData
             val ore = product.item
-            if (data.isGemRock || ore.startsWith("obj.uncut_")) {
+            if (data.isGemRock || ore in UNCUT_GEMS) {
                 return@onEvent
             }
 

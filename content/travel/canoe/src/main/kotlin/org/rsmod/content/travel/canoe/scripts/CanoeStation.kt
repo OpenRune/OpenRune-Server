@@ -140,7 +140,7 @@ constructor(private val invisibleLvls: InvisibleLevels, private val worldRepo: W
         val station = path.station
         this[station] = StationState.StationFalling
         resetAnim()
-        soundSynth("synth.tree_fall_sound")
+        soundSynth("synth.tree_fall")
         worldRepo.locAnim(loc, "seq.canoeing_station_animations")
         delay(1)
         this[station] = StationState.StationReadyToShape

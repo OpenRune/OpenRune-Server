@@ -81,15 +81,15 @@ internal object KephriSpots {
 }
 
 internal object KephriSynths {
-    const val APEX = "synth.toa_wardens_kephri_apex"
+    const val APEX = "synth.toa_kephri_fire_projectile"
     const val DROP = "synth.toa_zebak_redirected_projectile_02"
-    const val BLAST = "synth.toa_wardens_kephri_blast"
+    const val BLAST = "synth.toa_kephri_fire_proj_impact_01"
     const val DEFEND = "synth.toa_kephri_defend_01"
     const val SCARAB_DEFEND = "synth.toa_kephri_scarab_defend_01"
     const val DUNG_THROW = "synth.toa_kephri_attack_eggs_01"
     const val DUNG_TILE = "synth.toa_kephri_special_attack_dung_impact_01"
-    const val DUNG_WARNING = "synth.toa_kephri_dung_warning"
-    const val THROWN = "synth.toa_kephri_thrown_flyback"
+    const val DUNG_WARNING = "synth.tob_bloat_flies_attack_4"
+    const val THROWN = "synth.myarm_flyback"
     const val EGG_THROW = "synth.toa_kephri_eggs_spawn_travel_01"
     const val EGG_LAND = "synth.toa_kephri_egg_land_impact_01"
     const val EGG_BURST = "synth.toa_kephri_eggs_explode_01"

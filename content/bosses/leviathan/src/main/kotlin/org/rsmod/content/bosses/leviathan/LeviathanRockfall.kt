@@ -7,15 +7,15 @@ import org.rsmod.map.CoordGrid
 
 internal object LeviathanRockfall {
     const val SEQ = "seq.npc_leviathan_01_stun_01"
-    const val SYNTH = "synth.leviathan_rockfall"
+    const val SYNTH = "synth.dt2_levboss_stun_cry_01"
     const val RECOVERY = 5
     private const val RUBBLE_LOC = "loc.leviathan_rubble"
-    private const val DEBRIS_IMPACT_SYNTH = "synth.leviathan_debris_impact"
-    private const val RUBBLE_LAND_SYNTH = "synth.leviathan_rubble_land"
+    private const val DEBRIS_IMPACT_SYNTH = "synth.barbassault_splat"
+    private const val RUBBLE_LAND_SYNTH = "synth.dt2_levboss_brain_impact_01"
     private const val KNOCKBACK_SEQ = "seq.agilityarena_player_spikedback"
     private val BOULDER_DAMAGE = 10..30
 
-    private const val RUMBLE_SYNTH = "synth.leviathan_rockfall_rumble"
+    private const val RUMBLE_SYNTH = "synth.rumbling"
     private val SCATTER_COUNT = 12..30
     private val CHIP_DAMAGE = 5..10
     private val SHAKE = 5..8

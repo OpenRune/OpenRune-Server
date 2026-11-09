@@ -217,7 +217,7 @@ constructor(
         val castDelay: Int,
         val castingAnim: Int,
         val castingSpotanim: Int,
-        val sound: Int,
+        val sound: String,
     ) {
         Low(
             "obj.21_low_alchemy",
@@ -225,7 +225,7 @@ constructor(
             castDelay = 3,
             castingAnim = 712,
             castingSpotanim = 112,
-            sound = 98,
+            sound = "synth.low_alchemy",
         ),
         High(
             "obj.55_high_alchemy",
@@ -233,7 +233,7 @@ constructor(
             castDelay = 5,
             castingAnim = 713,
             castingSpotanim = 113,
-            sound = 97,
+            sound = "synth.high_alchemy",
         );
 
         fun coinValue(obj: ItemServerType): Int = if (high) obj.highAlch else obj.lowAlch

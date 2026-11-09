@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - "game.example.yml"
+      - ".github/workflows/publish-revision-gamevals.yml"
   workflow_dispatch:
     inputs:
       new_revision:
@@ -20,6 +21,8 @@ jobs:
   update-files:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    outputs:
+      revision: ${{ steps.determine_rev.outputs.revision }}
 
     steps:
       - name: Checkout repository
@@ -29,14 +32,16 @@ jobs:
 
       - name: Determine revision
         id: determine_rev
+        env:
+          REQUESTED_REVISION: ${{ inputs.new_revision }}
         run: |
-          if [ -n "${{ github.event.inputs.new_revision }}" ]; then
-            REVISION="${{ github.event.inputs.new_revision }}"
-            echo "Manual mode — setting revision to $REVISION"
+          REVISION="${REQUESTED_REVISION:-$(awk '/^revision:/ { print $2; exit }' game.example.yml)}"
+          [[ "$REVISION" =~ ^[0-9]+([.][0-9]+)?$ ]] || {
+            echo "::error::Expected a numeric revision such as 242 or 242.2."
+            exit 1
+          }
+          if [[ -n "$REQUESTED_REVISION" ]]; then
             sed -i -E "s/^revision: .*/revision: ${REVISION}/" game.example.yml
-          else
-            REVISION_LINE=$(grep '^revision:' game.example.yml)
-            REVISION=$(echo "$REVISION_LINE" | awk '{print $2}')
           fi
 
           echo "revision=$REVISION" >> $GITHUB_OUTPUT
@@ -82,14 +87,17 @@ jobs:
       - name: Commit and push changes
         if: steps.update_readme.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
+          if git diff --quiet -- README.md game.example.yml; then
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md game.example.yml
           git commit -m "Sync revision to ${{ steps.determine_rev.outputs.revision }}"
           git push
 
-      - name: Fail if no changes
-        if: steps.update_readme.outputs.changed == 'false' && github.event_name != 'workflow_dispatch'
-        run: |
-          echo "No changes were needed — README already matches the current revision."
-          exit 1
+  publish-gamevals:
+    needs: update-files
+    uses: ./.github/workflows/publish-revision-gamevals.yml
+    with:
+      revision: ${{ needs.update-files.outputs.revision }}

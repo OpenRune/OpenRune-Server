@@ -30,8 +30,8 @@ def repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
-def load_max_ids(root: Path) -> dict[str, int]:
-    path = root / ".data" / "gamevals-binary" / "max-ids.toml"
+def load_max_ids(root: Path, manifest: Path | None = None) -> dict[str, int]:
+    path = manifest or root / ".data" / "gamevals-binary" / "max-ids.toml"
     if not path.is_file():
         raise SystemExit(
             f"Missing {path.as_posix()}. Run :or-cache:freshCache to generate it."
@@ -255,6 +255,7 @@ def apply_plan(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=None)
+    parser.add_argument("--max-ids", type=Path, help="Use reserved IDs from a revision snapshot")
     parser.add_argument(
         "--check",
         action="store_true",
@@ -263,7 +264,7 @@ def main() -> int:
     args = parser.parse_args()
     root = (args.root or repo_root()).resolve()
 
-    max_ids = load_max_ids(root)
+    max_ids = load_max_ids(root, args.max_ids)
     by_key = collect_entries(root)
     plan = plan_reassignments(by_key, max_ids)
 

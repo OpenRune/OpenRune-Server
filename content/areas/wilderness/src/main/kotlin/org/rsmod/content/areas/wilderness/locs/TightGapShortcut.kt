@@ -26,7 +26,7 @@ class TightGapShortcut : PluginScript() {
         val path = if (westbound) WESTBOUND else EASTBOUND
 
         anim(ENTER_SEQ)
-        soundSynth("synth.tight_gap_squeeze", loops = SQUEEZE_LOOPS)
+        soundSynth("synth.balancing_ledge", loops = SQUEEZE_LOOPS)
         var from = coords
         for (step in path) {
             exactMove(from, step, 0, STEP_CYCLES, facing(from, step))

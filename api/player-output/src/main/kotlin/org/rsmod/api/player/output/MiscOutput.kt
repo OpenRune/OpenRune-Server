@@ -4,12 +4,18 @@ import net.rsprot.protocol.game.outgoing.logout.LogoutWithReason
 import net.rsprot.protocol.game.outgoing.misc.client.HintArrow
 import net.rsprot.protocol.game.outgoing.misc.client.ServerTickEnd
 import net.rsprot.protocol.game.outgoing.misc.client.SetInteractionMode
+import net.rsprot.protocol.game.outgoing.misc.client.SetWebsiteToken
 import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimerV2
 import net.rsprot.protocol.game.outgoing.misc.player.SetPlayerOp
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
 public object MiscOutput {
+    /** Sends an issued website session [token] for the client's display-name change flow. */
+    public fun setWebsiteToken(player: Player, token: String) {
+        player.client.write(SetWebsiteToken(token))
+    }
+
     /** @see [HintArrow] */
     public fun hintArrowNpc(player: Player, npcSlot: Int) {
         player.client.write(HintArrow(HintArrow.NpcHintArrow(npcSlot)))

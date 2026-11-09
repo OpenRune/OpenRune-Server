@@ -181,8 +181,8 @@ class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPri
         const val REFUSED_SYNTH = "synth.pillory_wrong"
 
         // The sacrifice and payment sounds have no gameval names.
-        const val SACRIFICE_SYNTH = 1595
-        const val PAYMENT_SYNTH = 2115
+        const val SACRIFICE_SYNTH = "synth.bigghost_appear"
+        const val PAYMENT_SYNTH = "synth.coins"
         const val PAYMENT_SYNTH_DELAY = 10
 
         const val CREDIT_PERCENT = 105L

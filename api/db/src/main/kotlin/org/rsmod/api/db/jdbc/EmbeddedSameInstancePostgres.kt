@@ -1,5 +1,6 @@
 package org.rsmod.api.db.jdbc
 
+import com.github.michaelbull.logging.InlineLogger
 import dev.or2.central.db.embedded.EmbeddedPostgresSupport
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres
 import java.net.BindException
@@ -12,6 +13,8 @@ import org.rsmod.api.server.config.CentralPostgresYaml
 import org.rsmod.api.server.config.ServerConfig
 
 public object EmbeddedSameInstancePostgres {
+    private val logger = InlineLogger()
+
     @Volatile
     private var embedded: EmbeddedPostgres? = null
 
@@ -46,6 +49,9 @@ public object EmbeddedSameInstancePostgres {
             Files.createDirectories(dataDir)
             activeDataDir = dataDir
             lastKnownDataDir = dataDir
+            ForeignPostmasterPid.clearIfForeign(dataDir)?.let { other ->
+                logger.warn { "Removed a postmaster.pid copied from $other along with $dataDir." }
+            }
             when (val plan = EmbeddedPostgresSupport.planStart(dataDir)) {
                 is EmbeddedPostgresSupport.StartPlan.Reuse -> {
                     reused = plan.session

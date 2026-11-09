@@ -196,7 +196,7 @@ class RefiningTickOrderTest {
         assertTrue(effects.contains(
             ZoneUpdateTransformer.toSoundAreaProt(
                 CoordGrid(3367, 11497, 0),
-                "synth.giants_foundry_trip_hammer_loop".asRSCM(RSCMType.SYNTH),
+                "synth.sg_big_hammer_hit".asRSCM(RSCMType.SYNTH),
                 delay = 0, loops = 1, radius = 15, size = 0,
             )
         ))

@@ -87,7 +87,7 @@ class WomRecycling : PluginScript() {
     companion object {
         private const val ALL_TAB = 0
         private const val LIST_COMPONENTS = 2047
-        private const val REMOVE_SYNTH = "synth.wom_recycle_remove"
+        private const val REMOVE_SYNTH = "synth.wall_crushed"
         private const val OPEN_SYNTH = "synth.pillory_success"
         private val QUEST_ENUMS = listOf("enum.wom_recycling_free_quests", "enum.wom_recycling_members_quests")
 

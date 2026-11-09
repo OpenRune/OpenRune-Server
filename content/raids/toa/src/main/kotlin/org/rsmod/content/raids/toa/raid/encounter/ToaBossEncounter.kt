@@ -7,7 +7,6 @@ import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.npc.apPlayer2
-import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
@@ -151,7 +150,7 @@ open class ToaBossEncounter(
         npc.noneMode()
         npc.anim(OSMUMTEN_SPAWN_ANIM)
         for (player in players) {
-            player.midiJingle(OSMUMTEN_JINGLE)
+            // player.midiJingle(OSMUMTEN_JINGLE)
             player.midiSong(STOP_MUSIC)
         }
     }
@@ -186,8 +185,8 @@ open class ToaBossEncounter(
         const val OSMUMTEN = "npc.toa_osmumten_vis"
 
         private const val OSMUMTEN_SPAWN_ANIM = "seq.ghost_summon2_priority"
-        private const val OSMUMTEN_JINGLE = "jingle.in_the_pits"
-        private const val STOP_MUSIC = "midi.stop_music"
+        // private const val OSMUMTEN_JINGLE = "jingle.in_the_pits"
+        private const val STOP_MUSIC = "midi.silence"
         private const val DROP_DESPAWN = 18_000
         private const val BANK = "inv.bank"
     }

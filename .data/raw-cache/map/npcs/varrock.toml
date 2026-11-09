@@ -554,12 +554,6 @@ coords = "0_51_54_38_36"
 npc = "npc.con_contract_client_2"
 coords = "0_50_53_42_60"
 
-## Varrock Anvils
-
-[[spawn]]
-npc = "npc.aide_tutor_smithing_master"
-coords = "0_49_53_51_31"
-
 ## Varrock Blue Moon Inn Kitchen
 
 [[spawn]]
