@@ -138,7 +138,7 @@ constructor(
         const val STUN_TICKS = 3
         const val STUN_HEIGHT = 100
         const val FREEZE_TIMER = "timer.combat_freeze"
-        const val STUN_SYNTH = "synth.thieving_stunned"
+        const val STUN_SYNTH = "synth.stunned"
 
         val ROOM_CENTRE = CoordGrid(2857, 3552, 0)
         val ROOM_ZONES =
