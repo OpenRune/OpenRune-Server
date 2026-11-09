@@ -8,13 +8,12 @@ import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import java.nio.file.Path
 import kotlin.concurrent.thread
+import kotlin.system.exitProcess
 import org.rsmod.api.game.process.PluginScriptBootGate
 import org.rsmod.api.player.events.interact.LocCategoryEvents
 import org.rsmod.api.player.events.interact.LocContentEvents
 import org.rsmod.api.player.events.interact.LocEvents
 import org.rsmod.api.player.events.interact.LocUnimplementedEvents
-import org.rsmod.api.player.output.mes
-import org.rsmod.api.script.onCommand
 import org.rsmod.content.generic.locs.autotravel.TravelLoc
 import org.rsmod.content.generic.locs.autotravel.TravelType
 import org.rsmod.events.EventBus
@@ -26,8 +25,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 /**
  * Writes `build/reports/travel-coverage/` listing every travel op on the map that no script
- * answers. Run it in game with `::travelreport`, or set `OPENRUNE_TRAVEL_REPORT=1` before starting
- * the server to write it once every script has registered.
+ * answers, then stops the server. Run it with `gradlew travelReport`, which boots the server with
+ * `OPENRUNE_TRAVEL_REPORT=1` so the report sees every script's handlers.
  */
 class TravelCoverageScript
 @Inject
@@ -39,15 +38,11 @@ constructor(
     private val logger = InlineLogger()
 
     override fun ScriptContext.startup() {
-        onCommand("travelreport") {
-            desc = "Write a report of ladders, stairs and entrances that do nothing"
-            cheat { player.mes("Travel coverage written to ${writeReport()}") }
-        }
-        if (System.getenv(AUTO_RUN_ENV) == "1") {
-            thread(isDaemon = true, name = "travel-coverage") {
-                bootGate.awaitReady()
-                logger.info { "Travel coverage written to ${writeReport()}" }
-            }
+        if (System.getenv(REPORT_ENV) != "1") return
+        thread(isDaemon = true, name = "travel-coverage") {
+            bootGate.awaitReady()
+            logger.info { "Travel coverage written to ${writeReport().toAbsolutePath()}" }
+            exitProcess(0)
         }
     }
 
@@ -145,7 +140,7 @@ constructor(
         eventBus.contains(event, key.toLong())
 
     private companion object {
-        const val AUTO_RUN_ENV = "OPENRUNE_TRAVEL_REPORT"
+        const val REPORT_ENV = "OPENRUNE_TRAVEL_REPORT"
         val REPORT_DIR: Path = Path.of("build", "reports", "travel-coverage")
 
         val TYPE_EVENTS =
