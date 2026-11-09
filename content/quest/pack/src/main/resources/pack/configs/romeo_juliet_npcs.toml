@@ -1,0 +1,19 @@
+[[npc]]
+isServerOnly = true
+id = "npc.romeo_juliet_pew_sleeping_man"
+inherit = "npc.romeo_juliet_pew_sleeping_man"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+isServerOnly = true
+id = "npc.romeo_juliet_pew_sleeping_woman"
+inherit = "npc.romeo_juliet_pew_sleeping_woman"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+isServerOnly = true
+id = "npc.apothecary"
+inherit = "npc.apothecary"
+wanderRange = 2
