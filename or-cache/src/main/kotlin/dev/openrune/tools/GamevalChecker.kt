@@ -21,7 +21,7 @@ public object GamevalChecker {
 
     private val SKIPPED_DIRS =
         setOf(
-            "build", "out", ".gradle", ".git", ".idea", ".kotlin", ".claude", ".data", "node_modules",
+            "build", "out", ".gradle", ".git", ".idea", ".kotlin", ".claude", "node_modules",
             "docs", "openwiki", "generated", "playground",
         )
 
