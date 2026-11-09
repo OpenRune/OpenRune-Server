@@ -29,12 +29,7 @@ class Osman @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
             stage < STAGE_ALI_ESCAPED -> progress()
             stage < STAGE_COMPLETE ->
                 chatNpc(shifty, "Prince Ali is safe once more. Chancellor Hassan has your payment.")
-            else ->
-                chatNpc(
-                    shifty,
-                    "Well done. A great rescue. I will remember you if I have anything dangerous " +
-                        "to do.",
-                )
+            else -> chatNpc(shifty, "Hello again. Well done on freeing Prince Ali.")
         }
     }
 

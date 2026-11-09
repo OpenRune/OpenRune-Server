@@ -2,6 +2,7 @@ package org.rsmod.content.quest.manager
 
 import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
 import org.rsmod.api.death.NpcDeathKillHook
+import org.rsmod.api.player.hook.FurnaceSmeltHook
 import org.rsmod.api.player.hook.SpadeDigHook
 import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
 import org.rsmod.content.quest.area.alkharid.princealirescue.DisguiseMakers
@@ -32,6 +33,7 @@ public class QuestModule : PluginModule() {
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)
         addSetBinding<BookcaseSearchHook>(TouristCentreBookcases::class.java)
         addSetBinding<SpadeDigHook>(XMarksTheSpotQuest::class.java)
+        addSetBinding<FurnaceSmeltHook>(PrinceAliRescueQuest::class.java)
         addSetBinding<NpcDeathKillHook>(WitchsPotionRatTail::class.java)
     }
 }

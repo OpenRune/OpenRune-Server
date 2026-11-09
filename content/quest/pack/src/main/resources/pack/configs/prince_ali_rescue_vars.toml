@@ -38,10 +38,3 @@ id = "varbit.prince_ali_key_obtained"
 varp = "varp.prince_ali_state"
 startBit = 3
 endBit = 3
-
-[[varbit]]
-isServerOnly = true
-id = "varbit.prince_ali_joe_beer"
-varp = "varp.prince_ali_state"
-startBit = 4
-endBit = 4

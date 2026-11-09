@@ -2,6 +2,7 @@ package org.rsmod.content.skills.smithing.smelting
 
 import jakarta.inject.Inject
 import kotlin.random.Random
+import org.rsmod.api.player.hook.FurnaceSmeltHook
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocCategory2
@@ -33,7 +34,12 @@ import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : PluginScript() {
+class SmeltingScript
+@Inject
+constructor(
+    private val xpMods: XpModifiers,
+    private val smeltHooks: Set<@JvmSuppressWildcards FurnaceSmeltHook>,
+) : PluginScript() {
 
     private val allBars = SmithingBarsRow.Companion.all()
     private val normalBars = allBars.filter { it.output.internalName != "obj.lovakite_bar" }
@@ -43,7 +49,10 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
         onOpLocCategory2("category.furnace") {
             val locInternal = it.type.internalName
             val coords = it.loc.coords
-            if (hasBarSmeltMaterials()) {
+            val hook = smeltHooks.firstOrNull { hook -> hook.claims(player) }
+            if (hook != null) {
+                with(hook) { smelt() }
+            } else if (hasBarSmeltMaterials()) {
                 openStandardSmeltMenu(locInternal, coords)
             } else if (hasCannonballFurnaceMould()) {
                 openCannonballFurnaceMenu(locInternal)

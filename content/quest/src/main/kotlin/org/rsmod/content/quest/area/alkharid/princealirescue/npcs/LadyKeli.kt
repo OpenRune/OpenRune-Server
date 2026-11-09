@@ -69,11 +69,13 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
         ROPE in player.inv && princeAli.hasKey(player) && princeAli.hasDisguise(player)
 
     private suspend fun ProtectedAccess.tieUp() {
-        if (invDel(inv, ROPE).failure) {
-            return
+        with(princeAli) {
+            fadeScene("You overpower Keli, tie her up, and put her in a cupboard.") {
+                if (invDel(inv, ROPE).failure) return@fadeScene false
+                setStage(this, STAGE_KELI_TIED)
+                true
+            }
         }
-        princeAli.setStage(this, STAGE_KELI_TIED)
-        mesbox("You overpower Keli, tie her up, and put her in a cupboard.")
     }
 
     private suspend fun Dialogue.keli() {
@@ -89,7 +91,7 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
             prisoner()
             return
         }
-        chatPlayer(quiz, "Are you the famous Lady Keli? Leader of the toughest gang of bandits around?")
+        chatPlayer(happy, "Are you the famous Lady Keli? Leader of the toughest gang of bandits around?")
         chatNpc(neutral, "Yes, I am Keli. You've heard of me then?")
         val katrine = QuestRequirements.hasCompleted(player, SHIELD_OF_ARRAV)
         val opening =
@@ -251,9 +253,9 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
 
     private suspend fun Dialogue.plan() {
         chatPlayer(quiz, "What's your latest plan then?")
-        chatNpc(shifty, "Why do you want to know?")
-        chatPlayer(neutral, "Well I was actually hoping to join your group.")
-        chatNpc(neutral, "Join us? Interesting... I suppose you do look the type.")
+        chatNpc(confused, "Why do you want to know?")
+        chatPlayer(happy, "Well I was actually hoping to join your group.")
+        chatNpc(confused, "Join us? Interesting... I suppose you do look the type.")
         princeAli.setKeliAsked(player)
         chatNpc(
             neutral,
@@ -297,7 +299,7 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
     private suspend fun Dialogue.freeHim() {
         chatPlayer(quiz, "How do you know someone won't try to free him?")
         chatNpc(
-            neutral,
+            shifty,
             "There is no way to release him. The only key to his cell is on a chain around my neck, " +
                 "and the locksmith who made it died very suddenly.",
         )
@@ -328,14 +330,14 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
 
     private suspend fun Dialogue.seeKey() {
         chatPlayer(quiz, "Could I see the key please?")
-        chatNpc(quiz, "Why?")
+        chatNpc(confused, "Why?")
         chatPlayer(
             happy,
             "It will be something I can tell my grandchildren, when you are even more famous than " +
                 "you are now.",
         )
         chatNpc(
-            neutral,
+            confused,
             "Well I suppose there's no harm in letting you see it. After all, you have no hope of " +
                 "stealing it.",
         )
@@ -351,8 +353,8 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
             )
         ) {
             1 -> {
-                chatPlayer(quiz, "Could I touch the key for a moment please?")
-                chatNpc(neutral, "Well... only for a moment then.")
+                chatPlayer(happy, "Could I touch the key for a moment please?")
+                chatNpc(confused, "Well... only for a moment then.")
                 if (access.invDel(access.inv, SOFT_CLAY).failure) {
                     return
                 }

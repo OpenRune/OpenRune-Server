@@ -9,6 +9,7 @@ import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQues
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_JOE
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_ALI_ESCAPED
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_JOE_DRUNK
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_JOE_ONE_BEER
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_PREPARED
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
@@ -26,14 +27,14 @@ class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : Plu
             stage < STAGE_PREPARED -> {
                 chatPlayer(quiz, "Hi. Who are you guarding here?")
                 chatNpc(
-                    neutral,
+                    shifty,
                     "Can't say. It's all very secret. You should get out of here. I am not supposed " +
                         "to talk while I guard.",
                 )
             }
-            stage == STAGE_PREPARED -> {
+            stage < STAGE_JOE_DRUNK -> {
                 chatPlayer(happy, "Hi there.")
-                chatNpc(quiz, "What do you want?")
+                chatNpc(shifty, "What do you want?")
                 topics()
             }
             stage < STAGE_ALI_ESCAPED -> {
@@ -81,18 +82,22 @@ class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : Plu
 
     private suspend fun Dialogue.beer() {
         chatPlayer(happy, "I have some beer here. Fancy one?")
-        if (!princeAli.joeHadBeer(player)) {
+        val firstBeer = princeAli.stage(player) == STAGE_PREPARED
+        if (firstBeer) {
             chatNpc(happy, "Ah, that would be lovely. Only one though, just to wet my throat.")
             chatPlayer(neutral, "Of course. It must be tough being here without a drink.")
             if (access.invDel(access.inv, BEER).failure) {
                 return
             }
-            princeAli.setJoeHadBeer(player)
+            princeAli.setStage(access, STAGE_JOE_ONE_BEER)
             objbox(BEER, "You hand a beer to the guard. He drinks it in seconds.")
             chatNpc(happy, "That was perfect! I can't thank you enough.")
         }
-        chatPlayer(quiz, "How are you? Still okay? Not too drunk?")
-        if (player.inv.count(BEER) < BEERS_NEEDED - 1) {
+        val enough = player.inv.count(BEER) >= BEERS_NEEDED - 1
+        if (!firstBeer || !enough) {
+            chatPlayer(quiz, "How are you? Still okay? Not too drunk?")
+        }
+        if (!enough) {
             chatNpc(
                 neutral,
                 "No, I don't get drunk from only one drink. I reckon I'd need at least two more " +
@@ -101,7 +106,7 @@ class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : Plu
             return
         }
         chatPlayer(happy, "Would you care for another beer, my friend?")
-        chatNpc(neutral, "I'd better not. I don't want to be drunk on duty.")
+        chatNpc(bored, "I'd better not. I don't want to be drunk on duty.")
         chatPlayer(happy, "Here, just keep these for later. I hate to see a thirsty guard.")
         if (access.invDel(access.inv, BEER, BEERS_NEEDED - 1).failure) {
             return

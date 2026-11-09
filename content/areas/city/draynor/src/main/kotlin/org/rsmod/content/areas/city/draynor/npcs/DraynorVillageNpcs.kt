@@ -91,12 +91,13 @@ constructor(private val shops: Shops, private val disguiseMakers: DisguiseMakers
         val topic =
             menu(
                 buildList {
+                    add("Cool, do you turn people into frogs?" to AggieTopic.Frogs)
                     add(dyes)
                     if (disguiseMakers.offers(player)) {
                         add("Can you make skin paste?" to AggieTopic.SkinPaste)
                     }
-                    add("Cool, do you turn people into frogs?" to AggieTopic.Frogs)
                     add("You mad old witch, you can't help me." to AggieTopic.Insult)
+                    add("I'm okay, thanks." to AggieTopic.Leave)
                 }
             )
         when (topic) {
@@ -126,6 +127,7 @@ constructor(private val shops: Shops, private val disguiseMakers: DisguiseMakers
                 aggieDyes()
             }
             AggieTopic.Insult -> aggieInsult()
+            AggieTopic.Leave -> chatPlayer(neutral, "I'm okay, thanks.")
         }
     }
 
@@ -1191,6 +1193,7 @@ constructor(private val shops: Shops, private val disguiseMakers: DisguiseMakers
         MakeDyes,
         SkinPaste,
         Insult,
+        Leave,
     }
 
     private enum class DyeChoice {

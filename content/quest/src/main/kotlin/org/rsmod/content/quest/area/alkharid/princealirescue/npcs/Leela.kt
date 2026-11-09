@@ -11,6 +11,7 @@ import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQues
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_ALI_ESCAPED
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_BRIEFED
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_COMPLETE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_JOE_DRUNK
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_PREPARED
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
@@ -28,7 +29,7 @@ class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
             stage < STAGE_BRIEFED -> stranger()
             stage == STAGE_BRIEFED -> planning()
             stage < STAGE_ALI_ESCAPED && with(princeAli) { access.lostKey() } -> replaceKey()
-            stage == STAGE_PREPARED -> guard()
+            stage < STAGE_JOE_DRUNK -> guard()
             stage < STAGE_ALI_ESCAPED -> {
                 chatNpc(quiz, "You're back. How are things going with that guard?")
                 chatPlayer(happy, "He's been dealt with.")
@@ -93,6 +94,11 @@ class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
         chatNpc(neutral, "Yes, he sent word ahead that you'd be coming. Are you aware of the plan?")
         princeAli.setMetLeela(player)
         handOverKey()
+        if (princeAli.hasKey(player) && princeAli.hasDisguise(player)) {
+            chatPlayer(happy, "Yes. In fact, I already have everything we need.")
+            guardAdvice()
+            return
+        }
         chatPlayer(
             neutral,
             "I need to obtain a copy of the key to the Prince's cell, create a disguise for him " +
@@ -226,7 +232,7 @@ class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
         chatPlayer(neutral, "Here, I have $LOST_KEY_PRICE coins.")
         access.invAdd(access.inv, KEY)
         objbox(KEY, "Leela gives you a key.")
-        if (princeAli.stage(player) != STAGE_PREPARED) {
+        if (princeAli.stage(player) !in STAGE_PREPARED until STAGE_JOE_DRUNK) {
             return
         }
         chatNpc(quiz, "Now, how are things going with that guard?")

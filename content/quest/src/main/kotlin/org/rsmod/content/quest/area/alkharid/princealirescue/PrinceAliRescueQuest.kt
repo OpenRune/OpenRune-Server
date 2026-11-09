@@ -1,6 +1,7 @@
 package org.rsmod.content.quest.area.alkharid.princealirescue
 
 import jakarta.inject.Inject
+import org.rsmod.api.player.hook.FurnaceSmeltHook
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onOpHeldU
@@ -22,13 +23,13 @@ class PrinceAliRescueQuest @Inject constructor() :
         },
         ItemRewardDisplay(KEY, zoom = 300),
         questVarbit = "varbit.prince_ali_progress",
-    ) {
+    ),
+    FurnaceSmeltHook {
 
     private var Player.keliAsked by boolVarBit("varbit.prince_ali_keli_asked")
     private var Player.keyOrdered by boolVarBit("varbit.prince_ali_key_ordered")
     private var Player.keyObtained by boolVarBit("varbit.prince_ali_key_obtained")
     private var Player.metLeela by boolVarBit("varbit.prince_ali_met_leela")
-    private var Player.joeHadBeer by boolVarBit("varbit.prince_ali_joe_beer")
 
     override fun ScriptContext.init() {
         check(quest.maxSteps == STAGE_COMPLETE) {
@@ -44,7 +45,17 @@ class PrinceAliRescueQuest @Inject constructor() :
             return
         }
         invAdd(inv, BLOND_WIG)
-        mes("You dye the wig blond.")
+        mes("You dye the wig blonde.")
+    }
+
+    override fun claims(player: Player): Boolean =
+        KEY_PRINT in player.inv && BRONZE_BAR in player.inv
+
+    override suspend fun ProtectedAccess.smelt() {
+        anim("seq.human_furnace")
+        soundSynth("synth.furnace")
+        delay(1)
+        forgeKey()
     }
 
     private suspend fun ProtectedAccess.copyKeyAtFurnace() {
@@ -58,13 +69,17 @@ class PrinceAliRescueQuest @Inject constructor() :
                 return@startDialogue
             }
             anim("seq.human_furnace")
-            if (invDel(inv, KEY_PRINT, 1, BRONZE_BAR, 1).failure) {
-                return@startDialogue
-            }
-            invAdd(inv, KEY)
-            player.keyObtained = true
-            statAdvance("stat.crafting", KEY_CRAFTING_XP)
+            access.forgeKey()
         }
+    }
+
+    private fun ProtectedAccess.forgeKey() {
+        if (invDel(inv, KEY_PRINT, 1, BRONZE_BAR, 1).failure) {
+            return
+        }
+        invAdd(inv, KEY)
+        player.keyObtained = true
+        statAdvance("stat.crafting", KEY_CRAFTING_XP)
     }
 
     override fun subTitle(): String =
@@ -92,7 +107,7 @@ class PrinceAliRescueQuest @Inject constructor() :
             }
             strike(briefing)
             strike("I gathered a copy of the cell key and a disguise to make the Prince look like Keli.")
-            if (stage == STAGE_PREPARED) {
+            if (stage < STAGE_JOE_DRUNK) {
                 line(
                     "Leela told me to deal with the Prince's guard, <red>Joe</red>, without " +
                         "violence. Maybe three beers would do the trick."
@@ -178,8 +193,14 @@ class PrinceAliRescueQuest @Inject constructor() :
         access.player.keyOrdered = false
         access.player.keyObtained = false
         access.player.metLeela = false
-        access.player.joeHadBeer = false
         setStage(access, STAGE_STARTED)
+    }
+
+    fun complete(access: ProtectedAccess) {
+        if (KEY in access.inv) {
+            access.invDel(access.inv, KEY)
+        }
+        setStage(access, STAGE_COMPLETE)
     }
 
     fun keliAsked(player: Player): Boolean = player.keliAsked
@@ -192,12 +213,6 @@ class PrinceAliRescueQuest @Inject constructor() :
 
     fun setMetLeela(player: Player) {
         player.metLeela = true
-    }
-
-    fun joeHadBeer(player: Player): Boolean = player.joeHadBeer
-
-    fun setJoeHadBeer(player: Player) {
-        player.joeHadBeer = true
     }
 
     fun keyOrdered(player: Player): Boolean = player.keyOrdered
@@ -225,6 +240,21 @@ class PrinceAliRescueQuest @Inject constructor() :
 
     fun gatheringDisguise(player: Player): Boolean = stage(player) in STAGE_STARTED until STAGE_ALI_ESCAPED
 
+    suspend fun ProtectedAccess.fadeScene(text: String, scene: ProtectedAccess.() -> Boolean) {
+        mesboxNp(text)
+        fadeOverlay(0, FADE_CLEAR, 0, FADE_OPAQUE, FADE_CLIENT_CYCLES)
+        delay(FADE_OUT_TICKS)
+        val done = scene()
+        delay(1)
+        fadeOverlay(0, FADE_OPAQUE, 0, FADE_CLEAR, FADE_CLIENT_CYCLES)
+        closeFadeOverlay(FADE_CLOSE_TICKS)
+        if (done) {
+            mesbox(text)
+        } else {
+            ifCloseChat()
+        }
+    }
+
     companion object {
         const val QUEST_KEY = "quest_princealirescue"
         const val SHIELD_OF_ARRAV = "quest_shieldofarrav"
@@ -232,6 +262,7 @@ class PrinceAliRescueQuest @Inject constructor() :
         const val STAGE_STARTED = 10
         const val STAGE_BRIEFED = 20
         const val STAGE_PREPARED = 30
+        const val STAGE_JOE_ONE_BEER = 31
         const val STAGE_JOE_DRUNK = 40
         const val STAGE_KELI_TIED = 50
         const val STAGE_ALI_ESCAPED = 100
@@ -242,6 +273,12 @@ class PrinceAliRescueQuest @Inject constructor() :
         const val BEERS_NEEDED = 3
         const val WOOL_PER_WIG = 3
         const val KEY_CRAFTING_XP = 2.0
+
+        const val FADE_OPAQUE = 0
+        const val FADE_CLEAR = 255
+        const val FADE_CLIENT_CYCLES = 50
+        const val FADE_OUT_TICKS = 3
+        const val FADE_CLOSE_TICKS = 3
 
         const val COINS = "obj.coins"
         const val KEY = "obj.princeskey"

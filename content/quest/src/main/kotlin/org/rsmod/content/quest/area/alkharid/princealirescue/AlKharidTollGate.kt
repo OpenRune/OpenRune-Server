@@ -67,7 +67,7 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
         if (friendOfAlKharid()) {
             startDialogue(guard) {
                 chatPlayer(neutral, "Can I come through this gate?")
-                chatNpc(neutral, "You may pass for free, you are a friend of Al-Kharid.")
+                chatNpc(neutral, "You may pass for free! You are a friend of Al Kharid.")
             }
             passThrough()
             return
@@ -81,7 +81,7 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
 
     private suspend fun Dialogue.askToll(): Boolean {
         chatPlayer(neutral, "Can I come through this gate?")
-        speak(neutral, "You must pay a toll of 10 gold coins to pass.")
+        speak(neutral, "You must pay a toll of ten gold coins to pass.")
         return when (
             menu(
                 "Yes, okay." to Toll.Pay,
@@ -121,6 +121,7 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
             }
             return
         }
+        mes("You pay the guards and pass through the gate.")
         passThrough()
     }
 

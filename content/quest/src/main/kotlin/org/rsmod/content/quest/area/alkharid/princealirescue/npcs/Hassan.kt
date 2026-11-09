@@ -49,7 +49,7 @@ class Hassan @Inject constructor(private val princeAli: PrinceAliRescueQuest) : 
     }
 
     private suspend fun Dialogue.greeting() {
-        chatNpc(happy, "Greetings! I am Hassan, Chancellor to the Emir of Al Kharid.")
+        chatNpc(neutral, "Greetings! I am Hassan, Chancellor to the Emir of Al Kharid.")
         while (true) {
             when (
                 menu(
@@ -88,9 +88,9 @@ class Hassan @Inject constructor(private val princeAli: PrinceAliRescueQuest) : 
     }
 
     private suspend fun Dialogue.offerQuest() {
-        chatPlayer(quiz, "Is there anything I can help you with?")
+        chatPlayer(happy, "Is there anything I can help you with?")
         chatNpc(
-            worried,
+            confused,
             "Well... we do currently have a very urgent issue we need to resolve, and I suppose you " +
                 "look like someone who knows how to get a job done. Are you definitely interested " +
                 "in helping?",
@@ -113,7 +113,7 @@ class Hassan @Inject constructor(private val princeAli: PrinceAliRescueQuest) : 
             "You'll find our Spymaster, Osman, just outside the palace. Go to him and tell him I " +
                 "sent you. He will fill you in on the details of our problem.",
         )
-        chatPlayer(neutral, "Alright, I'll get to it.")
+        chatPlayer(happy, "Alright, I'll get to it.")
     }
 
     private suspend fun Dialogue.reward() {
@@ -130,7 +130,7 @@ class Hassan @Inject constructor(private val princeAli: PrinceAliRescueQuest) : 
             "Prince Ali is home safe. You have the eternal gratitude of the Emir for rescuing his " +
                 "son. Please, take this payment as a thank you.",
         )
-        princeAli.setStage(access, STAGE_COMPLETE)
+        princeAli.complete(access)
     }
 
     private enum class Topic {

@@ -1,5 +1,9 @@
 package org.rsmod.content.quest.area.alkharid.princealirescue.npcs
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
@@ -20,13 +24,16 @@ class PrinceAli @Inject constructor(private val princeAli: PrinceAliRescueQuest)
         onOpNpc1(NPC_PRINCE_PALACE) { startDialogue(it.npc) { atHome() } }
     }
 
+    private fun obj(internal: String): ItemServerType =
+        checkNotNull(ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ)))
+
     private suspend fun Dialogue.inCell() {
         val stage = princeAli.stage(player)
         if (stage >= STAGE_ALI_ESCAPED) {
             atHome()
             return
         }
-        chatPlayer(neutral, "Prince Ali? I'm here to rescue you.")
+        chatPlayer(happy, "Prince Ali? I'm here to rescue you.")
         chatNpc(happy, "Oh thank goodness! What's your plan?")
         if (!princeAli.hasDisguise(player) || !princeAli.hasKey(player)) {
             chatPlayer(
@@ -38,12 +45,15 @@ class PrinceAli @Inject constructor(private val princeAli: PrinceAliRescueQuest)
         }
         chatPlayer(neutral, "Take this disguise. You can use it to get past the guards outside.")
         chatNpc(happy, "Thank you, my friend. I must leave you now, but my father will pay you well for this.")
-        val inv = access.inv
-        if (access.invDel(inv, BLOND_WIG).failure) return
-        if (access.invDel(inv, SKIN_PASTE).failure) return
-        if (access.invDel(inv, PINK_SKIRT).failure) return
-        princeAli.setStage(access, STAGE_ALI_ESCAPED)
-        mesbox("Prince Ali puts on the disguise and uses it to escape.")
+        with(princeAli) {
+            access.fadeScene("Prince Ali puts on the disguise and uses it to escape.") {
+                if (invDel(inv, obj(BLOND_WIG), 1, obj(SKIN_PASTE), 1, obj(PINK_SKIRT), 1).failure) {
+                    return@fadeScene false
+                }
+                setStage(this, STAGE_ALI_ESCAPED)
+                true
+            }
+        }
     }
 
     private suspend fun Dialogue.atHome() {
