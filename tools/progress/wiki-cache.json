@@ -38,6 +38,7 @@
     },
     "Defence": {
       "sections": [
+        "Fighting defensively",
         "Mechanics",
         "Equipment",
         "Temporary boosts",
@@ -1730,5 +1731,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-11-05"
+  "fetched": "2026-11-09"
 }

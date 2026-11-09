@@ -8182,9 +8182,20 @@ inherit = "npc.black_demon5"
 [[npc]]
 id = "npc.chaoselemental"
 inherit = "npc.chaoselemental"
+huntMode = 2
+huntRange = 30
+maxRange = 30
+attackRange = 10
+wanderRange = 5
+respawnRate = 14
+defaultMode = "Wander"
+
 [npc.params]
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=50
+"param.venom_immunity"=1
+"param.death_anim"="seq.chaoselemental_death"
+"param.boss_hp_bar_mode"=1
 
 [[npc]]
 id = "npc.firegiant_big"

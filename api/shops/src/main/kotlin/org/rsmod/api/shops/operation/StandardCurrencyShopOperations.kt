@@ -160,8 +160,14 @@ public open class StandardCurrencyShopOperations(
         val uncert = uncert(obj)
         val objType = getInvObj(uncert)
 
+        val refusal = shop.refusalMessages[objType.id]
+        if (refusal != null) {
+            player.mes(refusal)
+            return
+        }
+
         val tradeable = objType.tradeable || objType.stockmarket
-        if (!tradeable) {
+        if (!tradeable && objType.id !in shop.refundable) {
             player.mes("You can't sell this item.")
             return
         }
@@ -197,8 +203,14 @@ public open class StandardCurrencyShopOperations(
         val objType = getInvObj(obj)
         val uncertType = uncert(objType)
 
+        val refusal = shop.refusalMessages[uncertType.id]
+        if (refusal != null) {
+            player.mes(refusal)
+            return
+        }
+
         val tradeable = uncertType.tradeable || uncertType.stockmarket
-        if (!tradeable) {
+        if (!tradeable && uncertType.id !in shop.refundable) {
             player.mes("You can't sell this item.")
             return
         }

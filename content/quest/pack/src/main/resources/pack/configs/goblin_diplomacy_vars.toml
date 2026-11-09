@@ -1,0 +1,5 @@
+[[varp]]
+isServerOnly = true
+id = "varp.gobdip_return_tile"
+scope = "Perm"
+transmit = "Never"

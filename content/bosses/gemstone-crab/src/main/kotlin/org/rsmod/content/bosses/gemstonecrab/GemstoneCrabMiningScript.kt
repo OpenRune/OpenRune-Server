@@ -67,7 +67,7 @@ constructor(private val crab: GemstoneCrabManager, private val objRepo: ObjRepos
 
     private fun pickaxeAnim(pickaxe: InvObj): String {
         val seq = with(Mining.Companion) { getInvObj(pickaxe).pickaxeAnim }
-        return RSCM.getReverseMapping(RSCMType.SEQ, seq.id) ?: "seq.human_mine_bronze_pickaxe"
+        return RSCM.getReverseMapping(RSCMType.SEQ, seq.id)
     }
 
     private companion object {
