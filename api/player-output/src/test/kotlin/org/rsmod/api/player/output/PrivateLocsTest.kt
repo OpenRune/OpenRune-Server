@@ -2,12 +2,14 @@ package org.rsmod.api.player.output
 
 import net.rsprot.protocol.game.outgoing.zone.header.UpdateZonePartialFollows
 import net.rsprot.protocol.game.outgoing.zone.payload.LocAddChangeV2
+import net.rsprot.protocol.game.outgoing.zone.payload.LocAddChangeV3
 import net.rsprot.protocol.game.outgoing.zone.payload.LocDel
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Player
+import org.rsmod.game.loc.LocEntity
 import org.rsmod.map.CoordGrid
 
 class PrivateLocsTest {
@@ -25,6 +27,16 @@ class PrivateLocsTest {
         assertEquals(7, loc.zInZone)
         assertEquals(0, loc.shape)
         assertEquals(1, loc.rotation)
+    }
+
+    @Test fun `add-change preserves a loc id above the unsigned short range`() {
+        val (player, sent) = player(buildArea = CoordGrid(3160, 3416, 0))
+        val loc = LocEntity(id = 0xEDCBA9, shape = 10, angle = 3)
+        PrivateLocs.addChange(player, CoordGrid(3205, 3471, 2), loc.id, loc.shape, loc.angle)
+        val packet = sent[1] as LocAddChangeV3
+        assertEquals(0xEDCBA9, packet.id)
+        assertEquals(10, packet.shape)
+        assertEquals(3, packet.rotation)
     }
 
     @Test fun `del sends a loc delete for the tile's layer`() {

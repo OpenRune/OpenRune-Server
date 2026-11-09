@@ -18,6 +18,7 @@ import net.rsprot.protocol.game.incoming.locs.OpLoc6V2
 import net.rsprot.protocol.game.incoming.locs.OpLocTV1
 import net.rsprot.protocol.game.incoming.locs.OpLocTV2
 import net.rsprot.protocol.game.incoming.locs.OpLocV2
+import net.rsprot.protocol.game.incoming.locs.OpLocV3
 import net.rsprot.protocol.game.incoming.messaging.MessagePrivate
 import net.rsprot.protocol.game.incoming.messaging.MessagePublic
 import net.rsprot.protocol.game.incoming.misc.client.Idle
@@ -138,6 +139,7 @@ constructor(
         builder.addListener(MoveGameClick::class.java, moveGameClick)
         builder.addListener(MoveMinimapClick::class.java, moveMinimapClick)
         builder.addListener(OpLocV2::class.java, opLoc)
+        builder.addListener(OpLocV3::class.java, opLoc.v3)
         builder.addListener(OpLocTV1::class.java, opLocT.v1)
         builder.addListener(OpLocTV2::class.java, opLocT.v2)
         builder.addListener(OpLoc6V1::class.java, opLoc6.v1)

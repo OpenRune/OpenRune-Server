@@ -414,11 +414,25 @@ public class ProtectedAccess(
     }
 
     public fun spotanim(spot: String?, delay: Int = 0, height: Int = 0, slot: Int = 0) {
+        spotanim(spot, delay, height, slot, loop = false)
+    }
+
+    /**
+     * Plays a spot animation on the player, or sends a reset for [slot] if [spot] is null.
+     * [delay] is in client cycles. [loop] applies when the sequence supports looping.
+     */
+    public fun spotanim(
+        spot: String?,
+        delay: Int = 0,
+        height: Int = 0,
+        slot: Int = 0,
+        loop: Boolean,
+    ) {
         if (spot == null) {
             player.resetSpotanim(height = height, slot = slot)
             return
         }
-        player.spotanim(spot, delay, height, slot)
+        player.spotanim(spot, delay, height, slot, loop)
     }
 
     public fun say(text: String) {

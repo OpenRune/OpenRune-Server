@@ -24,6 +24,7 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.game.client.ClientCycle
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.WornObjCustomisation
 import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
@@ -57,6 +58,8 @@ class RspCycle(
     private var cachedRegionZoneProvider: RebuildRegionV2.RebuildRegionZoneProvider? = null
 
     private var knownNpcViewDistance: Int? = null
+
+    private val knownWornObjCustomisations = mutableMapOf<Wearpos, WornObjCustomisation>()
 
     private val playerInfo
         get() = infos.playerInfo
@@ -323,8 +326,14 @@ class RspCycle(
             return
         }
         for (packed in pendingSpotanims.longIterator()) {
-            val (id, delay, height, slot) = EntitySpotanim(packed)
-            playerExtendedInfo.setSpotAnim(slot, id, delay, height)
+            val spotanim = EntitySpotanim(packed)
+            playerExtendedInfo.setSpotAnim(
+                spotanim.slot,
+                spotanim.id,
+                spotanim.delay,
+                spotanim.height,
+                spotanim.loop,
+            )
         }
     }
 
@@ -478,8 +487,22 @@ class RspCycle(
             runAnim = runningAnim,
         )
 
+        info.setForceModelRefresh(false)
         for (wearpos in Wearpos.visibleWearpos) {
             val obj = worn[wearpos.slot]
+            val customisation = appearance.wornObjCustomisation(wearpos, obj?.id)
+            if (customisation != knownWornObjCustomisations[wearpos]) {
+                if (customisation == null) {
+                    knownWornObjCustomisations.remove(wearpos)
+                    info.resetObjTypeCustomisation(wearpos.slot)
+                } else {
+                    knownWornObjCustomisations[wearpos] = customisation
+                    info.setObjRecolours(wearpos.slot, customisation.recolours)
+                    info.setObjRetextures(wearpos.slot, customisation.retextures)
+                    info.setObjRecolAll(wearpos.slot, customisation.colour)
+                }
+                info.setForceModelRefresh(true)
+            }
             if (obj == null) {
                 info.setWornObj(wearpos.slot, -1, -1, -1)
                 continue
