@@ -340,8 +340,8 @@ constructor(
         const val WAVE = "seq.emote_wave"
         const val SMOKE_PUFF = "spotanim.smokepuff"
         const val BUBBLES = "spotanim.100_pirate_underwater_bubbles_spotanim"
-        const val UNDERWATER_SOUND = "synth.macro_genie_underwater"
-        const val ARRIVE_SOUND = "synth.macro_genie_appear"
+        const val UNDERWATER_SOUND = "synth.underwater_macro_bubbles"
+        const val ARRIVE_SOUND = "synth.genie_appear"
         const val PUFF_SOUND = "synth.smokepuff"
         const val WISH_SOUND = "synth.found_gem"
         private const val SMOKE_HEIGHT = 124

@@ -470,7 +470,7 @@ class ImpCatcher @Inject constructor(private val worldRepo: WorldRepository) :
         private val CamLookAt = CoordGrid(3103, 3162, 2)
         private val CamMoveTo = CoordGrid(3103, 3161, 2)
 
-        private const val CutsceneJingle = "jingle.waterlogged"
+        private const val CutsceneJingle = "jingle.mizgog_cutscene"
 
         private const val FadeOutDuration = 15
         private const val FadeInDuration = 50

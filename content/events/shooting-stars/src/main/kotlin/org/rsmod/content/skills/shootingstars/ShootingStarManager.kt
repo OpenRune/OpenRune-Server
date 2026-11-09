@@ -517,8 +517,8 @@ constructor(
         private const val CRASH_WARNING_MESSAGE =
             "A shooting star will crash-land in 5 minutes. Keep an eye out for more information!"
         private const val LANDING_LOC = "loc.star_landing_star"
-        private const val CRASH_WHISTLE_SYNTH = "synth.shooting_star_whisle"
-        private const val CRASH_IMPACT_SYNTH = "synth.shooting_star_crash"
+        private const val CRASH_WHISTLE_SYNTH = "synth.star_meteor_falling"
+        private const val CRASH_IMPACT_SYNTH = "synth.star_meteor_change"
         private const val CRASH_IMPACT_ANIM = "seq.game_star_meteor_impact"
     }
 }

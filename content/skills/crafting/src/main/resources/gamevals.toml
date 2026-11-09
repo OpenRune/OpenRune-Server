@@ -1,20 +1,6 @@
-
 [gamevals.queue]
 crafting_make = 57
 crafting_cape_teleport = 60
-
-[gamevals.synth]
-crafting_pottery_wheel_craft = 2588
-glassblowing = 2724
-
-sand_bucket = 2584
-attach_orb = 2585
-chisel = 2586
-loom_weave = 2587
-smash_gem = 2589
-spinning = 2590
-stiching = 2591
-stringing = 2593
 
 [gamevals.content]
 sandpit = 54

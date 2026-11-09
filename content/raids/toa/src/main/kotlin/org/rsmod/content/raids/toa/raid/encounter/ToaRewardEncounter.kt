@@ -7,7 +7,6 @@ import dev.openrune.rscm.RSCMType
 import org.rsmod.api.droptable.DropRateModifiers
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.invtx.invAdd
-import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.vars.intVarBit
@@ -174,7 +173,7 @@ class ToaRewardEncounter(
     private fun spawnOsmumten() {
         val tile = room.osmumtenTile ?: return
         spawn(OSMUMTEN, coords(tile), Direction.North).noneMode()
-        for (player in players) player.midiJingle(JINGLE)
+        // for (player in players) player.midiJingle(JINGLE)
     }
 
     companion object {
@@ -197,13 +196,13 @@ class ToaRewardEncounter(
         private const val OPEN_SEQ = "seq.toa_osmumten_chest_open"
         private const val GLOW_SEQ = "seq.fx_cycle_ring"
         private const val SOUND_RADIUS = 7
-        private const val LOOT_SOUND = "synth.toa_vault_loot_appear"
-        private const val FOUND_SOUND = "synth.toa_vault_rare_found"
+        private const val LOOT_SOUND = "synth.toa_loot_orb_03"
+        private const val FOUND_SOUND = "synth.toa_loot_inv_01"
         private val OPEN_SOUNDS =
             listOf(
-                "synth.toa_vault_sarcophagus_open_a" to 20,
-                "synth.toa_vault_sarcophagus_open_b" to 37,
-                "synth.toa_vault_sarcophagus_open_c" to 132,
+                "synth.toa_loot_chest_open_01" to 20,
+                "synth.toa_loot_chest_slide_04" to 37,
+                "synth.toa_loot_chest_turn_02" to 132,
             )
         private const val REVEAL_DELAY = 1
         private const val OPEN_DELAY = 8
@@ -244,8 +243,8 @@ class ToaRewardEncounter(
         private const val FORCED_BOOST = 1_000_000.0
         private const val DUNG = "obj.cert_toa_loot_poo"
         private const val OSMUMTEN = "npc.toa_osmumten_vis"
-        private const val JINGLE = "jingle.in_the_pits"
-        private const val MUSIC = "midi.toa_laid_to_rest"
+        // private const val JINGLE = "jingle.in_the_pits"
+        private const val MUSIC = "midi.toa_victory"
 
         val Player.rewardChest
             get() = invMap.getOrPut(CHEST_INV)

@@ -51,9 +51,9 @@ internal object WardenMessages {
 }
 
 internal object WardenSounds {
-    const val ENTOMB = "synth.toa_wardens_entomb"
+    const val ENTOMB = "synth.frem_exiles_entomb"
     const val ENTOMB_RELEASE = "synth.fireblast_hit"
-    const val ENTOMB_END = "synth.toa_wardens_entomb_end"
+    const val ENTOMB_END = "synth.leather_hit_3"
 }
 
 internal object WardenCoreRefs {
@@ -62,7 +62,7 @@ internal object WardenCoreRefs {
     const val BLOCKER = "loc.invisible_type8_blocking"
     const val SHIELD_BAR = "headbar.charge_140"
     const val HEALTH_BAR = "headbar.health_140"
-    const val SPAWN_SOUND = "synth.toa_wardens_core_spawn"
-    const val REVIVE_SOUND = "synth.toa_wardens_core_revive"
+    const val SPAWN_SOUND = "synth.toa_wardens_core_land_impact_01"
+    const val REVIVE_SOUND = "synth.toa_wardens_destroy_core_from_warnden_01"
     const val PUSHED = "You are pushed off the core."
 }

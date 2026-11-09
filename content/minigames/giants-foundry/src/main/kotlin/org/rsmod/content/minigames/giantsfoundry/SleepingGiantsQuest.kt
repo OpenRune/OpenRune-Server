@@ -49,7 +49,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         },
         ItemRewardDisplay(PREFORM, zoom = 400, x = 78, y = 128),
         questVarbit = "varbit.sleeping_giants",
-        completeJingle = "jingle.high_seas",
+        completeJingle = "jingle.quest_complete_1",
     ) {
 
     override fun ScriptContext.init() {

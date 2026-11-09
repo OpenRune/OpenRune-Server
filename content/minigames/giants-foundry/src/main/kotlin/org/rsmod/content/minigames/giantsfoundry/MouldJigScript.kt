@@ -211,7 +211,7 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         const val JIG_MOULD = "loc.giants_foundry_jig_mould"
         const val JIG_FILLED = "loc.giants_foundry_jig_mould_filled"
         const val JIG_COOLED = "loc.giants_foundry_jig_mould_cooled"
-        const val PICKUP_SYNTH = "synth.giants_foundry_preform_pickup"
+        const val PICKUP_SYNTH = "synth.bf_cooldown"
         const val MAX_QUALITY = 255
         const val SEED_SLOTS = 7
         val START_TEMPERATURE = 980..1000

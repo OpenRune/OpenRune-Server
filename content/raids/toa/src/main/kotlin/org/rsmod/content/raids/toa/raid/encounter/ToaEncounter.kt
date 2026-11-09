@@ -9,7 +9,6 @@ import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.hook.TeleportType
-import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
@@ -233,7 +232,7 @@ open class ToaEncounter(
         if (room.kind == ToaRoom.Kind.PUZZLE) {
             for (player in players) {
                 player.midiSong(STOP_MUSIC)
-                player.midiJingle(PUZZLE_JINGLE)
+                // player.midiJingle(PUZZLE_JINGLE)
             }
         }
 
@@ -422,8 +421,8 @@ open class ToaEncounter(
         const val PATH_LEVELS_PER_TIER = 2
         const val HONEY_LOCUSTS_MIN = 4
         const val HONEY_LOCUSTS_MAX = 6
-        const val PUZZLE_JINGLE = "jingle.soundscape"
-        const val STOP_MUSIC = "midi.stop_music"
+        // const val PUZZLE_JINGLE = "jingle.soundscape"
+        const val STOP_MUSIC = "midi.silence"
 
         const val ROOM_POINTS_CAP = 20_000
         const val WARDENS_POINTS_CAP = 60_000

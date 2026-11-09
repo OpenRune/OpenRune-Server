@@ -7,16 +7,30 @@ import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 
-internal enum class ToaSupply(private val base: String, val maxDoses: Int) {
-    NECTAR("obj.toa_supply_heal", 4),
-    SILK_DRESSING("obj.toa_supply_heal_overtime", 2),
-    TEARS("obj.toa_supply_prayer", 4),
-    CRYSTAL_SCARAB("obj.toa_supply_prayer_overtime", 2),
-    ADRENALINE("obj.toa_supply_energy", 2),
-    SALTS("obj.toa_supply_stats", 2),
-    AMBROSIA("obj.toa_supply_panicheal", 2);
+internal enum class ToaSupply(vararg doseObjs: String) {
+    NECTAR(
+        "obj.toa_supply_heal_1",
+        "obj.toa_supply_heal_2",
+        "obj.toa_supply_heal_3",
+        "obj.toa_supply_heal_4",
+    ),
+    SILK_DRESSING("obj.toa_supply_heal_overtime_1", "obj.toa_supply_heal_overtime_2"),
+    TEARS(
+        "obj.toa_supply_prayer_1",
+        "obj.toa_supply_prayer_2",
+        "obj.toa_supply_prayer_3",
+        "obj.toa_supply_prayer_4",
+    ),
+    CRYSTAL_SCARAB("obj.toa_supply_prayer_overtime_1", "obj.toa_supply_prayer_overtime_2"),
+    ADRENALINE("obj.toa_supply_energy_1", "obj.toa_supply_energy_2"),
+    SALTS("obj.toa_supply_stats_1", "obj.toa_supply_stats_2"),
+    AMBROSIA("obj.toa_supply_panicheal_1", "obj.toa_supply_panicheal_2");
 
-    fun obj(doses: Int): String = "${base}_$doses"
+    private val objs: List<String> = doseObjs.toList()
+
+    val maxDoses: Int = objs.size
+
+    fun obj(doses: Int): String = objs[doses - 1]
 
     fun invObj(doses: Int): InvObj = InvObj(obj(doses))
 

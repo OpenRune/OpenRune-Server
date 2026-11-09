@@ -132,14 +132,14 @@ internal class WardensRestoration(private val room: WardensEncounter) {
         const val OBELISK_DEATH_SEQ = "seq.fx_obelisk_wardens02_death"
         const val LIGHTNING_WARN = "spotanim.wardens_lightning_warn"
 
-        const val RESTORE_START_SOUND = "synth.toa_wardens_restore_start"
-        const val RESTORE_LOOP_SOUND = "synth.toa_wardens_restore_loop"
-        const val RESTORE_END_SOUND = "synth.toa_wardens_restore_end"
+        const val RESTORE_START_SOUND = "synth.toa_wardens_wake2_body_rising_01"
+        const val RESTORE_LOOP_SOUND = "synth.toa_wardens_nice_rock_debris_sound_explosion"
+        const val RESTORE_END_SOUND = "synth.toa_wardens_wake2_shaking_scream_01"
         const val RESTORE_START_DELAY = 125
         const val RESTORE_LOOP_DELAY = 249
         const val RESTORE_END_DELAY = 254
-        const val BLAST_SOUND = "synth.toa_wardens_obelisk_blast"
-        const val OBELISK_DEATH_SOUND = "synth.toa_wardens_obelisk_death"
+        const val BLAST_SOUND = "synth.toa_wardens_4_square_thunder_01"
+        const val OBELISK_DEATH_SOUND = "synth.toa_wardens_obelisk_destroyed_01"
         const val HEAL_SOUND = "synth.selfheal"
 
         const val BLAST_COUNT = 24
