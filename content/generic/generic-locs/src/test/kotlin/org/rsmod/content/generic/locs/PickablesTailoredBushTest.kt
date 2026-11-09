@@ -24,12 +24,10 @@ import org.rsmod.api.registry.loc.LocRegistry
 import org.rsmod.api.registry.loc.LocRegistryNormal
 import org.rsmod.api.registry.loc.LocRegistryRegion
 import org.rsmod.api.registry.npc.NpcRegistry
-import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.registry.zone.ZonePlayerActivityBitSet
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.loc.LocRepository
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -121,8 +119,7 @@ class PickablesTailoredBushTest {
                 LocRegistry(storage, normal, LocRegistryRegion(updates, collision, storage, regions)),
                 regions,
             )
-        val objs = ObjRepository(clock, ObjRegistry(updates))
-        with(Pickables(objs, locs)) {
+        with(Pickables(locs)) {
             ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup()
         }
     }

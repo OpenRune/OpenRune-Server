@@ -66,7 +66,6 @@ grim_piano_b5 = 3695
 romeo_juliet_collapse = 505
 romeo_juliet_crypt_door = 1816
 romeo_juliet_crypt_enter = 1815
-romeo_juliet_drink = 2401
 
 splash_and_river = 1308
 roof_collapse = 1384
@@ -96,6 +95,7 @@ gertrudes_cat_state = 63711
 daddyshome_state = 64064
 waterfall_state = 64310
 sheep_shearer_state = 65472
+romeo_juliet_return_tile = 63730
 
 [gamevals.varbit]
 restless_ghost_progress = 63702

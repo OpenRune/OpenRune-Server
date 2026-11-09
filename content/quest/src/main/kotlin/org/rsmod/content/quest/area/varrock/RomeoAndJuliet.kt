@@ -9,13 +9,17 @@ import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
-import org.rsmod.api.player.cinematic.Cinematic
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.repo.region.RegionRepository
+import org.rsmod.api.repo.region.RegionTemplate
+import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
@@ -24,6 +28,11 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.table.ApothecaryPotionsRow
+import org.rsmod.content.quest.area.misthalin.SceneCamera
+import org.rsmod.content.quest.area.misthalin.SceneFadeDuration
+import org.rsmod.content.quest.area.misthalin.SceneFadeTicks
+import org.rsmod.content.quest.area.misthalin.SceneRegion
+import org.rsmod.content.quest.area.misthalin.lockedScene
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.menu
@@ -31,17 +40,26 @@ import org.rsmod.content.quest.manager.rewards
 import org.rsmod.content.quest.manager.startQuestPrompt
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.SessionStateEvent
+import org.rsmod.game.loc.LocAngle
+import org.rsmod.game.loc.LocShape
+import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
 private var Player.julietVisible by intVarBit("varbit.romjul_juliet_visible")
 private var Player.tailoredBush by intVarBit("varbit.cadavabush")
+private var Player.sceneReturnTile by intVarp("varp.romeo_juliet_return_tile")
 
 class RomeoAndJuliet
 @Inject
 constructor(
     private val npcRepo: NpcRepository,
     private val objRepo: ObjRepository,
+    private val locRepo: LocRepository,
+    private val regionRepo: RegionRepository,
+    private val collision: CollisionFlagMap,
 ) :
     QuestScript(
         "quest_romeoandjuliet",
@@ -51,12 +69,19 @@ constructor(
         questVarbit = "varbit.romeo_juliet_progress",
     ) {
 
+    // Released on login too; removal may bypass the scene finally block.
+    private val sceneRegions = HashMap<Long, Region>()
+
     override fun ScriptContext.init() {
         check(quest.maxSteps == COMPLETE) {
             "Romeo & Juliet end state is ${quest.maxSteps} in the cache dbrow, " +
                 "but the crypt cutscene completes at $COMPLETE."
         }
-        onPlayerLogin { syncJuliet(player) }
+        onEvent<SessionStateEvent.PrepareLogin> { restoreSceneReturn(player) }
+        onPlayerLogin {
+            discardLeakedRegion(player)
+            syncJuliet(player)
+        }
         onOpNpc1("npc.romeo") { startDialogue(it.npc) { romeo() } }
         onOpNpcU("npc.romeo") {
             if (it.objType.internalName == MESSAGE && stage(player) > MESSAGE_GIVEN) {
@@ -780,29 +805,40 @@ constructor(
 
     private suspend fun Dialogue.potionCutscene() {
         val actors = mutableListOf<Npc>()
-        try {
-            syncJuliet(player)
-            Cinematic.setHideToplevel(player, true)
-            access.telejump(JULIET_ROOM)
-            player.midiJingle(POTION_JINGLE)
-            val juliet = spawn("npc.juliet", CUTSCENE_JULIET, JULIET_ROOM, actors)
-            spawn("npc.phillipa", CUTSCENE_PHILLIPA, JULIET_ROOM, actors)
-            access.delay(1)
-            access.faceSquare(CUTSCENE_JULIET)
-            access.camMoveTo(JULIET_CAMERA, height = 375, rate = 100, rate2 = 100)
-            access.camLookAt(JULIET_ROOM, height = 175, rate = 100, rate2 = 100)
+        lateinit var juliet: Npc
+        syncJuliet(player)
+        access.ifCloseChat()
+        access.scene(
+            template = JULIET_HOUSE,
+            vantage = JULIET_ROOM,
+            faceAt = CUTSCENE_JULIET,
+            camera = JULIET_SHOT,
+            returnTo = JULIET_ROOM,
+            actors = actors,
+            underFade = { r ->
+                juliet = spawn("npc.juliet", r[CUTSCENE_JULIET], r[JULIET_ROOM], actors)
+                spawn("npc.phillipa", r[CUTSCENE_PHILLIPA], r[JULIET_ROOM], actors)
+                player.midiJingle(POTION_JINGLE)
+            },
+        ) { r ->
             chatJuliet(happy, "Oh, here's Phillipa, my cousin...she's in on the plot too!")
             chatJuliet(shifty, "She's going to make it seem even more convincing!")
+            access.faceSquare(r[CUTSCENE_PHILLIPA])
             chatPhillipa(happy, "Yes, I'm quite the actress! Good luck dear cousin!")
+            access.faceSquare(r[CUTSCENE_JULIET])
             chatJuliet(happy, "Right...bottoms up!")
+            access.ifCloseChat()
             juliet.spotanim("spotanim.human_drink_from_vial_cadava_spotanim")
             juliet.anim("seq.human_drink_from_vial_cadava")
             access.soundSynth(DRINK_SYNTH)
-            access.delay(3)
+            access.delay(2)
             chatJuliet(shocked, "Urk!")
+            access.ifCloseChat()
+            access.delay(1)
             juliet.anim("seq.human_death")
             access.soundSynth(COLLAPSE_SYNTH)
-            access.delay(3)
+            access.delay(2)
+            access.faceSquare(r[CUTSCENE_PHILLIPA])
             chatPhillipa(happy, "Oh no...Juliet has...died!")
             chatPlayer(neutral, "You might be more believable if you're not smiling when you say it...")
             chatPhillipa(shocked, "Oh yeah...you might be right...ok, let's try again.")
@@ -817,18 +853,33 @@ constructor(
                 "OH NO...JULIET HAS...DIED?.... Oooooohhhhhh....(sob), (sob).Juliet...my poor dead " +
                     "cousin!",
             )
-            spawn("npc.draul_leptoc", CUTSCENE_DRAUL, CUTSCENE_PHILLIPA, actors)
-            access.camMoveTo(JULIET_CAMERA_CLOSE, height = 425, rate = 5, rate2 = 5)
-            access.camLookAt(CUTSCENE_JULIET, height = 125, rate = 5, rate2 = 5)
+            val draul = spawn("npc.draul_leptoc", r[DRAUL_DOORWAY], facing = null, actors)
+            if (r.instanced) openJulietDoor(r)
+            access.faceSquare(r[DRAUL_DOORWAY])
+            access.cut(r, DRAUL_SHOT)
             chatDraul(angry, "What's all that screaming?")
+            access.ifCloseChat()
+            draul.walk(r[CUTSCENE_DRAUL])
+            access.delay(2)
+            draul.faceSquare(r[CUTSCENE_PHILLIPA])
+            access.faceSquare(r[CUTSCENE_DRAUL])
             chatDraul(sad, "Oh no! My poor daughter...what has become of you?")
+            access.faceSquare(r[CUTSCENE_PHILLIPA])
             chatPhillipa(sad, "Poor Juliet...make preparations for her body to be placed in the Crypt...")
-            access.telejump(JULIET_ROOM)
-        } finally {
-            despawn(actors)
-            Cinematic.setHideToplevel(player, false)
-            access.camReset()
+            access.ifCloseChat()
         }
+    }
+
+    private fun openJulietDoor(r: SceneRegion) {
+        val door = locRepo.findExact(r[JULIET_DOOR], LocShape.WallStraight) ?: return
+        locRepo.del(door, CUTSCENE_NPC_TICKS)
+        locRepo.add(
+            r[DRAUL_DOORWAY],
+            "loc.fai_varrock_castle_door_open",
+            CUTSCENE_NPC_TICKS,
+            LocAngle.East,
+            LocShape.WallStraight,
+        )
     }
 
     private suspend fun Dialogue.romeoCrypt() {
@@ -851,71 +902,135 @@ constructor(
 
     private suspend fun Dialogue.cryptCutscene() {
         val actors = mutableListOf<Npc>()
-        var finished = false
-        try {
-            Cinematic.setHideToplevel(player, true)
-            access.soundSynth(CRYPT_ENTER_SYNTH)
-            access.telejump(CRYPT_PLAYER)
-            player.midiJingle(CRYPT_JINGLE)
-            val romeo = spawn("npc.romeo", CRYPT_ROMEO, CRYPT_ROMEO.translateZ(1), actors)
+        lateinit var romeo: Npc
+        access.ifCloseChat()
+        access.soundSynth(CRYPT_ENTER_SYNTH)
+        access.scene(
+            template = CRYPT,
+            vantage = CRYPT_PLAYER,
+            faceAt = CRYPT_ROMEO,
+            camera = CRYPT_SHOT,
+            returnTo = CRYPT_RETURN,
+            actors = actors,
+            underFade = { r ->
+                romeo = spawn("npc.romeo", r[CRYPT_ROMEO], r[CRYPT_PLAYER], actors)
+                player.midiJingle(CRYPT_JINGLE)
+            },
+            reveal = { camReset() },
+        ) { r ->
             chatRomeo(worried, "This is pretty scary...")
             chatPlayer(angry, "Oh, be quiet...")
-            access.camMoveTo(CRYPT_CAMERA, height = 400, rate = 100, rate2 = 100)
-            access.camLookAt(CRYPT_LOOK, height = 25, rate = 100, rate2 = 100)
+            access.ifCloseChat()
+            access.fadeOverlay(0, 0, 0, 255, SceneFadeDuration)
+            access.delay(SceneFadeTicks)
+            access.closeFadeOverlayNow()
+            access.delay(1)
             access.soundSynth(CRYPT_DOOR_SYNTH)
+            access.cut(r, CRYPT_SHOT)
+            access.delay(2)
             chatPlayer(happy, "We're here. Look, Juliet is over there!")
-            access.camMoveTo(CoordGrid(2334, 4647, 0), height = 375, rate = 10, rate2 = 10)
-            access.camLookAt(CoordGrid(2322, 4639, 0), height = 250, rate = 10, rate2 = 10)
-            access.delay(5)
-            access.camMoveTo(CoordGrid(2330, 4647, 0), height = 375, rate = 5, rate2 = 5)
-            access.camLookAt(CRYPT_JULIET, height = 250, rate = 5, rate2 = 5)
-            access.delay(3)
-            access.camMoveTo(CoordGrid(2324, 4644, 0), height = 250, rate = 5, rate2 = 5)
-            access.camLookAt(CRYPT_JULIET, height = 200, rate = 5, rate2 = 5)
-            access.delay(7)
-            access.camMoveTo(CRYPT_CAMERA, height = 400, rate = 100, rate2 = 100)
-            access.camLookAt(CRYPT_LOOK, height = 25, rate = 100, rate2 = 100)
+            access.ifCloseChat()
+            for ((shot, hold) in JULIET_PAN) {
+                access.cut(r, shot)
+                access.delay(hold)
+            }
+            access.cut(r, CRYPT_SHOT)
+            access.delay(1)
             chatPlayer(happy, "You go over to her...and I'll go and wait over here...")
             chatRomeo(worried, "Ohhh, ok then...")
-            access.camMoveTo(CoordGrid(2322, 4639, 0), height = 300, rate = 100, rate2 = 100)
-            access.camLookAt(CoordGrid(2328, 4654, 0), height = 25, rate = 100, rate2 = 100)
-            romeo.walk(ROMEO_PATH)
+            access.ifCloseChat()
+            access.delay(1)
+            romeo.telejump(collision, r[ROMEO_WALK_START])
+            access.cut(r, ROMEO_SHOT)
+            romeo.walk(ROMEO_PATH.map { r[it] }) { romeo.faceSquare(r[ROMEO_GAZE]) }
             access.delay(9)
-            val phillipa =
-                spawn("npc.phillipa", CRYPT_PHILLIPA, CRYPT_PHILLIPA.translateZ(-1), actors)
-            phillipa.walk(PHILLIPA_PATH)
+            val phillipa = spawn("npc.phillipa", r[CRYPT_PHILLIPA], facing = null, actors)
+            phillipa.walk(PHILLIPA_PATH.map { r[it] }) { phillipa.faceSquare(r[ROMEO_END]) }
             access.delay(4)
+            access.faceSquare(r[ROMEO_END])
             chatRomeo(worried, "Hey...Juliet...")
             chatRomeo(neutral, "Juliet....?")
             chatRomeo(sad, "Oh dear...you seem to be dead.")
+            access.faceSquare(r[PHILLIPA_END])
             chatPhillipa(happy, "Hi Romeo...I'm Phillipa!")
+            access.faceSquare(r[ROMEO_END])
+            romeo.faceSquare(r[PHILLIPA_END])
             chatRomeo(happy, "Wow! You're a fox!")
+            access.faceSquare(r[PHILLIPA_END])
             chatPhillipa(happy, "It's a shame about Juliet...but perhaps we can meet up later?")
+            access.faceSquare(r[ROMEO_END])
             chatRomeo(happy, "Who's Juliet?")
-            despawn(actors)
-            access.telejump(CRYPT_RETURN)
-            Cinematic.setHideToplevel(player, false)
-            access.camReset()
-            finished = true
-            quest.setQuestStage(access, COMPLETE)
-            syncJuliet(player)
-        } finally {
-            despawn(actors)
-            Cinematic.setHideToplevel(player, false)
-            access.camReset()
-            if (!finished) access.telejump(CRYPT_RETURN)
+            access.ifCloseChat()
         }
+        quest.setQuestStage(access, COMPLETE)
+        syncJuliet(player)
+    }
+
+    private suspend fun ProtectedAccess.scene(
+        template: RegionTemplate,
+        vantage: CoordGrid,
+        faceAt: CoordGrid,
+        camera: SceneCamera,
+        returnTo: CoordGrid,
+        actors: MutableList<Npc>,
+        underFade: suspend (SceneRegion) -> Unit,
+        reveal: (suspend ProtectedAccess.() -> Unit)? = null,
+        body: suspend (SceneRegion) -> Unit,
+    ) {
+        val region = regionRepo.add(template)
+        region?.let(regionRepo::protect)
+        val scene = SceneRegion(region)
+
+        // Persist the exit on entry so a login rebuild never lands inside a reclaimed region.
+        player.sceneReturnTile = returnTo.packed
+        player.uuid?.let { uuid -> region?.let { sceneRegions[uuid] = it } }
+
+        try {
+            lockedScene(
+                vantage = scene[vantage],
+                faceAt = scene[faceAt],
+                camera = scene.map(camera),
+                returnTo = returnTo,
+                underFade = { underFade(scene) },
+                teardown = { despawn(actors) },
+                reveal = reveal,
+            ) {
+                body(scene)
+            }
+        } finally {
+            player.sceneReturnTile = 0
+            player.uuid?.let(sceneRegions::remove)
+            region?.let(regionRepo::unprotect)
+        }
+    }
+
+    private fun ProtectedAccess.cut(r: SceneRegion, shot: SceneCamera) {
+        camMoveToV3(r[shot.eye], height = shot.eyeHeight, rate = shot.rate, rate2 = shot.rate2)
+        camLookAtV3(r[shot.lookAt], height = shot.lookAtHeight, rate = shot.rate, rate2 = shot.rate2)
+    }
+
+    private fun restoreSceneReturn(player: Player) {
+        val tile = player.sceneReturnTile
+        if (tile == 0) return
+        player.coords = CoordGrid(tile)
+        player.sceneReturnTile = 0
+    }
+
+    private fun discardLeakedRegion(player: Player) {
+        val region = player.uuid?.let(sceneRegions::remove) ?: return
+        regionRepo.unprotect(region)
     }
 
     private fun spawn(
         type: String,
         coords: CoordGrid,
-        facing: CoordGrid,
+        facing: CoordGrid?,
         actors: MutableList<Npc>,
     ): Npc {
         val npc = Npc(type, coords)
         npcRepo.add(npc, CUTSCENE_NPC_TICKS)
-        npc.faceSquare(facing)
+        npc.noneMode()
+        if (facing != null) npc.faceSquare(facing)
         actors += npc
         return npc
     }
@@ -1663,46 +1778,134 @@ constructor(
 
         const val POTION_JINGLE = "jingle.juliet_dies_jingle"
         const val CRYPT_JINGLE = "jingle.romeo_cutscene"
-        const val DRINK_SYNTH = "synth.romeo_juliet_drink"
+        const val DRINK_SYNTH = "synth.bucket_pour"
         const val COLLAPSE_SYNTH = "synth.romeo_juliet_collapse"
         const val CRYPT_ENTER_SYNTH = "synth.romeo_juliet_crypt_enter"
         const val CRYPT_DOOR_SYNTH = "synth.romeo_juliet_crypt_door"
-        const val CUTSCENE_NPC_TICKS = 200
+        const val CUTSCENE_NPC_TICKS = 6000
 
         const val JULIET_VISIBLE = 0
         const val JULIET_HIDDEN = 1
         const val JULIET_VISIBLE_AFTER = 2
 
+        const val SCENE_REGION_OFFSET_ZONES = 6
+
         val SERMON_CAMERA = CoordGrid(3254, 3486, 0)
         val SERMON_LOOK = CoordGrid(3256, 3476, 0)
 
+        val JULIET_HOUSE: RegionTemplate =
+            RegionTemplate.create {
+                for (level in 0..2) {
+                    copy(393, 427, level) {
+                        regionZoneX = SCENE_REGION_OFFSET_ZONES
+                        regionZoneZ = SCENE_REGION_OFFSET_ZONES
+                        zoneWidth = 3
+                        zoneLength = 3
+                    }
+                }
+            }
+
         val JULIET_ROOM = CoordGrid(3157, 3425, 1)
-        val JULIET_CAMERA = CoordGrid(3153, 3422, 1)
-        val JULIET_CAMERA_CLOSE = CoordGrid(3156, 3421, 1)
         val CUTSCENE_JULIET = CoordGrid(3157, 3426, 1)
         val CUTSCENE_PHILLIPA = CoordGrid(3156, 3426, 1)
         val CUTSCENE_DRAUL = CoordGrid(3158, 3426, 1)
+        val DRAUL_DOORWAY = CoordGrid(3158, 3427, 1)
+        val JULIET_DOOR = CoordGrid(3158, 3426, 1)
+        val JULIET_SHOT =
+            SceneCamera(
+                eye = CoordGrid(3153, 3422, 1),
+                eyeHeight = 375,
+                lookAt = CoordGrid(3156, 3425, 1),
+                lookAtHeight = 175,
+                rate = 100,
+                rate2 = 100,
+            )
+        val DRAUL_SHOT =
+            SceneCamera(
+                eye = CoordGrid(3156, 3421, 1),
+                eyeHeight = 425,
+                lookAt = CUTSCENE_JULIET,
+                lookAtHeight = 125,
+                rate = 5,
+                rate2 = 5,
+            )
+
+        val CRYPT: RegionTemplate =
+            RegionTemplate.create {
+                copy(290, 579, 0) {
+                    regionZoneX = SCENE_REGION_OFFSET_ZONES
+                    regionZoneZ = SCENE_REGION_OFFSET_ZONES
+                    zoneWidth = 3
+                    zoneLength = 3
+                }
+                copy(290, 579, 1) {
+                    regionZoneX = SCENE_REGION_OFFSET_ZONES
+                    regionZoneZ = SCENE_REGION_OFFSET_ZONES
+                    zoneWidth = 2
+                    zoneLength = 2
+                }
+            }
 
         val CRYPT_PLAYER = CoordGrid(2333, 4646, 0)
         val CRYPT_ROMEO = CoordGrid(2333, 4645, 0)
         val CRYPT_PHILLIPA = CoordGrid(2331, 4645, 0)
-        val CRYPT_CAMERA = CoordGrid(2330, 4641, 0)
-        val CRYPT_LOOK = CoordGrid(2342, 4655, 0)
         val CRYPT_JULIET = CoordGrid(2320, 4639, 0)
         val CRYPT_RETURN = CoordGrid(3215, 3418, 0)
+        val ROMEO_WALK_START = CoordGrid(2330, 4645, 0)
+        val ROMEO_END = CoordGrid(2323, 4643, 0)
+        val ROMEO_GAZE = CoordGrid(2322, 4642, 0)
+        val PHILLIPA_END = CoordGrid(2325, 4644, 0)
+        val CRYPT_SHOT =
+            SceneCamera(
+                eye = CoordGrid(2330, 4641, 0),
+                eyeHeight = 400,
+                lookAt = CoordGrid(2342, 4655, 0),
+                lookAtHeight = 25,
+                rate = 100,
+                rate2 = 100,
+            )
+        val ROMEO_SHOT =
+            SceneCamera(
+                eye = CoordGrid(2322, 4639, 0),
+                eyeHeight = 300,
+                lookAt = CoordGrid(2328, 4654, 0),
+                lookAtHeight = 25,
+                rate = 100,
+                rate2 = 100,
+            )
+        val JULIET_PAN =
+            listOf(
+                SceneCamera(
+                    eye = CoordGrid(2334, 4647, 0),
+                    eyeHeight = 375,
+                    lookAt = CoordGrid(2322, 4639, 0),
+                    lookAtHeight = 250,
+                    rate = 10,
+                    rate2 = 10,
+                ) to 5,
+                SceneCamera(CoordGrid(2330, 4647, 0), 375, CRYPT_JULIET, 250, rate = 5, rate2 = 5) to
+                    3,
+                SceneCamera(CoordGrid(2324, 4644, 0), 250, CRYPT_JULIET, 200, rate = 5, rate2 = 5) to
+                    7,
+            )
         val ROMEO_PATH =
             listOf(
-                CoordGrid(2330, 4645, 0),
+                CoordGrid(2329, 4645, 0),
+                CoordGrid(2328, 4645, 0),
                 CoordGrid(2327, 4645, 0),
                 CoordGrid(2326, 4644, 0),
                 CoordGrid(2325, 4644, 0),
-                CoordGrid(2323, 4643, 0),
+                CoordGrid(2324, 4643, 0),
+                ROMEO_END,
             )
         val PHILLIPA_PATH =
             listOf(
+                CoordGrid(2330, 4645, 0),
+                CoordGrid(2329, 4645, 0),
+                CoordGrid(2328, 4645, 0),
                 CoordGrid(2327, 4645, 0),
                 CoordGrid(2326, 4644, 0),
-                CoordGrid(2325, 4644, 0),
+                PHILLIPA_END,
             )
     }
 }

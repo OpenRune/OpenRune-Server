@@ -4,3 +4,9 @@ id = "varbit.romeo_juliet_progress"
 varp = "varp.rjquest"
 startBit = 0
 endBit = 6
+
+[[varp]]
+isServerOnly = true
+id = "varp.romeo_juliet_return_tile"
+scope = "Perm"
+transmit = "Never"
