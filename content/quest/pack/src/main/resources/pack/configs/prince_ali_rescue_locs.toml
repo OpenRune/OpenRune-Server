@@ -1,0 +1,31 @@
+[[object]]
+id = "loc.bankdoor_l"
+inherit = "loc.bankdoor_l"
+contentGroup = "content.closed_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.openbankdoor_l"
+
+[[object]]
+id = "loc.openbankdoor_l"
+inherit = "loc.openbankdoor_l"
+contentGroup = "content.opened_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.bankdoor_l"
+
+[[object]]
+id = "loc.bankdoor_r"
+inherit = "loc.bankdoor_r"
+contentGroup = "content.closed_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.openbankdoor_r"
+
+[[object]]
+id = "loc.openbankdoor_r"
+inherit = "loc.openbankdoor_r"
+contentGroup = "content.opened_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.bankdoor_r"
