@@ -1,21 +1,25 @@
 id = "Animated Bronze Armour Drops"
 npcs = ["npc.warguild_bronze_armour"]
 
-[main]
-total = 27
-name = "Animated Bronze Armour Drops"
+# The npc's dropped_remains param already drops 1 token, so this is the wiki total minus one.
+[[guaranteed]]
+obj = "obj.warguild_tokens"
+count = 4
 
-[[main.entries]]
-weight = 9
+[[tertiary]]
+numerator = 9
+denominator = 10
 obj = "obj.bronze_full_helm"
 count = 1
 
-[[main.entries]]
-weight = 9
+[[tertiary]]
+numerator = 9
+denominator = 10
 obj = "obj.bronze_platebody"
 count = 1
 
-[[main.entries]]
-weight = 9
+[[tertiary]]
+numerator = 9
+denominator = 10
 obj = "obj.bronze_platelegs"
 count = 1

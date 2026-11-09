@@ -143,3 +143,7 @@ makeover_hair_styles=496
 makeover_facial_hair_styles=2630
 gauntlet_tree_axes=65407
 essence_mine_teleporter_exits=63890
+warguild_defender_drops=64900
+warguild_defender_tiers=64901
+warguild_shotput_distance=64902
+warguild_metal_names=64903
