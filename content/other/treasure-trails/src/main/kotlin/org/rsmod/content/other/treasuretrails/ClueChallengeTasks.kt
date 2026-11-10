@@ -8,14 +8,21 @@ import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.player.events.skilling.SkillingActionContext
+import org.rsmod.api.player.feet
+import org.rsmod.api.player.hat
+import org.rsmod.api.player.legs
+import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.torso
 import org.rsmod.api.player.hook.PrayerEnableHook
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.cluehelper.CluehelperClueSkillchallengeRow
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.isType
 
 /** Sherlock challenges that are completed by doing something rather than handing in an item. */
 object ClueChallengeTasks {
     const val DONE = "varp.trail_challenge_done"
+    const val COMPLETED_MESSAGE = "You have completed your elite/master level challenge!"
 
     internal const val BURN_YEW = "dbrow.cluehelper_skillchallenge_elite_18"
     internal const val CHIVALRY = "dbrow.cluehelper_skillchallenge_elite_22"
@@ -27,6 +34,7 @@ object ClueChallengeTasks {
     internal const val SLAY_NECHRYAEL = "dbrow.cluehelper_skillchallenge_master_4"
     internal const val SLAY_LIZARDMAN_SHAMAN = "dbrow.cluehelper_skillchallenge_master_19"
     internal const val SLAY_FIYR_SHADE = "dbrow.cluehelper_skillchallenge_master_24"
+    internal const val EQUIP_WHIP = "dbrow.cluehelper_skillchallenge_master_0"
 
     private val PRODUCT_TASKS =
         mapOf(
@@ -48,6 +56,58 @@ object ClueChallengeTasks {
             "obj.redwood_logs" to "dbrow.cluehelper_skillchallenge_master_8",
         )
 
+    private val GEAR_TASKS =
+        mapOf(
+            "obj.runite_ore" to
+                GearTask("dbrow.cluehelper_skillchallenge_master_11", ::wearsProspector),
+            "obj.raw_anglerfish" to
+                GearTask("dbrow.cluehelper_skillchallenge_master_20", ::wearsAngler),
+            "obj.redwood_logs" to
+                GearTask("dbrow.cluehelper_skillchallenge_master_21", ::wearsLumberjack),
+        )
+
+    private class GearTask(val row: String, val worn: (Player) -> Boolean)
+
+    private fun wearsProspector(player: Player): Boolean =
+        player.torso.isType("obj.varrock_armour_elite") ||
+            wearsSet(
+                player,
+                hat = listOf("obj.motherlode_reward_hat", "obj.motherlode_reward_hat_gold"),
+                top = listOf("obj.motherlode_reward_top", "obj.motherlode_reward_top_gold"),
+                legs = listOf("obj.motherlode_reward_legs", "obj.motherlode_reward_legs_gold"),
+                boots = listOf("obj.motherlode_reward_boots", "obj.motherlode_reward_boots_gold"),
+            )
+
+    private fun wearsAngler(player: Player): Boolean =
+        wearsSet(
+            player,
+            hat = listOf("obj.spirit_angler_hat", "obj.trawler_reward_hat"),
+            top = listOf("obj.spirit_angler_top", "obj.trawler_reward_top"),
+            legs = listOf("obj.spirit_angler_legs", "obj.trawler_reward_legs"),
+            boots = listOf("obj.spirit_angler_boots", "obj.trawler_reward_boots"),
+        )
+
+    private fun wearsLumberjack(player: Player): Boolean =
+        wearsSet(
+            player,
+            hat = listOf("obj.forestry_lumberjack_hat", "obj.ramble_lumberjack_hat"),
+            top = listOf("obj.forestry_lumberjack_top", "obj.ramble_lumberjack_top"),
+            legs = listOf("obj.forestry_lumberjack_legs", "obj.ramble_lumberjack_legs"),
+            boots = listOf("obj.forestry_lumberjack_boots", "obj.ramble_lumberjack_boots"),
+        )
+
+    private fun wearsSet(
+        player: Player,
+        hat: List<String>,
+        top: List<String>,
+        legs: List<String>,
+        boots: List<String>,
+    ): Boolean =
+        hat.any { player.hat.isType(it) } &&
+            top.any { player.torso.isType(it) } &&
+            legs.any { player.legs.isType(it) } &&
+            boots.any { player.feet.isType(it) }
+
     private val actionSteps: Set<Int> =
         (listOf(
                 BURN_YEW,
@@ -59,7 +119,11 @@ object ClueChallengeTasks {
                 SLAY_NECHRYAEL,
                 SLAY_LIZARDMAN_SHAMAN,
                 SLAY_FIYR_SHADE,
-            ) + PRODUCT_TASKS.values + BURN_TASKS.values)
+                EQUIP_WHIP,
+            ) +
+                PRODUCT_TASKS.values +
+                BURN_TASKS.values +
+                GEAR_TASKS.values.map { it.row })
             .map { CluehelperClueSkillchallengeRow.getRow(it).rowId }
             .toSet()
 
@@ -71,8 +135,9 @@ object ClueChallengeTasks {
         val rowId = CluehelperClueSkillchallengeRow.getRow(task).rowId
         val held =
             TrailFlow.heldTrails(player).any { it.step.kind == ClueKind.SkillChallenge && it.step.rowId == rowId }
-        if (held) {
+        if (held && player.vars[DONE] != rowId) {
             VarPlayerIntMapSetter.set(player, DONE, rowId)
+            player.mes(COMPLETED_MESSAGE)
         }
     }
 
@@ -83,6 +148,7 @@ object ClueChallengeTasks {
         if (context !is SkillingActionContext.Product || context.isBonus) return
         val name = ServerCacheManager.getItem(context.item.asRSCM(RSCMType.OBJ))?.name
         PRODUCT_TASKS[context.item]?.let { complete(player, it) }
+        GEAR_TASKS[context.item]?.let { if (it.worn(player)) complete(player, it.row) }
         when {
             context.item == NICKEL_ORE -> complete(player, NICKEL)
             context.item == COSMIC_RUNE && context.count > context.inputCount ->

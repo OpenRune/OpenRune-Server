@@ -66,6 +66,7 @@ constructor(
             )
             npc.assignSpawnOwner(player, mapClock.cycle)
             if (npc.type.id in DOUBLE_AGENTS) npc.say("I expect you to die!")
+            SPAWN_SHOUTS[npc.type.id]?.let(npc::say)
             if (npc.type.id in RANGED_ENCOUNTERS) {
                 npc.apPlayer2(player, aiPlayerInteractions)
             } else {
@@ -135,6 +136,14 @@ constructor(
                 )
                 .map { it.asRSCM(RSCMType.NPC) }
                 .toSet()
+
+        val SPAWN_SHOUTS =
+            mapOf(
+                "npc.trail_zaros_wizard" to "For Zaros!",
+                "npc.trail_zaros_range" to "Perish in agony!",
+                "npc.trail_zaros_melee" to "For Zaros!",
+            )
+                .mapKeys { it.key.asRSCM(RSCMType.NPC) }
 
         val DOUBLE_AGENTS =
             listOf("npc.double_agent_1", "npc.double_agent_2", "npc.double_agent_master")
