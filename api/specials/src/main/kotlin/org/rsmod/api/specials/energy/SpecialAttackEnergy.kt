@@ -11,7 +11,7 @@ import org.rsmod.game.entity.Player
 
 public class SpecialAttackEnergy
 @Inject
-constructor(private val eventBus: EventBus, private val random: GameRandom) {
+constructor(private val random: GameRandom, private val eventBus: EventBus) {
     private var Player.specialEnergy by intVarp("varp.sa_energy")
 
     public fun hasSpecialEnergy(

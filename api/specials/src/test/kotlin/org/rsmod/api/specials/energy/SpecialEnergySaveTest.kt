@@ -32,7 +32,7 @@ import org.rsmod.game.entity.Player
 class SpecialEnergySaveTest {
     private val events = EventBus()
     private val random = mockk<GameRandom>(relaxed = true)
-    private val energy = SpecialAttackEnergy(random)
+    private val energy = SpecialAttackEnergy(random, events)
     private val player = Player()
     private val results = mutableListOf<PlayerAttackEvents.AttackResult>()
 
