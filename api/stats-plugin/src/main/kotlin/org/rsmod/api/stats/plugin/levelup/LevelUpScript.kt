@@ -11,6 +11,7 @@ import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.levelUpFireworks
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.advanced.onAdvanceCombat
@@ -59,7 +60,7 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
             skillGuidePrompt(stat, advance.previousLevel, guideUnlocked, guideList)
         }
         mes(LevelUpText.message(stat.label, level, maxed = level >= type.maxLevel))
-        fireworks(fireworksSpotanim(level, type.maxLevel))
+        player.levelUpFireworks(worldRepo, fireworksSpotanim(level, type.maxLevel))
         playJingle(RSCM.getReverseMapping(RSCMType.JINGLE, jingle))
 
         if (vars[POPUP_DISABLED_VARBIT] == 0) {
@@ -127,7 +128,7 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
     private suspend fun ProtectedAccess.advanceCombat(level: Int) {
         val label = LevelUpStat.COMBAT_LABEL
         mes(LevelUpText.message(label, level, maxed = false))
-        fireworks(LEVELUP_SPOTANIM)
+        player.levelUpFireworks(worldRepo)
         playJingle(LevelUpStat.COMBAT_JINGLE)
 
         if (vars[POPUP_DISABLED_VARBIT] == 0) {
@@ -137,17 +138,6 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
                 LevelUpText.level("Your $label level is now", level),
             )
         }
-    }
-
-    private fun ProtectedAccess.fireworks(spotanim: String) {
-        spotanim(spotanim, height = FIREWORKS_HEIGHT)
-        worldRepo.soundArea(player.coords, FIREWORKS_SYNTH, radius = FIREWORKS_RADIUS)
-        worldRepo.soundArea(
-            player.coords,
-            FIREWORKS_TAIL_SYNTH,
-            delay = FIREWORKS_TAIL_DELAY,
-            radius = FIREWORKS_RADIUS,
-        )
     }
 
     private fun ProtectedAccess.playJingle(jingle: String) {
@@ -165,11 +155,6 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
 
     private companion object {
         const val LEVELUP_SPOTANIM = "spotanim.levelup_anim"
-        const val FIREWORKS_HEIGHT = 124
-        const val FIREWORKS_SYNTH = "synth.firework"
-        const val FIREWORKS_TAIL_SYNTH = "synth.burst"
-        const val FIREWORKS_TAIL_DELAY = 25
-        const val FIREWORKS_RADIUS = 1
         const val STOP_MUSIC = "midi.silence"
         const val POPUP_DISABLED_VARBIT = "varbit.option_level_up_message_disabled"
         const val GUIDE_LIST_DISABLED_VARBIT = "varbit.option_level_up_guide_list_disabled"
