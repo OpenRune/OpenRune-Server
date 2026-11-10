@@ -12,10 +12,15 @@ import org.rsmod.plugin.module.PluginModule
 public class DropsModule : PluginModule() {
     override fun bind() {
         DropRateBoosts.clueScrollBoostPercent = { player, args ->
-            MortimerAssignment.clueDropRateBoostPercent(player, args[KillRollContext.npc])
+            MortimerAssignment.clueDropRateBoostPercent(player, args[KillRollContext.npc]) +
+                player.vars[CLUE_RATE_PERCENT_VARP]
         }
         bind(DropTableTomlResolver::class.java).to(ContentDropTableTomlResolver::class.java)
         newSetBinding<NpcKillExtraDrops>()
         addSetBinding<NpcDeathKillHook>(NpcDropTableKillHook::class.java)
+    }
+
+    private companion object {
+        const val CLUE_RATE_PERCENT_VARP = "varp.clue_drop_rate_percent"
     }
 }

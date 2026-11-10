@@ -935,3 +935,9 @@ isServerOnly = true
 id = "varp.slayer_superior_rate_multiplier"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.clue_drop_rate_percent"
+scope = "Perm"
+transmit = "Never"

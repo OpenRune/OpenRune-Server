@@ -248,7 +248,9 @@ In **Kotlin**, use `clue(ClueTier.<Tier>)`, with an optional condition:
 1 outOf 75 separate clue(ClueTier.Elite)
 ```
 
-Clue rolls in a tertiary table pick up `DropRateBoosts.clueScrollBoostPercent` automatically.
+Clue rolls in a tertiary table pick up `DropRateBoosts.clueScrollBoostPercent` automatically. It is
+the Mortimer clue modifier plus `varp.clue_drop_rate_percent` (permanent, per player): a value of
+`P` multiplies the clue rate by `1 + P / 100`, so 100 doubles it and 2000 is 21x.
 The clue and casket a monster gives up as the target of a kill step come from the trails module,
 not from its drop table.
 
