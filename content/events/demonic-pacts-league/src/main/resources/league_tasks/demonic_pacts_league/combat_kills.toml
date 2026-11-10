@@ -1,0 +1,415 @@
+[[league_task_kill_an_icefiend_in_varlamore]]
+trigger = "kill"
+npc = ["npc.godwars_icefiend_1", "npc.slayer_icefiend_1", "npc.raids_icefiend"]
+area = "area.league_region_varlamore"
+
+[[league_task_kill_a_barbarian_in_kourend]]
+trigger = "kill"
+npc = [
+    "npc.fai_barbarian_1",
+    "npc.fai_barbarian_2",
+    "npc.fai_barbarian_3",
+    "npc.fai_barbarian_4",
+    "npc.fai_barbarian_5",
+    "npc.fai_barbarian_6",
+    "npc.fai_barbarian_7",
+    "npc.fai_barbarian_8",
+    "npc.fai_barbarian_10",
+    "npc.fai_barbarian_11",
+    "npc.fai_barbarian_12",
+    "npc.fai_barbarian_13",
+    "npc.fai_barbarian_14",
+    "npc.fai_barbarian_female_1",
+    "npc.fai_barbarian_female_2",
+    "npc.fai_barbarian_female_3",
+    "npc.fai_barbarian_female_4",
+    "npc.barbarian",
+    "npc.barbarianwoman_varrock",
+    "npc.bim_barbarian_female",
+    "npc.bim_barbarian_female_2",
+    "npc.bim_barbarian_male",
+    "npc.bim_barbarian_male_2",
+    "npc.akd_barbarian_1",
+    "npc.akd_barbarian_2",
+    "npc.akd_barbarian_3",
+    "npc.akd_barbarian_4",
+    "npc.akd_barbarian_5",
+]
+area = "area.league_region_kourend"
+
+[[league_task_kill_black_knight]]
+trigger = "kill"
+npc = [
+    "npc.black_knight",
+    "npc.aggressive_black_knight",
+    "npc.jail_black_knight",
+    "npc.kr_aggressive_black_knight",
+    "npc.wanted_black_knight_for_cutscene",
+    "npc.wanted_summoned_black_knight",
+    "npc.wanted_black_knight_attackable_base_config",
+    "npc.black_knight_f",
+    "npc.aggressive_black_knight_f",
+]
+area = "area.league_region_asgarnia"
+
+[[league_task_defeat_a_cockatrice_in_the_fremennik_province]]
+trigger = "kill"
+npc = [
+    "npc.slayer_cockatrice",
+    "npc.slayer_cockatrice_daddy",
+    "npc.poh_mounted_cockatrice_teak",
+    "npc.poh_mounted_cockatrice_mahogany",
+    "npc.poh_mounted_cockatrice_gilded",
+]
+area = "area.league_region_fremennik"
+
+[[league_task_defeat_a_fire_giant_in_kandarin]]
+trigger = "kill"
+npc = [
+    "npc.firegiant_big",
+    "npc.firegiant_big2",
+    "npc.firegiant_big3",
+    "npc.firegiant",
+    "npc.firegiant2",
+    "npc.firegiant3",
+    "npc.firegiant_strongholdcave_1",
+    "npc.firegiant_strongholdcave_2",
+    "npc.firegiant_strongholdcave_3",
+    "npc.firegiant_strongholdcave_4",
+    "npc.kourend_firegiant1",
+    "npc.kourend_firegiant2",
+]
+area = "area.league_region_kandarin"
+
+[[league_task_defeat_a_moss_giant_in_tirannwn]]
+trigger = "kill"
+npc = [
+    "npc.mossgiant",
+    "npc.mossgiant2",
+    "npc.mossgiant3",
+    "npc.mossgiant4",
+    "npc.lunar_mossgiant",
+    "npc.lunar_mossgiant2",
+    "npc.kourend_mossgiant",
+    "npc.prif_mossgiant",
+    "npc.tlati_mossgiant01",
+    "npc.tlati_mossgiant02",
+    "npc.tlati_mossgiant03",
+    "npc.tlati_mossgiant04",
+    "npc.crypt_of_tonali_mossgiant",
+]
+area = "area.league_region_tirannwn"
+
+[[league_task_defeat_a_pyrefiend_in_the_fremennik_province]]
+trigger = "kill"
+npc = [
+    "npc.slayer_pyrefiend_1",
+    "npc.slayer_pyrefiend_2",
+    "npc.slayer_pyrefiend_3",
+    "npc.slayer_pyrefiend_4",
+    "npc.godwars_pyrefiend_1",
+]
+area = "area.league_region_fremennik"
+
+[[league_task_defeat_a_rock_crab_in_the_fremennik_province]]
+trigger = "kill"
+npc = ["npc.horror_rockcrab", "npc.horror_rockcrab_small"]
+area = "area.league_region_fremennik"
+
+[[league_task_kill_a_snake_in_karamja]]
+trigger = "kill"
+npc = [
+    "npc.harmless_island_snake",
+    "npc.snake",
+    "npc.feud_desert_snake",
+    "npc.feud_charmers_snake",
+    "npc.mm_jungle_snake",
+    "npc.feud_desert_snake_outside",
+    "npc.varlamore_snake_savannah",
+    "npc.varlamore_snake_rainforest",
+]
+area = "area.league_region_karamja"
+
+[[league_task_defeat_a_troll_in_asgarnia]]
+trigger = "kill"
+npc = [
+    "npc.poh_troll",
+    "npc.my2arm_flashback_troll_1",
+    "npc.my2arm_flashback_troll_2",
+    "npc.my2arm_flashback_troll_3",
+    "npc.my2arm_flashback_troll_4",
+]
+area = "area.league_region_asgarnia"
+
+[[league_task_defeat_a_werewolf_in_morytania]]
+trigger = "kill"
+npc = [
+    "npc.canafis_werewolf_man1",
+    "npc.canafis_werewolf_man2",
+    "npc.canafis_werewolf_man3",
+    "npc.canafis_werewolf_man4",
+    "npc.canafis_werewolf_man5",
+    "npc.canafis_werewolf_man6",
+    "npc.canafis_werewolf_man7",
+    "npc.canafis_werewolf_man8",
+    "npc.canafis_werewolf_woman1",
+    "npc.canafis_werewolf_woman2",
+    "npc.canafis_werewolf_woman3",
+    "npc.canafis_werewolf_woman4",
+    "npc.canafis_werewolf_woman5",
+    "npc.canafis_werewolf_woman6",
+    "npc.canafis_werewolf_woman7",
+    "npc.canafis_werewolf_woman8",
+    "npc.canafis_werewolf_woman9",
+    "npc.canafis_werewolf_woman10",
+    "npc.canafis_werewolf_woman11",
+    "npc.canafis_werewolf_woman12",
+    "npc.godwars_ancient_werewolf1",
+    "npc.godwars_ancient_werewolf2",
+    "npc.waa_werewolf_guard",
+    "npc.myq5_werewolf_1",
+    "npc.myq5_werewolf_2",
+    "npc.myq5_werewolf_3",
+    "npc.darkm_werewolf_1",
+    "npc.darkm_werewolf_2",
+    "npc.darkm_werewolf_3_1op",
+    "npc.darkm_werewolf_3_2op",
+]
+area = "area.league_region_morytania"
+
+[[league_task_defeat_a_black_demon_in_asgarnia]]
+trigger = "kill"
+npc = [
+    "npc.black_demon_strongholdcave_1",
+    "npc.grandtree_blackdemon",
+    "npc.black_demon",
+    "npc.black_demon2",
+    "npc.black_demon3",
+    "npc.black_demon4",
+    "npc.black_demon5",
+    "npc.black_demon_strongholdcave_2",
+    "npc.black_demon_strongholdcave_3",
+    "npc.black_demon_strongholdcave_4",
+    "npc.black_demon_strongholdcave_5",
+    "npc.nzone_grandtree_blackdemon_normal",
+    "npc.kourend_black_demon_1",
+    "npc.kourend_black_demon_2",
+    "npc.wild_cave_black_demon",
+    "npc.wild_cave_black_demon2",
+    "npc.wild_cave_black_demon3",
+    "npc.dt2_scar_black_demon_1",
+]
+area = "area.league_region_asgarnia"
+
+[[league_task_defeat_a_black_demon_on_karamja]]
+trigger = "kill"
+npc = [
+    "npc.black_demon_strongholdcave_1",
+    "npc.grandtree_blackdemon",
+    "npc.black_demon",
+    "npc.black_demon2",
+    "npc.black_demon3",
+    "npc.black_demon4",
+    "npc.black_demon5",
+    "npc.black_demon_strongholdcave_2",
+    "npc.black_demon_strongholdcave_3",
+    "npc.black_demon_strongholdcave_4",
+    "npc.black_demon_strongholdcave_5",
+    "npc.nzone_grandtree_blackdemon_normal",
+    "npc.kourend_black_demon_1",
+    "npc.kourend_black_demon_2",
+    "npc.wild_cave_black_demon",
+    "npc.wild_cave_black_demon2",
+    "npc.wild_cave_black_demon3",
+    "npc.dt2_scar_black_demon_1",
+]
+area = "area.league_region_karamja"
+
+[[league_task_kill_a_black_dragon_in_tirannwn]]
+trigger = "kill"
+npc = [
+    "npc.black_dragon",
+    "npc.black_dragon2",
+    "npc.black_dragon3",
+    "npc.black_dragon4",
+    "npc.black_dragon5",
+    "npc.black_dragon_strongholdcave_1",
+    "npc.black_dragon_strongholdcave_2",
+    "npc.black_dragon_strongholdcave_3",
+    "npc.wild_cave_black_dragon",
+    "npc.wild_cave_black_dragon2",
+    "npc.wild_cave_black_dragon3",
+    "npc.ds2_black_dragon_cutscene",
+    "npc.ds2_black_dragon",
+    "npc.black_dragon_echokbd",
+    "npc.league_6_kbd",
+]
+area = "area.league_region_tirannwn"
+
+[[league_task_defeat_a_bloodveld_in_kandarin]]
+trigger = "kill"
+npc = [
+    "npc.slayer_bloodveld",
+    "npc.slayer_bloodveld_baby",
+    "npc.slayer_bloodveld_strongholdcave",
+    "npc.slayer_bloodveld_baby_strongholdcave",
+    "npc.godwars_bloodveld",
+]
+area = "area.league_region_kandarin"
+
+[[league_task_defeat_a_bloodveld_in_tirannwn]]
+trigger = "kill"
+npc = [
+    "npc.slayer_bloodveld",
+    "npc.slayer_bloodveld_baby",
+    "npc.slayer_bloodveld_strongholdcave",
+    "npc.slayer_bloodveld_baby_strongholdcave",
+    "npc.godwars_bloodveld",
+]
+area = "area.league_region_tirannwn"
+
+[[league_task_defeat_a_blue_dragon_in_asgarnia]]
+trigger = "kill"
+npc = [
+    "npc.blue_dragon",
+    "npc.blue_dragon2",
+    "npc.blue_dragon3",
+    "npc.blue_dragon4",
+    "npc.blue_dragon5",
+    "npc.watchtower_cutscene_blue_dragon",
+    "npc.blue_dragon_strongholdcave_1",
+    "npc.blue_dragon_strongholdcave_2",
+    "npc.blue_dragon_strongholdcave_3",
+    "npc.blue_dragon_strongholdcave_4",
+    "npc.blue_dragon_strongholdcave_5",
+    "npc.ds2_blue_dragon_flying",
+    "npc.ds2_blue_dragon_cutscene_flying",
+    "npc.ds2_blue_dragon",
+    "npc.blue_dragon_tapoyauik_1",
+    "npc.blue_dragon_tapoyauik_2",
+]
+area = "area.league_region_asgarnia"
+
+[[league_task_defeat_a_dagannoth_in_the_fremennik_province]]
+trigger = "kill"
+npc = [
+    "npc.poh_dagganoth",
+    "npc.horror_dagganoth_jr",
+    "npc.horror_dagganoth_jr_darker",
+    "npc.horror_dagganoth_jr_lighter",
+    "npc.horror_dagannoth_medium",
+    "npc.horror_dagannoth_medium_darker",
+    "npc.horror_dagannoth_medium_lighter",
+    "npc.horror_dagannoth_jr1",
+    "npc.horror_dagannoth_jr2",
+    "npc.horror_dagannoth_jr3",
+    "npc.horror_dagannoth_jr4",
+    "npc.dungeon_dagganoth_lighter",
+    "npc.dungeon_dagganoth_mainroom",
+    "npc.dungeon_dagganoth_lighter_deeper",
+    "npc.dungeon_dagganoth_mainroom_deeper",
+    "npc.kourend_dagannoth1",
+    "npc.kourend_dagannoth2",
+]
+area = "area.league_region_fremennik"
+
+[[league_task_defeat_a_jelly_in_the_fremennik_province]]
+trigger = "kill"
+npc = [
+    "npc.slayer_jelly_1",
+    "npc.slayer_jelly_2",
+    "npc.slayer_jelly_3",
+    "npc.slayer_jelly_4",
+    "npc.slayer_jelly_5",
+    "npc.slayer_jelly_6",
+    "npc.slayer_kurask_troll",
+    "npc.wild_cave_jelly_1",
+    "npc.wild_cave_jelly_2",
+    "npc.wild_cave_jelly_3",
+    "npc.wild_cave_jelly_4",
+    "npc.wild_cave_jelly_5",
+    "npc.tfa_jelly_minion",
+]
+area = "area.league_region_fremennik"
+
+[[league_task_defeat_a_kurask_in_tirannwn]]
+trigger = "kill"
+npc = [
+    "npc.slayer_kursk_1",
+    "npc.slayer_kursk_2",
+    "npc.poh_mounted_kurask_mahogany",
+    "npc.poh_mounted_kurask_gilded",
+]
+area = "area.league_region_tirannwn"
+
+[[league_task_defeat_a_kurask_in_the_fremennik_province]]
+trigger = "kill"
+npc = [
+    "npc.slayer_kursk_1",
+    "npc.slayer_kursk_2",
+    "npc.poh_mounted_kurask_mahogany",
+    "npc.poh_mounted_kurask_gilded",
+]
+area = "area.league_region_fremennik"
+
+[[league_task_defeat_a_steel_dragon_on_karamja]]
+trigger = "kill"
+npc = [
+    "npc.poh_steel_dragon",
+    "npc.steel_dragon",
+    "npc.steel_dragon_strongholdcave",
+    "npc.kourend_steel_dragon",
+    "npc.ds2_steel_dragon",
+]
+area = "area.league_region_karamja"
+
+[[league_task_defeat_a_troll_in_the_fremennik_province]]
+trigger = "kill"
+npc = [
+    "npc.poh_troll",
+    "npc.my2arm_flashback_troll_1",
+    "npc.my2arm_flashback_troll_2",
+    "npc.my2arm_flashback_troll_3",
+    "npc.my2arm_flashback_troll_4",
+]
+area = "area.league_region_fremennik"
+
+[[league_task_defeat_a_turoth_in_the_fremennik_province]]
+trigger = "kill"
+npc = [
+    "npc.slayer_turoth",
+    "npc.slayer_turoth_dad",
+    "npc.slayer_turoth_mum",
+    "npc.slayer_turoth_child",
+    "npc.slayer_turoth_baby",
+    "npc.slayer_turoth_dad2",
+    "npc.slayer_turoth_dad3",
+]
+area = "area.league_region_fremennik"
+
+[[league_task_defeat_a_dark_beast_in_tirannwn]]
+trigger = "kill"
+npc = ["npc.mourning_dark_beast", "npc.kourend_dark_beast"]
+area = "area.league_region_tirannwn"
+
+[[league_task_defeat_a_dust_devil_in_the_kharidian_desert]]
+trigger = "kill"
+npc = ["npc.slayer_dustdevil", "npc.kourend_dustdevil", "npc.wild_cave_dustdevil"]
+area = "area.league_region_desert"
+
+[[league_task_defeat_a_nechryael_in_tirannwn]]
+trigger = "kill"
+npc = ["npc.slayer_nechryael", "npc.slayer_nechryael_strongholdcave"]
+area = "area.league_region_tirannwn"
+
+[[league_task_defeat_an_abyssal_demon_in_morytania]]
+trigger = "kill"
+npc = [
+    "npc.slayer_abyssal",
+    "npc.slayer_abyssal_strongholdcave",
+    "npc.kourend_abyssal",
+    "npc.wild_cave_abyssal",
+    "npc.poh_mounted_abyssaldemon_mahogany",
+    "npc.poh_mounted_abyssaldemon_gilded",
+]
+area = "area.league_region_morytania"

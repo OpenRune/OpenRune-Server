@@ -8,7 +8,7 @@ import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onEvent
 import org.rsmod.content.events.leaguetasks.LeagueTaskProgress
 import org.rsmod.content.events.leaguetasks.LeagueTaskRequirement
-import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTrigger
+import org.rsmod.content.events.leaguetasks.LeagueTaskTrigger
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.world.WorldType
@@ -25,12 +25,12 @@ constructor(
 ) : PluginScript() {
     override val worldTypes = WorldType.entries.filter { it.isLeague }
 
-    private val rowsByEmote: Map<String, List<LeagueTaskRequirement>> =
-        progress.rows(LeagueTaskTrigger.Emote).groupBy { checkNotNull(it.emote) }
+    private val rowsByEmote =
+        progress.perLeague { it.rowsBy(LeagueTaskTrigger.Emote) { row -> listOfNotNull(row.emote) } }
 
     override fun ScriptContext.startup() {
         onEvent<PlayerEmoteEvent> {
-            val rows = rowsByEmote[emote] ?: return@onEvent
+            val rows = rowsByEmote[player]?.get(emote) ?: return@onEvent
             progress.record(player, rows.filter { player.isNear(it) })
         }
     }

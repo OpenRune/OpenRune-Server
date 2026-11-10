@@ -1,0 +1,50 @@
+[[league_task_chop_a_tree_in_the_tlati_rainforest]]
+trigger = "product"
+stat = "stat.woodcutting"
+area = "area.league_tlati_rainforest"
+
+[[league_task_chop_100_maples_in_tirannwn]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.maple_logs"
+area = "area.league_region_tirannwn"
+times = 100
+counter = "varbit.league_counter_chop_maples_in_tirannwn"
+
+[[league_task_chop_15_yew_logs_in_shayzien]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.yew_logs"
+area = "area.league_shayzien"
+times = 15
+counter = "varbit.league_task_chop_yew_logs_in_shayzien"
+
+[[league_task_chop_20_magic_logs_in_varlamore]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.magic_logs"
+area = "area.league_region_varlamore"
+times = 20
+counter = "varbit.league_task_chop_magic_logs_in_varlamore"
+
+[[league_task_chop_100_teak_logs_in_prifddinas]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.teak_logs"
+area = "area.league_prifddinas"
+times = 100
+counter = "varbit.league_counter_chop_teak_logs_in_prifddinas"
+
+[[league_task_chop_50_magic_logs_in_tirannwn]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.magic_logs"
+area = "area.league_region_tirannwn"
+times = 50
+counter = "varbit.league_task_chop_magic_logs_in_tirannwn"
+
+[[league_task_chop_a_magic_log_at_the_forsaken_tower]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.magic_logs"
+area = "area.league_forsaken_tower"

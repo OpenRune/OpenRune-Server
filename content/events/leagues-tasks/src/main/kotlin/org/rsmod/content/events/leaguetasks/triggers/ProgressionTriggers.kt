@@ -6,7 +6,7 @@ import org.rsmod.api.script.onPlayerLevelUp
 import org.rsmod.api.script.onPlayerXpGain
 import org.rsmod.content.events.leaguetasks.LeagueTaskProgress
 import org.rsmod.content.events.leaguetasks.LeagueTaskRequirement
-import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTrigger
+import org.rsmod.content.events.leaguetasks.LeagueTaskTrigger
 import org.rsmod.game.world.WorldType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -15,9 +15,7 @@ class ProgressionTriggers @Inject constructor(private val progress: LeagueTaskPr
     PluginScript() {
     override val worldTypes = WorldType.entries.filter { it.isLeague }
 
-    private val xpRowsByStat: Map<String, List<LeagueTaskRequirement>> =
-        progress.rows(LeagueTaskTrigger.Xp).flatMap { row -> row.stats.map { it to row } }
-            .groupBy({ it.first }, { it.second })
+    private val xpRowsByStat = progress.perLeague { it.rowsBy(LeagueTaskTrigger.Xp) { row -> row.stats } }
 
     override fun ScriptContext.startup() {
         onPlayerLevelUp {
@@ -30,7 +28,7 @@ class ProgressionTriggers @Inject constructor(private val progress: LeagueTaskPr
 
         onPlayerXpGain {
             val xp = player.statMap.getXP(stat)
-            for (row in xpRowsByStat[stat].orEmpty()) {
+            for (row in xpRowsByStat[player]?.get(stat).orEmpty()) {
                 if (xp >= row.value) {
                     progress.check(player, row.task)
                 }

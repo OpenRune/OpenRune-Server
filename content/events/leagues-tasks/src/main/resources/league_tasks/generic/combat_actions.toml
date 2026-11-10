@@ -1,0 +1,52 @@
+[[league_task_use_the_protect_from_melee_prayer]]
+trigger = "var"
+value = 1
+varbit = "varbit.prayer_protectfrommelee"
+
+[[league_task_perform_a_special_attack]]
+trigger = "special_attack"
+
+[[league_task_shoot_6_iron_arrows]]
+trigger = "ammo"
+obj = ["obj.iron_arrow", "obj.iron_arrow_p", "obj.iron_arrow_p+", "obj.iron_arrow_p++"]
+times = 6
+counter = "varbit.league_task_iron_arrows_shot"
+
+[[league_task_kill_a_scorpion_with_a_mithril_spear]]
+trigger = "kill"
+npc = [
+    "npc.sos_pest_scorpion",
+    "npc.sos_pest_scorpion2",
+    "npc.scorpion",
+    "npc.mm_jungle_scorpion",
+    "npc.varlamore_scorpion_savannah",
+    "npc.wandering_doomscorpion",
+    "npc.tinyscorpion",
+]
+tool = [
+    "obj.mithril_spear",
+    "obj.mithril_spear_p",
+    "obj.mithril_spear_p+",
+    "obj.mithril_spear_p++",
+    "obj.tbwt_mithril_spear_kp",
+]
+
+[[league_task_kill_5_creatures_with_a_mace]]
+trigger = "kill"
+tool = [
+    "obj.bronze_mace",
+    "obj.iron_mace",
+    "obj.steel_mace",
+    "obj.black_mace",
+    "obj.white_mace",
+    "obj.mithril_mace",
+    "obj.adamant_mace",
+    "obj.rune_mace",
+    "obj.dragon_mace",
+    "obj.pest_void_knight_mace",
+    "obj.ancient_goblin_mace",
+    "obj.inquisitors_mace",
+    "obj.barronite_mace",
+]
+times = 5
+counter = "varbit.league_task_creatures_with_mace"

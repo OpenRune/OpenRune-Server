@@ -41,7 +41,6 @@ league_infinite_run = 63446
 league_home_teleport = 64480
 
 [gamevals.dbtable]
-league_task_trigger = 40000
 league_tutorial_hint = 40001
 league_relic_passive = 40002
 

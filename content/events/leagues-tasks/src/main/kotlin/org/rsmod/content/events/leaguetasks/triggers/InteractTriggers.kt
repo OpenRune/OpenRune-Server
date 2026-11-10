@@ -5,9 +5,10 @@ import org.rsmod.api.player.events.interact.ObservedAction
 import org.rsmod.api.player.events.interact.ObservedTarget
 import org.rsmod.api.player.events.interact.heldCount
 import org.rsmod.api.script.onPlayerInteractionFinished
+import org.rsmod.content.events.leaguetasks.LeagueTaskIndex
 import org.rsmod.content.events.leaguetasks.LeagueTaskProgress
 import org.rsmod.content.events.leaguetasks.LeagueTaskRequirement
-import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTrigger
+import org.rsmod.content.events.leaguetasks.LeagueTaskTrigger
 import org.rsmod.game.world.WorldType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -21,8 +22,8 @@ class InteractTriggers @Inject constructor(private val progress: LeagueTaskProgr
     PluginScript() {
     override val worldTypes = WorldType.entries.filter { it.isLeague }
 
-    private val options = TargetRows(LeagueTaskTrigger.Interact)
-    private val uses = TargetRows(LeagueTaskTrigger.UseOn)
+    private val options = progress.perLeague { TargetRows(it, LeagueTaskTrigger.Interact) }
+    private val uses = progress.perLeague { TargetRows(it, LeagueTaskTrigger.UseOn) }
 
     override fun ScriptContext.startup() {
         onPlayerInteractionFinished {
@@ -31,8 +32,9 @@ class InteractTriggers @Inject constructor(private val progress: LeagueTaskProgr
             }
             when (val action = started.action) {
                 is ObservedAction.Option -> {
+                    val targets = options[player] ?: return@onPlayerInteractionFinished
                     val rows =
-                        options.of(started.target).filter {
+                        targets.of(started.target).filter {
                             it.option == 0 || it.option == action.slot
                         }
                     progress.record(player, rows)
@@ -42,8 +44,9 @@ class InteractTriggers @Inject constructor(private val progress: LeagueTaskProgr
                     if (player.inv.heldCount(item, action.comsub) >= action.count) {
                         return@onPlayerInteractionFinished
                     }
+                    val targets = uses[player] ?: return@onPlayerInteractionFinished
                     val rows =
-                        uses.of(started.target).filter {
+                        targets.of(started.target).filter {
                             (it.objs.isEmpty() || item.id in it.objs) &&
                                 (it.categories.isEmpty() || item.category in it.categories)
                         }
@@ -53,14 +56,10 @@ class InteractTriggers @Inject constructor(private val progress: LeagueTaskProgr
         }
     }
 
-    private inner class TargetRows(trigger: LeagueTaskTrigger) {
-        private val rows = progress.rows(trigger)
+    private class TargetRows(index: LeagueTaskIndex, trigger: LeagueTaskTrigger) {
+        private val byNpc: Map<Int, List<LeagueTaskRequirement>> = index.rowsBy(trigger) { it.npcs }
 
-        private val byNpc: Map<Int, List<LeagueTaskRequirement>> =
-            rows.flatMap { row -> row.npcs.map { it to row } }.groupBy({ it.first }, { it.second })
-
-        private val byLoc: Map<Int, List<LeagueTaskRequirement>> =
-            rows.flatMap { row -> row.locs.map { it to row } }.groupBy({ it.first }, { it.second })
+        private val byLoc: Map<Int, List<LeagueTaskRequirement>> = index.rowsBy(trigger) { it.locs }
 
         fun of(target: ObservedTarget): List<LeagueTaskRequirement> =
             when (target) {

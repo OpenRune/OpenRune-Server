@@ -1,14 +1,11 @@
 package org.rsmod.content.events.leaguetasks
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.definition.type.VarBitType
-import dev.openrune.types.varp.bits
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
-import org.rsmod.content.events.leaguetasks.pack.LeagueTaskTrigger
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.game.entity.Player
 
@@ -16,97 +13,48 @@ import org.rsmod.game.entity.Player
 @Singleton
 public class LeagueTaskProgress
 @Inject
-constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
-    private val rows: List<LeagueTaskRequirement> = LeagueTaskRequirement.loadAll(tasks.allTasks)
-    private val rowsByTask: Map<Int, List<LeagueTaskRequirement>> = rows.groupBy { it.task }
-    private val rowsByTrigger: Map<LeagueTaskTrigger, List<LeagueTaskRequirement>> =
-        rows.groupBy { it.trigger }
+constructor(
+    private val tasks: LeagueTasks,
+    private val definitions: LeagueTaskDefinitions,
+    private val areas: AreaChecker,
+) {
     private val trainableStats: List<String> =
         ServerCacheManager.getStats().values.filterNot { it.unreleased }.map { it.internalName }
-    private val counterCaps: Map<Int, Int> =
-        rows.filter { it.counter != null }
-            .groupBy { it.counter!!.id }
-            .mapValues { (_, sharing) -> sharing.maxOf { it.count } }
 
-    init {
-        for (row in rows) {
-            if (row.trigger.isState) {
-                check(row.areas.isEmpty()) {
-                    "League task ${row.task}: a ${row.trigger} row cannot be limited to an area."
-                }
-                check(row.trigger != LeagueTaskTrigger.Var || row.baseVarp != null) {
-                    "League task ${row.task}: its Var row names no varp or varbit."
-                }
-                continue
-            }
-            val remembers = row.count > 1 || rowsByTask.getValue(row.task).size > 1
-            check(!remembers || row.counter != null) {
-                "League task ${row.task} needs a counter varbit for its ${row.trigger} row."
-            }
-            val counter = row.counter ?: continue
-            check(row.count <= counter.maxValue) {
-                "League task ${row.task}: counter ${counter.id} holds ${counter.maxValue}, " +
-                    "below its count of ${row.count}."
-            }
-        }
-        checkCountersDisjoint()
-        checkSharedCountersMatchAlike()
+    private var indexes: Map<Int, LeagueTaskIndex> = buildIndexes()
+
+    private val views = mutableListOf<PerLeague<*>>()
+
+    public val activeIndexes: Collection<LeagueTaskIndex>
+        get() = indexes.values
+
+    private fun buildIndexes(): Map<Int, LeagueTaskIndex> =
+        definitions.active.associate { it.league.type to it.index }
+
+    /** A value built from each active league's index, rebuilt when the task files are reloaded. */
+    public fun <T> perLeague(build: (LeagueTaskIndex) -> T): PerLeague<T> =
+        PerLeague(build).also { views += it }
+
+    public fun indexOf(player: Player): LeagueTaskIndex? =
+        tasks.leagueOf(player)?.let { indexes[it.type] }
+
+    internal fun reload() {
+        definitions.reload()
+        indexes = buildIndexes()
+        views.forEach { it.rebuild() }
     }
-
-    /** Rows sharing a counter must count the same events, or one would advance it for another. */
-    private fun checkSharedCountersMatchAlike() {
-        val sharing = rows.filter { it.counter != null }.groupBy { it.counter!!.id }
-        for ((counter, group) in sharing) {
-            val first = group.first()
-            for (row in group) {
-                val alike =
-                    row.trigger == first.trigger &&
-                        row.objs == first.objs &&
-                        row.npcs == first.npcs &&
-                        row.categories == first.categories &&
-                        row.slayerTask == first.slayerTask &&
-                        row.stats == first.stats &&
-                        row.areas == first.areas &&
-                        row.tools == first.tools &&
-                        row.value == first.value
-                check(alike) {
-                    "League tasks ${first.task} and ${row.task} share counter $counter but " +
-                        "count different events."
-                }
-            }
-        }
-    }
-
-    private fun checkCountersDisjoint() {
-        val counters = rows.mapNotNull { it.counter }.distinctBy { it.id }
-        for ((varp, packed) in counters.groupBy { it.varp }) {
-            for ((i, a) in packed.withIndex()) {
-                for (b in packed.drop(i + 1)) {
-                    check(a.bits.last < b.bits.first || b.bits.last < a.bits.first) {
-                        "League counters ${a.id} and ${b.id} share bits of varp $varp."
-                    }
-                }
-            }
-        }
-    }
-
-    public fun rows(trigger: LeagueTaskTrigger): List<LeagueTaskRequirement> =
-        rowsByTrigger[trigger].orEmpty()
-
-    public fun rowsByObj(trigger: LeagueTaskTrigger): Map<Int, List<LeagueTaskRequirement>> =
-        rows(trigger).flatMap { row -> row.objs.map { it to row } }
-            .groupBy({ it.first }, { it.second })
-
-    public fun rowsForAnyObj(trigger: LeagueTaskTrigger): List<LeagueTaskRequirement> =
-        rows(trigger).filter { it.objs.isEmpty() }
 
     public fun check(player: Player, task: Int) {
-        val league = tasks.leagueOf(player) ?: return
-        val index = league.indexOf(task) ?: return
-        if (tasks.isComplete(player, index)) {
+        val index = indexOf(player) ?: return
+        check(player, index, task)
+    }
+
+    private fun check(player: Player, index: LeagueTaskIndex, task: Int) {
+        val bit = index.league.indexOf(task) ?: return
+        if (tasks.isComplete(player, bit)) {
             return
         }
-        val rows = rowsByTask[task] ?: return
+        val rows = index.rowsByTask[task] ?: return
         if (rows.all { isMet(player, it) }) {
             tasks.complete(player, task)
         }
@@ -122,11 +70,11 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
         if (amount <= 0 || rows.isEmpty()) {
             return
         }
-        val league = tasks.leagueOf(player) ?: return
+        val index = indexOf(player) ?: return
         val advanced = HashSet<Int>()
         for (row in rows) {
-            val index = league.indexOf(row.task) ?: continue
-            if (tasks.isComplete(player, index)) {
+            val bit = index.league.indexOf(row.task) ?: continue
+            if (tasks.isComplete(player, bit)) {
                 continue
             }
             if (row.areas.isNotEmpty() && row.areas.none { areas.inArea(it, player.coords) }) {
@@ -138,20 +86,21 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
                 continue
             }
             if (advanced.add(counter.id)) {
-                val cap = counterCaps.getValue(counter.id)
+                val cap = index.counterCaps.getValue(counter.id)
                 val progress = player.vars[counter]
                 if (progress < cap) {
                     val capped = (progress.toLong() + amount).coerceAtMost(cap.toLong()).toInt()
                     VarPlayerIntMapSetter.set(player, counter, capped)
                 }
             }
-            check(player, row.task)
+            check(player, index, row.task)
         }
     }
 
     public fun checkAll(player: Player, trigger: LeagueTaskTrigger) {
-        for (row in rows(trigger)) {
-            check(player, row.task)
+        val index = indexOf(player) ?: return
+        for (row in index.rows(trigger)) {
+            check(player, index, row.task)
         }
     }
 
@@ -208,11 +157,26 @@ constructor(private val tasks: LeagueTasks, private val areas: AreaChecker) {
             LeagueTaskTrigger.SpecialAttack,
             LeagueTaskTrigger.Ammo,
             LeagueTaskTrigger.Emote,
-            LeagueTaskTrigger.UseOn ->
+            LeagueTaskTrigger.UseOn,
+            LeagueTaskTrigger.Pick,
+            LeagueTaskTrigger.SlayerTaskComplete,
+            LeagueTaskTrigger.SlayerKill,
+            LeagueTaskTrigger.SuperiorKill ->
                 row.counter?.let { player.vars[it] >= row.count } ?: false
         }
     }
 
-    private val VarBitType.maxValue: Int
-        get() = (1 shl (bits.last - bits.first + 1)) - 1
+    public inner class PerLeague<T> internal constructor(private val build: (LeagueTaskIndex) -> T) {
+        private var values: Map<Int, T> = buildAll()
+
+        private fun buildAll(): Map<Int, T> =
+            indexes.mapValues { (_, index) -> build(index) }
+
+        internal fun rebuild() {
+            values = buildAll()
+        }
+
+        public operator fun get(player: Player): T? =
+            tasks.leagueOf(player)?.let { values[it.type] }
+    }
 }

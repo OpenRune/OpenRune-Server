@@ -1,0 +1,5 @@
+[[league_task_smelt_a_steel_bar_in_port_phasmatys]]
+trigger = "product"
+stat = "stat.smithing"
+obj = "obj.steel_bar"
+area = "area.league_port_phasmatys"

@@ -8,4 +8,7 @@ dependencies {
     implementation(projects.content.interfaces.collectionLog)
     implementation(projects.content.interfaces.journalTab)
     implementation(projects.content.interfaces.screenHighlight)
+    implementation(libs.jackson.databind)
+    implementation(libs.jackson.dataformat.toml)
+    implementation(libs.jackson.module.kotlin)
 }

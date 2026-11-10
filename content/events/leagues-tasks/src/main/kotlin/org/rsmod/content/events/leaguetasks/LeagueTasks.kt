@@ -22,7 +22,15 @@ public class LeagueTasks @Inject constructor(private val eventBus: EventBus) {
     private val tierNames: Map<Int, String> =
         enum<Int, String>("league_task_tier_names").filterValuesNotNull().backing
 
-    public val allTasks: Set<Int> = leagues.values.flatMapTo(HashSet()) { it.tasks }
+    private val claimed = HashSet<Int>()
+
+    /** Tasks whose completion a hand-written handler owns; only used to report coverage. */
+    public val claimedTasks: Set<Int>
+        get() = claimed
+
+    public fun claim(vararg tasks: Int) {
+        claimed += tasks.asList()
+    }
 
     public fun leagueOf(player: Player): League? = leagues[player.vars["varbit.league_type"]]
 

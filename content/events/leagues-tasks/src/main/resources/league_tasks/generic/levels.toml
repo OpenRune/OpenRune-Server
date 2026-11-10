@@ -1,0 +1,1088 @@
+[[league_task_achieve_your_first_level_up]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 2
+
+[[league_task_achieve_your_first_level_5]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 5
+
+[[league_task_achieve_your_first_level_10]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 10
+
+[[league_task_achieve_your_first_level_20]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 20
+
+[[league_task_achieve_your_first_level_30]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 30
+
+[[league_task_achieve_your_first_level_40]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 40
+
+[[league_task_achieve_your_first_level_50]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 50
+
+[[league_task_achieve_your_first_level_60]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 60
+
+[[league_task_achieve_your_first_level_70]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 70
+
+[[league_task_achieve_your_first_level_80]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 80
+
+[[league_task_achieve_your_first_level_90]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 90
+
+[[league_task_achieve_your_first_level_95]]
+trigger = "level"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 95
+
+[[league_task_reach_level_99_attack]]
+trigger = "level"
+stat = "stat.attack"
+value = 99
+
+[[league_task_reach_level_99_strength]]
+trigger = "level"
+stat = "stat.strength"
+value = 99
+
+[[league_task_reach_level_99_defence]]
+trigger = "level"
+stat = "stat.defence"
+value = 99
+
+[[league_task_reach_level_99_magic]]
+trigger = "level"
+stat = "stat.magic"
+value = 99
+
+[[league_task_reach_level_99_ranged]]
+trigger = "level"
+stat = "stat.ranged"
+value = 99
+
+[[league_task_reach_level_99_hitpoints]]
+trigger = "level"
+stat = "stat.hitpoints"
+value = 99
+
+[[league_task_reach_level_99_prayer]]
+trigger = "level"
+stat = "stat.prayer"
+value = 99
+
+[[league_task_reach_level_99_cooking]]
+trigger = "level"
+stat = "stat.cooking"
+value = 99
+
+[[league_task_reach_level_99_woodcutting]]
+trigger = "level"
+stat = "stat.woodcutting"
+value = 99
+
+[[league_task_reach_level_99_fletching]]
+trigger = "level"
+stat = "stat.fletching"
+value = 99
+
+[[league_task_reach_level_99_fishing]]
+trigger = "level"
+stat = "stat.fishing"
+value = 99
+
+[[league_task_reach_level_99_firemaking]]
+trigger = "level"
+stat = "stat.firemaking"
+value = 99
+
+[[league_task_reach_level_99_crafting]]
+trigger = "level"
+stat = "stat.crafting"
+value = 99
+
+[[league_task_reach_level_99_smithing]]
+trigger = "level"
+stat = "stat.smithing"
+value = 99
+
+[[league_task_reach_level_99_mining]]
+trigger = "level"
+stat = "stat.mining"
+value = 99
+
+[[league_task_reach_level_99_herblore]]
+trigger = "level"
+stat = "stat.herblore"
+value = 99
+
+[[league_task_reach_level_99_agility]]
+trigger = "level"
+stat = "stat.agility"
+value = 99
+
+[[league_task_reach_level_99_thieving]]
+trigger = "level"
+stat = "stat.thieving"
+value = 99
+
+[[league_task_reach_level_99_slayer]]
+trigger = "level"
+stat = "stat.slayer"
+value = 99
+
+[[league_task_reach_level_99_farming]]
+trigger = "level"
+stat = "stat.farming"
+value = 99
+
+[[league_task_reach_level_99_runecraft]]
+trigger = "level"
+stat = "stat.runecrafting"
+value = 99
+
+[[league_task_reach_level_99_hunter]]
+trigger = "level"
+stat = "stat.hunter"
+value = 99
+
+[[league_task_reach_level_99_construction]]
+trigger = "level"
+stat = "stat.construction"
+value = 99
+
+[[league_task_reach_base_level_5]]
+trigger = "base_level"
+value = 5
+
+[[league_task_reach_base_level_10]]
+trigger = "base_level"
+value = 10
+
+[[league_task_reach_base_level_20]]
+trigger = "base_level"
+value = 20
+
+[[league_task_reach_base_level_30]]
+trigger = "base_level"
+value = 30
+
+[[league_task_reach_base_level_40]]
+trigger = "base_level"
+value = 40
+
+[[league_task_reach_base_level_50]]
+trigger = "base_level"
+value = 50
+
+[[league_task_reach_base_level_60]]
+trigger = "base_level"
+value = 60
+
+[[league_task_reach_base_level_70]]
+trigger = "base_level"
+value = 70
+
+[[league_task_reach_base_level_80]]
+trigger = "base_level"
+value = 80
+
+[[league_task_reach_base_level_90]]
+trigger = "base_level"
+value = 90
+
+[[league_task_reach_base_level_95]]
+trigger = "base_level"
+value = 95
+
+[[league_task_reach_total_level_100]]
+trigger = "total_level"
+value = 100
+
+[[league_task_reach_total_level_250]]
+trigger = "total_level"
+value = 250
+
+[[league_task_reach_total_level_750]]
+trigger = "total_level"
+value = 750
+
+[[league_task_reach_total_level_1000]]
+trigger = "total_level"
+value = 1000
+
+[[league_task_reach_total_level_1250]]
+trigger = "total_level"
+value = 1250
+
+[[league_task_reach_total_level_1500]]
+trigger = "total_level"
+value = 1500
+
+[[league_task_reach_total_level_1750]]
+trigger = "total_level"
+value = 1750
+
+[[league_task_reach_total_level_2000]]
+trigger = "total_level"
+value = 2000
+
+[[league_task_reach_total_level_2100]]
+trigger = "total_level"
+value = 2100
+
+[[league_task_reach_total_level_2200]]
+trigger = "total_level"
+value = 2200
+
+[[league_task_reach_total_level_2277]]
+trigger = "total_level"
+value = 2277
+
+[[action_total_level_666]]
+trigger = "total_level"
+value = 666
+
+[[league_task_reach_combat_level_25]]
+trigger = "combat_level"
+value = 25
+
+[[league_task_reach_combat_level_50]]
+trigger = "combat_level"
+value = 50
+
+[[league_task_reach_combat_level_75]]
+trigger = "combat_level"
+value = 75
+
+[[league_task_reach_combat_level_100]]
+trigger = "combat_level"
+value = 100
+
+[[league_task_reach_combat_level_110]]
+trigger = "combat_level"
+value = 110
+
+[[league_task_reach_combat_level_120]]
+trigger = "combat_level"
+value = 120
+
+[[league_task_reach_combat_level_126]]
+trigger = "combat_level"
+value = 126
+
+[[league_task_obtain_25_million_cooking_xp]]
+trigger = "xp"
+stat = "stat.cooking"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_cooking_xp]]
+trigger = "xp"
+stat = "stat.cooking"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_woodcutting_xp]]
+trigger = "xp"
+stat = "stat.woodcutting"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_woodcutting_xp]]
+trigger = "xp"
+stat = "stat.woodcutting"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_fletching_xp]]
+trigger = "xp"
+stat = "stat.fletching"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_fletching_xp]]
+trigger = "xp"
+stat = "stat.fletching"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_fishing_xp]]
+trigger = "xp"
+stat = "stat.fishing"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_fishing_xp]]
+trigger = "xp"
+stat = "stat.fishing"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_firemaking_xp]]
+trigger = "xp"
+stat = "stat.firemaking"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_firemaking_xp]]
+trigger = "xp"
+stat = "stat.firemaking"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_crafting_xp]]
+trigger = "xp"
+stat = "stat.crafting"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_crafting_xp]]
+trigger = "xp"
+stat = "stat.crafting"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_smithing_xp]]
+trigger = "xp"
+stat = "stat.smithing"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_smithing_xp]]
+trigger = "xp"
+stat = "stat.smithing"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_mining_xp]]
+trigger = "xp"
+stat = "stat.mining"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_mining_xp]]
+trigger = "xp"
+stat = "stat.mining"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_herblore_xp]]
+trigger = "xp"
+stat = "stat.herblore"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_herblore_xp]]
+trigger = "xp"
+stat = "stat.herblore"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_agility_xp]]
+trigger = "xp"
+stat = "stat.agility"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_agility_xp]]
+trigger = "xp"
+stat = "stat.agility"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_thieving_xp]]
+trigger = "xp"
+stat = "stat.thieving"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_thieving_xp]]
+trigger = "xp"
+stat = "stat.thieving"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_slayer_xp]]
+trigger = "xp"
+stat = "stat.slayer"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_slayer_xp]]
+trigger = "xp"
+stat = "stat.slayer"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_farming_xp]]
+trigger = "xp"
+stat = "stat.farming"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_farming_xp]]
+trigger = "xp"
+stat = "stat.farming"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_runecraft_xp]]
+trigger = "xp"
+stat = "stat.runecrafting"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_runecraft_xp]]
+trigger = "xp"
+stat = "stat.runecrafting"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_hunter_xp]]
+trigger = "xp"
+stat = "stat.hunter"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_hunter_xp]]
+trigger = "xp"
+stat = "stat.hunter"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_construction_xp]]
+trigger = "xp"
+stat = "stat.construction"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_construction_xp]]
+trigger = "xp"
+stat = "stat.construction"
+value = 35000000
+times = 1
+
+[[league_task_obtain_25_million_prayer_xp]]
+trigger = "xp"
+stat = "stat.prayer"
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_prayer_xp]]
+trigger = "xp"
+stat = "stat.prayer"
+value = 35000000
+times = 1
+
+[[league_task_obtain_50_million_attack_xp]]
+trigger = "xp"
+stat = "stat.attack"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_strength_xp]]
+trigger = "xp"
+stat = "stat.strength"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_defence_xp]]
+trigger = "xp"
+stat = "stat.defence"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_magic_xp]]
+trigger = "xp"
+stat = "stat.magic"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_ranged_xp]]
+trigger = "xp"
+stat = "stat.ranged"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_hitpoints_xp]]
+trigger = "xp"
+stat = "stat.hitpoints"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_prayer_xp]]
+trigger = "xp"
+stat = "stat.prayer"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_cooking_xp]]
+trigger = "xp"
+stat = "stat.cooking"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_woodcutting_xp]]
+trigger = "xp"
+stat = "stat.woodcutting"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_fletching_xp]]
+trigger = "xp"
+stat = "stat.fletching"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_fishing_xp]]
+trigger = "xp"
+stat = "stat.fishing"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_firemaking_xp]]
+trigger = "xp"
+stat = "stat.firemaking"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_crafting_xp]]
+trigger = "xp"
+stat = "stat.crafting"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_smithing_xp]]
+trigger = "xp"
+stat = "stat.smithing"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_mining_xp]]
+trigger = "xp"
+stat = "stat.mining"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_herblore_xp]]
+trigger = "xp"
+stat = "stat.herblore"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_agility_xp]]
+trigger = "xp"
+stat = "stat.agility"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_thieving_xp]]
+trigger = "xp"
+stat = "stat.thieving"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_slayer_xp]]
+trigger = "xp"
+stat = "stat.slayer"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_farming_xp]]
+trigger = "xp"
+stat = "stat.farming"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_runecraft_xp]]
+trigger = "xp"
+stat = "stat.runecrafting"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_hunter_xp]]
+trigger = "xp"
+stat = "stat.hunter"
+value = 50000000
+times = 1
+
+[[league_task_obtain_50_million_construction_xp]]
+trigger = "xp"
+stat = "stat.construction"
+value = 50000000
+times = 1
+
+[[league_task_obtain_25_million_xp_combat_skill]]
+trigger = "xp"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+]
+value = 25000000
+times = 1
+
+[[league_task_obtain_35_million_xp_combat_skill]]
+trigger = "xp"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+]
+value = 35000000
+times = 1
+
+[[league_task_obtain_100_million_xp_combat_skill]]
+trigger = "xp"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+    "stat.prayer",
+]
+value = 100000000
+times = 1
+
+[[league_task_obtain_200_million_xp_combat_skill]]
+trigger = "xp"
+stat = [
+    "stat.attack",
+    "stat.strength",
+    "stat.defence",
+    "stat.magic",
+    "stat.ranged",
+    "stat.hitpoints",
+]
+value = 200000000
+times = 1
+
+[[league_task_obtain_100_million_xp_noncombat_skill]]
+trigger = "xp"
+stat = [
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 100000000
+times = 1
+
+[[league_task_obtain_200_million_xp_noncombat_skill]]
+trigger = "xp"
+stat = [
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 200000000
+times = 1
+
+[[league_task_obtain_25_million_xp_5_noncombat_skills]]
+trigger = "xp"
+stat = [
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 25000000
+times = 5
+
+[[league_task_obtain_35_million_xp_3_noncombat_skills]]
+trigger = "xp"
+stat = [
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+]
+value = 35000000
+times = 3
+
+[[league_task_obtain_50_million_xp_3_noncombat_skills]]
+trigger = "xp"
+stat = [
+    "stat.cooking",
+    "stat.woodcutting",
+    "stat.fletching",
+    "stat.fishing",
+    "stat.firemaking",
+    "stat.crafting",
+    "stat.smithing",
+    "stat.mining",
+    "stat.herblore",
+    "stat.agility",
+    "stat.thieving",
+    "stat.slayer",
+    "stat.farming",
+    "stat.runecrafting",
+    "stat.hunter",
+    "stat.construction",
+    "stat.prayer",
+]
+value = 50000000
+times = 3

@@ -1,0 +1,130 @@
+[[league_task_equip_a_marksman_chompy_hat]]
+trigger = "equip"
+obj = "obj.cbhat6"
+
+[[league_task_equip_an_ogre_forester_chompy_hat]]
+trigger = "equip"
+obj = "obj.cbhat9"
+
+[[league_task_equip_an_ogre_expert_chompy_hat]]
+trigger = "equip"
+obj = "obj.cbhat13"
+
+[[league_task_equip_a_dragon_archer_chompy_hat]]
+trigger = "equip"
+obj = "obj.cbhat16"
+
+[[league_task_equip_a_monkey_backpack]]
+trigger = "equip"
+obj = [
+    "obj.mm2_monkey",
+    "obj.mm2_monkey_karamja",
+    "obj.mm2_monkey_maniacal",
+    "obj.mm2_monkey_awowogei",
+    "obj.mm2_monkey_skeleton",
+    "obj.mm2_monkey_zombie",
+]
+
+[[league_task_equip_a_karamja_monkey_backpack]]
+trigger = "equip"
+obj = "obj.mm2_monkey_karamja"
+
+[[league_task_equip_a_maniacal_monkey_backpack]]
+trigger = "equip"
+obj = "obj.mm2_monkey_maniacal"
+
+[[league_task_equip_a_twohanded_axe]]
+trigger = "equip"
+obj = [
+    "obj.bronze_axe_2h",
+    "obj.iron_axe_2h",
+    "obj.steel_axe_2h",
+    "obj.black_axe_2h",
+    "obj.mithril_axe_2h",
+    "obj.adamant_axe_2h",
+    "obj.rune_axe_2h",
+    "obj.dragon_axe_2h",
+    "obj.3a_axe_2h",
+    "obj.crystal_axe_2h",
+]
+
+[[league_task_equip_a_full_set_of_the_smiths_outfit]]
+trigger = "equip"
+obj = [
+    "obj.smithing_uniform_torso",
+    "obj.smithing_uniform_legs",
+    "obj.smithing_uniform_boots",
+    "obj.smithing_uniform_gloves",
+    "obj.smithing_uniform_gloves_ice",
+]
+times = 4
+
+[[league_task_equip_the_pyromancers_garb]]
+trigger = "equip"
+obj = ["obj.pyromancer_hood", "obj.pyromancer_top", "obj.pyromancer_bottom", "obj.pyromancer_boots"]
+times = 4
+
+[[league_task_equip_full_oathplate]]
+trigger = "equip"
+obj = ["obj.oathplate_helm", "obj.oathplate_chest", "obj.oathplate_legs"]
+times = 3
+
+[[league_task_equip_a_corrupted_weapon]]
+trigger = "equip"
+obj = [
+    "obj.blade_of_saeldor_infinite",
+    "obj.blade_of_saeldor_infinite_ithell",
+    "obj.blade_of_saeldor_infinite_iorwerth",
+    "obj.blade_of_saeldor_infinite_trahaearn",
+    "obj.blade_of_saeldor_infinite_cadarn",
+    "obj.blade_of_saeldor_infinite_crwys",
+    "obj.blade_of_saeldor_infinite_meilyr",
+    "obj.blade_of_saeldor_infinite_amlodd",
+    "obj.bow_of_faerdhinen_infinite",
+    "obj.bow_of_faerdhinen_infinite_ithell",
+    "obj.bow_of_faerdhinen_infinite_iorwerth",
+    "obj.bow_of_faerdhinen_infinite_trahaearn",
+    "obj.bow_of_faerdhinen_infinite_cadarn",
+    "obj.bow_of_faerdhinen_infinite_crwys",
+    "obj.bow_of_faerdhinen_infinite_meilyr",
+    "obj.bow_of_faerdhinen_infinite_amlodd",
+]
+
+[[league_task_equip_some_primordial_pegasian_or_eternal_boots]]
+trigger = "equip"
+obj = [
+    "obj.primordial_boots",
+    "obj.pegasian_boots",
+    "obj.eternal_boots",
+    "obj.avernic_treads_melee",
+    "obj.avernic_treads_ranged",
+    "obj.avernic_treads_magic",
+    "obj.avernic_treads_melee_ranged",
+    "obj.avernic_treads_melee_magic",
+    "obj.avernic_treads_ranged_magic",
+    "obj.avernic_treads_max",
+]
+
+[[league_task_equip_a_gilded_or_trimmed_wizard_item]]
+trigger = "equip"
+obj = [
+    "obj.rune_full_helm_goldplate",
+    "obj.rune_platebody_goldplate",
+    "obj.rune_platelegs_goldplate",
+    "obj.rune_plateskirt_goldplate",
+    "obj.rune_kiteshield_goldplate",
+    "obj.rune_med_helm_gold",
+    "obj.rune_chainbody_gold",
+    "obj.rune_sq_shield_gold",
+    "obj.rune_boots_gold",
+    "obj.trail_gilded_dhide_coif",
+    "obj.trail_gilded_dhide_top",
+    "obj.trail_gilded_dhide_chaps",
+    "obj.trail_gilded_dhide_vambraces",
+    "obj.bluewizhat_trim",
+    "obj.wizards_robe_trim",
+    "obj.blue_skirt_trim",
+    "obj.blackwizhat_trim",
+    "obj.black_wizards_robe_trim",
+    "obj.black_skirt_trim",
+]

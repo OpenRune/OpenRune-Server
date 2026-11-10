@@ -1,0 +1,488 @@
+[[league_task_equip_a_protest_banner]]
+trigger = "equip"
+obj = "obj.akd_protest_banner"
+
+[[league_task_equip_a_willow_shield]]
+trigger = "equip"
+obj = "obj.willow_shield"
+
+[[league_task_equip_a_yew_shortbow]]
+trigger = "equip"
+obj = "obj.yew_shortbow"
+
+[[league_task_equip_the_forestry_basket]]
+trigger = "equip"
+obj = "obj.forestry_basket_closed"
+
+[[league_task_equip_earthbound_tecpatl]]
+trigger = "equip"
+obj = "obj.earthbound_tecpatl"
+
+[[league_task_equip_glacial_temotli]]
+trigger = "equip"
+obj = "obj.glacial_temotli"
+
+[[league_task_equip_pendant_of_ates]]
+trigger = "equip"
+obj = "obj.pendant_of_ates"
+
+[[league_task_equip_sulphur_blades]]
+trigger = "equip"
+obj = "obj.sulphur_blades"
+
+[[league_task_equip_amys_saw]]
+trigger = "equip"
+obj = "obj.wearable_saw"
+
+[[league_task_equip_a_bracelet_of_ethereum]]
+trigger = "equip"
+obj = "obj.wild_cave_bracelet_charged"
+
+[[league_task_equip_a_dragon_scimitar]]
+trigger = "equip"
+obj = "obj.dragon_scimitar"
+
+[[league_task_equip_a_fedora]]
+trigger = "equip"
+obj = "obj.fedora"
+
+[[league_task_equip_a_helm_of_neitiznot]]
+trigger = "equip"
+obj = "obj.fris_kingly_helm"
+
+[[league_task_equip_a_pearl_fishing_rod]]
+trigger = "equip"
+obj = "obj.fishingrod_pearl"
+
+[[league_task_equip_a_salve_amulet_e]]
+trigger = "equip"
+obj = "obj.lotr_crystalshard_necklace_upgrade"
+
+[[league_task_equip_a_spottier_cape]]
+trigger = "equip"
+obj = ["obj.hunting_lighter_cape", "obj.hunting_lighter_cape_worn"]
+
+[[league_task_equip_a_toktzketxil]]
+trigger = "equip"
+obj = "obj.tzhaar_spikeshield"
+
+[[league_task_equip_a_toktzxilak]]
+trigger = "equip"
+obj = "obj.tzhaar_splitsword"
+
+[[league_task_equip_a_toktzxilek]]
+trigger = "equip"
+obj = "obj.tzhaar_knife"
+
+[[league_task_equip_xerics_talisman]]
+trigger = "equip"
+obj = "obj.xeric_talisman"
+
+[[league_task_equip_an_imcando_hammer]]
+trigger = "equip"
+obj = "obj.imcando_hammer"
+
+[[league_task_equip_an_obsidian_cape]]
+trigger = "equip"
+obj = "obj.tzhaar_cape_obsidian"
+
+[[league_task_equip_the_colossal_blade]]
+trigger = "equip"
+obj = "obj.giants_foundry_colossal_blade"
+
+[[league_task_equip_the_cursed_amulet_of_magic]]
+trigger = "equip"
+obj = "obj.amulet_of_magic_cursed"
+
+[[league_task_equip_the_tome_of_water]]
+trigger = "equip"
+obj = "obj.tome_of_water"
+
+[[league_task_equip_a_magic_shortbow]]
+trigger = "equip"
+obj = "obj.magic_shortbow"
+
+[[league_task_equip_a_mist_battlestaff]]
+trigger = "equip"
+obj = "obj.mist_battlestaff"
+
+[[league_task_equip_a_rune_crossbow]]
+trigger = "equip"
+obj = "obj.xbows_crossbow_runite"
+
+[[league_task_equip_some_ranger_boots]]
+trigger = "equip"
+obj = "obj.boots_ranger"
+
+[[league_task_equip_echo_boots]]
+trigger = "equip"
+obj = "obj.echo_boots"
+
+[[league_task_equip_aranea_boots]]
+trigger = "equip"
+obj = "obj.aranea_boots"
+
+[[league_task_equip_boots_of_brimstone]]
+trigger = "equip"
+obj = "obj.boots_of_brimstone"
+
+[[league_task_equip_a_berserker_ring]]
+trigger = "equip"
+obj = "obj.berzerker_ring"
+
+[[league_task_equip_a_brine_sabre]]
+trigger = "equip"
+obj = "obj.olaf2_brine_sabre"
+
+[[league_task_equip_a_crystal_bow]]
+trigger = "equip"
+obj = ["obj.crystal_bow", "obj.crystal_bow_2500"]
+
+[[league_task_equip_a_crystal_shield]]
+trigger = "equip"
+obj = ["obj.crystal_shield", "obj.crystal_shield_2500"]
+
+[[league_task_equip_a_dragon_defender]]
+trigger = "equip"
+obj = "obj.dragon_parryingdagger"
+
+[[league_task_equip_a_leafbladed_battleaxe]]
+trigger = "equip"
+obj = "obj.leafbladed_battleaxe"
+
+[[league_task_equip_a_malediction_ward]]
+trigger = "equip"
+obj = ["obj.malediction_ward", "obj.malediction_ward_pretty"]
+
+[[league_task_equip_a_mud_battlestaff]]
+trigger = "equip"
+obj = "obj.mud_battlestaff"
+
+[[league_task_equip_a_nightmare_staff]]
+trigger = "equip"
+obj = "obj.nightmare_staff"
+
+[[league_task_equip_a_red_topaz_machete]]
+trigger = "equip"
+obj = "obj.machette_redtopaz"
+
+[[league_task_equip_a_saradomin_sword]]
+trigger = "equip"
+obj = "obj.saradomin_sword"
+
+[[league_task_equip_a_seercull]]
+trigger = "equip"
+obj = "obj.daganoth_cave_magic_shortbow"
+
+[[league_task_equip_a_warped_sceptre]]
+trigger = "equip"
+obj = "obj.warped_sceptre"
+
+[[league_task_equip_a_warrior_ring]]
+trigger = "equip"
+obj = "obj.warrior_ring"
+
+[[league_task_equip_a_zamorakian_spear]]
+trigger = "equip"
+obj = "obj.zamorak_spear"
+
+[[league_task_equip_an_avas_assembler]]
+trigger = "equip"
+obj = "obj.avas_assembler"
+
+[[league_task_equip_an_odium_ward]]
+trigger = "equip"
+obj = ["obj.odium_ward", "obj.odium_ward_pretty"]
+
+[[league_task_equip_holy_moleys]]
+trigger = "equip"
+obj = "obj.holy_moleys"
+
+[[league_task_equip_the_abyssal_lantern]]
+trigger = "equip"
+obj = "obj.abyssal_lantern"
+
+[[league_task_equip_the_lightbearer]]
+trigger = "equip"
+obj = "obj.lightbearer"
+
+[[league_task_equip_a_dragonfire_shield]]
+trigger = "equip"
+obj = ["obj.dragonfire_shield", "obj.dragonfire_shield_uncharged"]
+
+[[league_task_equip_an_abyssal_bludgeon]]
+trigger = "equip"
+obj = "obj.abyssal_bludgeon"
+
+[[league_task_equip_an_abyssal_dagger]]
+trigger = "equip"
+obj = "obj.abyssal_dagger"
+
+[[league_task_equip_an_abyssal_whip]]
+trigger = "equip"
+obj = "obj.abyssal_whip"
+
+[[league_task_equip_the_soulreaper_axe]]
+trigger = "equip"
+obj = "obj.soulreaper"
+
+[[league_task_equip_tonalztics_of_ralos]]
+trigger = "equip"
+obj = "obj.tonalztics_of_ralos_charged"
+
+[[league_task_equip_a_tecu_salamander]]
+trigger = "equip"
+obj = "obj.mountain_salamander"
+
+[[league_task_equip_the_ultor_ring]]
+trigger = "equip"
+obj = "obj.ultor_ring"
+
+[[league_task_equip_craws_bow]]
+trigger = "equip"
+obj = "obj.wild_cave_bow_charged"
+
+[[league_task_equip_dinhs_bulwark]]
+trigger = "equip"
+obj = "obj.dinhs_bulwark"
+
+[[league_task_equip_ferocious_gloves]]
+trigger = "equip"
+obj = "obj.ferocious_gloves"
+
+[[league_task_equip_viggoras_chainmace]]
+trigger = "equip"
+obj = "obj.wild_cave_chainmace_charged"
+
+[[league_task_equip_a_blessed_spirit_shield]]
+trigger = "equip"
+obj = "obj.blessed_spirit_shield"
+
+[[league_task_equip_a_brimstone_ring]]
+trigger = "equip"
+obj = "obj.brimstone_ring"
+
+[[league_task_equip_a_crystal_grail]]
+trigger = "equip"
+obj = "obj.prif_crystal_grail"
+
+[[league_task_equip_a_dragon_crossbow]]
+trigger = "equip"
+obj = "obj.xbows_crossbow_dragon"
+
+[[league_task_equip_a_dragon_hunter_crossbow]]
+trigger = "equip"
+obj = "obj.dragonhunter_xbow"
+
+[[league_task_equip_a_dragon_hunter_lance]]
+trigger = "equip"
+obj = "obj.dragonhunter_lance"
+
+[[league_task_equip_a_dragon_warhammer]]
+trigger = "equip"
+obj = "obj.dragon_warhammer"
+
+[[league_task_equip_a_dragonbone_necklace]]
+trigger = "equip"
+obj = "obj.dragonbone_necklace"
+
+[[league_task_equip_a_dragonfire_ward]]
+trigger = "equip"
+obj = ["obj.dragonfire_ward", "obj.dragonfire_ward_uncharged"]
+
+[[league_task_equip_a_fighter_torso]]
+trigger = "equip"
+obj = "obj.barbassault_penance_fighter_torso"
+
+[[league_task_equip_a_fire_cape]]
+trigger = "equip"
+obj = ["obj.tzhaar_cape_fire", "obj.tzhaar_cape_fire_dummy"]
+
+[[league_task_equip_a_ghrazi_rapier]]
+trigger = "equip"
+obj = "obj.ghrazi_rapier"
+
+[[league_task_equip_a_golden_tench]]
+trigger = "equip"
+obj = "obj.golden_tench"
+
+[[league_task_equip_a_heavy_ballista]]
+trigger = "equip"
+obj = "obj.heavy_ballista"
+
+[[league_task_equip_a_kodai_wand]]
+trigger = "equip"
+obj = "obj.kodai_wand"
+
+[[league_task_equip_a_light_ballista]]
+trigger = "equip"
+obj = "obj.light_ballista"
+
+[[league_task_equip_a_mages_book]]
+trigger = "equip"
+obj = "obj.magictraining_bookofmagic"
+
+[[league_task_equip_a_master_wand]]
+trigger = "equip"
+obj = "obj.magictraining_wand_master"
+
+[[league_task_equip_a_neitiznot_faceguard]]
+trigger = "equip"
+obj = "obj.neitiznot_faceguard"
+
+[[league_task_equip_a_ring_of_endurance]]
+trigger = "equip"
+obj = "obj.ring_of_endurance"
+
+[[league_task_equip_a_ring_of_the_gods]]
+trigger = "equip"
+obj = "obj.rotg"
+
+[[league_task_equip_a_sanguinesti_staff]]
+trigger = "equip"
+obj = "obj.sanguinesti_staff"
+
+[[league_task_equip_a_serpentine_helm]]
+trigger = "equip"
+obj = "obj.serpentine_helm_charged"
+
+[[league_task_equip_a_staff_of_the_dead]]
+trigger = "equip"
+obj = "obj.sotd"
+
+[[league_task_equip_a_thammarons_sceptre]]
+trigger = "equip"
+obj = "obj.wild_cave_sceptre_charged"
+
+[[league_task_equip_a_treasonous_ring]]
+trigger = "equip"
+obj = "obj.sharp_ring"
+
+[[league_task_equip_a_twisted_buckler]]
+trigger = "equip"
+obj = "obj.twisted_buckler"
+
+[[league_task_equip_a_tyrannical_ring]]
+trigger = "equip"
+obj = "obj.heavy_ring"
+
+[[league_task_equip_a_zaryte_crossbow]]
+trigger = "equip"
+obj = "obj.zaryte_xbow"
+
+[[league_task_equip_an_abyssal_tentacle]]
+trigger = "equip"
+obj = "obj.abyssal_tentacle"
+
+[[league_task_equip_an_armadyl_crossbow]]
+trigger = "equip"
+obj = "obj.acb"
+
+[[league_task_equip_an_avernic_defender]]
+trigger = "equip"
+obj = "obj.infernal_defender"
+
+[[league_task_equip_an_elder_maul]]
+trigger = "equip"
+obj = "obj.elder_maul"
+
+[[league_task_equip_an_elven_signet]]
+trigger = "equip"
+obj = "obj.elven_signet"
+
+[[league_task_equip_an_inquisitors_mace]]
+trigger = "equip"
+obj = "obj.inquisitors_mace"
+
+[[league_task_equip_an_occult_necklace]]
+trigger = "equip"
+obj = "obj.occult_necklace"
+
+[[league_task_equip_some_zaryte_vambraces]]
+trigger = "equip"
+obj = "obj.zaryte_vambraces"
+
+[[league_task_equip_the_accursed_sceptre]]
+trigger = "equip"
+obj = "obj.wild_cave_accursed_charged"
+
+[[league_task_equip_the_amulet_of_rancour]]
+trigger = "equip"
+obj = "obj.amulet_of_rancour"
+
+[[league_task_equip_the_bellator_ring]]
+trigger = "equip"
+obj = "obj.bellator_ring"
+
+[[league_task_equip_the_magus_ring]]
+trigger = "equip"
+obj = "obj.magus_ring"
+
+[[league_task_equip_the_noxious_halberd]]
+trigger = "equip"
+obj = "obj.noxious_halberd"
+
+[[league_task_equip_osmumtens_fang]]
+trigger = "equip"
+obj = "obj.osmumtens_fang"
+
+[[league_task_equip_the_ursine_chainmace]]
+trigger = "equip"
+obj = "obj.wild_cave_ursine_charged"
+
+[[league_task_equip_the_venator_bow]]
+trigger = "equip"
+obj = ["obj.venator_bow", "obj.rotten_venator_bow"]
+
+[[league_task_equip_the_venator_ring]]
+trigger = "equip"
+obj = "obj.venator_ring"
+
+[[league_task_equip_the_voidwaker]]
+trigger = "equip"
+obj = "obj.voidwaker"
+
+[[league_task_equip_a_scythe_of_vitur]]
+trigger = "equip"
+obj = ["obj.scythe_of_vitur", "obj.rotten_scythe"]
+
+[[league_task_equip_a_twisted_bow]]
+trigger = "equip"
+obj = "obj.twisted_bow"
+
+[[league_task_equip_the_tumekens_shadow]]
+trigger = "equip"
+obj = "obj.tumekens_shadow"
+
+[[league_task_equip_blessed_dizanas_quiver]]
+trigger = "equip"
+obj = "obj.dizanas_quiver_infinite"
+
+[[league_task_equip_a_crystal_crown]]
+trigger = "equip"
+obj = [
+    "obj.crystal_crown_ithell",
+    "obj.crystal_crown_iorwerth",
+    "obj.crystal_crown_trahaearn",
+    "obj.crystal_crown_cadarn",
+    "obj.crystal_crown_crwys",
+    "obj.crystal_crown_meilyr",
+    "obj.crystal_crown_hefin",
+    "obj.crystal_crown_amlodd",
+]
+
+[[league_task_equip_a_dragon_full_helm]]
+trigger = "equip"
+obj = "obj.brut_dragon_full_helm"
+
+[[league_task_equip_an_elysian_spirit_shield]]
+trigger = "equip"
+obj = ["obj.elysian", "obj.mm2_crushed_elysian"]
+
+[[league_task_equip_an_infernal_cape]]
+trigger = "equip"
+obj = ["obj.infernal_cape", "obj.infernal_cape_dummy"]
+
+[[league_task_equip_osmumtens_fang_or]]
+trigger = "equip"
+obj = "obj.osmumtens_fang_ornament"

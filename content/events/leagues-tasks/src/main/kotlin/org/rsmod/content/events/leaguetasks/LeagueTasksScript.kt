@@ -1,9 +1,11 @@
 package org.rsmod.content.events.leaguetasks
 
+import com.github.michaelbull.logging.InlineLogger
 import dev.or2.central.account.Rights
 import jakarta.inject.Inject
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.script.onCommand
+import org.rsmod.api.script.onGameStartup
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.table.ActionRow
@@ -14,11 +16,31 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class LeagueTasksScript
 @Inject
-constructor(private val tasks: LeagueTasks, private val progress: LeagueTaskProgress) :
-    PluginScript() {
+constructor(
+    private val tasks: LeagueTasks,
+    private val progress: LeagueTaskProgress,
+    private val definitions: LeagueTaskDefinitions,
+) : PluginScript() {
     override val worldTypes = WorldType.entries.filter { it.isLeague }
 
+    private val logger = InlineLogger()
+
     override fun ScriptContext.startup() {
+        onGameStartup { logCoverage() }
+
+        onCommand("reloadleaguetasks") {
+            requiredRights = Rights.ADMINISTRATOR
+            desc = "Re-read the league task TOML from the build output"
+            cheat {
+                try {
+                    progress.reload()
+                    player.mes("League tasks reloaded.")
+                } catch (e: Exception) {
+                    player.mes("League tasks not reloaded: ${e.message}")
+                }
+            }
+        }
+
         onPlayerLogin {
             tasks.claimPoints(player)
             player.softTimer("timer.league_task_sync", cycles = 1)
@@ -51,6 +73,19 @@ constructor(private val tasks: LeagueTasks, private val progress: LeagueTaskProg
                 }
                 tasks.resetAll(player)
                 player.mes("Every league task has been reset.")
+            }
+        }
+    }
+
+    private fun logCoverage() {
+        for (set in definitions.active) {
+            val all = set.league.tasks
+            val custom = tasks.claimedTasks.filterTo(HashSet()) { it in all } - set.defined
+            val neither = all - set.defined - set.fromAction - custom
+            logger.info {
+                "League ${set.key} (type ${set.league.type}): ${all.size} tasks, " +
+                    "${set.defined.size} from task files, ${set.fromAction.size} from action rows, " +
+                    "${custom.size} custom, ${neither.size} with no definition."
             }
         }
     }

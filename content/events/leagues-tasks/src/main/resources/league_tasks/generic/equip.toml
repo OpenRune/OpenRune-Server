@@ -1,0 +1,7 @@
+[[league_task_equip_an_iron_dagger]]
+trigger = "equip"
+obj = ["obj.iron_dagger", "obj.iron_dagger_p", "obj.iron_dagger_p+", "obj.iron_dagger_p++"]
+
+[[league_task_equip_an_elemental_staff]]
+trigger = "equip"
+obj = ["obj.staff_of_air", "obj.staff_of_water", "obj.staff_of_earth", "obj.staff_of_fire"]

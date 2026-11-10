@@ -1,0 +1,55 @@
+[[league_task_complete_1_slayer_task]]
+trigger = "slayer_task_complete"
+
+[[league_task_complete_200_slayer_tasks]]
+trigger = "slayer_task_complete"
+times = 200
+counter = "varbit.league_counter_complete_slayer_tasks"
+
+[[league_task_slay_250_creatures]]
+trigger = "slayer_kill"
+times = 250
+counter = "varbit.league_counter_slay_task_creatures"
+
+[[league_task_slay_an_abyssal_demon]]
+trigger = "slayer_kill"
+npc = [
+    "npc.slayer_abyssal",
+    "npc.slayer_abyssal_strongholdcave",
+    "npc.kourend_abyssal",
+    "npc.wild_cave_abyssal",
+]
+
+[[league_task_defeat_a_superior_slayer_creature]]
+trigger = "superior_kill"
+counter = "varbit.league_counter_kill_superiors"
+
+[[league_task_defeat_10_superior_slayer_creatures]]
+trigger = "superior_kill"
+times = 10
+counter = "varbit.league_counter_kill_superiors"
+
+[[league_task_defeat_20_superior_slayer_creatures]]
+trigger = "superior_kill"
+times = 20
+counter = "varbit.league_counter_kill_superiors"
+
+[[league_task_25_superior_slayer_encounters]]
+trigger = "superior_kill"
+times = 25
+counter = "varbit.league_counter_kill_superiors"
+
+[[league_task_defeat_50_superior_slayer_creatures]]
+trigger = "superior_kill"
+times = 50
+counter = "varbit.league_counter_kill_superiors"
+
+[[league_task_75_superior_slayer_encounters]]
+trigger = "superior_kill"
+times = 75
+counter = "varbit.league_counter_kill_superiors"
+
+[[league_task_100_superior_slayer_encounters]]
+trigger = "superior_kill"
+times = 100
+counter = "varbit.league_counter_kill_superiors"

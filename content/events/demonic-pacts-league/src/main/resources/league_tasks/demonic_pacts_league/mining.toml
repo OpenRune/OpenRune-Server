@@ -1,0 +1,66 @@
+[[action_mine_some_coal_from_stone_cutter_outpost]]
+trigger = "product"
+stat = "stat.mining"
+obj = "obj.coal"
+area = "area.league_stonecutter_outpost"
+
+[[league_task_mine_20_mithril_ore_in_the_stonecutter_outpost]]
+trigger = "product"
+stat = "stat.mining"
+obj = "obj.mithril_ore"
+area = "area.league_stonecutter_outpost"
+times = 20
+counter = "varbit.league_task_mine_mithril_ore_in_the_stonecutter_outpost"
+
+[[league_task_mine_15_granite_in_the_necropolis]]
+trigger = "product"
+stat = "stat.mining"
+obj = ["obj.enakh_granite_tiny", "obj.enakh_granite_small", "obj.enakh_granite_medium"]
+area = "area.league_necropolis"
+times = 15
+counter = "varbit.league_counter_mine_granite_in_the_necropolis"
+
+[[league_task_mine_25_gold_rocks_in_tirannwn]]
+trigger = "product"
+stat = "stat.mining"
+obj = "obj.gold_ore"
+area = "area.league_region_tirannwn"
+times = 25
+counter = "varbit.league_counter_mine_gold_in_tirannwn"
+
+[[league_task_mine_30_chunks_of_granite]]
+trigger = "product"
+stat = "stat.mining"
+obj = ["obj.enakh_granite_tiny", "obj.enakh_granite_small", "obj.enakh_granite_medium"]
+area = "area.league_region_desert"
+times = 30
+counter = "varbit.league_counter_mine_granite"
+
+[[league_task_mine_200_soft_clay_in_tirannwn]]
+trigger = "product"
+stat = "stat.mining"
+obj = "obj.softclay"
+area = "area.league_region_tirannwn"
+times = 200
+counter = "varbit.league_counter_mine_soft_clay_in_tirannwn"
+
+[[league_task_mine_100_runite_ore_in_tirannwn]]
+trigger = "product"
+stat = "stat.mining"
+obj = "obj.runite_ore"
+area = "area.league_region_tirannwn"
+times = 100
+counter = "varbit.league_counter_mine_runite_in_tirannwn"
+
+[[league_task_mine_runite_dragon_pickaxe_in_wilderness]]
+trigger = "product"
+stat = "stat.mining"
+obj = "obj.runite_ore"
+tool = [
+    "obj.dragon_pickaxe",
+    "obj.dragon_pickaxe_pretty",
+    "obj.zalcano_pickaxe",
+    "obj.trailblazer_pickaxe_no_infernal",
+    "obj.trailblazer_reloaded_pickaxe_no_infernal",
+]
+area = "area.wilderness"

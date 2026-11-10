@@ -1,0 +1,4 @@
+[[league_task_pick_a_pineapple_on_karamja]]
+trigger = "pick"
+obj = "obj.pineapple"
+area = "area.league_region_karamja"

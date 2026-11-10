@@ -148,6 +148,10 @@ data is already there.
   over raw `ServerCacheManager`/column-index lookups.
 - Kotlin enum classes are for code-side state machines and closed sets of
   behaviour, not for carrying data tables.
+- One intended exception: simple league task triggers are runtime TOML under
+  `league_tasks/` (`generic/` in `leagues-tasks`, one folder per league in that league's
+  module), loaded at startup by `LeagueTaskDefinitions`. Complex tasks are Kotlin
+  handlers in the league's own module. Task names, tiers and lists stay in the cache.
 
 ## Interfaces & CS2 (clientscripts)
 
