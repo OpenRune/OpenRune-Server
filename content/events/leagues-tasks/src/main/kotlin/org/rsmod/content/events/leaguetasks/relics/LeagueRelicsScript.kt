@@ -104,10 +104,10 @@ constructor(
         }
         relics.select(player, tier, relic)
         player.ifCloseModal("interface.league_relics", eventBus)
-        player.soundSynth("synth.league_unlock_1", delay = 8)
-        player.soundSynth("synth.league_unlock_2", delay = 44)
-        player.soundSynth("synth.league_unlock_3", delay = 80)
-        player.soundSynth("synth.league_unlock_4", delay = 104)
+        player.soundSynth("synth.relic_unlock_pulsing", delay = 8)
+        player.soundSynth("synth.relic_unlock_spinning_hover", delay = 44)
+        player.soundSynth("synth.relic_unlock_absorb", delay = 80)
+        player.soundSynth("synth.relic_unlock_high_sound_2", delay = 104)
         val female = player.appearance.bodyType == constants.bodytype_b
         anim(if (female) "seq.human_relic_unlock_female" else "seq.human_relic_unlock")
         relics.unlockSpotanim(player)?.let { spotanim(it, height = UNLOCK_SPOTANIM_HEIGHT) }
