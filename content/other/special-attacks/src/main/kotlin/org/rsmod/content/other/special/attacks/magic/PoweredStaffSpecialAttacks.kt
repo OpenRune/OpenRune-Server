@@ -5,12 +5,12 @@ import jakarta.inject.Inject
 import kotlin.math.max
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.CombatChargeManager
+import org.rsmod.api.npc.stat.statDrain
 import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.magicLvl
 import org.rsmod.api.player.stat.statDrain
-import org.rsmod.api.npc.stat.statDrain
 import org.rsmod.api.specials.SpecialAttackManager
 import org.rsmod.api.specials.SpecialAttackMap
 import org.rsmod.api.specials.SpecialAttackRepository

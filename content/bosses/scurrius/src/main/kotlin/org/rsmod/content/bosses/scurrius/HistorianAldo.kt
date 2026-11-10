@@ -9,7 +9,6 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.content.other.special.weapons.scripts.RatBoneWeapons
-import org.rsmod.content.other.special.weapons.scripts.RatBoneWeapons.RatBoneWeapon
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.isType
