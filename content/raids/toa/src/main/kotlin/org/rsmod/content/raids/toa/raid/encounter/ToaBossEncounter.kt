@@ -185,7 +185,7 @@ open class ToaBossEncounter(
         const val OSMUMTEN = "npc.toa_osmumten_vis"
 
         private const val OSMUMTEN_SPAWN_ANIM = "seq.ghost_summon2_priority"
-        // private const val OSMUMTEN_JINGLE = "jingle.in_the_pits"
+        // private const val OSMUMTEN_JINGLE = "jingle.toa_boss_complete_jingle"
         private const val STOP_MUSIC = "midi.silence"
         private const val DROP_DESPAWN = 18_000
         private const val BANK = "inv.bank"

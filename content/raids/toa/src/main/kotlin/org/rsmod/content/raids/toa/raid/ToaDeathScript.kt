@@ -211,5 +211,5 @@ private const val STOP_MUSIC = "midi.silence"
 
 private const val RAID_MIDI = "midi.toa_ambience"
 
-// private const val WIPE_JINGLE = "jingle.lord_drakan_reveal_part_1"
+// private const val WIPE_JINGLE = "jingle.death2"
 // private const val WIPE_JINGLE_MILLIS = 4_718
