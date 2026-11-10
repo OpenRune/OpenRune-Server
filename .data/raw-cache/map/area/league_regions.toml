@@ -209,7 +209,7 @@ area_id = "area.league_crafting_guild"
 levels = [0, 1, 2, 3]
 
 [[area.polygons]]
-vertices = [[2929, 3276], [2943, 3276], [2943, 3290], [2929, 3290]]
+vertices = [[2930, 3276], [2943, 3276], [2943, 3288], [2930, 3288]]
 
 [[area]]
 name = "Ranging Guild"
