@@ -16,6 +16,9 @@ fun ItemServerType.symbol(): String = RSCM.getReverseMapping(RSCMType.OBJ, id)
 
 object TrailTiers {
     const val BEGINNER = 0
+    const val EASY = 1
+    const val MEDIUM = 2
+    const val HARD = 3
     const val ELITE = 4
     const val MASTER = 5
 

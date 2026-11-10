@@ -50,6 +50,7 @@ import org.rsmod.api.table.cluehelper.CluehelperClueSkillchallengeRow
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
 import org.rsmod.content.other.treasuretrails.ClueStash.search
 import org.rsmod.content.other.treasuretrails.TrailFlow.openBox
+import org.rsmod.content.other.treasuretrails.TrailFlow.openVessel
 import org.rsmod.content.other.treasuretrails.TrailFlow.openScrollCase
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
@@ -190,6 +191,43 @@ class TreasureTrailsItemTest {
         f.run { openBox(f.tier) }
         assertEquals(2, f.player.inv.count(f.box))
         assertEquals(0, f.player.inv.count(f.clue))
+    }
+
+    @Test
+    fun `a clue geode becomes exactly one clue or scroll box`() {
+        val f = Fixture()
+        val geode = checkNotNull(f.tier.geodeObj)
+        f.player.inv[5] = InvObj(geode.symbol(), 1)
+
+        f.run { openVessel(f.objRepo, f.tier, geode, "geode") }
+        assertEquals(0, f.player.inv.count(geode.symbol()))
+        assertEquals(1, f.player.inv.count(f.clue) + f.player.inv.count(f.box))
+    }
+
+    @Test
+    fun `a clue geode stays shut while a clue of the tier is held`() {
+        val f = Fixture()
+        val geode = checkNotNull(f.tier.geodeObj)
+        f.player.inv[5] = InvObj(geode.symbol(), 1)
+        f.bank[0] = InvObj(f.clue, 1)
+
+        f.run { openVessel(f.objRepo, f.tier, geode, "geode") }
+        assertEquals(1, f.player.inv.count(geode.symbol()))
+        assertEquals(0, f.player.inv.count(f.clue) + f.player.inv.count(f.box))
+        assertEquals(1, f.bank.count(f.clue))
+    }
+
+    @Test
+    fun `a clue bottle opens in a full inventory without losing or duplicating items`() {
+        val f = Fixture()
+        val bottle = checkNotNull(f.tier.bottleObj)
+        f.player.inv[0] = InvObj(bottle.symbol(), 1)
+        for (slot in 1 until 28) f.player.inv[slot] = InvObj(FILLER, 1)
+
+        f.run { openVessel(f.objRepo, f.tier, bottle, "bottle") }
+        assertEquals(0, f.player.inv.count(bottle.symbol()))
+        assertEquals(1, f.player.inv.count(f.clue) + f.player.inv.count(f.box))
+        assertEquals(27, f.player.inv.count(FILLER))
     }
 
     @Test
@@ -622,7 +660,7 @@ class TreasureTrailsItemTest {
 
         val bank: Inventory = checkNotNull(player.invMap["inv.bank"])
         private val objRegistry = ObjRegistry(ZoneUpdateMap())
-        private val objRepo = ObjRepository(MapClock(100), objRegistry)
+        val objRepo = ObjRepository(MapClock(100), objRegistry)
         private val noPrices = object : MarketPrices {
             override fun get(type: dev.openrune.types.ItemServerType): Int? = null
         }

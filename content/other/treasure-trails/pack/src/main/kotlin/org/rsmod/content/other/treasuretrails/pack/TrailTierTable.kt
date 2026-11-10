@@ -31,6 +31,10 @@ object TrailTierTable {
     const val STASH_LEVEL = 24
     const val STASH_PLANK = 25
     const val STASH_XP = 26
+    const val GEODE_OBJ = 27
+    const val NEST_OBJ = 28
+    const val BOTTLE_OBJ = 29
+    const val VESSEL_MODIFIER = 30
 
     fun tiers() =
         dbTable("dbtable.trail_tier", serverOnly = true) {
@@ -61,6 +65,10 @@ object TrailTierTable {
             column("stash_level", STASH_LEVEL, VarType.INT)
             column("stash_plank", STASH_PLANK, VarType.OBJ)
             column("stash_xp", STASH_XP, VarType.INT)
+            column("geode_obj", GEODE_OBJ, VarType.OBJ)
+            column("nest_obj", NEST_OBJ, VarType.OBJ)
+            column("bottle_obj", BOTTLE_OBJ, VarType.OBJ)
+            column("vessel_modifier", VESSEL_MODIFIER, VarType.INT)
 
             row("dbrow.trail_tier_beginner") {
                 column(DIFFICULTY, 0)
@@ -72,6 +80,10 @@ object TrailTierTable {
                 columnRSCM(CLUE_OBJ, "obj.trail_clue_beginner")
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_beginner")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_beginner")
+                columnRSCM(GEODE_OBJ, "obj.mining_clue_geode_beginner")
+                columnRSCM(NEST_OBJ, "obj.wc_clue_nest_beginner")
+                columnRSCM(BOTTLE_OBJ, "obj.fishing_clue_bottle_beginner")
+                column(VESSEL_MODIFIER, 2)
                 column(STEPS_MIN, 1)
                 column(STEPS_MAX, 3)
                 column(REWARD_ROLLS_MIN, 1)
@@ -97,6 +109,10 @@ object TrailTierTable {
                 column(STASH_XP, 150)
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_easy")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_easy")
+                columnRSCM(GEODE_OBJ, "obj.mining_clue_geode_easy")
+                columnRSCM(NEST_OBJ, "obj.wc_clue_nest_easy")
+                columnRSCM(BOTTLE_OBJ, "obj.fishing_clue_bottle_easy")
+                column(VESSEL_MODIFIER, 17)
                 column(STEPS_MIN, 2)
                 column(STEPS_MAX, 4)
                 column(REWARD_ROLLS_MIN, 2)
@@ -125,6 +141,10 @@ object TrailTierTable {
                 column(STASH_XP, 250)
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_medium")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_medium")
+                columnRSCM(GEODE_OBJ, "obj.mining_clue_geode_medium")
+                columnRSCM(NEST_OBJ, "obj.wc_clue_nest_medium")
+                columnRSCM(BOTTLE_OBJ, "obj.fishing_clue_bottle_medium")
+                column(VESSEL_MODIFIER, 20)
                 column(STEPS_MIN, 3)
                 column(STEPS_MAX, 5)
                 column(REWARD_ROLLS_MIN, 3)
@@ -153,6 +173,10 @@ object TrailTierTable {
                 column(STASH_XP, 400)
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_hard")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_hard")
+                columnRSCM(GEODE_OBJ, "obj.mining_clue_geode_hard")
+                columnRSCM(NEST_OBJ, "obj.wc_clue_nest_hard")
+                columnRSCM(BOTTLE_OBJ, "obj.fishing_clue_bottle_hard")
+                column(VESSEL_MODIFIER, 33)
                 column(STEPS_MIN, 4)
                 column(STEPS_MAX, 6)
                 column(REWARD_ROLLS_MIN, 4)
@@ -179,6 +203,10 @@ object TrailTierTable {
                 column(STASH_XP, 600)
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_elite")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_elite")
+                columnRSCM(GEODE_OBJ, "obj.mining_clue_geode_elite")
+                columnRSCM(NEST_OBJ, "obj.wc_clue_nest_elite")
+                columnRSCM(BOTTLE_OBJ, "obj.fishing_clue_bottle_elite")
+                column(VESSEL_MODIFIER, 100)
                 column(STEPS_MIN, 5)
                 column(STEPS_MAX, 7)
                 column(REWARD_ROLLS_MIN, 4)

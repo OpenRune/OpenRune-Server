@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.table.TrailCharlieTaskRow
 import org.rsmod.api.table.TrailMapInterfaceRow
 import org.rsmod.api.table.TrailTierRow
@@ -21,6 +22,8 @@ class HeldTrail(val tier: TrailTierRow, val slot: Int, val step: ClueStep)
  * easy-elite clue objs are each one step, so advancing swaps the obj in its slot.
  */
 object TrailFlow {
+    const val NEST = "nest"
+    private const val EMPTY_NEST = "obj.bird_nest_empty"
     private val pools = ConcurrentHashMap<Int, List<Int>>()
 
     fun clueSlot(player: Player, tier: TrailTierRow): Int? {
@@ -113,6 +116,34 @@ object TrailFlow {
         startDialogue {
             objbox(clue.symbol(), "You open the clue box and find a clue scroll inside!")
         }
+    }
+
+    suspend fun ProtectedAccess.openVessel(
+        repo: ObjRepository,
+        tier: TrailTierRow,
+        vessel: ItemServerType,
+        kind: String,
+    ) {
+        if (TrailTiers.ownedClues(player, tier.difficulty) > 0) {
+            mes(ClueTakeHook.ALREADY_HAVE_CLUE)
+            return
+        }
+        val boxes = ClueTakeHook.boxesUnlocked(player)
+        if (boxes && !TrailTiers.canReceive(player, tier, boxes = true)) {
+            mes(ClueTakeHook.TOO_MANY_BOXES)
+            return
+        }
+        val reward = if (boxes) tier.boxObj else freshClue(tier, random)
+        if (invReplace(inv, vessel.symbol(), 1, reward.symbol()).failure) {
+            mes("You don't have enough inventory space.")
+            return
+        }
+        if (kind == NEST) {
+            invAddOrDrop(repo, EMPTY_NEST)
+        }
+        resetTrail(player, tier)
+        val found = if (boxes) "scroll box" else "clue scroll"
+        startDialogue { objbox(reward.symbol(), "You open the clue $kind and find a $found inside!") }
     }
 
     fun ProtectedAccess.openScrollCase(tier: TrailTierRow, case: ItemServerType, varbit: Int) {
