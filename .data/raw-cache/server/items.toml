@@ -220,6 +220,7 @@ contentGroup = 34
 [item.params]
 "param.statreq1_skill"=4
 "param.statreq1_level"=99
+"param.ammo_recovery_rate"=72
 
 
 [[item]]
@@ -229,6 +230,7 @@ contentGroup = 34
 [item.params]
 "param.statreq1_skill"=4
 "param.statreq1_level"=99
+"param.ammo_recovery_rate"=72
 
 
 [[item]]
@@ -723,6 +725,8 @@ inherit = "obj.skillcape_max"
 contentGroup = 36
 
 transformlink="obj.skillcape_max_worn"
+[item.params]
+"param.ammo_recovery_rate"=72
 
 
 [[item]]
@@ -731,6 +735,8 @@ inherit = "obj.skillcape_max_worn"
 contentGroup = 36
 
 transformlink="obj.skillcape_max"
+[item.params]
+"param.ammo_recovery_rate"=72
 transformtemplate="obj.template_for_transform"
 
 
@@ -51174,6 +51180,7 @@ inherit = "obj.avas_assembler_trouver"
 tradeable = false
 [item.params]
 "param.statreq1_skill"="stat.ranged"
+"param.ammo_recovery_rate"=80
 "param.statreq1_level"=70
 
 
@@ -51559,6 +51566,13 @@ tradeable = false
 "param.statreq1_skill"="stat.ranged"
 "param.ammo_recovery_rate"=72
 "param.statreq1_level"=50
+
+
+[[item]]
+id = "obj.br_anma_50_reward"
+inherit = "obj.br_anma_50_reward"
+[item.params]
+"param.ammo_recovery_rate"=72
 
 
 [[item]]
