@@ -9,6 +9,7 @@ import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.output.mes
@@ -132,7 +133,7 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
     }
     fadeOut()
     player.midiSong(STOP_MUSIC)
-    // player.jingle(WIPE_JINGLE.asRSCM(RSCMType.JINGLE), WIPE_JINGLE_MILLIS)
+    player.midiJingle(WIPE_JINGLE)
     delay(1)
     minimapHideMap()
     delay(1)
@@ -211,5 +212,4 @@ private const val STOP_MUSIC = "midi.silence"
 
 private const val RAID_MIDI = "midi.toa_ambience"
 
-// private const val WIPE_JINGLE = "jingle.lord_drakan_reveal_part_1"
-// private const val WIPE_JINGLE_MILLIS = 4_718
+private const val WIPE_JINGLE = "jingle.death2"
