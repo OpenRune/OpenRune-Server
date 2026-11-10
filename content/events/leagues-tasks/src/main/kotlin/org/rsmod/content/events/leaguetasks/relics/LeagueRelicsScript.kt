@@ -120,7 +120,7 @@ constructor(
             "You have unlocked the <col=ffffff>${relic.name}</col> Relic.",
             league.notificationColour,
         )
-        player.midiJingle("jingle.dt2_whisperer")
+        player.midiJingle("jingle.league_relic_jingle")
         eventBus.publish(LeagueRelicUnlockedEvent(player, tier, relic))
     }
 

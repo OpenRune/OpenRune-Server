@@ -111,7 +111,7 @@ public class LeagueTasks @Inject constructor(private val eventBus: EventBus) {
             "Task Completed: <col=ffffff>$name</col><br><br>Points Earned: <col=ffffff>$points</col>",
             league.notificationColour,
         )
-        player.midiJingle("jingle.dt2_horn_part_6")
+        player.midiJingle("jingle.league_task_jingle")
         updateProgressBar(player, earned)
     }
 

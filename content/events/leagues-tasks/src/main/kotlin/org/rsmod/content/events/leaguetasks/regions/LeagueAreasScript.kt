@@ -63,7 +63,7 @@ constructor(
                 "You've completed enough tasks to unlock a new area!",
                 league.notificationColour,
             )
-            player.midiJingle("jingle.dt2_horn_part_6")
+            player.midiJingle("jingle.league_task_jingle")
         }
 
         for (region in regions.selectable) {
@@ -184,7 +184,7 @@ constructor(
             "You have unlocked the <col=ffffff>$name</col> area.",
             league.notificationColour,
         )
-        player.midiJingle("jingle.dt2_sucellus")
+        player.midiJingle("jingle.league_area_jingle")
         vars[BUSY] = 0
     }
 
