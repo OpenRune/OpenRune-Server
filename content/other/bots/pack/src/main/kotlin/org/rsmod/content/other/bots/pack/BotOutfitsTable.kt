@@ -15,6 +15,39 @@ object BotOutfitsTable {
             column("min_combat", MIN_COMBAT, VarType.INT)
             column("max_combat", MAX_COMBAT, VarType.INT)
             column("items", ITEMS, VarType.OBJ)
+            fun ironmanArmour(symbol: String, style: String, vararg pieces: String) {
+                row(symbol) {
+                    column(STYLE, style)
+                    column(MIN_COMBAT, 3)
+                    column(MAX_COMBAT, 126)
+                    columnRSCM(ITEMS, *pieces)
+                }
+            }
+
+            ironmanArmour(
+                "dbrow.bot_outfit_ironman", "ironman",
+                "obj.ironman_helm", "obj.ironman_platebody", "obj.ironman_platelegs",
+            )
+            ironmanArmour(
+                "dbrow.bot_outfit_hardcore_ironman", "hardcore_ironman",
+                "obj.hardcore_ironman_helm", "obj.hardcore_ironman_platebody", "obj.hardcore_ironman_platelegs",
+            )
+            ironmanArmour(
+                "dbrow.bot_outfit_ultimate_ironman", "ultimate_ironman",
+                "obj.ultimate_ironman_helm", "obj.ultimate_ironman_platebody", "obj.ultimate_ironman_platelegs",
+            )
+            ironmanArmour(
+                "dbrow.bot_outfit_group_ironman", "group_ironman",
+                "obj.group_ironman_helm", "obj.group_ironman_platebody02", "obj.group_ironman_platelegs",
+            )
+            ironmanArmour(
+                "dbrow.bot_outfit_hardcore_group_ironman", "hardcore_group_ironman",
+                "obj.hardcore_group_ironman_helm", "obj.hardcore_group_ironman_platebody02", "obj.hardcore_group_ironman_platelegs",
+            )
+            ironmanArmour(
+                "dbrow.bot_outfit_unranked_group_ironman", "unranked_group_ironman",
+                "obj.group_ironman_helm_unranked", "obj.group_ironman_platebody02_unranked", "obj.group_ironman_platelegs_unranked",
+            )
             row("dbrow.bot_outfit_wealthy_torva") {
                 column(STYLE, "wealthy")
                 column(MIN_COMBAT, 115)

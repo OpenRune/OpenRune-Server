@@ -5,10 +5,10 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.map.CoordGrid
 
-enum class BotActivity {
-    WOODCUTTING,
-    MINING,
-    FISHING,
+enum class BotActivity(val skill: String? = null, val workXp: Int = 0) {
+    WOODCUTTING("stat.woodcutting", 25),
+    MINING("stat.mining", 35),
+    FISHING("stat.fishing", 30),
     QUESTING,
     WANDERING,
     IDLING,
@@ -29,6 +29,7 @@ class Bot(
     val bank: CoordGrid?,
     val runs: Boolean,
     val hotspot: Int,
+    val style: String,
 ) {
     var phase: BotPhase = BotPhase.RESTING
     var phaseTicks: Int = 0
@@ -40,4 +41,7 @@ class Bot(
     var claim: CoordGrid? = null
     var tripsSinceBank: Int = 0
     var onErrand: Boolean = false
+    internal var levelUpReply: BotLevelUpReply? = null
 }
+
+internal data class BotLevelUpReply(val source: Bot, val cycle: Int)

@@ -6,17 +6,18 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.righthand
+import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.registry.loc.LocRegistry
 import org.rsmod.api.registry.npc.NpcRegistry
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.player.PublicMessage
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.game.movement.RouteRequestCoord
 import org.rsmod.game.movement.RouteRequestLoc
 import org.rsmod.game.movement.RouteRequestPathingEntity
+import org.rsmod.game.stat.PlayerSkillXPTable
 import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
@@ -35,12 +36,32 @@ constructor(
 ) {
     private val claimed = HashSet<CoordGrid>()
 
-    fun tick(bot: Bot) {
+    /**
+     * Advances the bot's behaviour by one tick.
+     *
+     * Returns the new skill level if the bot gained a level during a skilling action.
+     */
+    fun tick(bot: Bot): Int? {
         when (bot.phase) {
             BotPhase.RESTING -> rest(bot)
             BotPhase.WALKING -> walk(bot)
-            BotPhase.WORKING -> work(bot)
+            BotPhase.WORKING -> return work(bot)
         }
+        return null
+    }
+
+    /**
+     * Gives a skilling bot a starting level and some progress toward its next level.
+     *
+     * These stats belong to the cosmetic avatar and last until it despawns.
+     */
+    fun seedSkill(bot: Bot) {
+        val skill = bot.activity.skill ?: return
+        val level = random.of(INITIAL_SKILL_LEVELS)
+        val levelXp = PlayerSkillXPTable.getXPFromLevel(level)
+        val nextXp = PlayerSkillXPTable.getXPFromLevel(level + 1)
+        val remaining = bot.activity.workXp * random.of(FIRST_LEVEL_ACTIONS)
+        setSkill(bot, skill, maxOf(levelXp, nextXp - remaining), level)
     }
 
     fun forget(bot: Bot) {
@@ -92,16 +113,40 @@ constructor(
         }
     }
 
-    private fun work(bot: Bot) {
+    private fun work(bot: Bot): Int? {
         if (--bot.phaseTicks <= 0 || !isTargetStillThere(bot)) {
             stopWork(bot)
-            return
+            return null
         }
-        val anim = bot.workAnim ?: return
-        if (mapClock.cycle >= bot.nextAnimCycle) {
-            bot.player.anim(anim)
-            bot.nextAnimCycle = mapClock.cycle + ANIM_INTERVAL
+        if (mapClock.cycle < bot.nextAnimCycle) {
+            return null
         }
+        bot.workAnim?.let { bot.player.anim(it) }
+        bot.nextAnimCycle = mapClock.cycle + ANIM_INTERVAL
+        return gainWorkXp(bot)
+    }
+
+    private fun gainWorkXp(bot: Bot): Int? {
+        val skill = bot.activity.skill ?: return null
+        val previous = bot.player.statBase(skill)
+        if (previous >= MAX_SKILL_LEVEL) return null
+
+        val stats = bot.player.statMap
+        val xp = stats.getXP(skill) + bot.activity.workXp
+        val level = PlayerSkillXPTable.getLevelFromXP(xp)
+        if (level == previous) {
+            stats.setXP(skill, xp)
+            return null
+        }
+        setSkill(bot, skill, xp, level)
+        return level
+    }
+
+    private fun setSkill(bot: Bot, skill: String, xp: Int, level: Int) {
+        val stats = bot.player.statMap
+        stats.setXP(skill, xp)
+        stats.setBaseLevel(skill, level.toByte())
+        stats.setCurrentLevel(skill, level.toByte())
     }
 
     private fun startLocWork(bot: Bot, ops: Set<String>) {
@@ -263,7 +308,7 @@ constructor(
             return
         }
         val text = random.pick(BotChat.linesFor(bot.activity))
-        bot.player.publicMessage = PublicMessage(text, 0, 0, null, 0, false, null)
+        BotChat.say(bot.player, text)
     }
 
     private fun toolAnim(bot: Bot): String? {
@@ -352,6 +397,9 @@ constructor(
         private const val WALK_TIMEOUT = 40
         private const val STRAY_DISTANCE = 10
         private const val ANIM_INTERVAL = 4
+        private val INITIAL_SKILL_LEVELS = 25..50
+        private val FIRST_LEVEL_ACTIONS = 15..55
+        private const val MAX_SKILL_LEVEL = 99
         private const val ZONE_SHIFT = 3
         private const val CHAT_CHANCE = 1500
         private const val IDLER_CHAT_CHANCE = 300

@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(libs.fastutil)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.net)
     implementation(projects.api.registry)

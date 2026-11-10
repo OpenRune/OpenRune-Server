@@ -2,6 +2,7 @@ package org.rsmod.content.other.bots
 
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.table.BotSpawnsRow
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.map.CoordGrid
@@ -18,8 +19,9 @@ import org.rsmod.map.CoordGrid
 @Singleton
 class BotHotspots
 @Inject
-constructor(private val players: PlayerList, private val world: BotWorld) {
+constructor(private val players: PlayerList, private val world: BotWorld, config: ServerConfig) {
     private val hotspots by lazy { BotSpawnsRow.all().mapIndexed(::Hotspot) }
+    private val allowed = config.gameplay.botsEnabled
 
     val awake: Int
         get() = hotspots.count { it.awake }
@@ -27,11 +29,12 @@ constructor(private val players: PlayerList, private val world: BotWorld) {
     val total: Int
         get() = hotspots.size
 
-    var enabled = true
+    var enabled = allowed
         private set
 
-    fun enable() {
-        enabled = true
+    fun enable(): Boolean {
+        enabled = allowed
+        return enabled
     }
 
     fun disable() {

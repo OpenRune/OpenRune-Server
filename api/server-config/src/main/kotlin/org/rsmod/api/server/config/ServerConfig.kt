@@ -60,6 +60,8 @@ public data class GameplayConfig(
     @JsonProperty("random-events")
     val randomEvents: Boolean = true,
     val gravestones: GravestonesYaml = GravestonesYaml(),
+    @JsonProperty("bots-enabled")
+    val botsEnabled: Boolean = true,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

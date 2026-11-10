@@ -11,8 +11,12 @@ import org.rsmod.api.game.process.player.PlayerBuildAreaProcessor
 import org.rsmod.api.game.process.player.PlayerFaceSquareProcessor
 import org.rsmod.api.game.process.player.PlayerMovementProcessor
 import org.rsmod.api.net.rsprot.HeadlessAvatars
+import org.rsmod.api.player.ironman.PlayerGamemode
+import org.rsmod.api.player.ironman.isAnyIronman
 import org.rsmod.api.player.ironman.setGamemode
+import org.rsmod.api.player.stat.levelUpFireworks
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.table.BotOutfitsRow
 import org.rsmod.api.utils.map.BuildAreaUtils
 import org.rsmod.game.MapClock
@@ -43,6 +47,7 @@ constructor(
     private val mapClock: MapClock,
     private val random: GameRandom,
     private val collision: CollisionFlagMap,
+    private val worldRepo: WorldRepository,
 ) {
     private val bots = ArrayList<Bot>()
     private val facing = PlayerFaceSquareProcessor()
@@ -72,16 +77,61 @@ constructor(
         bots.mapTo(taken) { it.player.username }
         val name = BotNames.pick(random, mode, taken) ?: return false
         val slot = playerList.reserveHighestFree() ?: return false
-        val style = random.pickOrNull(styles) ?: DEFAULT_STYLE
-        val spot = walkableNear(home, radius)
-        val player = createPlayer(slot, activity, spot, style, name, mode)
-        avatars.attach(player)
-        val runs = style == RUNNER_STYLE || bank != null
-        val bot = Bot(player, activity, home, radius, spot, bank, runs, hotspot)
-        bot.phaseTicks = random.of(1, SPAWN_STAGGER_TICKS)
-        bots += bot
-        return true
+        val player = Player()
+        try {
+            val style = random.pickOrNull(styles) ?: DEFAULT_STYLE
+            val spot = walkableNear(home, radius)
+            preparePlayer(player, slot, activity, spot, style, name, mode)
+            val runs = style == RUNNER_STYLE || bank != null
+            val bot = Bot(player, activity, home, radius, spot, bank, runs, hotspot, style)
+            brain.seedSkill(bot)
+            avatars.attach(player)
+            bot.phaseTicks = random.of(1, SPAWN_STAGGER_TICKS)
+            bots += bot
+            return true
+        } catch (error: Exception) {
+            try {
+                avatars.detach(player)
+            } finally {
+                playerList.unreserve(slot)
+                player.destroy()
+            }
+            throw error
+        }
     }
+
+    /**
+     * Replaces bots whose displayed identity matches a newly registered player.
+     *
+     * The replacement takes a different slot when one is free. A full world releases the
+     * old slot before retrying the spawn.
+     */
+    fun replaceNameCollisions(player: Player) {
+        val collisions = bots.filter {
+            val name = it.player.username
+            name.equals(player.username, ignoreCase = true) ||
+                name.equals(player.displayName, ignoreCase = true)
+        }
+        for (bot in collisions) {
+            bots.remove(bot)
+            try {
+                val replaced = try {
+                    spawnReplacement(bot)
+                } finally {
+                    release(bot)
+                }
+                if (!replaced) spawnReplacement(bot)
+            } catch (error: Exception) {
+                logger.error(error) { "Could not replace cosmetic bot ${bot.player.displayName}" }
+            }
+        }
+    }
+
+    private fun spawnReplacement(bot: Bot): Boolean =
+        spawn(
+            bot.activity, bot.home, bot.radius, listOf(bot.style), bot.bank, bot.hotspot,
+            gamemode = bot.player.gamemode,
+        )
 
     fun despawnAll() {
         for (bot in bots) {
@@ -140,23 +190,61 @@ constructor(
         player.currentMapClock = mapClock.cycle
         player.processedMapClock = mapClock.cycle
         player.previousCoords = player.coords
-        brain.tick(bot)
+        val newLevel = brain.tick(bot)
         movement.process(player)
         facing.process(player)
         buildAreas.process(player)
+        if (newLevel != null) celebrateLevelUp(bot, newLevel)
+        replyToLevelUp(bot)
         player.clientCycle.update(player)
     }
 
+    private fun celebrateLevelUp(bot: Bot, level: Int) {
+        if (level == 99) {
+            bot.player.levelUpFireworks(worldRepo, "spotanim.levelup_99_anim")
+        } else {
+            bot.player.levelUpFireworks(worldRepo)
+        }
+        if (random.randomBoolean(SILENT_LEVEL_UP_CHANCE)) return
+
+        val candidates = bots.filterTo(ArrayList()) {
+            it !== bot && it.levelUpReply == null && it.isNear(bot)
+        }
+        var delay = random.of(REPLY_DELAY)
+        repeat(random.of(1, MAX_LEVEL_UP_REPLIES)) {
+            val responder = random.pickOrNull(candidates) ?: return
+            candidates.remove(responder)
+            responder.levelUpReply = BotLevelUpReply(bot, mapClock.cycle + delay)
+            delay += random.of(REPLY_DELAY)
+        }
+    }
+
+    private fun replyToLevelUp(bot: Bot) {
+        val reply = bot.levelUpReply ?: return
+        if (mapClock.cycle < reply.cycle) return
+
+        bot.levelUpReply = null
+        if (reply.source in bots && bot.isNear(reply.source) && bot.player.publicMessage == null) {
+            BotChat.say(bot.player, random.pick(BotChat.congratulations))
+        }
+    }
+
+    private fun Bot.isNear(other: Bot): Boolean {
+        val coords = player.coords
+        val target = other.player.coords
+        return coords.level == target.level && coords.chebyshevDistance(target) <= LEVEL_UP_REPLY_RADIUS
+    }
+
     @OptIn(InternalApi::class)
-    private fun createPlayer(
+    private fun preparePlayer(
+        player: Player,
         slot: Int,
         activity: BotActivity,
         home: CoordGrid,
         style: String,
         name: String,
         gamemode: Int,
-    ): Player {
-        val player = Player()
+    ) {
         player.slotId = slot
         player.username = name.lowercase()
         player.displayName = name
@@ -169,19 +257,34 @@ constructor(
         dress(player, style)
         toolFor(activity)?.let { player.worn[Wearpos.RightHand.slot] = InvObj(it) }
         player.buildArea = BuildAreaUtils.calculateBuildArea(ZoneKey.from(home))
-        return player
     }
 
     private fun dress(player: Player, style: String) {
-        val outfit = random.pickOrNull(BotOutfitsRow.all().filter { it.style == style })
-        if (outfit == null) {
-            player.appearance.combatLevel = random.of(FALLBACK_COMBAT)
-            return
+        val outfits = BotOutfitsRow.all()
+        val outfit = random.pickOrNull(outfits.filter { it.style == style })
+        player.appearance.combatLevel =
+            if (outfit == null) random.of(FALLBACK_COMBAT)
+            else random.of(outfit.minCombat, outfit.maxCombat)
+        if (outfit != null) player.equipOutfit(outfit)
+
+        if (player.isAnyIronman && random.randomBoolean(IRONMAN_OUTFIT_CHANCE)) {
+            val armourStyle = when (player.gamemode) {
+                PlayerGamemode.HARDCORE_IRONMAN -> "hardcore_ironman"
+                PlayerGamemode.ULTIMATE_IRONMAN -> "ultimate_ironman"
+                PlayerGamemode.GROUP_IRONMAN -> "group_ironman"
+                PlayerGamemode.HARDCORE_GROUP_IRONMAN -> "hardcore_group_ironman"
+                PlayerGamemode.UNRANKED_GROUP_IRONMAN -> "unranked_group_ironman"
+                else -> "ironman"
+            }
+            val armour = outfits.firstOrNull { it.style == armourStyle }
+            if (armour != null) player.equipOutfit(armour)
         }
-        player.appearance.combatLevel = random.of(outfit.minCombat, outfit.maxCombat)
+    }
+
+    private fun Player.equipOutfit(outfit: BotOutfitsRow) {
         for (item in outfit.items) {
             val wearpos = Wearpos[item.wearpos1] ?: continue
-            player.worn[wearpos.slot] = InvObj(item)
+            worn[wearpos.slot] = InvObj(item)
         }
     }
 
@@ -207,6 +310,7 @@ constructor(
         pendingTelejump = false
         pendingFaceAngle = EntityFaceAngle.NULL
         pendingSequence = EntitySeq.NULL
+        pendingSpotanims.clear()
         appearance.clearRebuildFlag()
     }
 
@@ -240,6 +344,11 @@ constructor(
         private const val DEFAULT_STYLE = "plain"
         private const val RUNNER_STYLE = "graceful"
         private val FALLBACK_COMBAT = 3..60
+        private const val IRONMAN_OUTFIT_CHANCE = 4
+        private const val SILENT_LEVEL_UP_CHANCE = 3
+        private const val MAX_LEVEL_UP_REPLIES = 2
+        private const val LEVEL_UP_REPLY_RADIUS = 7
+        private val REPLY_DELAY = 2..4
 
         const val MANUAL_HOTSPOT = -1
 

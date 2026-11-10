@@ -1,6 +1,20 @@
 package org.rsmod.content.other.bots
 
+import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.PublicMessage
+
 object BotChat {
+    val congratulations = listOf("gz", "grtz", "grats", "congrats!", "congratulations!", "nice lvl", "nice!")
+
+    /**
+     * Queues public chat through the bot's avatar so nearby clients can see it.
+     *
+     * As with other avatar updates, call this before the bot's client cycle updates.
+     */
+    fun say(player: Player, text: String) {
+        player.publicMessage = PublicMessage(text, 0, 0, null, 0, false, null)
+    }
+
     private val GENERAL =
         listOf(
             "anyone know a good money maker?",
