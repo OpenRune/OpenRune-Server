@@ -3,13 +3,16 @@ package org.rsmod.content.quest.area.varrock.childrenofthesun
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.MoveRestrict
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.output.locAddChangePrivate
 import org.rsmod.api.player.output.locDelPrivate
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.table.MusicRow
 import org.rsmod.content.quest.area.misthalin.SceneCamera
 import org.rsmod.content.quest.area.misthalin.SceneFadeDuration
 import org.rsmod.content.quest.area.misthalin.SceneFadeTicks
@@ -31,51 +34,86 @@ internal interface CotsScenes {
 }
 
 internal object CotsPlaces {
-    val King = CoordGrid(3213, 3431)
-    val Advisor = CoordGrid(3214, 3432)
-    val Guards = listOf(CoordGrid(3212, 3433), CoordGrid(3215, 3433))
+    val King = CoordGrid(3217, 3430)
+    val Advisor = CoordGrid(3217, 3429)
+    val Guards = listOf(CoordGrid(3217, 3428), CoordGrid(3217, 3431))
     val DelegationStart =
         listOf(
-            CoordGrid(3222, 3430),
-            CoordGrid(3223, 3431),
-            CoordGrid(3223, 3429),
-            CoordGrid(3224, 3430),
+            CoordGrid(3233, 3430),
+            CoordGrid(3233, 3429),
+            CoordGrid(3234, 3430),
+            CoordGrid(3234, 3429),
         )
     val DelegationStop =
         listOf(
-            CoordGrid(3216, 3430),
-            CoordGrid(3217, 3431),
-            CoordGrid(3217, 3429),
-            CoordGrid(3218, 3430),
+            CoordGrid(3219, 3430),
+            CoordGrid(3219, 3429),
+            CoordGrid(3220, 3430),
+            CoordGrid(3220, 3429),
         )
     val KnightsStart =
         listOf(
-            CoordGrid(3224, 3432),
-            CoordGrid(3224, 3428),
-            CoordGrid(3225, 3431),
-            CoordGrid(3225, 3429),
-            CoordGrid(3226, 3430),
-            CoordGrid(3226, 3429),
+            CoordGrid(3232, 3430),
+            CoordGrid(3232, 3429),
+            CoordGrid(3234, 3430),
+            CoordGrid(3234, 3429),
+            CoordGrid(3236, 3430),
+            CoordGrid(3236, 3429),
         )
     val KnightsStop =
         listOf(
-            CoordGrid(3218, 3432),
-            CoordGrid(3218, 3428),
             CoordGrid(3219, 3431),
-            CoordGrid(3219, 3429),
-            CoordGrid(3220, 3430),
+            CoordGrid(3219, 3428),
+            CoordGrid(3220, 3431),
             CoordGrid(3220, 3428),
+            CoordGrid(3221, 3430),
+            CoordGrid(3221, 3429),
         )
-    val TobynScene = CoordGrid(3213, 3438)
-    val BagGuardStart = CoordGrid(3212, 3441)
-    val BagGuardStop = CoordGrid(3219, 3434)
+    val KnightsMid =
+        listOf(
+            CoordGrid(3220, 3430),
+            CoordGrid(3220, 3429),
+            CoordGrid(3220, 3430),
+            CoordGrid(3220, 3429),
+            CoordGrid(3221, 3430),
+            CoordGrid(3221, 3429),
+        )
+    val TobynScene = CoordGrid(3211, 3437)
+    val BagGuardStart = CoordGrid(3212, 3442)
+    val BagGuardMid = CoordGrid(3212, 3437)
+    val BagGuardStop = CoordGrid(3216, 3433)
+    val SecondGuardStart = CoordGrid(3223, 3433)
+    val SecondGuardMid = CoordGrid(3223, 3431)
+    val SecondGuardStop = CoordGrid(3230, 3429)
+    val DelegationVantage = CoordGrid(3225, 3427)
+    val DelegationReturn = CoordGrid(3226, 3428)
 
     val DelegationCamera =
         SceneCamera(
-            eye = CoordGrid(3223, 3425),
-            eyeHeight = 450,
-            lookAt = CoordGrid(3215, 3431),
-            lookAtHeight = 100,
+            eye = CoordGrid(3213, 3433),
+            eyeHeight = 460,
+            lookAt = CoordGrid(3225, 3427),
+            lookAtHeight = 260,
+            rate = RecordedRate,
+            rate2 = RecordedRate2,
+        )
+    val GuardCamera =
+        SceneCamera(
+            eye = CoordGrid(3216, 3434),
+            eyeHeight = 390,
+            lookAt = CoordGrid(3211, 3438),
+            lookAtHeight = 190,
+            rate = RecordedRate,
+            rate2 = RecordedRate2,
+        )
+    val FollowCamera =
+        SceneCamera(
+            eye = CoordGrid(3223, 3434),
+            eyeHeight = 390,
+            lookAt = CoordGrid(3225, 3425),
+            lookAtHeight = 190,
+            rate = RecordedRate,
+            rate2 = RecordedRate2,
         )
 
     val EavesdropStart = CoordGrid(3254, 3397)
@@ -205,59 +243,104 @@ constructor(
     private val npcRepo: NpcRepository,
     private val locRepo: LocRepository,
     private val collision: CollisionFlagMap,
+    private val music: MusicPlayer,
 ) : CotsScenes {
     override suspend fun delegation(access: ProtectedAccess) {
         access.ifCloseChat()
+        music.unlockAndPlay(access.player, MusicRow.getRow("dbrow.music_children_of_the_sun"))
         val actors = mutableListOf<Npc>()
-        lateinit var delegates: List<Npc>
+        val delegates = mutableListOf<Npc>()
         lateinit var knights: List<Npc>
         lateinit var tobynActor: Npc
         lateinit var guard: Npc
         access.lockedScene(
-            vantage = access.player.coords,
+            vantage = CotsPlaces.DelegationVantage,
             faceAt = CotsPlaces.King,
             camera = CotsPlaces.DelegationCamera,
+            returnTo = CotsPlaces.DelegationReturn,
             underFade = {
-                val east = CotsPlaces.DelegationCamera.eye
-                actors += spawn("npc.vmq1_king_roald_cutscene", CotsPlaces.King, east)
-                actors += spawn("npc.vmq1_aeonisig_raispher_cutscene", CotsPlaces.Advisor, east)
-                for (post in CotsPlaces.Guards) {
-                    actors += spawn("npc.fai_varrock_guard02", post, east)
-                }
-                delegates =
-                    listOf(
-                        spawn(CotsNpc.ItzlaCutscene, CotsPlaces.DelegationStart[0]),
-                        spawn("npc.vmq1_servius_cutscene", CotsPlaces.DelegationStart[1]),
-                        spawn("npc.vmq1_furia_cutscene", CotsPlaces.DelegationStart[2]),
-                        spawn("npc.vmq1_ennius_cutscene", CotsPlaces.DelegationStart[3]),
-                    )
+                val delegation = CotsPlaces.DelegationStart[0]
+                actors += spawn("npc.vmq1_guard_10_noop", CotsPlaces.Guards[0], delegation)
+                actors += spawn("npc.vmq1_guard_7_noop", CotsPlaces.Guards[1], delegation)
+                actors +=
+                    spawn("npc.vmq1_aeonisig_raispher_cutscene", CotsPlaces.Advisor, delegation)
+                actors += spawn("npc.vmq1_king_roald_cutscene", CotsPlaces.King, delegation)
                 knights =
                     CotsPlaces.KnightsStart.mapIndexed { index, start ->
-                        spawn("npc.vmq1_knight_${index + 1}", start)
+                        spawn("npc.vmq1_knight_${index + 1}", start, start.translateX(-1))
                     }
+                delegates +=
+                    spawn(
+                        CotsNpc.ItzlaCutscene,
+                        CotsPlaces.DelegationStart[0],
+                        CotsPlaces.DelegationStart[0].translateX(-1),
+                    )
+                delegates +=
+                    spawn(
+                        "npc.vmq1_servius_cutscene",
+                        CotsPlaces.DelegationStart[1],
+                        CotsPlaces.DelegationStart[1].translateX(-1),
+                    )
                 tobynActor = spawn("npc.vmq1_guard_sergeant_cutscene", CotsPlaces.TobynScene)
-                guard = spawn("npc.vmq1_bag_guard", CotsPlaces.BagGuardStart)
-                actors += delegates + knights + tobynActor + guard
+                guard = spawn("npc.vmq1_bag_guard_vis", CotsPlaces.BagGuardStart)
+                actors += knights + delegates + listOf(tobynActor, guard)
             },
             teardown = { actors.forEach(::despawn) },
         ) {
             startDialogue {
+                knights.forEachIndexed { i, npc -> npc.walk(CotsPlaces.KnightsMid[i]) }
                 delegates.forEachIndexed { i, npc -> npc.walk(CotsPlaces.DelegationStop[i]) }
+                val furia =
+                    spawn(
+                        "npc.vmq1_furia_cutscene",
+                        CotsPlaces.DelegationStart[2],
+                        CotsPlaces.DelegationStart[2].translateX(-1),
+                    )
+                val ennius =
+                    spawn(
+                        "npc.vmq1_ennius_cutscene",
+                        CotsPlaces.DelegationStart[3],
+                        CotsPlaces.DelegationStart[3].translateX(-1),
+                    )
+                delegates += furia
+                delegates += ennius
+                actors += listOf(furia, ennius)
+                delay(1)
+                furia.walk(CotsPlaces.DelegationStop[2])
+                ennius.walk(CotsPlaces.DelegationStop[3])
+                delay(13)
                 knights.forEachIndexed { i, npc -> npc.walk(CotsPlaces.KnightsStop[i]) }
-                delay(9)
+                delay(2)
                 for (npc in delegates + knights) npc.faceSquare(CotsPlaces.King)
                 delegationArrives()
-                guard.walk(CotsPlaces.BagGuardStop)
+                cutTo(CotsPlaces.GuardCamera)
                 delay(1)
-                tobynActor.faceSquare(CotsPlaces.BagGuardStart)
+                guard.walk(CotsPlaces.BagGuardMid)
+                delay(5)
+                guard.faceSquare(CotsPlaces.TobynScene)
+                tobynActor.faceSquare(CotsPlaces.BagGuardMid)
                 guardLeaves()
-                delay(1)
+                guard.walk(CotsPlaces.BagGuardStop)
+                delay(4)
+                val secondGuard = spawn("npc.vmq1_bag_guard_vis", CotsPlaces.SecondGuardStart)
+                actors += secondGuard
+                cutTo(CotsPlaces.FollowCamera)
+                secondGuard.walk(CotsPlaces.SecondGuardMid)
+                delay(2)
+                secondGuard.walk(CotsPlaces.SecondGuardStop)
+                delay(2)
+                bagGuardDeparts()
+                var waited = 0
+                while (secondGuard.coords != CotsPlaces.SecondGuardStop && waited++ < 9) {
+                    delay(1)
+                }
             }
         }
     }
 
     override suspend fun eavesdrop(access: ProtectedAccess) {
         access.ifCloseChat()
+        music.unlockAndPlay(access.player, MusicRow.getRow("dbrow.music_plots_and_plans"))
         val player = access.player
         access.lockedScene(
             vantage = CotsPlaces.EavesdropStart,
@@ -302,6 +385,7 @@ constructor(
 
     override suspend fun interrogation(access: ProtectedAccess) {
         access.ifCloseChat()
+        music.unlockAndPlay(access.player, MusicRow.getRow("dbrow.music_the_burning_sun"))
         val player = access.player
         val cast = RoofCast(npcRepo, collision)
         val steps = CotsPlaces.CellItzlaSteps
@@ -370,6 +454,7 @@ constructor(
         val npc = Npc(type, coords)
         npcRepo.add(npc, SceneLifespan)
         npc.noneMode()
+        npc.moveRestrict = MoveRestrict.PassThru
         facing?.let(npc::faceSquare)
         return npc
     }
@@ -454,6 +539,9 @@ internal suspend fun Dialogue.guardLeaves() {
     tobyn(quiz, "What are you doing with that bag?")
     bagGuard(worried, "Oh... Er... Just delivering some supplies to the guards at the gates.")
     tobyn(neutral, "Well hurry back. We need everyone at their posts.")
+}
+
+internal suspend fun Dialogue.bagGuardDeparts() {
     noah(quiz, "That's an unusually big bag he's carrying.")
     chatPlayer(quiz, "Hmm... Now where might you be going with that...?")
 }
@@ -554,7 +642,7 @@ internal suspend fun Dialogue.interrogationInCell(wrapUp: () -> Unit = {}) {
             "well...",
     )
     bandit(CotsNpc.Bearded, worried, "Alright, enough! I'll tell you what you want!")
-    itzla(happy, "Kuaini!")
+    itzla(happy, "Kuani!")
     itzla(quiz, "So who are you working for?")
     bandit(
         CotsNpc.Bearded,
