@@ -1,6 +1,7 @@
 package org.rsmod.content.other.treasuretrails
 
 import dev.openrune.ServerCacheManager
+import jakarta.inject.Inject
 import org.rsmod.api.player.hook.PlayerLocOpHook
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
@@ -8,7 +9,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.loc.BoundLocInfo
 
-class ClueLocHook : PlayerLocOpHook {
+class ClueLocHook @Inject constructor(private val instanceCoords: ClueInstanceCoords) :
+    PlayerLocOpHook {
     override fun claims(player: Player, loc: BoundLocInfo, op: InteractionOp): Boolean =
         isSearchOp(loc, op) && searchTrail(player, loc) != null
 
@@ -55,10 +57,13 @@ class ClueLocHook : PlayerLocOpHook {
         TrailFlow.heldTrails(player).firstOrNull { trail ->
             when (val target = ClueSteps.target(player, trail.step)) {
                 is ClueTarget.Search ->
-                    loc.bounds().asSequence().any { it == target.row.coord } &&
+                    loc.bounds().asSequence().any {
+                        it == instanceCoords.toPlayerSpace(player, target.row.coord)
+                    } &&
                         loc.id in setOfNotNull(target.row.loc.id, target.row.fallbackLoc?.id)
                 is ClueTarget.OpenWithKey ->
-                    loc.coords == target.row.locCoord && loc.id == target.row.loc.id
+                    loc.coords == instanceCoords.toPlayerSpace(player, target.row.locCoord) &&
+                        loc.id == target.row.loc.id
                 else -> false
             }
         }

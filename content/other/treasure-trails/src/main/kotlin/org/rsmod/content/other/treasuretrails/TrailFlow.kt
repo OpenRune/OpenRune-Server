@@ -90,7 +90,10 @@ object TrailFlow {
 
     fun resetTrail(player: Player, tier: TrailTierRow) {
         TrailState(player, tier).clear()
-        if (tier.difficulty == TrailTiers.MASTER) MasterParts.clear(player)
+        if (tier.difficulty == TrailTiers.MASTER) {
+            MasterParts.clear(player)
+            MasterVars.clear(player)
+        }
         VarPlayerIntMapSetter.set(player, CHALLENGE_STEP, 0)
         ClueChallengeTasks.clear(player)
         VarPlayerIntMapSetter.set(player, INFOBOX, NO_INFOBOX)
@@ -208,6 +211,7 @@ object TrailFlow {
         val clue = tier.clueObj
         if (clue != null) {
             state.progress = progress
+            if (tier.difficulty == TrailTiers.MASTER) MasterVars.setReady(player, false)
             VarPlayerIntMapSetter.set(player, ENCOUNTER_DEFEATED, 0)
             setStep(player, tier, rollStep(tier, random, exclude = state.step), random)
             return clue

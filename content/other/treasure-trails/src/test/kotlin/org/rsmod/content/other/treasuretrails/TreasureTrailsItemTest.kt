@@ -66,7 +66,10 @@ import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.queue.EngineQueueCache
+import org.rsmod.game.region.Region
+import org.rsmod.game.region.zone.RegionZoneCopy
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
@@ -649,6 +652,56 @@ class TreasureTrailsItemTest {
     }
 
     @Test
+    fun `dancing in the kbd lair outfit spawns the master double agent`() {
+        val f = Fixture(TrailTiers.MASTER)
+        f.player.inv[0] = InvObj(f.clue, 1)
+        f.startTrail("dbrow.cluehelper_emote_master_8", 3)
+        f.player.coords = CoordGrid(2271, 4681, 0)
+        f.player.worn[0] = InvObj("obj.dragonmask_black", 1)
+        f.player.worn[4] = InvObj("obj.black_dragonhide_body", 1)
+        f.player.worn[9] = InvObj("obj.black_dragon_vambraces", 1)
+
+        ClueEmotes(f.encounters, ClueInstanceCoords { null }).onEmote(f.player, DANCE_SLOT)
+        assertEquals(1, f.encounters.alive(f.player).size)
+    }
+
+    @Test
+    @OptIn(InternalApi::class)
+    fun `dancing inside an instance copy of the lair counts as standing on the target`() {
+        val f = Fixture(TrailTiers.MASTER)
+        f.player.inv[0] = InvObj(f.clue, 1)
+        f.startTrail("dbrow.cluehelper_emote_master_8", 3)
+        val real = CoordGrid(2271, 4680, 0)
+        val zone = ZoneKey.from(real)
+        val copyBase = CoordGrid(6400, 5120, 0)
+        val region = Region(copyBase, copyBase.translate(8, 8), uid = 1, slot = 0)
+        region.registerZone(RegionZoneCopy(zone, rotation = 0, flag = null), ZoneKey.from(copyBase))
+        f.player.coords = copyBase + (real - zone.toCoords()) + CoordGrid(0, 1, 0)
+        f.player.worn[0] = InvObj("obj.dragonmask_black", 1)
+        f.player.worn[4] = InvObj("obj.black_dragonhide_body", 1)
+        f.player.worn[9] = InvObj("obj.black_dragon_vambraces", 1)
+
+        ClueEmotes(f.encounters, ClueInstanceCoords { region }).onEmote(f.player, DANCE_SLOT)
+        assertEquals(1, f.encounters.alive(f.player).size)
+    }
+
+    @Test
+    fun `the real master length varbit counts steps remaining and the ready flag clears on advance`() {
+        val f = Fixture(TrailTiers.MASTER)
+        f.startCombine(length = 3)
+        assertEquals(3, f.player.vars["varbit.trail_length_master"])
+        MasterVars.setReady(f.player, true)
+        with(MasterParts) { for (part in 0 until MasterParts.COUNT) assertTrue(f.access().give(part)) }
+
+        f.run { with(MasterParts) { combine() } }
+        assertEquals(2, f.player.vars["varbit.trail_length_master"])
+        assertEquals(0, f.player.vars["varbit.master_clue_progress"])
+
+        TrailFlow.resetTrail(f.player, f.tier)
+        assertEquals(0, f.player.vars["varbit.trail_length_master"])
+    }
+
+    @Test
     fun `combining the parts of the last step swaps the clue for a casket`() {
         val f = Fixture(TrailTiers.MASTER)
         f.startCombine(length = 1)
@@ -859,6 +912,7 @@ class TreasureTrailsItemTest {
         private const val MASTER = 5
         private const val STASH_UNIT = "loc.hh_easy019"
         private const val HANS = "dbrow.cluehelper_cryptic_beginner_hans"
+        private const val DANCE_SLOT = 12
         private const val COMBINE_STEP = "dbrow.cluehelper_skillchallenge_master_25"
         private const val CHARLIE_TROUT = "dbrow.cluehelper_skillchallenge_beginner_0"
         private const val TROUT = "obj.trout"

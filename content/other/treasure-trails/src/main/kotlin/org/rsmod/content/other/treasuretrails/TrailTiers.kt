@@ -140,11 +140,17 @@ class TrailState(private val player: Player, val tier: TrailTierRow) {
 
     var length: Int
         get() = player.vars[lengthVarbit]
-        set(value) = VarPlayerIntMapSetter.set(player, lengthVarbit, value)
+        set(value) {
+            VarPlayerIntMapSetter.set(player, lengthVarbit, value)
+            syncRemaining()
+        }
 
     var progress: Int
         get() = player.vars[progressVarbit]
-        set(value) = VarPlayerIntMapSetter.set(player, progressVarbit, value)
+        set(value) {
+            VarPlayerIntMapSetter.set(player, progressVarbit, value)
+            syncRemaining()
+        }
 
     var step: Int?
         get() = stepVarp()?.let { player.vars[it] }?.takeIf { it != NO_STEP }
@@ -160,6 +166,12 @@ class TrailState(private val player: Player, val tier: TrailTierRow) {
     }
 
     private fun stepVarp(): String? = tier.stepVarp?.let(TrailTiers::varp)
+
+    private fun syncRemaining() {
+        if (tier.difficulty != TrailTiers.MASTER) return
+        val remaining = if (length == 0) 0 else (length - progress).coerceAtLeast(0)
+        MasterVars.setRemaining(player, remaining)
+    }
 
     private companion object {
         const val NO_STEP = 0

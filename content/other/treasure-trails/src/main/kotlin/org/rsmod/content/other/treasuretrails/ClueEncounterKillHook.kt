@@ -15,6 +15,7 @@ class ClueEncounterKillHook @Inject constructor(private val encounters: ClueEnco
         val trail =
             TrailFlow.heldTrails(hero).firstOrNull { encounters.belongsTo(it.step, npc) } ?: return
         VarPlayerIntMapSetter.set(hero, TrailFlow.ENCOUNTER_DEFEATED, trail.step.rowId)
+        if (trail.tier.difficulty == TrailTiers.MASTER) MasterVars.setReady(hero, true)
         if (trail.step.kind == ClueKind.Emote) {
             encounters.summonUri(hero, trail.tier)
         }

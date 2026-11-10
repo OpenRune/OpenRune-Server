@@ -11,6 +11,15 @@ object ClueBoxes {
     private const val LIGHT_ROW = "dbrow.cluehelper_challenge_box_light"
     private const val EITHER_ROW = "dbrow.cluehelper_challenge_box_puzzle_or_light"
 
+    private val MASTER_CODES =
+        mapOf(
+            ClueLightBox.BOX to MasterVars.LIGHT_BOX,
+            "obj.trail_master_zulrah_puzzlebox" to MasterVars.ZULRAH_BOX,
+            "obj.trail_master_cerberus_puzzlebox" to MasterVars.CERBERUS_BOX,
+            "obj.trail_master_gnomechild_puzzlebox" to MasterVars.GNOME_CHILD_BOX,
+            "obj.trail_master_tob_puzzlebox" to MasterVars.TOB_BOX,
+        )
+
     fun held(player: Player): ItemServerType? =
         ClueSlidePuzzle.held(player) ?: ClueLightBox.held(player)
 
@@ -24,7 +33,10 @@ object ClueBoxes {
     fun reset(player: Player) {
         ClueSlidePuzzle.reset(player)
         ClueLightBox.reset(player)
+        MasterVars.setBox(player, 0)
     }
+
+    fun masterCode(box: ItemServerType): Int? = MASTER_CODES[box.symbol()]
 
     fun handOut(step: ClueStep, random: GameRandom): ItemServerType {
         val light = lightBox()

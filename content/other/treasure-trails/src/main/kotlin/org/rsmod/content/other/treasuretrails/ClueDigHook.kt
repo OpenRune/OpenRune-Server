@@ -6,7 +6,12 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
 import org.rsmod.game.entity.Player
 
-class ClueDigHook @Inject constructor(private val encounters: ClueEncounters) : SpadeDigHook {
+class ClueDigHook
+@Inject
+constructor(
+    private val encounters: ClueEncounters,
+    private val instanceCoords: ClueInstanceCoords,
+) : SpadeDigHook {
     override fun claims(player: Player): Boolean =
         digTrail(player) != null || ownedPartHere(player)
 
@@ -27,7 +32,7 @@ class ClueDigHook @Inject constructor(private val encounters: ClueEncounters) : 
         }
         val defeated = player.vars[TrailFlow.ENCOUNTER_DEFEATED] == trail.step.rowId
         if (trail.step.encounters.isNotEmpty() && !defeated) {
-            encounters.spawn(player, trail.step)
+            if (!encounters.spawn(player, trail.step)) mes(ALREADY_FIGHTING)
             return
         }
         val given = advance(trail.tier) ?: return
@@ -45,7 +50,10 @@ class ClueDigHook @Inject constructor(private val encounters: ClueEncounters) : 
         MasterParts.ownedParts(player).any { digsAt(player, MasterParts.part(player, it)) }
 
     private fun digsAt(player: Player, step: ClueStep): Boolean {
-        val spot = (ClueSteps.target(player, step) as? ClueTarget.Dig)?.row?.coord
+        val spot =
+            (ClueSteps.target(player, step) as? ClueTarget.Dig)?.row?.coord?.let {
+                instanceCoords.toPlayerSpace(player, it)
+            }
         val radius =
             when (step.kind) {
                 ClueKind.Emote -> null
@@ -59,6 +67,7 @@ class ClueDigHook @Inject constructor(private val encounters: ClueEncounters) : 
     }
 
     internal companion object {
+        const val ALREADY_FIGHTING = "You already have wizards to fight!"
         const val DIG_RADIUS = 1
         const val HOT_COLD_DIG_RADIUS = 4
     }

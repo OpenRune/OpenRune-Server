@@ -79,6 +79,7 @@ object ClueLightBox {
         VarPlayerIntMapSetter.set(player, LIGHTS, lights)
         if (lights == 0) {
             mes("As the last light turns on, you hear the latch release.")
+            MasterVars.setReady(player, true)
             soundSynth(SOLVE_SYNTH)
             ifClose()
         }

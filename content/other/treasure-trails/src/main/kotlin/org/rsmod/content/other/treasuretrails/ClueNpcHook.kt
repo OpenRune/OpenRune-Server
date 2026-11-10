@@ -192,6 +192,7 @@ constructor(
             }
             val name = npcVisType(npc).name
             val master = trail.tier.difficulty == TrailTiers.MASTER
+            if (master) ClueBoxes.masterCode(box)?.let { MasterVars.setBox(player, it) }
             val light = box.symbol() == ClueLightBox.BOX
             val text =
                 when {
@@ -213,6 +214,7 @@ constructor(
         if (invDel(inv, held.symbol(), 1).failure) return
         ClueBoxes.reset(player)
         val master = trail.tier.difficulty == TrailTiers.MASTER
+        if (master) MasterVars.setReady(player, true)
         val praise = "Well done ${player.displayName}. Here you go.".takeIf { master }
         completeTalk(npc, trail.tier, praise)
     }

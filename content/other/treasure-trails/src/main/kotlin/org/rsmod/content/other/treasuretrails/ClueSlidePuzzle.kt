@@ -42,17 +42,51 @@ object ClueSlidePuzzle {
             "obj.trail_master_zulrah_puzzlebox",
             "obj.trail_master_cerberus_puzzlebox",
             "obj.trail_master_gnomechild_puzzlebox",
+            "obj.trail_master_tob_puzzlebox",
         )
 
     private val masterThemes = listOf("zulrah", "cerberus", "gnomechild")
 
+    private const val TOB_THEME = 9
+
+    private val tobTiles =
+        listOf(
+            "obj.trail_slidingpuzzle_tob1",
+            "obj.trail_slidingpuzzle_tob2",
+            "obj.trail_slidingpuzzle_tob3",
+            "obj.trail_slidingpuzzle_tob4",
+            "obj.trail_slidingpuzzle_tob5",
+            "obj.trail_slidingpuzzle_tob6",
+            "obj.trail_slidingpuzzle_tob7",
+            "obj.trail_slidingpuzzle_tob8",
+            "obj.trail_slidingpuzzle_tob9",
+            "obj.trail_slidingpuzzle_tob10",
+            "obj.trail_slidingpuzzle_tob11",
+            "obj.trail_slidingpuzzle_tob12",
+            "obj.trail_slidingpuzzle_tob13",
+            "obj.trail_slidingpuzzle_tob14",
+            "obj.trail_slidingpuzzle_tob15",
+            "obj.trail_slidingpuzzle_tob16",
+            "obj.trail_slidingpuzzle_tob17",
+            "obj.trail_slidingpuzzle_tob18",
+            "obj.trail_slidingpuzzle_tob19",
+            "obj.trail_slidingpuzzle_tob20",
+            "obj.trail_slidingpuzzle_tob21",
+            "obj.trail_slidingpuzzle_tob22",
+            "obj.trail_slidingpuzzle_tob23",
+            "obj.trail_slidingpuzzle_tob24",
+        )
+
+    private fun isBox(type: ItemServerType): Boolean =
+        type.name in BOX_NAMES || type.symbol() in masterBoxes
+
     val boxes: List<ItemServerType> by lazy {
-        ServerCacheManager.getItems().values.filter { it.name in BOX_NAMES }
+        ServerCacheManager.getItems().values.filter(::isBox)
     }
 
     fun held(player: Player): ItemServerType? =
         player.inv.objs.firstNotNullOfOrNull { obj ->
-            obj?.let { TrailTiers.type(it.id) }?.takeIf { it.name in BOX_NAMES }
+            obj?.let { TrailTiers.type(it.id) }?.takeIf(::isBox)
         }
 
     fun boxFor(step: ClueStep): ItemServerType? =
@@ -112,12 +146,14 @@ object ClueSlidePuzzle {
         val master = masterBoxes.indexOf(box.symbol())
         return when {
             canonical >= 0 -> canonical + 1
-            master >= 0 -> THEMES + master + 1
+            master in masterThemes.indices -> THEMES + master + 1
+            master >= 0 -> TOB_THEME
             else -> box.id % THEMES + 1
         }
     }
 
     private fun tile(theme: Int, index: Int): String {
+        if (theme == TOB_THEME) return tobTiles[index]
         val number = "%02d".format(index + 1)
         return if (theme <= THEMES) {
             "obj.trail_slidingpuzzle${THEME_LETTERS[theme - 1]}$number"

@@ -142,6 +142,7 @@ constructor(
                 "npc.trail_zaros_wizard" to "For Zaros!",
                 "npc.trail_zaros_range" to "Perish in agony!",
                 "npc.trail_zaros_melee" to "For Zaros!",
+                "npc.trail_cabbage_mage" to "Die deliciously!",
             )
                 .mapKeys { it.key.asRSCM(RSCMType.NPC) }
 
