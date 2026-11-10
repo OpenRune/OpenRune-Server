@@ -5,7 +5,6 @@ import org.rsmod.api.script.onPlayerCombatLevelUp
 import org.rsmod.api.script.onPlayerLevelUp
 import org.rsmod.api.script.onPlayerXpGain
 import org.rsmod.content.events.leaguetasks.LeagueTaskProgress
-import org.rsmod.content.events.leaguetasks.LeagueTaskRequirement
 import org.rsmod.content.events.leaguetasks.LeagueTaskTrigger
 import org.rsmod.game.world.WorldType
 import org.rsmod.plugin.scripts.PluginScript

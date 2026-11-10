@@ -4,7 +4,6 @@ import jakarta.inject.Inject
 import org.rsmod.api.script.onPlayerInvChanged
 import org.rsmod.api.script.onPlayerShopBought
 import org.rsmod.content.events.leaguetasks.LeagueTaskProgress
-import org.rsmod.content.events.leaguetasks.LeagueTaskRequirement
 import org.rsmod.content.events.leaguetasks.LeagueTaskTrigger
 import org.rsmod.game.world.WorldType
 import org.rsmod.plugin.scripts.PluginScript

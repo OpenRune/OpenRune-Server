@@ -3,7 +3,6 @@ package org.rsmod.content.events.leaguetasks.triggers
 import jakarta.inject.Inject
 import org.rsmod.api.script.onPlayerEquip
 import org.rsmod.content.events.leaguetasks.LeagueTaskProgress
-import org.rsmod.content.events.leaguetasks.LeagueTaskRequirement
 import org.rsmod.content.events.leaguetasks.LeagueTaskTrigger
 import org.rsmod.game.world.WorldType
 import org.rsmod.plugin.scripts.PluginScript
