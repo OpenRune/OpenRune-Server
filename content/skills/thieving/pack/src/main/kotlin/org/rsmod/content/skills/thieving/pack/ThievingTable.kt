@@ -23,6 +23,7 @@ object ThievingTable {
     const val COL_LOWERCASE_NAME = 16
     const val COL_PROPER_NAME = 17
     const val COL_OP = 18
+    const val COL_POCKET_NAME = 19
 
     const val COL_STALL_LOC = 0
     const val COL_STALL_EMPTY_LOC = 1
@@ -59,6 +60,7 @@ object ThievingTable {
             column("lowercase_name", COL_LOWERCASE_NAME, VarType.BOOLEAN)
             column("proper_name", COL_PROPER_NAME, VarType.BOOLEAN)
             column("op", COL_OP, VarType.INT)
+            column("pocket_name", COL_POCKET_NAME, VarType.STRING)
 
             fun target(
                 row: String,
@@ -79,6 +81,7 @@ object ThievingTable {
                 lowercaseName: Boolean = false,
                 properName: Boolean = false,
                 op: Int = DEFAULT_OP,
+                pocketName: String? = null,
             ) =
                 row(row) {
                     column(COL_LOOT_TABLE, lootTable)
@@ -104,6 +107,7 @@ object ThievingTable {
                     column(COL_LOWERCASE_NAME, lowercaseName)
                     column(COL_PROPER_NAME, properName)
                     column(COL_OP, op)
+                    if (pocketName != null) column(COL_POCKET_NAME, pocketName)
                 }
 
             target(
@@ -238,6 +242,7 @@ object ThievingTable {
                 pouch = "obj.pickpocket_coin_pouch_warrior",
                 pouchCoins = 18..18,
                 lowercaseName = true,
+                pocketName = "the warrior",
             )
             target(
                 "dbrow.thieving_pickpocket_rogue",

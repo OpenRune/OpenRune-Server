@@ -336,7 +336,8 @@ constructor(
     }
 
     private fun pocketOwner(npc: Npc, target: ThievingPickpocketRow): String =
-        pocketOwnerName(npc.visType.name, target.lowercaseName, target.properName)
+        target.pocketName
+            ?: pocketOwnerName(npc.visType.name, target.lowercaseName, target.properName)
 
     private fun describe(obj: String, count: Int): String {
         val name = ServerCacheManager.getItem(obj.asRSCM(RSCMType.OBJ))?.name ?: obj

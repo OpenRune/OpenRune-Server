@@ -13,8 +13,8 @@ class ThievingRulesTest {
     @Test
     fun `names with inner capitals keep their casing`() {
         assertEquals(
-            "the Al Kharid warrior",
-            pocketOwnerName("Al Kharid warrior", lowercase = true, properName = false),
+            "the H.A.M. Guard",
+            pocketOwnerName("H.A.M. Guard", lowercase = true, properName = false),
         )
     }
 
