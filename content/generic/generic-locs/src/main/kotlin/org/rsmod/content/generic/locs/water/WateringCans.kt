@@ -5,6 +5,7 @@ import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.entity.Player
 
@@ -58,7 +59,10 @@ object WateringCans {
         val doses = doses(can)
         if (can == GRICOLLER) {
             if (player.vars[CHARGES] <= 0) return false
-        } else if (doses == null || doses == 0) return false
+        } else if (doses == 0) {
+            player.mes("You need to fill the watering can first.")
+            return false
+        }
         val result = player.invTransaction(player.inv) {
             val inv = select(player.inv)
             if (can != GRICOLLER) {
