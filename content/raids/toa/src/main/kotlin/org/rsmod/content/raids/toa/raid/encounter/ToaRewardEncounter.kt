@@ -7,6 +7,7 @@ import dev.openrune.rscm.RSCMType
 import org.rsmod.api.droptable.DropRateModifiers
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.vars.intVarBit
@@ -173,7 +174,7 @@ class ToaRewardEncounter(
     private fun spawnOsmumten() {
         val tile = room.osmumtenTile ?: return
         spawn(OSMUMTEN, coords(tile), Direction.North).noneMode()
-        // for (player in players) player.midiJingle(JINGLE)
+        for (player in players) player.midiJingle(JINGLE)
     }
 
     companion object {
@@ -243,7 +244,7 @@ class ToaRewardEncounter(
         private const val FORCED_BOOST = 1_000_000.0
         private const val DUNG = "obj.cert_toa_loot_poo"
         private const val OSMUMTEN = "npc.toa_osmumten_vis"
-        // private const val JINGLE = "jingle.toa_boss_complete_jingle"
+        private const val JINGLE = "jingle.toa_boss_complete_jingle"
         private const val MUSIC = "midi.toa_victory"
 
         val Player.rewardChest
