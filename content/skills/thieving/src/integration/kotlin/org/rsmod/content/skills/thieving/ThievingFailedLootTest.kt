@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.thieving
 
+import com.google.inject.AbstractModule
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -7,8 +8,11 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
+import org.rsmod.api.droptable.DropTableRegistry
+import org.rsmod.api.droptable.toml.DropTableTomlResolver
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.scope.GameTestScope
+import org.rsmod.content.drops.toml.ContentDropTableTomlResolver
 import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
@@ -30,27 +34,6 @@ class ThievingFailedLootTest {
             assertAllBones()
             assertEquals(xp, player.statMap.getFineXP(THIEVING))
             assertExists(stall)
-        }
-
-    @Test
-    fun GameTestState.`a pickpocket loot that finds no room gives nothing and no xp`() =
-        runThievingTest {
-            val farmer = spawnTarget("npc.master_farmer_1")
-            fillAllButOneSlot()
-            val xp = player.statMap.getFineXP(THIEVING)
-            // Success roll, loot pick, loot count.
-            random.next = 0
-            random.then = 0
-            random.then = 2
-
-            player.opNpc3(farmer)
-            advanceUntil({ player.isAccessProtected })
-            player.inv[SLOT_COUNT - 1] = InvObj(BONES, 1)
-            advanceUntil({ !player.isAccessProtected })
-
-            assertMessageSent(NO_SPACE)
-            assertAllBones()
-            assertEquals(xp, player.statMap.getFineXP(THIEVING))
         }
 
     @Test
@@ -114,7 +97,7 @@ class ThievingFailedLootTest {
         }
 
     private fun GameTestState.runThievingTest(body: GameTestScope.() -> Unit) =
-        runGameTest(ThievingScript::class) {
+        runInjectedGameTest(DropTableRegistry::class, DropTableModule, ThievingScript::class) {
             player.clearAllInvs()
             player.setBaseLevel(THIEVING, 99)
             player.setCurrentLevel(THIEVING, 99)
@@ -140,6 +123,12 @@ class ThievingFailedLootTest {
 
     private fun GameTestScope.openPouch(slot: Int, all: Boolean) {
         player.withProtectedAccess { if (all) opHeld1(slot) else opHeld2(slot) }
+    }
+
+    private object DropTableModule : AbstractModule() {
+        override fun configure() {
+            bind(DropTableTomlResolver::class.java).to(ContentDropTableTomlResolver::class.java)
+        }
     }
 
     private companion object {

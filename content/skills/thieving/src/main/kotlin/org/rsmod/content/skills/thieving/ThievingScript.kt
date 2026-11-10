@@ -74,10 +74,9 @@ constructor(
         val bound = HashSet<Int>()
         for (target in ThievingPickpocketRow.all()) {
             val table = target.dropTable()
-            for (type in target.npcTypes()) {
-                val slot = type.pickpocketSlot() ?: continue
+            for (type in target.pickpocketTypes()) {
                 if (bound.add(type.id)) {
-                    onPickpocketOp(type, slot, target, table)
+                    onPickpocketOp(type, target, table)
                 }
             }
         }
@@ -100,7 +99,7 @@ constructor(
     private fun warnUnboundPickpockets(bound: Set<Int>) {
         val unbound =
             ServerCacheManager.getNpcs().values.filter {
-                it.id !in bound && it.pickpocketSlot() != null
+                it.id !in bound && it.isPickpocketable()
             }
         if (unbound.isEmpty()) return
         val names = unbound.map { it.name }.distinct().sorted()
@@ -112,16 +111,13 @@ constructor(
 
     private fun ScriptContext.onPickpocketOp(
         type: NpcServerType,
-        slot: Int,
         target: ThievingPickpocketRow,
         table: ThievingDropTable,
     ) {
-        when (slot) {
+        when (target.op) {
             1 -> onProtectedEvent<NpcEvents.Op1>(type.id) { pickpocket(it.npc, target, table) }
-            2 -> onProtectedEvent<NpcEvents.Op2>(type.id) { pickpocket(it.npc, target, table) }
             3 -> onProtectedEvent<NpcEvents.Op3>(type.id) { pickpocket(it.npc, target, table) }
-            4 -> onProtectedEvent<NpcEvents.Op4>(type.id) { pickpocket(it.npc, target, table) }
-            5 -> onProtectedEvent<NpcEvents.Op5>(type.id) { pickpocket(it.npc, target, table) }
+            else -> error("Unsupported pickpocket op${target.op} for ${target.lootTable}.")
         }
     }
 

@@ -12,4 +12,7 @@ dependencies {
     implementation(projects.content.interfaces.collectionLog)
     implementation(projects.content.other.pets)
     integrationImplementation(projects.api.pluginCommons)
+    integrationImplementation(projects.api.dropTablePlugin)
+    integrationImplementation(projects.content.drops)
+    integrationImplementation(libs.guice)
 }

@@ -11,7 +11,7 @@ import org.rsmod.game.entity.Player
 @JvmField
 public val craftingStallDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tableIdentifier = "Crafting Stall (Thieving)",
-    locs = locs("loc.dwarf_market_crafting"),
+    locs = locs("loc.dwarf_market_crafting", "loc.mm_stall_crafting"),
     mainTable = rsPlayerWeightedTable(total = 54) {
         name("Crafting Stall (Thieving)")
         12 weight "obj.amulet_mould" count 1

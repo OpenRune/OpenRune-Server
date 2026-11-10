@@ -35,5 +35,10 @@ internal fun pocketOwnerName(visible: String, lowercase: Boolean, properName: Bo
     return if (properName || name.contains(" the ")) name else "the $name"
 }
 
-internal fun NpcServerType.pickpocketSlot(): Int? =
-    (1..5).firstOrNull { actions.getOpOrNull(it - 1) in PICKPOCKET_OPS }
+internal fun ThievingPickpocketRow.pickpocketTypes(): List<NpcServerType> =
+    npcTypes().filter { it.hasPickpocketOp(op) }
+
+internal fun NpcServerType.isPickpocketable(): Boolean = (1..5).any { hasPickpocketOp(it) }
+
+private fun NpcServerType.hasPickpocketOp(op: Int): Boolean =
+    actions.getOpOrNull(op - 1) in PICKPOCKET_OPS

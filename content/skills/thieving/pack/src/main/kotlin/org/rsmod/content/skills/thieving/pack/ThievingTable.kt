@@ -22,6 +22,7 @@ object ThievingTable {
     const val COL_HOT_POCKET_DAMAGE = 15
     const val COL_LOWERCASE_NAME = 16
     const val COL_PROPER_NAME = 17
+    const val COL_OP = 18
 
     const val COL_STALL_LOC = 0
     const val COL_STALL_EMPTY_LOC = 1
@@ -32,6 +33,7 @@ object ThievingTable {
     const val COL_STALL_ATTEMPT_MESSAGE = 6
     const val COL_STALL_OWNERS = 7
 
+    private const val DEFAULT_OP = 3
     private const val DEFAULT_STUN_TICKS = 8
     private const val DEFAULT_ROCKY_CHANCE = 257_211
     private const val DEFAULT_CAUGHT_SHOUT = "What do you think you're doing?"
@@ -56,6 +58,7 @@ object ThievingTable {
             column("hot_pocket_damage", COL_HOT_POCKET_DAMAGE, VarType.INT)
             column("lowercase_name", COL_LOWERCASE_NAME, VarType.BOOLEAN)
             column("proper_name", COL_PROPER_NAME, VarType.BOOLEAN)
+            column("op", COL_OP, VarType.INT)
 
             fun target(
                 row: String,
@@ -75,6 +78,7 @@ object ThievingTable {
                 hotPocketDamage: Int = 0,
                 lowercaseName: Boolean = false,
                 properName: Boolean = false,
+                op: Int = DEFAULT_OP,
             ) =
                 row(row) {
                     column(COL_LOOT_TABLE, lootTable)
@@ -99,6 +103,7 @@ object ThievingTable {
                     column(COL_HOT_POCKET_DAMAGE, hotPocketDamage)
                     column(COL_LOWERCASE_NAME, lowercaseName)
                     column(COL_PROPER_NAME, properName)
+                    column(COL_OP, op)
                 }
 
             target(
@@ -167,6 +172,7 @@ object ThievingTable {
                 stunTicks = 7,
                 pouch = "obj.pickpocket_coin_pouch_ham",
                 pouchCoins = 1..21,
+                op = 1,
             )
             target(
                 "dbrow.thieving_pickpocket_ham_member_2",
@@ -180,6 +186,7 @@ object ThievingTable {
                 stunTicks = 7,
                 pouch = "obj.pickpocket_coin_pouch_ham",
                 pouchCoins = 1..21,
+                op = 1,
             )
             target(
                 "dbrow.thieving_pickpocket_ham_guard",
@@ -194,6 +201,7 @@ object ThievingTable {
                 pouch = "obj.pickpocket_coin_pouch_ham",
                 pouchCoins = 1..21,
                 lowercaseName = true,
+                op = 1,
             )
             target(
                 "dbrow.thieving_pickpocket_tourist",
@@ -538,6 +546,7 @@ object ThievingTable {
                 pouch = "obj.pickpocket_coin_pouch_varlamore_wealthy",
                 pouchCoins = 85..85,
                 lowercaseName = true,
+                op = 1,
             )
             target(
                 "dbrow.thieving_pickpocket_pollnivneach_bandit",
@@ -804,6 +813,13 @@ object ThievingTable {
                 emptyLoc = "loc.dwarf_market_empty_stall",
                 owners = listOf("npc.dwarf_city_shop_craft"),
                 guards = KELDAGRIM_GUARDS,
+            )
+            stall(
+                "dbrow.thieving_stall_ape_atoll_crafting",
+                loc = "loc.mm_stall_crafting",
+                level = 5,
+                xp = 200,
+                restockTicks = 8,
             )
             stall(
                 "dbrow.thieving_stall_keldagrim_crossbow",

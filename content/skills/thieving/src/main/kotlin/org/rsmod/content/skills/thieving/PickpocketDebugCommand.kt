@@ -46,8 +46,7 @@ constructor(
     }
 
     private fun ThievingPickpocketRow.representativeType() =
-        npcTypes()
-            .filter { it.pickpocketSlot() != null }
+        pickpocketTypes()
             .sortedBy { type ->
                 npcs.indexOfFirst { it.id == type.id }.takeIf { it >= 0 } ?: Int.MAX_VALUE
             }
