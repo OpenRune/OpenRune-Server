@@ -27,6 +27,8 @@ import org.rsmod.api.music.MusicRepository
 import org.rsmod.api.player.input.ResumePCountDialogInput
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.NpcInteractions
+import org.rsmod.api.player.interact.WornInteractions
+import org.rsmod.api.player.worn.WornUnequipOp
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
@@ -163,6 +165,20 @@ class TreasureTrailsItemTest {
         assertEquals(1, f.player.inv.count(f.box))
         assertEquals(0, f.player.inv.count(f.clue))
         assertEquals(1, f.bank.count(f.clue))
+    }
+
+    @Test
+    fun `a clue roll is withheld once the tier limit is reached`() {
+        val f = Fixture()
+        assertTrue(TrailTiers.canReceive(f.player, f.tier, boxes = false))
+
+        f.bank[0] = InvObj(f.clue, 1)
+        assertFalse(TrailTiers.canReceive(f.player, f.tier, boxes = false))
+        assertTrue(TrailTiers.canReceive(f.player, f.tier, boxes = true))
+
+        val capacity = TrailTiers.capacity(f.player, f.tier)
+        f.player.inv[0] = InvObj(f.box, capacity - 1)
+        assertFalse(TrailTiers.canReceive(f.player, f.tier, boxes = true))
     }
 
     @Test
@@ -585,6 +601,7 @@ class TreasureTrailsItemTest {
                     getRandom = { random },
                     getAlignment = { TextAlignment() },
                     getNpcInteractions = { NpcInteractions(events) },
+                    getWornInteractions = { WornInteractions(events, WornUnequipOp(events), noPrices) },
                 )
 
         @OptIn(InternalApi::class)

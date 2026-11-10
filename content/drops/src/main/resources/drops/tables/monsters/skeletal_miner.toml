@@ -105,13 +105,9 @@ shared = "gem"
 [[tertiary]]
 numerator = 1
 denominator = 100
-obj = "obj.trail_clue_beginner"
-count = 1
-clue_scroll_box = true
+clue = "beginner"
 
 [[tertiary]]
 numerator = 1
 denominator = 121
-obj = "obj.trail_medium_emote_exp1"
-count = 1
-clue_scroll_box = true
+clue = "medium"

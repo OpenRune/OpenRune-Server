@@ -10,7 +10,8 @@ import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -57,14 +58,7 @@ public val brutalGreenDragonDropTable: RSDropTable<Player, DropRollItem> = RSDro
         2 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: Elite clue scrolls and reward caskets are only dropped when completing an elite clue scroll asking you to kill a green dragon.
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
         1 outOf 28 weight "obj.arceuus_corpse_dragon" count 1
-        1 outOf 121 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 121 chance clue(ClueTier.Hard)
     },
 )

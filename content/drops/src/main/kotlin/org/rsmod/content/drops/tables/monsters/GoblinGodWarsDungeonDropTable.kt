@@ -10,7 +10,8 @@ import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.isOnQuest
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -59,14 +60,8 @@ public val goblinGodWarsDungeonDropTable: RSDropTable<Player, DropRollItem> = RS
         }
         1 outOf 30 weight "obj.arceuus_corpse_goblin" count 1
         1 outOf 5000 weight "obj.champions_challenge_goblin" count 1
-        1 outOf 80 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_beginner")
-        }
-        1 outOf 121 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
-        }
-        1 outOf 64 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
-        }
+        1 outOf 80 chance clue(ClueTier.Beginner)
+        1 outOf 121 chance clue(ClueTier.Easy)
+        1 outOf 64 chance clue(ClueTier.Easy)
     },
 )

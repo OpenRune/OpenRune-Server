@@ -228,9 +228,9 @@ public open class StandardCurrencyShopOperations(
         }
 
         val prepare = prepareSell(player, shop, objType)
-        val refusal = prepare.refusal
-        if (refusal != null) {
-            player.mes(refusal)
+        val prepareRefusal = prepare.refusal
+        if (prepareRefusal != null) {
+            player.mes(prepareRefusal)
             return
         }
 
@@ -278,9 +278,9 @@ public open class StandardCurrencyShopOperations(
         }
 
         val prepare = prepareSell(player, shop, uncertType)
-        val refusal = prepare.refusal
-        if (refusal != null) {
-            player.mes(refusal)
+        val prepareRefusal = prepare.refusal
+        if (prepareRefusal != null) {
+            player.mes(prepareRefusal)
             return
         }
 

@@ -99,6 +99,4 @@ shared = "gem"
 [[tertiary]]
 numerator = 1
 denominator = 60
-obj = "obj.trail_clue_hard_map001"
-count = 1
-clue_scroll_box = true
+clue = "hard"

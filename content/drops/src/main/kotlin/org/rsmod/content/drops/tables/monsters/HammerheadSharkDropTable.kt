@@ -8,7 +8,8 @@ import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -48,8 +49,6 @@ public val hammerheadSharkDropTable: RSDropTable<Player, DropRollItem> = RSDropT
              true
         }
         1 outOf 10 weight "obj.sailing_hammerhead_shark_liver" count 1
-        1 outOf 95 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_medium_emote_exp1")
-        }
+        1 outOf 95 chance clue(ClueTier.Medium)
     },
 )

@@ -1,7 +1,6 @@
 package org.rsmod.content.drops
 
 import kotlin.math.floor
-import org.rsmod.api.droptable.ClueScrollDrops
 import org.rsmod.game.entity.Player
 
 /** Easy Combat Achievements reward tier unlocked (improves clue drop rate). Stub defaults to true. */
@@ -43,6 +42,3 @@ public fun Player.eliteClueDropDenominator(baseDenominator: Int): Int =
 
 public fun Player.masterClueDropDenominator(baseDenominator: Int): Int =
     if (hasUnlockedMasterCombat()) combatAchievementClueDenominator(baseDenominator) else baseDenominator
-
-public fun Player.clueScrollTransformObj(scrollObj: String): String? =
-    ClueScrollDrops.resolve(this, scrollObj)

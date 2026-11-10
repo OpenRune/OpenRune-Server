@@ -1,15 +1,14 @@
 package org.rsmod.content.other.treasuretrails
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.droptable.ClueScrollDrops
+import org.rsmod.api.droptable.ClueTier
 import org.rsmod.api.enums.TrailEnums
 import org.rsmod.api.player.events.PlayerEmoteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
@@ -144,14 +143,22 @@ constructor(
         }
     }
 
-    private fun resolveDrop(player: Player, scroll: String): String? {
-        val type = ServerCacheManager.getItem(scroll.asRSCM(RSCMType.OBJ)) ?: return null
-        val difficulty = TrailTiers.clueDifficulty(type) ?: return null
-        val tier = TrailTiers.tier(difficulty)
-        if (ClueTakeHook.boxesUnlocked(player)) return tier.boxObj.symbol()
-        if (difficulty !in TrailTiers.PLAYABLE) return null
+    private fun resolveDrop(player: Player, clue: ClueTier): String? {
+        val tier = TrailTiers.tier(clue.difficulty)
+        val boxes = ClueTakeHook.boxesUnlocked(player)
+        if (!TrailTiers.canReceive(player, tier, boxes)) {
+            val missed = if (boxes) "scroll box" else "clue scroll"
+            player.mes(
+                "You have a sneaking suspicion that you would have received " +
+                    "${article(clue)} ${clue.name.lowercase()} $missed."
+            )
+            return null
+        }
+        if (boxes) return tier.boxObj.symbol()
         return TrailFlow.freshClue(tier, random).symbol()
     }
+
+    private fun article(clue: ClueTier): String = if (clue.name.first() in "AEIOU") "an" else "a"
 
     private fun ProtectedAccess.readChallenge(scroll: ItemServerType) {
         val step = TrailTiers.objStep(scroll)?.let(ClueSteps::step) ?: return

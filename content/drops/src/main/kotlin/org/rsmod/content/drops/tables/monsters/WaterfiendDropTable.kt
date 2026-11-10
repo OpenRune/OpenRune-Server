@@ -11,7 +11,8 @@ import org.rsmod.api.droptable.dropRollable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -65,18 +66,11 @@ public val waterfiendDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         3 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: This clue scroll and casket are only dropped when completing a Treasure Trails/Full guide/Elite#Cryptic clues
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
         1 outOf 24 weight "obj.prif_crystal_shard" count (3..5) condition { player ->
             // Drops Need Manual: Crystal shards are only dropped by those found within the Iorwerth Dungeon.
              true
         }
         onBuilder { brimstoneKeyRoll() }
-        1 outOf 121 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 121 chance clue(ClueTier.Hard)
     },
 )

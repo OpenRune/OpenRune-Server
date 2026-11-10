@@ -7,7 +7,8 @@ import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.game.entity.Player
 
 internal object GauntletRewardKeys {
@@ -21,7 +22,6 @@ internal object GauntletRewardKeys {
 
 private const val SHARD = "obj.prif_crystal_shard"
 private const val CAPE = "obj.gauntlet_crystalline_cape"
-private const val ELITE_CLUE = "obj.trail_elite_emote_exp1"
 
 @field:RegisterDropTable
 @JvmField
@@ -61,9 +61,7 @@ val gauntletNormalRewardTable: RSDropTable<Player, DropRollItem> =
         mainRolls = GauntletRewardKeys.NORMAL_ROLLS,
         tertiaries =
             rsPlayerTertiaryTable {
-                1 outOf 25 weight ELITE_CLUE count 1 transformObj { player ->
-                    player.clueScrollTransformObj(ELITE_CLUE)
-                }
+                1 outOf 25 chance clue(ClueTier.Elite)
                 1 outOf 120 weight "obj.crystal_seed_old" count 1
                 1 outOf 120 weight "obj.prif_armour_seed" count 1
                 boosted {
@@ -117,9 +115,7 @@ val gauntletCorruptedRewardTable: RSDropTable<Player, DropRollItem> =
         mainRolls = GauntletRewardKeys.CORRUPTED_ROLLS,
         tertiaries =
             rsPlayerTertiaryTable {
-                1 outOf 20 weight ELITE_CLUE count 1 transformObj { player ->
-                    player.clueScrollTransformObj(ELITE_CLUE)
-                }
+                1 outOf 20 chance clue(ClueTier.Elite)
                 1 outOf 50 weight "obj.crystal_seed_old" count 1
                 1 outOf 50 weight "obj.prif_armour_seed" count 1
                 boosted {

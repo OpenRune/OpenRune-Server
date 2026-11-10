@@ -7,7 +7,8 @@ import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -62,8 +63,6 @@ public val phosanisNightmareDropTable: RSDropTable<Player, DropRollItem> = RSDro
         1 outOf 200 weight "obj.nightmare_challenge_morph" count 1
         1 outOf 1400 weight "obj.nightmarepet" count 1
         1 outOf 4000 weight "obj.jar_of_dreams" count 1
-        1 outOf 33 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 33 chance clue(ClueTier.Elite)
     },
 )

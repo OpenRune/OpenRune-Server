@@ -13,7 +13,8 @@ import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -64,11 +65,7 @@ public val steelDragonDropTable: RSDropTable<Player, DropRollItem> = RSDropTable
     tertiaries = rsPlayerTertiaryTable {
         onBuilder { brimstoneKeyRoll() }
         1 outOf 10000 weight "obj.dragonfire_visage" count 1
-        1 outOf 60 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
-        1 outOf 475 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 60 chance clue(ClueTier.Hard)
+        1 outOf 475 chance clue(ClueTier.Elite)
     },
 )

@@ -59,7 +59,7 @@ object DropTableTomlReformatter {
 
     private fun normalizeGuaranteed(entry: org.rsmod.api.droptable.toml.TomlGuaranteedEntry) =
         entry.copy(
-            obj = entry.obj.trim(),
+            obj = entry.obj?.trim()?.ifBlank { null },
             count = entry.count?.trim()?.ifBlank { null },
             quest = entry.quest?.trim()?.ifBlank { null },
             questMode = entry.questMode?.trim()?.ifBlank { null },
@@ -67,7 +67,7 @@ object DropTableTomlReformatter {
 
     private fun normalizeChance(entry: org.rsmod.api.droptable.toml.TomlChanceEntry) =
         entry.copy(
-            obj = entry.obj.trim(),
+            obj = entry.obj?.trim()?.ifBlank { null },
             count = entry.count?.trim()?.ifBlank { null },
             quest = entry.quest?.trim()?.ifBlank { null },
             questMode = entry.questMode?.trim()?.ifBlank { null },

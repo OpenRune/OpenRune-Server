@@ -43,11 +43,6 @@ public val basiliskDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         5 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: The elite clue scroll and casket are only dropped when completing an Treasure Trails/Full guide/Elite#Cryptic clues
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
         1 outOf 4 weight "obj.rag_baby_basilisk_bone" count 1 condition {
             player -> player.isOnQuest("quest_ragandboneman2")
         }

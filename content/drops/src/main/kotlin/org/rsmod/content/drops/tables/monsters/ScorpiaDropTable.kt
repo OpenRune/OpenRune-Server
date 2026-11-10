@@ -11,7 +11,8 @@ import org.rsmod.api.droptable.dropRollable
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.wearingRingOfWealth
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -65,11 +66,7 @@ public val scorpiaDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         onBuilder { brimstoneKeyRoll() }
         // Drops Need Manual (rate): Due to the pre-rolled malediction and odium shard table, Scorpia's offspring is 1/128th rarer than its intended 1/2,000 rarity.
         1 outOf 2016 weight "obj.scorpia_pet" count 1
-        1 outOf 95 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
-        1 outOf 50 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 95 chance clue(ClueTier.Hard)
+        1 outOf 50 chance clue(ClueTier.Hard)
     },
 )

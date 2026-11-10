@@ -9,7 +9,8 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.rsPlayerPrerollTable
 import org.rsmod.api.droptable.dropRollable
 import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -47,8 +48,6 @@ public val aquaniteDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 400 weight "obj.dorgesh_construction_bone" count 1
         1 outOf 5013 weight "obj.dorgesh_construction_bone_curved" count 1
-        1 outOf 118 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 118 chance clue(ClueTier.Hard)
     },
 )

@@ -10,6 +10,8 @@ import org.rsmod.api.droptable.rsPlayerPrerollTable
 import org.rsmod.api.droptable.dropRollable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -76,7 +78,7 @@ public val bloodthirstyGargoyleDropTable: RSDropTable<Player, DropRollItem> = RS
         5 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_clue_hard_map001" count 1
+        1 outOf 1 chance clue(ClueTier.Hard)
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
         1 outOf 150 weight "obj.slayer_roof_key" count 1 condition { player ->
             // Drops Need Manual: Brittle keys are only dropped if the player has not unlocked the roof access, does not have one in their bank or inventory, and has gargoyles as their current Slayer task.

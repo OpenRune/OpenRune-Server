@@ -8,7 +8,8 @@ import dtx.rs.rsGuaranteedTable
 import org.rsmod.api.droptable.DropRateModifiers
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.RegisterDropTable
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.content.drops.eliteClueDropDenominator
 import org.rsmod.game.entity.Player
 
@@ -39,11 +40,7 @@ private fun Player.rollBarrowsChest(): RollResult<DropRollItem> {
     return RollResult.ListOf(
         loot.map { item ->
             if (item.obj == BarrowsLoot.CLUE_OBJ) {
-                DropRollItem(
-                    item.obj,
-                    item.count,
-                    transformObj = { it.clueScrollTransformObj(item.obj) },
-                )
+                clue(ClueTier.Elite)
             } else {
                 DropRollItem(item.obj, item.count)
             }

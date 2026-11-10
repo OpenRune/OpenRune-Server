@@ -134,13 +134,9 @@ count = 1
 [[tertiary]]
 numerator = 1
 denominator = 121
-obj = "obj.trail_clue_hard_map001"
-count = 1
-clue_scroll_box = true
+clue = "hard"
 
 [[tertiary]]
 numerator = 1
 denominator = 1140
-obj = "obj.trail_elite_emote_exp1"
-count = 1
-clue_scroll_box = true
+clue = "elite"

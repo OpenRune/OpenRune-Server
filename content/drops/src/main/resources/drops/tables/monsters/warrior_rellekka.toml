@@ -127,9 +127,7 @@ nothing = true
 [[tertiary]]
 numerator = 1
 denominator = 121
-obj = "obj.trail_medium_emote_exp1"
-count = 1
-clue_scroll_box = true
+clue = "medium"
 
 
 # Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (33 weight)

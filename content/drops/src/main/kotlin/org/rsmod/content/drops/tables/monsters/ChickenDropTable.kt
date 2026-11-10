@@ -8,7 +8,8 @@ import org.rsmod.api.droptable.ringNothing
 import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -26,8 +27,6 @@ public val chickenDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         32 weight ringNothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 300 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_beginner")
-        }
+        1 outOf 300 chance clue(ClueTier.Beginner)
     },
 )

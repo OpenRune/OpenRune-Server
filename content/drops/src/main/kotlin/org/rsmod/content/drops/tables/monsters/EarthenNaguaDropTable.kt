@@ -9,7 +9,8 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -40,15 +41,8 @@ public val earthenNaguaDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         6 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: Elite clue scrolls and reward caskets are only dropped when completing an elite clue scroll asking you to kill an earthen nagua.
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
         1 outOf 400 weight "obj.earthbound_tecpatl" count 1
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
-        1 outOf 121 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 121 chance clue(ClueTier.Hard)
     },
 )

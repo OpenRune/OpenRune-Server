@@ -17,7 +17,7 @@ object ClueLightBox {
     private const val SEED = "varp.trail_lightbox_seed"
     private const val LIGHT_COUNT = 25
     private const val FLIP_PERCENT = 31
-    private const val SOLVE_SYNTH = 580
+    private const val SOLVE_SYNTH = "synth.killerwatt_death"
 
     fun button(index: Int): String = "component.light_puzzle:button${index + 1}"
 

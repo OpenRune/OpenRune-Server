@@ -8,7 +8,8 @@ import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -49,8 +50,6 @@ public val templeSpiderDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         1 outOf 30 weight "obj.hosdun_sun_page" count 1
         1 outOf 30 weight "obj.hosdun_temple_page" count 1
         1 outOf 100 weight "obj.hosdun_grubby_key" count 1
-        1 outOf 190 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 190 chance clue(ClueTier.Hard)
     },
 )

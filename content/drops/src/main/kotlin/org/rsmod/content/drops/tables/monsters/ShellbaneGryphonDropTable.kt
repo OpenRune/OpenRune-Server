@@ -10,7 +10,8 @@ import org.rsmod.api.droptable.rsPlayerPrerollTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.game.entity.Player
 
@@ -65,19 +66,12 @@ public val shellbaneGryphonDropTable: RSDropTable<Player, DropRollItem> = RSDrop
         1 outOf 92 separate "obj.unidentified_dwarf_weed" count 1
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: Guaranteed elite clue scroll and reward casket drops only occur when completing an elite clue scroll asking you to kill the Shellbane gryphon.
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
         1 outOf 400 weight "obj.dorgesh_construction_bone" count 1
         1 outOf 2000 weight "obj.jar_of_feathers" count 1
         1 outOf 3000 weight "obj.gryphonbosspet" count 1
         1 outOf 5013 weight "obj.dorgesh_construction_bone_curved" count 1
-        1 outOf 190 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 190 chance clue(ClueTier.Elite)
     },
 )
 

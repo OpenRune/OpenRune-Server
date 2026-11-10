@@ -9,7 +9,8 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -65,16 +66,9 @@ public val cerberusDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     },
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 15 weight "obj.arceuus_corpse_hellhound" count 1
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: Elite clue scrolls and reward caskets are only dropped when completing an elite clue scroll asking you to kill a hellhound.
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
         1 outOf 2000 weight "obj.jar_of_souls" count 1
         1 outOf 3000 weight "obj.hell_pet" count 1
-        1 outOf 95 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 95 chance clue(ClueTier.Elite)
     },
 )

@@ -9,7 +9,8 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -51,8 +52,6 @@ public val kuraskDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         }
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
         1 outOf 3000 weight "obj.poh_trophydrop_kurask" count 1
-        1 outOf 121 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 121 chance clue(ClueTier.Hard)
     },
 )

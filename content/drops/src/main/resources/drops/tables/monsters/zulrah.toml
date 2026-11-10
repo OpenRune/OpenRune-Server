@@ -258,6 +258,4 @@ count = 1
 [[tertiary]]
 numerator = 1
 denominator = 71
-obj = "obj.trail_elite_emote_exp1"
-count = 1
-clue_scroll_box = true
+clue = "elite"

@@ -11,7 +11,8 @@ import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -75,11 +76,7 @@ public val brutalBlackDragonDropTable: RSDropTable<Player, DropRollItem> = RSDro
         1 outOf 20 weight "obj.arceuus_corpse_dragon" count 1
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
         1 outOf 10000 weight "obj.dragonfire_visage" count 1
-        1 outOf 121 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
-        1 outOf 237 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 121 chance clue(ClueTier.Hard)
+        1 outOf 237 chance clue(ClueTier.Elite)
     },
 )

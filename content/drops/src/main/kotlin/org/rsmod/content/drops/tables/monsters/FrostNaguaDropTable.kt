@@ -38,11 +38,6 @@ public val frostNaguaDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         1 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: Elite clue scrolls and reward caskets are only dropped when completing an elite clue scroll asking you to kill a frost nagua.
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
         1 outOf 10 weight "obj.frozen_tear" count 5..10
         1 outOf 100 weight "obj.pendant_of_ates_empty" count 1
         1 outOf 79 weight "obj.konar_key" count 1 killCondition {

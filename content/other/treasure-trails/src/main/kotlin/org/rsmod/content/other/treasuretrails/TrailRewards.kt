@@ -11,6 +11,7 @@ import dtx.core.flatten
 import dtx.rs.RSWeightedTable
 import jakarta.inject.Inject
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.resolveObj
 import org.rsmod.api.droptable.rollCount
 import org.rsmod.api.invtx.invClear
 import org.rsmod.api.market.MarketPrices
@@ -120,7 +121,8 @@ constructor(private val objRepo: ObjRepository, private val marketPrices: Market
 
     private fun ProtectedAccess.reward(drop: DropRollItem): CasketReward? {
         if (drop.isNothing || !drop.condition(player)) return null
-        return CasketReward(drop.transformObj(player) ?: drop.obj, drop.rollCount(random))
+        val obj = drop.resolveObj(player) ?: return null
+        return CasketReward(obj, drop.rollCount(random))
     }
 
     private fun ProtectedAccess.showRewards(rewards: List<CasketReward>) {
@@ -145,7 +147,7 @@ constructor(private val objRepo: ObjRepository, private val marketPrices: Market
     internal companion object {
         const val REWARD_INV = "inv.trail_rewardinv"
         const val REWARD_INTERFACE = "interface.trail_rewardscreen"
-        const val TREASURE_JINGLE = "jingle.yo_ho_ho"
+        const val TREASURE_JINGLE = "jingle.treasure_hunt_win"
 
         private val COMPANIONS =
             mapOf(

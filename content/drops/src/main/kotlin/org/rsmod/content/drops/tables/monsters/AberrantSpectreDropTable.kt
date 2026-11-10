@@ -13,7 +13,8 @@ import org.rsmod.content.drops.tables.shared.herbDropTable
 import org.rsmod.content.drops.tables.shared.tripleRollHerbDropTable
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.ringNothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -44,14 +45,7 @@ public val aberrantSpectreDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         19 weight SharedDropTables.rareSeed
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: Only if you have an Treasure Trails/Full guide/Elite#Cryptic clues
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
-        1 outOf 121 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 121 chance clue(ClueTier.Hard)
     },
 )

@@ -9,7 +9,8 @@ import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerPrerollTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.content.drops.shouldDropBrimstoneKey
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.game.entity.Player
@@ -73,12 +74,8 @@ public val colossalHydraDropTable: RSDropTable<Player, DropRollItem> = RSDropTab
         1 outOf 1280 separate "obj.xbows_bolt_tips_sapphire" count 20
     },
     tertiaries = rsPlayerTertiaryTable {
-        10 outOf 121 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
-        10 outOf 486 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        10 outOf 121 chance clue(ClueTier.Hard)
+        10 outOf 486 chance clue(ClueTier.Elite)
     },
 )
 

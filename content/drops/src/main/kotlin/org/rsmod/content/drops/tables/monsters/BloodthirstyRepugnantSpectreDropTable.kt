@@ -12,6 +12,8 @@ import org.rsmod.content.drops.tables.shared.doubleRollHerbDropTable
 import org.rsmod.content.drops.tables.shared.herbDropTable
 import org.rsmod.content.drops.tables.shared.tripleRollHerbDropTable
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -62,7 +64,7 @@ public val bloodthirstyRepugnantSpectreDropTable: RSDropTable<Player, DropRollIt
         16 weight SharedDropTables.rareSeed
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_clue_hard_map001" count 1
+        1 outOf 1 chance clue(ClueTier.Hard)
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
         1 outOf 512 weight "obj.mystic_robe_bottom_dark" count 1
     },

@@ -10,7 +10,8 @@ import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.wearingRingOfWealth
 import org.rsmod.api.area.checker.isInWilderness
 import org.rsmod.api.droptable.RegisterDropTable
@@ -49,21 +50,12 @@ public val bloodveldDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         1 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: The elite clue scroll and casket are only dropped when completing an elite clue scroll asking you to kill a bloodveld
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
         1 outOf 3 weight "obj.looting_bag" count 1 condition {
             player -> player.shouldDropLootingBag()
         }
         1 outOf 35 weight "obj.arceuus_corpse_bloodveld" count 1
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
-        1 outOf 243 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
-        1 outOf 128 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 243 chance clue(ClueTier.Hard)
+        1 outOf 128 chance clue(ClueTier.Hard)
     },
 )

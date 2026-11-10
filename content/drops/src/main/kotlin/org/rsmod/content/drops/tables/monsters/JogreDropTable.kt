@@ -11,7 +11,8 @@ import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.hasCompletedQuest
 import org.rsmod.content.drops.isOnQuest
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.ringNothing
 import org.rsmod.api.droptable.RegisterDropTable
@@ -53,8 +54,6 @@ public val jogreDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
             player -> player.isOnQuest("quest_ragandboneman2")
         }
         1 outOf 5000 weight "obj.champions_challenge_jogre" count 1
-        1 outOf 122 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_medium_emote_exp1")
-        }
+        1 outOf 122 chance clue(ClueTier.Medium)
     },
 )

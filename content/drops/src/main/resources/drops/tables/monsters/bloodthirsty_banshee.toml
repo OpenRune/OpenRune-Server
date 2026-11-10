@@ -138,5 +138,4 @@ count = 1
 [[tertiary]]
 numerator = 1
 denominator = 1
-obj = "obj.trail_clue_easy_simple001"
-count = 1
+clue = "easy"

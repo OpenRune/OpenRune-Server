@@ -11,7 +11,8 @@ import org.rsmod.api.droptable.dropRollable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropBrimstoneKey
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -58,8 +59,6 @@ public val marbleGargoyleDropTable: RSDropTable<Player, DropRollItem> = RSDropTa
             // Drops Need Manual: Brittle keys are only dropped if the player has not unlocked the roof access, does not have one in their bank or inventory, and has gargoyles as their current Slayer task.
              true
         }
-        10 outOf 121 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        10 outOf 121 chance clue(ClueTier.Hard)
     },
 )

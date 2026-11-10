@@ -8,7 +8,8 @@ import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -45,18 +46,11 @@ public val amoxliatlDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         2 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: Guaranteed elite clue scroll and reward casket drops only occur when completing an elite clue scroll asking you to kill a frost nagua.
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
         1 outOf 25 weight "obj.pendant_of_ates_empty" count 1
         1 outOf 100 weight "obj.glacial_temotli" count 1
         1 outOf 125 weight "obj.varlamore_key_half_1" count 1
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
         1 outOf 3000 weight "obj.amoxliatlpet" count 1
-        1 outOf 190 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 190 chance clue(ClueTier.Elite)
     },
 )

@@ -243,9 +243,7 @@ count = 1
 [[tertiary]]
 numerator = 1
 denominator = 332
-obj = "obj.trail_elite_emote_exp1"
-count = 1
-clue_scroll_box = true
+clue = "elite"
 
 
 # Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (10 weight)

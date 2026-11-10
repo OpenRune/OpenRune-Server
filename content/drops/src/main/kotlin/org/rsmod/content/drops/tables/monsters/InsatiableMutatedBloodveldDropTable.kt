@@ -9,7 +9,8 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropBrimstoneKey
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -60,8 +61,6 @@ public val insatiableMutatedBloodveldDropTable: RSDropTable<Player, DropRollItem
         2 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        10 outOf 121 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        10 outOf 121 chance clue(ClueTier.Hard)
     },
 )

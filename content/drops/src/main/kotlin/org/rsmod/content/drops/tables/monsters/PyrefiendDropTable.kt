@@ -9,7 +9,8 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropLootingBag
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -44,8 +45,6 @@ public val pyrefiendDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         1 outOf 3 weight "obj.looting_bag" count 1 condition {
             player -> player.shouldDropLootingBag()
         }
-        1 outOf 121 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_medium_emote_exp1")
-        }
+        1 outOf 121 chance clue(ClueTier.Medium)
     },
 )

@@ -9,7 +9,8 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -79,8 +80,6 @@ public val araxxorDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
         // Drops Need Manual (rate): The pet drop rate is doubled if the player chooses to destroy Araxxor's corpse instead of harvesting it.
         1 outOf 3000 weight "obj.araxxorpet" count 1
-        1 outOf 47 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 47 chance clue(ClueTier.Elite)
     },
 )

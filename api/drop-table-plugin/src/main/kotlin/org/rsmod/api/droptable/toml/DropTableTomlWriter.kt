@@ -81,8 +81,7 @@ public object DropTableTomlWriter {
     }
 
     private fun appendGuaranteedFields(sb: StringBuilder, entry: TomlGuaranteedEntry) {
-        sb.appendLine("obj = ${quote(entry.obj)}")
-        appendCount(sb, entry.count, entry.countMin, entry.countMax)
+        appendDrop(sb, entry.obj, entry.clue, entry.count, entry.countMin, entry.countMax)
         appendHooks(sb, entry.toHooks())
     }
 
@@ -90,8 +89,7 @@ public object DropTableTomlWriter {
         sb.appendLine("numerator = ${entry.numerator}")
         sb.appendLine("denominator = ${entry.denominator}")
         appendBoosted(sb, entry.boosted)
-        sb.appendLine("obj = ${quote(entry.obj)}")
-        appendCount(sb, entry.count, entry.countMin, entry.countMax)
+        appendDrop(sb, entry.obj, entry.clue, entry.count, entry.countMin, entry.countMax)
         appendHooks(sb, entry.toHooks())
     }
 
@@ -101,12 +99,25 @@ public object DropTableTomlWriter {
         when {
             entry.nothing -> sb.appendLine("nothing = true")
             entry.shared != null -> sb.appendLine("shared = ${quote(entry.shared)}")
-            entry.obj != null -> {
-                sb.appendLine("obj = ${quote(entry.obj)}")
-                appendCount(sb, entry.count, entry.countMin, entry.countMax)
-            }
+            else -> appendDrop(sb, entry.obj, entry.clue, entry.count, entry.countMin, entry.countMax)
         }
         appendHooks(sb, entry.toHooks())
+    }
+
+    private fun appendDrop(
+        sb: StringBuilder,
+        obj: String?,
+        clue: String?,
+        count: String?,
+        countMin: Int?,
+        countMax: Int?,
+    ) {
+        if (clue != null) {
+            sb.appendLine("clue = ${quote(clue)}")
+        } else if (obj != null) {
+            sb.appendLine("obj = ${quote(obj)}")
+            appendCount(sb, count, countMin, countMax)
+        }
     }
 
     private fun appendBoosted(sb: StringBuilder, boosted: Boolean) {
@@ -150,9 +161,6 @@ public object DropTableTomlWriter {
         if (hooks.shouldDropBrimstoneKey) {
             sb.appendLine("should_drop_brimstone_key = true")
         }
-        if (hooks.clueScrollBox) {
-            sb.appendLine("clue_scroll_box = true")
-        }
         if (hooks.requireRingOfWealth) {
             sb.appendLine("require_ring_of_wealth = true")
         }
@@ -180,7 +188,6 @@ public object DropTableTomlWriter {
         TomlDropHooks(
             shouldDropLootingBag = shouldDropLootingBag,
             shouldDropBrimstoneKey = shouldDropBrimstoneKey,
-            clueScrollBox = clueScrollBox,
             quest = quest,
             questMode = questMode,
         )
@@ -189,7 +196,6 @@ public object DropTableTomlWriter {
         TomlDropHooks(
             shouldDropLootingBag = shouldDropLootingBag,
             shouldDropBrimstoneKey = shouldDropBrimstoneKey,
-            clueScrollBox = clueScrollBox,
             quest = quest,
             questMode = questMode,
         )
@@ -198,7 +204,6 @@ public object DropTableTomlWriter {
         TomlDropHooks(
             shouldDropLootingBag = shouldDropLootingBag,
             shouldDropBrimstoneKey = shouldDropBrimstoneKey,
-            clueScrollBox = clueScrollBox,
             requireRingOfWealth = requireRingOfWealth,
             excludeRingOfWealth = excludeRingOfWealth,
             requireWilderness = requireWilderness,

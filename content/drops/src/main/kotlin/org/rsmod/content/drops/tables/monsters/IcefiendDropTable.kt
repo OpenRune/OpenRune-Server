@@ -9,7 +9,8 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.shouldDropLootingBag
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.ringNothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -39,8 +40,6 @@ public val icefiendDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
              true
         }
         // Drops Need Manual (rate): The easy clue scroll drop rate inceases to 1/64 if a Ring of wealth (i) is worn and fought in the Wilderness.
-        1 outOf 121 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
-        }
+        1 outOf 121 chance clue(ClueTier.Easy)
     },
 )

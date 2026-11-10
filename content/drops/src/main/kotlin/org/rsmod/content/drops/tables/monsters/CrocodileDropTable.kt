@@ -24,10 +24,5 @@ public val crocodileDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         19 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: Elite clue scrolls and reward caskets are only dropped when completing an elite clue scroll asking you to kill a crocodile.
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
     },
 )

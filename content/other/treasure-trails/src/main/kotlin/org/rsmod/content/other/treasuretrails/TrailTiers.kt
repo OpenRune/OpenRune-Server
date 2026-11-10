@@ -91,6 +91,16 @@ object TrailTiers {
             player.vars[varbit(tier.majorCaseVarbit)] +
             player.vars["varbit.scroll_case_mimic"]
 
+    /**
+     * Whether a new clue roll of [tier] may be handed out. Without scroll boxes a player holds one
+     * clue per tier; with them, clues and boxes together fill the tier's capacity.
+     */
+    fun canReceive(player: Player, tier: TrailTierRow, boxes: Boolean): Boolean {
+        val clues = ownedClues(player, tier.difficulty)
+        if (!boxes) return clues == 0
+        return clues + ownedBoxes(player, tier.difficulty) < capacity(player, tier)
+    }
+
     private fun isStepScroll(type: ItemServerType): Boolean {
         val step = objStep(type) ?: return false
         return type.interfaceOptions.getOrNull(1) == CHECK_STEPS_OP && ClueSteps.isStep(step)

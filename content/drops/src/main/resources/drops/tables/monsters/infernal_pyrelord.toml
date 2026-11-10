@@ -97,6 +97,4 @@ shared = "gem"
 [[tertiary]]
 numerator = 10
 denominator = 98
-obj = "obj.trail_medium_emote_exp1"
-count = 1
-clue_scroll_box = true
+clue = "medium"

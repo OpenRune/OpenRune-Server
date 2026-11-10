@@ -216,9 +216,8 @@ data class GeneratedDropTableSpec(
 object DropTableCodeGenerator {
     private const val LOOTING_BAG_OBJ = "obj.looting_bag"
     private const val BRIMSTONE_KEY_OBJ = "obj.konar_key"
-    private const val TRAIL_RIDDLE_KEY_OBJ = "obj.trail_elite_riddle_key32"
-    private val CLUE_SCROLL_BOX_TRANSFORM_NOTE =
-        Regex("""scroll\s*box|x\s*marks\s*the\s*spot""", RegexOption.IGNORE_CASE)
+    private const val TRAIL_RIDDLE_KEY_OBJ_PREFIX = "obj.trail_elite_riddle_key"
+    private val CLUE_HEADER = Regex("""(.+) (weight|separate) "[^"]+"""")
 
     fun generate(spec: GeneratedDropTableSpec): String = generateFile(listOf(spec))
 
@@ -262,7 +261,7 @@ object DropTableCodeGenerator {
             }
         val needsClueScrollTransformImports =
             specs.any { spec ->
-                spec.allResolvedEntries().any { it.isClueScrollBoxTransform() }
+                spec.allResolvedEntries().any { it.clueTier() != null }
             }
         val needsRingOfWealthChecks =
             specs.any { spec ->
@@ -384,7 +383,8 @@ object DropTableCodeGenerator {
             appendLine("import org.rsmod.content.drops.isOnQuest")
         }
         if (needsClueScrollTransformImports) {
-            appendLine("import org.rsmod.content.drops.clueScrollTransformObj")
+            appendLine("import org.rsmod.api.droptable.ClueTier")
+            appendLine("import org.rsmod.api.droptable.clue")
         }
         if (needsRingOfWealthChecks) {
             appendLine("import org.rsmod.api.droptable.wearingRingOfWealth")
@@ -484,7 +484,8 @@ object DropTableCodeGenerator {
     ): ResolvedDropEntry? {
         val obj = objLookup.resolveWikiItem(itemLookup, drop.name, noted = drop.isNoted) ?: return null
         // Clue riddle keys are handled by the clue scroll content, not by npc drop tables.
-        if (obj == TRAIL_RIDDLE_KEY_OBJ) return null
+        if (obj.startsWith(TRAIL_RIDDLE_KEY_OBJ_PREFIX)) return null
+        if (isClueKillStepDrop(obj, drop.wikiNotes.condition)) return null
         val bonusDrops = resolveBonusDrops(drop.wikiNotes.companionDrops, itemLookup, objLookup, drop.name, drop.quantity)
 
         return when (drop.section) {
@@ -960,10 +961,9 @@ object DropTableCodeGenerator {
         val countArg = formatDropCount(count, countMax, parenthesizeRange = hasModifier)
         val innerIndent = "$indent    "
 
-        if (hasTransform && entry.isClueScrollBoxTransform()) {
-            appendLine("$indent$header count $countArg transformObj { player ->")
-            appendLine("$innerIndent player.clueScrollTransformObj(${entry.obj.kotlinString()})")
-            appendLine("$indent}$suffix")
+        val clueExpression = entry.clueExpression(conditionBody)
+        if (clueExpression != null) {
+            appendLine("$indent${clueHeader(header, clueExpression)}$suffix")
             return
         }
 
@@ -1140,6 +1140,8 @@ object DropTableCodeGenerator {
             ringOfWealthConditionExpression(modifier.requireRingOfWealth, modifier.requireWilderness)
         }
 
+        clueExpression(wealthConditionBody?.let { "player -> $it" })?.let { return it }
+
         val innerIndent = indent + "    "
         return buildString {
             append("DropRollItem(${obj.kotlinString()}, ${formatDropCount(count, countMax)}")
@@ -1165,14 +1167,10 @@ object DropTableCodeGenerator {
             }
             if (wikiNotes.hasTransformItem) {
                 append(", transformObj = { player ->\n")
-                if (isClueScrollBoxTransform()) {
-                    append("$innerIndent player.clueScrollTransformObj(${obj.kotlinString()})\n")
-                } else {
-                    for (note in wikiNotes.transformItem) {
-                        append("$innerIndent// Drops Need Manual (item): ${formatKotlinComment(note)}\n")
-                    }
-                    append("$innerIndent null\n")
+                for (note in wikiNotes.transformItem) {
+                    append("$innerIndent// Drops Need Manual (item): ${formatKotlinComment(note)}\n")
                 }
+                append("$innerIndent null\n")
                 append("$indent}")
             }
             if (bonusDrops.isNotEmpty()) {
@@ -1204,8 +1202,22 @@ object DropTableCodeGenerator {
     private fun ResolvedDropEntry.requiresQuestCondition(): Boolean =
         wikiNotes.hasQuestRequirement
 
-    private fun ResolvedDropEntry.isClueScrollBoxTransform(): Boolean =
-        wikiNotes.transformItem.any { CLUE_SCROLL_BOX_TRANSFORM_NOTE.containsMatchIn(it) }
+    private fun ResolvedDropEntry.clueExpression(conditionBody: String? = null): String? {
+        val tier = clueTier() ?: return null
+        val call = "clue(ClueTier.${tier.replaceFirstChar(Char::uppercase)})"
+        return if (conditionBody != null) "$call { $conditionBody }" else call
+    }
+
+    /**
+     * Rewrites an item-chain header (`1 outOf 128 weight "obj.x"`, `"obj.x"`) so it carries a clue
+     * roll instead of the obj.
+     */
+    private fun clueHeader(header: String, clueExpression: String): String {
+        val match = CLUE_HEADER.matchEntire(header) ?: return "add($clueExpression)"
+        val (rate, keyword) = match.destructured
+        val verb = if (keyword == "weight" && " outOf " in rate) "chance" else keyword
+        return "$rate $verb $clueExpression"
+    }
 
     private fun WikiQuestDropRequirement.conditionExpression(): String {
         val key = questKey.kotlinString()

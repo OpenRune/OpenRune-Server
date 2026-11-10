@@ -7,7 +7,8 @@ import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -43,9 +44,7 @@ public val scurriusDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         6 weight "obj.coins" count 1000..9000
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 25 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_medium_emote_exp1")
-        }
+        1 outOf 25 chance clue(ClueTier.Medium)
         1 outOf 33 weight "obj.rat_boss_spine" count 1
         1 outOf 400 weight "obj.dorgesh_construction_bone" count 1
         1 outOf 5013 weight "obj.dorgesh_construction_bone_curved" count 1

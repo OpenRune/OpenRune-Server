@@ -29,7 +29,7 @@ Most wiki-dumped monster tables are **simple** — flat weighted main entries, s
 
 **Loading:** `DropTableRegistry` reads all `drops/tables/**/*.toml` from the classpath **before** scanning `@RegisterDropTable`. If the same NPC is registered in both TOML and Kotlin, startup fails with a conflict error.
 
-**Example** (main + tertiary clue with scroll-box transform and combat-achievement rate baked into the denominator):
+**Example** (main + tertiary clue roll with the combat-achievement rate baked into the denominator):
 
 ```toml
 id = "Zoja Drops"
@@ -55,9 +55,7 @@ nothing = true
 [[tertiary]]
 numerator = 1
 denominator = 121
-obj = "obj.trail_clue_easy_simple001"
-count = 1
-clue_scroll_box = true
+clue = "easy"
 ```
 
 | TOML | Meaning |
@@ -73,7 +71,7 @@ clue_scroll_box = true
 | `should_drop_looting_bag = true` | Wilderness looting bag check |
 | `should_drop_brimstone_key = true` | Konar task brimstone key check |
 | `quest` / `quest_mode` | Quest gate (`during`, `completed`, `not_completed`) |
-| `clue_scroll_box = true` | Clue scroll → scroll box after X Marks the Spot (`clueScrollTransformObj`) |
+| `clue = "hard"` | Clue roll of a tier, in place of `obj` (`beginner` … `master`); see [Clue rolls](#clue-rolls) |
 
 | TOML omits empty defaults (`areas = []`, false booleans, etc.). String values use double quotes. Unresolved wiki drop rates and manual notes are appended as `#` comment lines at the bottom of the file.
 
@@ -133,7 +131,7 @@ Read each line **left to right** — rate/weight first, then item, then count, t
 ```kotlin
 7 weight "obj.chaosrune" count 60..120          // range, no modifier
 8 weight "obj.adamant_javelin_head" count 40..50 condition { player -> ... }
-1 weight "obj.trail_clue_hard_map001" count 1 transformObj { player -> null }
+1 weight "obj.dragon_slice" count 1 transformObj { player -> null }
 6 weight SharedDropTables.gem                     // nested shared table
 29 weight nothing()                               // empty roll (pool filler)
 ```
@@ -155,10 +153,7 @@ Kotlin needs the `weight` keyword between the rate and the item string:
 
 ```kotlin
 1 outOf 5000 weight "obj.dragon_slice" count 1
-1 outOf 128 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
-    // Drops Need Manual (item): Clue scrolls become scroll boxes after X Marks the Spot.
-    null
-}
+1 outOf 128 chance clue(ClueTier.Medium)
 ```
 
 Pre-roll uses the same item syntax but the builder is `rsPlayerPrerollTable` (internally uses `rolls` instead of `chance`).
@@ -235,17 +230,27 @@ The DSL wraps `dropRollable(...)` for you when `killCondition` is set — you do
 
 ### `transformObj { player -> ... }`
 
-Return the **obj key string** to drop, or `null` to use the default item. Common for clue scrolls that should become scroll boxes after a quest.
+Return the **obj key string** to drop, or `null` to use the default item.
 
-In **TOML**, set `clue_scroll_box = true` on the entry instead of writing `transformObj` by hand.
+### Clue rolls
 
-In **Kotlin**, use `player.clueScrollTransformObj("obj.trail_clue_easy_simple001")` (see `ClueScrollDropChecks.kt`).
+A table never names a clue scroll obj. It names a tier, and the treasure trails module decides what
+the player gets: a random clue of that tier, a scroll box once X Marks the Spot is done, or nothing
+(with the "sneaking suspicion" message) when the player is at their limit for the tier.
+
+In **TOML**, use `clue = "<tier>"` in place of `obj` and `count`.
+
+In **Kotlin**, use `clue(ClueTier.<Tier>)`, with an optional condition:
 
 ```kotlin
-1 outOf 121 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
-    player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
-}
+1 outOf 121 chance clue(ClueTier.Easy)
+1 outOf 60 chance clue(ClueTier.Hard) { player -> player.wearingRingOfWealth() }
+1 outOf 75 separate clue(ClueTier.Elite)
 ```
+
+Clue rolls in a tertiary table pick up `DropRateBoosts.clueScrollBoostPercent` automatically.
+The clue and casket a monster gives up as the target of a kill step come from the trails module,
+not from its drop table.
 
 ### Manual conditions (`// Drops Need Manual`)
 
@@ -409,7 +414,7 @@ After dumping:
 | Main weights do not sum to `total` | Adjust weights or `nothing()` padding; check wiki pool size |
 | `condition` after obj-first separate | Use `N outOf M separate "obj" count X condition { }` |
 | `1 outOf 5000 "obj" count 1` will not parse | Add `weight`: `1 outOf 5000 weight "obj" count 1` |
-| Clue should be a scroll box | TOML: `clue_scroll_box = true`. Kotlin: `clueScrollTransformObj(...)` |
+| Dropping a clue | TOML: `clue = "hard"`. Kotlin: `clue(ClueTier.Hard)`. Never a clue obj |
 | Brimstone key on guaranteed | Use `killCondition`, not plain `condition` |
 
 ---

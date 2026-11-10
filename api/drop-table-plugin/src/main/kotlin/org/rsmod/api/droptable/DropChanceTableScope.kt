@@ -129,7 +129,7 @@ public fun RSPrerollTableBuilder<Player, DropRollItem>.addRateFirstItem(
         } else {
             Single(item)
         }
-    addRateFirstRollable(numerator, denominator, style, rollable, item.obj)
+    addRateFirstRollable(numerator, denominator, style, rollable, clueScroll = item.clue != null)
 }
 
 public fun RSPrerollTableBuilder<Player, DropRollItem>.addRateFirstRollable(
@@ -137,12 +137,11 @@ public fun RSPrerollTableBuilder<Player, DropRollItem>.addRateFirstRollable(
     denominator: Int,
     style: ChanceRollStyle,
     rollable: Rollable<Player, DropRollItem>,
-    objHint: String? = null,
+    clueScroll: Boolean = false,
 ) {
     val boosted = boostScope
-    val clueScroll =
-        style == ChanceRollStyle.Chance && objHint != null && looksLikeClueScrollObj(objHint)
-    if (!boosted && !clueScroll) {
+    val clueBoost = clueScroll && style == ChanceRollStyle.Chance
+    if (!boosted && !clueBoost) {
         when (style) {
             ChanceRollStyle.Chance -> (numerator outOf denominator) chance rollable
             ChanceRollStyle.Rolls -> (numerator outOf denominator) rolls rollable
@@ -156,7 +155,7 @@ public fun RSPrerollTableBuilder<Player, DropRollItem>.addRateFirstRollable(
             rollable = rollable,
             multiplier = { player, args ->
                 val clueFactor =
-                    if (clueScroll) {
+                    if (clueBoost) {
                         1.0 + DropRateBoosts.clueScrollBoostPercent(player, args).coerceAtLeast(0) / 100.0
                     } else {
                         1.0

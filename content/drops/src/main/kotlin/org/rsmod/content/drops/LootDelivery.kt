@@ -12,6 +12,7 @@ import org.rsmod.api.death.NpcDeathDropContext
 import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.death.NpcDropReceiveHook
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.resolveObj
 import org.rsmod.api.droptable.rollCount
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.events.LootItem
@@ -113,7 +114,7 @@ constructor(
             if (npc != null && killCondition != null && !killCondition(player, npc, areaChecker)) {
                 return
             }
-            val item = drop.transformObj(player) ?: drop.obj
+            val item = drop.resolveObj(player) ?: return
             items += LootItem(item, drop.rollCount(random), destination)
             drop.bonusDrops.forEach(::add)
         }

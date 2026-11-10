@@ -3,6 +3,8 @@ package org.rsmod.content.drops.tables.monsters
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
 import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.hasReachedDelve
@@ -53,7 +55,7 @@ public val doomOfMokhaiotlDropTable: RSDropTable<Player, DropRollItem> = RSDropT
             2 weight "obj.cert_raw_shark" count 20..35
             1 weight "obj.shark_lure" count 40..70
         }
-        1 outOf 75 separate "obj.trail_elite_emote_exp1" count 1
+        1 outOf 75 separate clue(ClueTier.Elite)
         boosted {
             1 outOf 1000 separate "obj.dompet" count 1 condition { player -> player.hasReachedDelve(6) }
         }

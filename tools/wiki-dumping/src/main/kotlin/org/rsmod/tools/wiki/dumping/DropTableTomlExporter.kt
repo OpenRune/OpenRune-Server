@@ -15,9 +15,6 @@ import org.rsmod.tools.wiki.dumping.wiki.WikiQuestDropMode
 private val SHARED_TABLE_NAMES =
     setOf("herb", "usefulHerb", "combatHerb", "gem", "seed", "rareSeed", "megaRare", "rareDrop")
 
-private val CLUE_SCROLL_BOX_TRANSFORM_NOTE =
-    Regex("""scroll\s*box|x\s*marks\s*the\s*spot""", RegexOption.IGNORE_CASE)
-
 object DropTableTomlExporter {
     fun isSimpleForTomlExport(spec: GeneratedDropTableSpec): Boolean = tomlExportBlockers(spec).isEmpty()
 
@@ -174,7 +171,7 @@ private fun ResolvedDropEntry.tomlEntryBlockers(): List<String> {
     if (brimstoneCombatRoll || brimstoneKonarBonus) {
         blockers += "brimstone roll marker"
     }
-    if (wikiNotes.hasTransformItem && !isClueScrollBoxTransform()) {
+    if (wikiNotes.hasTransformItem && clueTier() == null) {
         blockers += "transform item note"
     }
     wikiNotes.transformRate.filterNot(::isHandledTransformRateNote).forEach { note ->
@@ -205,11 +202,11 @@ private fun ResolvedDropEntry.toTomlWeightedEntry(): TomlWeightedEntry =
     TomlWeightedEntry(
         weight = weight ?: error("Main entry '${obj}' is missing weight."),
         boosted = boosted,
-        obj = obj,
-        count = formatTomlCount(),
+        obj = obj.takeIf { clueTier() == null },
+        count = formatTomlCount().takeIf { clueTier() == null },
         shouldDropLootingBag = requiresLootingBagCondition(),
         shouldDropBrimstoneKey = requiresBrimstoneKeyCondition(),
-        clueScrollBox = isClueScrollBoxTransform(),
+        clue = clueTier(),
         quest = wikiNotes.questRequirements.firstOrNull()?.questKey,
         questMode = wikiNotes.questRequirements.firstOrNull()?.toTomlQuestMode(),
         nothing = isNothing,
@@ -217,11 +214,11 @@ private fun ResolvedDropEntry.toTomlWeightedEntry(): TomlWeightedEntry =
 
 private fun ResolvedDropEntry.toTomlGuaranteedEntry(): TomlGuaranteedEntry =
     TomlGuaranteedEntry(
-        obj = obj,
-        count = formatTomlCount(),
+        obj = obj.takeIf { clueTier() == null },
+        count = formatTomlCount().takeIf { clueTier() == null },
         shouldDropLootingBag = requiresLootingBagCondition(),
         shouldDropBrimstoneKey = requiresBrimstoneKeyCondition(),
-        clueScrollBox = isClueScrollBoxTransform(),
+        clue = clueTier(),
         quest = wikiNotes.questRequirements.firstOrNull()?.questKey,
         questMode = wikiNotes.questRequirements.firstOrNull()?.toTomlQuestMode(),
     )
@@ -239,11 +236,11 @@ private fun ResolvedDropEntry.toTomlChanceEntry(): TomlChanceEntry =
                 chanceDenominator() ?: error("Chance entry '${obj}' is missing outOf."),
             ),
         boosted = boosted,
-        obj = obj,
-        count = formatTomlCount(),
+        obj = obj.takeIf { clueTier() == null },
+        count = formatTomlCount().takeIf { clueTier() == null },
         shouldDropLootingBag = requiresLootingBagCondition(),
         shouldDropBrimstoneKey = requiresBrimstoneKeyCondition(),
-        clueScrollBox = isClueScrollBoxTransform(),
+        clue = clueTier(),
         quest = wikiNotes.questRequirements.firstOrNull()?.questKey,
         questMode = wikiNotes.questRequirements.firstOrNull()?.toTomlQuestMode(),
     )
@@ -261,8 +258,6 @@ private fun ResolvedDropEntry.toTomlChanceEntries(): List<TomlChanceEntry> {
     )
 }
 
-private fun ResolvedDropEntry.isClueScrollBoxTransform(): Boolean =
-    wikiNotes.transformItem.any { CLUE_SCROLL_BOX_TRANSFORM_NOTE.containsMatchIn(it) }
 
 private fun ResolvedDropEntry.formatTomlCount(): String {
     val range = quantityRange()

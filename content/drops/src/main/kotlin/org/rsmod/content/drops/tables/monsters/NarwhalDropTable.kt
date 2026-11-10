@@ -10,7 +10,8 @@ import org.rsmod.api.droptable.rsPlayerPrerollTable
 import org.rsmod.api.droptable.dropRollable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
@@ -54,8 +55,6 @@ public val narwhalDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
              true
         }
         1 outOf 10 weight "obj.sailing_narwhal_tusk" count 1
-        1 outOf 142 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 142 chance clue(ClueTier.Hard)
     },
 )

@@ -10,7 +10,8 @@ import org.rsmod.api.droptable.rsPlayerPrerollTable
 import org.rsmod.api.droptable.dropRollable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
@@ -54,8 +55,6 @@ public val greatWhiteSharkDropTable: RSDropTable<Player, DropRollItem> = RSDropT
              true
         }
         1 outOf 10 weight "obj.sailing_great_white_shark_liver" count 1
-        1 outOf 190 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 190 chance clue(ClueTier.Elite)
     },
 )
