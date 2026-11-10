@@ -24,6 +24,12 @@ gameplay:
     # Server-wide multiplier for drops flagged `boosted` (2.0 turns 1/512 into 1/256). Stacks with
     # each player's own multiplier (varp.drop_rate_multiplier, percent; 0 = unset).
     multiplier: 1.0
+  clue-scrolls:
+    # Clue scrolls and scroll boxes a player can hold per tier once X Marks the Spot is done,
+    # before scroll cases add their bonus (a minor and a major case per tier plus the mimic case, +1
+    # apiece). Before the quest a player holds one clue per tier, and that cannot be changed:
+    # a tier keeps a single trail's progress.
+    base-capacity: 2
   # Where new accounts start the "Level-up pop-up notifications" setting. false starts it at
   # "Disabled": no level-up interface, but the message, fireworks and jingle still play. true starts
   # it at "Show level only", as on live. Players can change it in the settings either way.

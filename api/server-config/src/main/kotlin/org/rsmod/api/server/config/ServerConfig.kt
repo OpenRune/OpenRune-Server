@@ -51,6 +51,8 @@ public data class GameplayConfig(
     val questRequirements: QuestRequirementsYaml = QuestRequirementsYaml(),
     @JsonProperty("drop-rates")
     val dropRates: DropRatesYaml = DropRatesYaml(),
+    @JsonProperty("clue-scrolls")
+    val clueScrolls: ClueScrollsYaml = ClueScrollsYaml(),
     @JsonProperty("level-up-popups")
     val levelUpPopups: Boolean = false,
     @JsonProperty("idle-logout")
@@ -67,6 +69,12 @@ public data class GameplayConfig(
 @JsonIgnoreProperties(ignoreUnknown = true)
 public data class GravestonesYaml(
     val enabled: Boolean = true,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public data class ClueScrollsYaml(
+    @JsonProperty("base-capacity")
+    val baseCapacity: Int = 2,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -24,6 +24,8 @@ object TrailTiers {
 
     val PLAYABLE = BEGINNER..MASTER
 
+    @Volatile var baseCapacity = 2
+
     private val trail_clue_step = param<DBRowType>("trail_clue_step")
     private val trail_item_group = param<Int>("trail_item_group")
 
@@ -89,7 +91,7 @@ object TrailTiers {
         player.trailStorage().any { inv -> inv.countWhere { it.id == type.id } > 0 }
 
     fun capacity(player: Player, tier: TrailTierRow): Int =
-        BASE_CAPACITY +
+        baseCapacity +
             player.vars[varbit(tier.minorCaseVarbit)] +
             player.vars[varbit(tier.majorCaseVarbit)] +
             player.vars["varbit.scroll_case_mimic"]
@@ -125,7 +127,7 @@ object TrailTiers {
 
     internal fun varp(id: Int): String = RSCM.getReverseMapping(RSCMType.VARP, id)
 
-    private const val BASE_CAPACITY = 2
+
     private const val CHECK_STEPS_OP = "Check steps"
     private const val READ_OP = "Read"
     private const val CHALLENGE_SCROLL_NAME = "Challenge scroll"

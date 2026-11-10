@@ -12,6 +12,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
@@ -92,9 +93,13 @@ constructor(
     private val rewards: TrailRewards,
     private val encounters: ClueEncounters,
     private val random: GameRandom,
+    private val config: ServerConfig,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         ClueScrollDrops.resolve = ::resolveDrop
+        val capacity = config.gameplay.clueScrolls.baseCapacity
+        require(capacity >= 1) { "gameplay.clue-scrolls.base-capacity must be at least 1, was $capacity" }
+        TrailTiers.baseCapacity = capacity
 
         onEvent<SkillingActionCompleteEvent> { ClueChallengeTasks.onSkilling(player, context) }
 

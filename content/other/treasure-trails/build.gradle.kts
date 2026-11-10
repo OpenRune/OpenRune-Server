@@ -10,6 +10,7 @@ dependencies {
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
     implementation(projects.api.music)
+    implementation(projects.api.serverConfig)
     implementation(projects.content.drops)
     implementation(projects.content.interfaces.collectionLog)
     implementation(projects.content.interfaces.emotes)
