@@ -71,7 +71,9 @@ constructor(private val bots: BotWorld, private val hotspots: BotHotspots) : Plu
         val count = args.getOrNull(2)?.toInt() ?: 1
         val radius = args.getOrNull(3)?.toInt() ?: DEFAULT_RADIUS
         val styles = args.getOrNull(4)?.split(',') ?: emptyList()
-        val added = (1..count).count { bots.spawn(activity, player.coords, radius, styles) }
+        val added = (1..count).count {
+            bots.spawn(activity, player.coords, radius, styles, gamemode = player.gamemode)
+        }
         player.mes("Spawned $added $activity bots around you.")
     }
 

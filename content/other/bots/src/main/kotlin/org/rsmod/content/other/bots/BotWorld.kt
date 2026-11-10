@@ -11,6 +11,7 @@ import org.rsmod.api.game.process.player.PlayerBuildAreaProcessor
 import org.rsmod.api.game.process.player.PlayerFaceSquareProcessor
 import org.rsmod.api.game.process.player.PlayerMovementProcessor
 import org.rsmod.api.net.rsprot.HeadlessAvatars
+import org.rsmod.api.player.ironman.setGamemode
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.table.BotOutfitsRow
 import org.rsmod.api.utils.map.BuildAreaUtils
@@ -57,14 +58,23 @@ constructor(
         styles: List<String>,
         bank: CoordGrid? = null,
         hotspot: Int = MANUAL_HOTSPOT,
+        gamemode: Int? = null,
     ): Boolean {
         if (bots.size >= MAX_BOTS) {
             return false
         }
+        val mode = gamemode ?: BotNames.randomMode(random)
+        val taken = HashSet<String>()
+        for (player in playerList) {
+            taken += player.username.lowercase()
+            taken += player.displayName.lowercase()
+        }
+        bots.mapTo(taken) { it.player.username }
+        val name = BotNames.pick(random, mode, taken) ?: return false
         val slot = playerList.reserveHighestFree() ?: return false
         val style = random.pickOrNull(styles) ?: DEFAULT_STYLE
         val spot = walkableNear(home, radius)
-        val player = createPlayer(slot, activity, spot, style)
+        val player = createPlayer(slot, activity, spot, style, name, mode)
         avatars.attach(player)
         val runs = style == RUNNER_STYLE || bank != null
         val bot = Bot(player, activity, home, radius, spot, bank, runs, hotspot)
@@ -143,12 +153,14 @@ constructor(
         activity: BotActivity,
         home: CoordGrid,
         style: String,
+        name: String,
+        gamemode: Int,
     ): Player {
         val player = Player()
-        val name = BotLooks.name(random, bots.mapTo(HashSet()) { it.player.username })
         player.slotId = slot
         player.username = name.lowercase()
         player.displayName = name
+        player.setGamemode(gamemode)
         player.hidden = true
         player.coords = home
         player.currentMapClock = mapClock.cycle
