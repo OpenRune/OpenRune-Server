@@ -38,6 +38,9 @@ public val turothDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         1 weight "obj.coins" count 440
         1 outOf 500 separate "obj.leafbladed_sword" count 1
         1 outOf 512 separate "obj.mystic_robe_bottom_light" count 1
+        boosted {
+            1 outOf 128 separate "obj.necklace_of_fangs" count 1
+        }
 
         31 weight rsWeightedTable(total = 31) {
             15 weight herbDropTable

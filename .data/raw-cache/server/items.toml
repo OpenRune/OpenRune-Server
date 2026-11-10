@@ -735,9 +735,9 @@ inherit = "obj.skillcape_max_worn"
 contentGroup = 36
 
 transformlink="obj.skillcape_max"
+transformtemplate="obj.template_for_transform"
 [item.params]
 "param.ammo_recovery_rate"=72
-transformtemplate="obj.template_for_transform"
 
 
 [[item]]
