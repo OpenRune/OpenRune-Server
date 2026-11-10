@@ -3,6 +3,7 @@ package org.rsmod.api.combat.scripts
 import jakarta.inject.Inject
 import org.rsmod.api.combat.ACTIVE_COMBAT_DELAY
 import org.rsmod.api.combat.PvNCombat
+import org.rsmod.api.combat.WildernessPjTimer
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.manager.MagicRuneManager
@@ -38,6 +39,7 @@ constructor(
     private val runes: MagicRuneManager,
     private val autocast: AutocastWeapons,
     private val attackValidateHooks: Set<NpcAttackValidateHook>,
+    private val pjTimer: WildernessPjTimer,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onDefaultApNpc2 { attemptCombatAp(it.npc) }
@@ -144,7 +146,16 @@ constructor(
             return AttackCheck.Denied
         }
 
-        // TODO(combat): Add singles plus support.
+        if (npc.pvpInterruptionUntil > mapClock) {
+            mes("You can't attack that monster right now.")
+            return AttackCheck.DeniedStopApproach
+        }
+
+        if (!bypassSingleWayPvn && pjTimer.blocksAttack(player)) {
+            spam("I'm already under attack.")
+            return AttackCheck.Denied
+        }
+
         val singleCombat = !mapMultiway()
         if (singleCombat && !bypassSingleWayPvn) {
             if (isInPvpCombat()) {

@@ -166,6 +166,12 @@ public class Npc(
      */
     public var combatXpMultiplier: Int = 0
 
+    /**
+     * Map clock at which combat resumes after a player interrupts this NPC in Singles Plus.
+     * The delay belongs to the current spawn and is cleared on respawn.
+     */
+    public var pvpInterruptionUntil: Int = -1
+
     public var patrolWaypointIndex: Int = 0
     public var patrolIdleCycles: Int = -1
     public var patrolPauseCycles: Int = 0
@@ -359,6 +365,7 @@ public class Npc(
         showAllOps()
         copyStats(type)
         clearHeroPoints()
+        pvpInterruptionUntil = -1
         queueList.clear()
         vars.backing.clear()
         strVars.backing.clear()

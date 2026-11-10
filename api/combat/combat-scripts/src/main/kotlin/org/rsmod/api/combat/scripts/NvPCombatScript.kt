@@ -3,6 +3,7 @@ package org.rsmod.api.combat.scripts
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.combat.NvPCombat
+import org.rsmod.api.combat.WildernessPjTimer
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.types.AttackType
 import org.rsmod.api.combat.commons.types.MeleeAttackType
@@ -22,7 +23,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 internal class NvPCombatScript
 @Inject
-constructor(private val combat: NvPCombat, private val areaChecker: AreaChecker) : PluginScript() {
+constructor(
+    private val combat: NvPCombat,
+    private val areaChecker: AreaChecker,
+    private val pjTimer: WildernessPjTimer,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         onDefaultAiOpPlayer2 { attemptCombat(it.target) }
         onDefaultAiApPlayer2 { attemptCombat(it.target) }
@@ -38,13 +43,20 @@ constructor(private val combat: NvPCombat, private val areaChecker: AreaChecker)
     }
 
     private fun StandardNpcAccess.canAttack(target: Player): Boolean {
-        // Owned spawns (barrows brothers, slayer superiors) are dedicated to their owner.
-        val singleCombat = !mapMultiway(areaChecker) && !npc.isSpawnOwnedBy(target)
-        if (singleCombat) {
-            if (target.isInPvpCombat()) {
-                return false
-            }
+        if (npc.pvpInterruptionUntil > mapClock) {
+            return false
+        }
 
+        // Owned spawns (barrows brothers, slayer superiors) are dedicated to their owner.
+        val ownedSpawn = npc.isSpawnOwnedBy(target)
+        val singleCombat = !ownedSpawn && !mapMultiway(areaChecker)
+        val pvpProtected = !ownedSpawn && (pjTimer.protects(target) ||
+            (singleCombat && target.isInPvpCombat()))
+        if (pvpProtected && !pjTimer.isSinglesPlusException(npc, target)) {
+            return false
+        }
+
+        if (singleCombat) {
             if (target.isInPvnCombat()) {
                 if (target.aggressiveNpc != null && target.aggressiveNpc != npc.uid) {
                     return false
