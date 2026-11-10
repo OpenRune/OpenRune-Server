@@ -59,7 +59,9 @@ class BoneStaffWeapons @Inject constructor(private val objCharges: ObjChargeMana
                 return
             }
             objCharges.setValue(player.worn, slot, CHARGES_VAROBJ, left - 1)
-            mes("Your weapon has ${(left - 1).formatAmount} charges remaining.")
+            if ((left - 1) % WARN_EVERY == 0) {
+                mes("Your weapon has ${(left - 1).formatAmount} charges remaining.")
+            }
 
             anim("seq.human_axe_chop")
             spotanim("spotanim.vfx_weapon_staff_rat01_spotanim")
@@ -100,6 +102,7 @@ class BoneStaffWeapons @Inject constructor(private val objCharges: ObjChargeMana
         const val BONE_STAFF = "obj.rat_bone_staff"
         const val CHARGES_VAROBJ = PoweredStaffTypes.CHARGES_15_BIT
         const val MAX_CHARGES = 20_000
+        private const val WARN_EVERY = 100
         private const val CAST_SOUND = "synth.rat_boss_bone_staff_defend_1"
         private const val SOUND_RADIUS = 10
         private const val IMPACT_HEIGHT = 124
