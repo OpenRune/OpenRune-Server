@@ -2,19 +2,18 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
+import dtx.rs.rsWeightedTable
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import dtx.rs.rsWeightedTable
+import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.content.drops.shouldDropBrimstoneKey
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.content.drops.tables.shared.doubleRollHerbDropTable
 import org.rsmod.content.drops.tables.shared.herbDropTable
 import org.rsmod.content.drops.tables.shared.tripleRollHerbDropTable
-import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.shouldDropBrimstoneKey
-import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
