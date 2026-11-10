@@ -17,8 +17,23 @@ class ClueLocHook : PlayerLocOpHook {
         faceLoc(loc)
         val trail = searchTrail(player, loc) ?: return
         val target = ClueSteps.target(player, trail.step)
-        if (!ClueOutfits.wearing(player, trail.step)) {
+        val part = trail.part
+        val outfitMet =
+            if (part != null) {
+                MasterParts.meets(player, trail.step)
+            } else {
+                ClueOutfits.wearing(player, trail.step)
+            }
+        if (!outfitMet) {
             mes("Nothing interesting happens.")
+            return
+        }
+        if (part != null) {
+            if (with(MasterParts) { give(part) }) {
+                startDialogue { objbox(MasterParts.partObjs[part], MasterParts.HANDED) }
+            } else {
+                startDialogue { mesbox(MasterParts.NO_SPACE) }
+            }
             return
         }
         if (target is ClueTarget.OpenWithKey) {

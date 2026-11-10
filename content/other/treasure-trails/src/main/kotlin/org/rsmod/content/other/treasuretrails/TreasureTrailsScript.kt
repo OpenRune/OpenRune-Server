@@ -131,6 +131,10 @@ constructor(
             onOpHeld1(box.symbol()) { with(ClueSlidePuzzle) { open(box) } }
         }
         onIfModalButton(ClueSlidePuzzle.PIECES) { with(ClueSlidePuzzle) { slide(it.comsub) } }
+        for (part in MasterParts.partObjs) {
+            onOpHeld1(part) { with(MasterParts) { combine() } }
+            onOpHeld2(part) { with(MasterParts) { inspect() } }
+        }
         onOpHeld1(ClueLightBox.BOX) { with(ClueLightBox) { open() } }
         for (index in 0 until ClueLightBox.BUTTONS) {
             onIfModalButton(ClueLightBox.button(index)) { with(ClueLightBox) { press(index) } }

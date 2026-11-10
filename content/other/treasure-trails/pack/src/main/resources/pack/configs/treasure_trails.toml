@@ -331,3 +331,44 @@ id = "inv.trail_puzzleinv"
 inherit = "inv.trail_puzzleinv"
 scope = "Temp"
 protect = false
+
+[[varp]]
+id = "varp.trail_master_parts"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.trail_master_part1_index"
+varp = "varp.trail_master_parts"
+startBit = 0
+endBit = 5
+
+[[varbit]]
+id = "varbit.trail_master_part2_index"
+varp = "varp.trail_master_parts"
+startBit = 6
+endBit = 11
+
+[[varbit]]
+id = "varbit.trail_master_part3_index"
+varp = "varp.trail_master_parts"
+startBit = 12
+endBit = 17
+
+[[varbit]]
+id = "varbit.trail_master_part1_found"
+varp = "varp.trail_master_parts"
+startBit = 18
+endBit = 18
+
+[[varbit]]
+id = "varbit.trail_master_part2_found"
+varp = "varp.trail_master_parts"
+startBit = 19
+endBit = 19
+
+[[varbit]]
+id = "varbit.trail_master_part3_found"
+varp = "varp.trail_master_parts"
+startBit = 20
+endBit = 20

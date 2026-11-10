@@ -56,6 +56,7 @@ class ClueStep(
     val restricted: Boolean = false,
     val encounters: List<CluehelperCombatEncounterRow> = emptyList(),
     val requirement: Int? = null,
+    val itemRequirements: List<CluehelperRequirementObjRow> = emptyList(),
 )
 
 object ClueSteps {
@@ -114,6 +115,7 @@ object ClueSteps {
                         outfit = it.outfit,
                         challenge = it.challenge?.rowId,
                         hideyHole = it.hideyHoleLoc,
+                        itemRequirements = it.requirements,
                         restricted = it.restrictedContent != null,
                     )
                 }

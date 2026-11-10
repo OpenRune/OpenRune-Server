@@ -15,7 +15,12 @@ import org.rsmod.api.table.cluehelper.CluehelperClueCrypticRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
-class HeldTrail(val tier: TrailTierRow, val slot: Int, val step: ClueStep)
+class HeldTrail(
+    val tier: TrailTierRow,
+    val slot: Int,
+    val step: ClueStep,
+    val part: Int? = null,
+)
 
 /**
  * Trail state per tier. Beginner and master hold a single clue obj and keep the step in a varp;
@@ -53,10 +58,14 @@ object TrailFlow {
     }
 
     fun heldTrails(player: Player): List<HeldTrail> =
-        TrailTiers.playableTiers().mapNotNull { tier ->
-            val slot = clueSlot(player, tier) ?: return@mapNotNull null
-            val step = currentStep(player, tier) ?: return@mapNotNull null
-            HeldTrail(tier, slot, step)
+        TrailTiers.playableTiers().flatMap { tier ->
+            val slot = clueSlot(player, tier) ?: return@flatMap emptyList()
+            val step = currentStep(player, tier) ?: return@flatMap emptyList()
+            if (tier.difficulty == TrailTiers.MASTER && MasterParts.isCombine(step)) {
+                MasterParts.openParts(player).map { HeldTrail(tier, slot, MasterParts.part(player, it), it) }
+            } else {
+                listOf(HeldTrail(tier, slot, step))
+            }
         }
 
     fun startedStep(player: Player, tier: TrailTierRow, random: GameRandom): ClueStep {
@@ -67,13 +76,21 @@ object TrailFlow {
             VarPlayerIntMapSetter.set(player, INFOBOX, step.rowId)
             return step
         }
-        state.step?.let { return ClueSteps.step(it) }
+        state.step?.let {
+            val existing = ClueSteps.step(it)
+            if (MasterParts.isCombine(existing)) {
+                MasterParts.ensureRolled(player, random)
+                MasterParts.refreshInfobox(player)
+            }
+            return existing
+        }
         start(state, random)
-        return setStep(player, tier, rollStep(tier, random, exclude = null))
+        return setStep(player, tier, rollStep(tier, random, exclude = null), random)
     }
 
     fun resetTrail(player: Player, tier: TrailTierRow) {
         TrailState(player, tier).clear()
+        if (tier.difficulty == TrailTiers.MASTER) MasterParts.clear(player)
         VarPlayerIntMapSetter.set(player, CHALLENGE_STEP, 0)
         ClueChallengeTasks.clear(player)
         VarPlayerIntMapSetter.set(player, INFOBOX, NO_INFOBOX)
@@ -99,7 +116,8 @@ object TrailFlow {
             return
         }
         ifOpenMainModal("interface.trail_cluetext")
-        ifSetText("component.trail_cluetext:text", clueText(step))
+        val text = if (MasterParts.isCombine(step)) MasterParts.text(player) else clueText(step)
+        ifSetText("component.trail_cluetext:text", text)
     }
 
     suspend fun ProtectedAccess.openBox(tier: TrailTierRow) {
@@ -191,7 +209,7 @@ object TrailFlow {
         if (clue != null) {
             state.progress = progress
             VarPlayerIntMapSetter.set(player, ENCOUNTER_DEFEATED, 0)
-            setStep(player, tier, rollStep(tier, random, exclude = state.step))
+            setStep(player, tier, rollStep(tier, random, exclude = state.step), random)
             return clue
         }
         val next = rollClueObj(tier, random, exclude = current.rowId)
@@ -230,7 +248,7 @@ object TrailFlow {
 
     fun ProtectedAccess.assign(tier: TrailTierRow, step: ClueStep): Boolean {
         if (tier.clueObj != null) {
-            setStep(player, tier, step.rowId)
+            setStep(player, tier, step.rowId, random)
             return true
         }
         if (!holdsClue(player, tier)) return false
@@ -284,10 +302,17 @@ object TrailFlow {
         return "$lat $long"
     }
 
-    private fun setStep(player: Player, tier: TrailTierRow, step: Int): ClueStep {
+    private fun setStep(player: Player, tier: TrailTierRow, step: Int, random: GameRandom): ClueStep {
         TrailState(player, tier).step = step
+        val loaded = ClueSteps.step(step)
+        if (tier.difficulty == TrailTiers.MASTER) {
+            MasterParts.stepChanged(player, loaded, random)
+        }
         VarPlayerIntMapSetter.set(player, INFOBOX, step)
-        return ClueSteps.step(step)
+        if (tier.difficulty == TrailTiers.MASTER && MasterParts.isCombine(loaded)) {
+            MasterParts.refreshInfobox(player)
+        }
+        return loaded
     }
 
     private fun rollStep(tier: TrailTierRow, random: GameRandom, exclude: Int?): Int {
@@ -313,7 +338,11 @@ object TrailFlow {
                 .map { CluehelperClueCrypticRow.getRow(it).rowId }
         return ClueSteps.all(difficulty)
             .asSequence()
-            .filter { it.kind != ClueKind.SkillChallenge && it.rowId !in hotColdIntros }
+            .filter {
+                it.kind != ClueKind.SkillChallenge &&
+                    it.rowId !in hotColdIntros &&
+                    it.rowId !in MasterParts.standaloneExcluded
+            }
             .filterNot { it.restricted }
             // Music steps stay out of the pool until the music system is developed further.
             .filter { it.kind != ClueKind.Music }
@@ -324,13 +353,29 @@ object TrailFlow {
             }
             .filter { it.kind != ClueKind.Map || mapInterface(it) != null }
             .map { it.rowId }
-            .toList()
+            .toList() + masterOnlySteps(difficulty)
+    }
+
+    /**
+     * Master's cryptics are only ever parts of the three-part step, so that step is rolled in their
+     * place. Its skill challenges are rolled directly, as nothing else would hand them out.
+     */
+    private fun masterOnlySteps(difficulty: Int): List<Int> {
+        if (difficulty != TrailTiers.MASTER) return emptyList()
+        val challenges =
+            ClueSteps.all(difficulty).filter { step ->
+                step.kind == ClueKind.SkillChallenge &&
+                    step.targets.isNotEmpty() &&
+                    (ClueChallengeTasks.isAction(step) ||
+                        TrailCharlieTaskRow.all().any { it.step.rowId == step.rowId })
+            }
+        return listOf(MasterParts.combineRow) + challenges.map { it.rowId }
     }
 
     internal const val EMOTE_FIRST = "varp.trail_emote_first"
     internal const val ENCOUNTER_DEFEATED = "varp.trail_encounter_defeated"
     private val SEXTANT_COMPACT = Regex("""(\d+)\.(\d+)([NS]) (\d+)\.(\d+)([EW])""")
     private const val CHALLENGE_STEP = "varp.trail_challenge_step"
-    private const val INFOBOX ="varp.cluehelper_infobox_clue"
+    internal const val INFOBOX = "varp.cluehelper_infobox_clue"
     private const val NO_INFOBOX = -1
 }

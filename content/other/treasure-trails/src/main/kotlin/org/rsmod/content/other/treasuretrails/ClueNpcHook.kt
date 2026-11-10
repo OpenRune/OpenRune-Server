@@ -42,6 +42,7 @@ constructor(
         val trail = talkTrail(player, npc) ?: return
         val tier = trail.tier
         val step = trail.step
+        if (trail.part != null) return handOverPart(npc, trail)
         when (step.kind) {
             ClueKind.HotCold -> giveDevice(npc, tier)
             ClueKind.SkillChallenge -> handInTask(npc, tier, step)
@@ -75,7 +76,7 @@ constructor(
             target != null &&
                 target.matches(npc) &&
                 (step.kind != ClueKind.Music || playing(player, step)) &&
-                ClueOutfits.wearing(player, step) &&
+                outfitMet(player, trail) &&
                 (gates[step.targets.firstOrNull()]?.invoke(player) ?: true)
         }
 
@@ -85,8 +86,16 @@ constructor(
             targetRow("wizard_cromperty") to { p -> baseMagicBonus(p) >= MIN_MAGIC_ATTACK },
             targetRow("ghommal") to { p -> bonuses.strengthBonus(p) >= MIN_MELEE_STRENGTH },
             targetRow("robin") to { p -> bonuses.offensiveRangedBonus(p) >= MIN_RANGED_ATTACK },
+            targetRow("monk_of_entrana") to { p -> MasterParts.isWornAny(p) },
         )
     }
+
+    private fun outfitMet(player: Player, trail: HeldTrail): Boolean =
+        if (trail.part != null) {
+            MasterParts.meets(player, trail.step)
+        } else {
+            ClueOutfits.wearing(player, trail.step)
+        }
 
     private fun targetRow(name: String): Int =
         CluehelperTargetNpcRow.getRow("dbrow.cluehelper_target_npc_$name").rowId
@@ -113,18 +122,33 @@ constructor(
         val given = advance(tier) ?: return
         val name = npcVisType(npc).name
         val casket = given.id == tier.casketObj.id
-        val master = tier.difficulty == TrailTiers.MASTER && !casket
+        val master = tier.difficulty == TrailTiers.MASTER
         val text =
             when {
+                casket && master -> MasterParts.CASKET
                 casket -> "$name has given you a casket!"
-                master -> "You are handed a torn part of a clue scroll."
+                master -> "You've been given a new clue!"
                 else -> "$name has given you another clue scroll!"
             }
-        val intro = praise ?: "Here you go.".takeIf { master }
         startDialogue(npc) {
-            intro?.let { chatNpc(neutral, it) }
+            praise?.let { chatNpc(neutral, it) }
             objbox(given.symbol(), text)
             epilogue?.let { chatNpc(neutral, it) }
+        }
+    }
+
+    private suspend fun ProtectedAccess.handOverPart(npc: Npc, trail: HeldTrail) {
+        val index = trail.part ?: return
+        if (!MasterParts.open(player, index)) return
+        if (!with(MasterParts) { give(index) }) {
+            startDialogue(npc) { chatNpc(neutral, MasterParts.NO_SPACE) }
+            return
+        }
+        val angered = angersAbbot(trail.step)
+        startDialogue(npc) {
+            chatNpc(neutral, "Here you go.")
+            objbox(MasterParts.partObjs[index], MasterParts.HANDED)
+            if (angered) chatNpc(neutral, ABBOT_EPILOGUE)
         }
     }
 

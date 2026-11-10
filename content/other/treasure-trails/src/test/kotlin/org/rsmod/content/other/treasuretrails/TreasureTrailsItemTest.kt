@@ -620,6 +620,63 @@ class TreasureTrailsItemTest {
         assertFalse(ClueWatson.stored(f.player, tier))
     }
 
+    private fun Fixture.startCombine(length: Int) {
+        player.inv[0] = InvObj(clue, 1)
+        startTrail(step = COMBINE_STEP, length = length)
+        MasterParts.stepChanged(player, ClueSteps.step(MasterParts.combineRow), random)
+    }
+
+    @Test
+    fun `each torn part is handed over once and combining consumes exactly the three`() {
+        val f = Fixture(TrailTiers.MASTER)
+        f.startCombine(length = 3)
+
+        with(MasterParts) {
+            assertTrue(f.access().give(0))
+            assertFalse(f.access().give(0))
+            assertTrue(f.access().give(1))
+        }
+        f.run { with(MasterParts) { combine() } }
+        assertEquals(1, f.player.inv.count(MasterParts.partObjs[0]))
+        assertEquals(1, f.player.inv.count(MasterParts.partObjs[1]))
+        assertEquals(0, f.state.progress)
+
+        with(MasterParts) { assertTrue(f.access().give(2)) }
+        f.run { with(MasterParts) { combine() } }
+        MasterParts.partObjs.forEach { assertEquals(0, f.player.inv.count(it)) }
+        assertEquals(1, f.player.inv.count(f.clue))
+        assertEquals(1, f.state.progress)
+    }
+
+    @Test
+    fun `combining the parts of the last step swaps the clue for a casket`() {
+        val f = Fixture(TrailTiers.MASTER)
+        f.startCombine(length = 1)
+        with(MasterParts) { for (part in 0 until MasterParts.COUNT) assertTrue(f.access().give(part)) }
+
+        f.run { with(MasterParts) { combine() } }
+        assertEquals(0, f.player.inv.count(f.clue))
+        assertEquals(1, f.player.inv.count(f.tier.casketObj.symbol()))
+        MasterParts.partObjs.forEach { assertEquals(0, f.player.inv.count(it)) }
+    }
+
+    @Test
+    fun `a torn part cannot be taken with a full inventory and a lost one can be found again`() {
+        val f = Fixture(TrailTiers.MASTER)
+        f.startCombine(length = 3)
+        for (slot in 1 until 28) f.player.inv[slot] = InvObj(FILLER, 1)
+
+        with(MasterParts) { assertFalse(f.access().give(0)) }
+        assertFalse(MasterParts.found(f.player, 0))
+
+        f.player.inv[1] = null
+        with(MasterParts) { assertTrue(f.access().give(0)) }
+        f.player.inv[1] = null
+        assertTrue(MasterParts.open(f.player, 0))
+        with(MasterParts) { assertTrue(f.access().give(0)) }
+        assertEquals(1, f.player.inv.count(MasterParts.partObjs[0]))
+    }
+
     private class Fixture(difficulty: Int = TrailTiers.BEGINNER) {
         val tier: TrailTierRow = TrailTiers.tier(difficulty)
         val clue: String
@@ -802,6 +859,7 @@ class TreasureTrailsItemTest {
         private const val MASTER = 5
         private const val STASH_UNIT = "loc.hh_easy019"
         private const val HANS = "dbrow.cluehelper_cryptic_beginner_hans"
+        private const val COMBINE_STEP = "dbrow.cluehelper_skillchallenge_master_25"
         private const val CHARLIE_TROUT = "dbrow.cluehelper_skillchallenge_beginner_0"
         private const val TROUT = "obj.trout"
         private const val FILLER = "obj.bronze_dagger"

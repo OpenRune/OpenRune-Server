@@ -53,8 +53,9 @@ object TrailTiers {
 
     fun foundText(tier: TrailTierRow, given: ItemServerType): String =
         when {
-            given.id == tier.casketObj.id -> "You've found a casket!"
-            tier.difficulty == MASTER -> "You find a torn part of a clue scroll."
+            given.id == tier.casketObj.id ->
+                if (tier.difficulty == MASTER) MasterParts.CASKET else "You've found a casket!"
+            tier.difficulty == MASTER -> "You've found a new clue!"
             else -> "You've found another clue!"
         }
 

@@ -21,6 +21,9 @@ object ClueOutfits {
         return outfit.slots().all { it.wornBy(player.worn) }
     }
 
+    fun wornCount(player: Player, outfit: CluehelperOutfitRow): Int =
+        outfit.slots().count { it.wornBy(player.worn) }
+
     fun piecesIn(inv: Inventory, outfit: CluehelperOutfitRow): List<Int>? {
         val taken = mutableSetOf<Int>()
         for (slot in outfit.slots().filterNot { it.empty }) {
