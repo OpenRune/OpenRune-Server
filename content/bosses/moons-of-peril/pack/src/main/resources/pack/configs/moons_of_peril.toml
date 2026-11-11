@@ -1,0 +1,4 @@
+[[varp]]
+id = "varp.pmoon_inside"
+scope = "Perm"
+transmit = "Never"

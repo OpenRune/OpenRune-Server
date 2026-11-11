@@ -1,0 +1,77 @@
+[[area]]
+name = "Blood Moon Arena"
+area_id = "area.pmoon_blood_arena"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1378, 9616],
+    [1408, 9616],
+    [1408, 9645],
+    [1378, 9645],
+]
+
+[[area]]
+name = "Blue Moon Arena"
+area_id = "area.pmoon_blue_arena"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1422, 9663],
+    [1458, 9663],
+    [1458, 9693],
+    [1422, 9693],
+]
+
+[[area]]
+name = "Eclipse Moon Arena"
+area_id = "area.pmoon_eclipse_arena"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1471, 9616],
+    [1504, 9616],
+    [1504, 9647],
+    [1471, 9647],
+]
+
+[[area]]
+name = "Blood Moon Arena Multiway"
+area_id = "area.multiway"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1378, 9616],
+    [1408, 9616],
+    [1408, 9645],
+    [1378, 9645],
+]
+
+[[area]]
+name = "Blue Moon Arena Multiway"
+area_id = "area.multiway"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1422, 9663],
+    [1458, 9663],
+    [1458, 9693],
+    [1422, 9693],
+]
+
+[[area]]
+name = "Eclipse Moon Arena Multiway"
+area_id = "area.multiway"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1471, 9616],
+    [1504, 9616],
+    [1504, 9647],
+    [1471, 9647],
+]
