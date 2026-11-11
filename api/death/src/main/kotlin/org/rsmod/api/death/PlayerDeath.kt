@@ -32,7 +32,7 @@ constructor(
     private val preDropHooks: Set<PlayerDeathPreDropHook>,
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
     private val storageHooks: Set<PlayerDeathStorageHook>,
-    private val respawnHooks: Set<PlayerRespawnHook>,
+    private val respawnPoint: PlayerRespawnPoint,
     private val deathOverrideHooks: Set<PlayerDeathOverrideHook>,
     private val areaChecker: AreaChecker,
 ) {
@@ -49,8 +49,8 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.deathSequence() {
-        val hooked = respawnHooks.firstNotNullOfOrNull { it.respawnCoords(player) }
-        val respawn = hooked ?: CoordGrid(0, 50, 50, 21, 18)
+        val hooked = respawnPoint.hooked(player)
+        val respawn = hooked ?: PlayerRespawnPoint.DEFAULT
         val randomRespawn =
             if (hooked != null) null else mapFindSquareLineOfWalk(respawn, minRadius = 0, maxRadius = 2)
 

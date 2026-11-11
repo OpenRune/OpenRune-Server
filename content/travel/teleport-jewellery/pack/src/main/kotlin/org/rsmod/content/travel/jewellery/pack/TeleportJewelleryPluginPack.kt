@@ -4,9 +4,6 @@ import dev.openrune.definition.dbtables.DBTable
 import dev.openrune.pack.PluginPack
 
 class TeleportJewelleryPluginPack : PluginPack() {
-    override fun dbTables(): List<DBTable> = listOf(
-            TeleportJewelleryTable.destinations(),
-            SkillcapeTeleportTable.destinations(),
-            SpiritTreeTable.destinations(),
-        )
+    override fun dbTables(): List<DBTable> =
+        listOf(TeleportJewelleryTable.destinations(), TeleportJewelleryTable.pieces())
 }
