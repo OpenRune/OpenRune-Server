@@ -48,6 +48,22 @@ class ThievingRulesTest {
         assertEquals(listOf(LootDrop(POUCH, 2)), LootDrop(POUCH, 1).doubled(null) { 0 })
     }
 
+    @Test
+    fun `chest trap damage scales with current hitpoints and rounds down`() {
+        assertEquals(17, trapDamage(hitpoints = 97, scale = 15, base = 300))
+        assertEquals(14, trapDamage(hitpoints = 99, scale = 12, base = 300))
+        assertEquals(22, trapDamage(hitpoints = 99, scale = 18, base = 450))
+        assertEquals(4, trapDamage(hitpoints = 1, scale = 18, base = 450))
+    }
+
+    @Test
+    fun `chest loot is named in the plural unless it has none`() {
+        assertEquals("law runes", lootNoun("Law rune", 50))
+        assertEquals("coal", lootNoun("Coal", 25))
+        assertEquals("coins", lootNoun("Coins", 4500))
+        assertEquals("prayer potion(2)", lootNoun("Prayer potion(2)", 1))
+    }
+
     private companion object {
         const val POUCH = "obj.pickpocket_coin_pouch_ham"
         const val ORE = "obj.iron_ore"

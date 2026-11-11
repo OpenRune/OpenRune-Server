@@ -5,5 +5,5 @@ import dev.openrune.pack.PluginPack
 
 class ThievingPluginPack : PluginPack() {
     override fun dbTables(): List<DBTable> =
-        listOf(ThievingTable.pickpockets(), ThievingTable.stalls())
+        listOf(ThievingTable.pickpockets(), ThievingTable.stalls(), ThievingChestTable.chests())
 }

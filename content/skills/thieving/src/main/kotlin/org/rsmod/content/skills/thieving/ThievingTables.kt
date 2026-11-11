@@ -2,11 +2,14 @@ package org.rsmod.content.skills.thieving
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.types.NpcServerType
+import org.rsmod.api.table.thieving.ThievingChestConfigRow
 import org.rsmod.api.table.thieving.ThievingPickpocketRow
 import org.rsmod.api.table.thieving.ThievingStallRow
 
 private val PICKPOCKET_OPS = setOf("Pickpocket", "Steal-from")
 private const val XP_SCALE = 10.0
+private const val TRAP_DAMAGE_DIVISOR = 100
+private val UNCOUNTABLE_SUFFIXES = setOf("coal", "ore", "fish", "ray")
 
 internal val ThievingPickpocketRow.experience: Double
     get() = xp / XP_SCALE
@@ -42,3 +45,24 @@ internal fun NpcServerType.isPickpocketable(): Boolean = (1..5).any { hasPickpoc
 
 private fun NpcServerType.hasPickpocketOp(op: Int): Boolean =
     actions.getOpOrNull(op - 1) in PICKPOCKET_OPS
+
+internal enum class ChestMethod {
+    Trapped,
+    Locked,
+    Picklock,
+}
+
+internal val ThievingChestConfigRow.experience: Double
+    get() = xp / XP_SCALE
+
+internal val ThievingChestConfigRow.chestMethod: ChestMethod
+    get() = ChestMethod.entries[method]
+
+internal fun trapDamage(hitpoints: Int, scale: Int, base: Int): Int =
+    (hitpoints * scale + base) / TRAP_DAMAGE_DIVISOR
+
+internal fun lootNoun(name: String, count: Int): String {
+    val lower = name.lowercase()
+    val uncountable = lower.endsWith("s") || UNCOUNTABLE_SUFFIXES.any { lower.endsWith(it) }
+    return if (count > 1 && !uncountable) "${lower}s" else lower
+}

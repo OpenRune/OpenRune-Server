@@ -5,12 +5,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
-import dtx.core.ArgMap
-import dtx.core.RollResult
-import dtx.core.flatten
-import dtx.rs.RSDropTable
 import jakarta.inject.Inject
-import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropTableRegistry
 import org.rsmod.api.droptable.rollCount
 import org.rsmod.api.npc.interact.AiPlayerInteractions
@@ -45,8 +40,6 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
-
-private typealias ThievingDropTable = RSDropTable<Player, DropRollItem>
 
 class ThievingScript
 @Inject
@@ -134,7 +127,8 @@ constructor(
             return
         }
         if (restockingUntil.getOrDefault(loc.coords, 0) > mapClock) return
-        val loot = rollDrops(table).map { (drop, obj) -> LootDrop(obj, drop.rollCount(random)) }
+        val loot =
+            player.rollDrops(table).map { (drop, obj) -> LootDrop(obj, drop.rollCount(random)) }
         if (!player.addLoot(inv, loot, commit = false)) {
             mes("You don't have enough inventory space.")
             return
@@ -158,24 +152,6 @@ constructor(
         statAdvance(THIEVING, stall.experience)
         restock(loc, stall)
     }
-
-    private fun ProtectedAccess.rollDrops(
-        table: ThievingDropTable,
-    ): List<Pair<DropRollItem, String>> {
-        val drops =
-            when (val result = table.roll(player, ArgMap()).flatten()) {
-                is RollResult.Nothing -> emptyList()
-                is RollResult.Single -> listOf(result.result)
-                is RollResult.ListOf -> result.results
-            }
-        return drops
-            .flatMap { it.withBonusDrops() }
-            .filter { !it.isNothing && it.condition(player) }
-            .map { it to (it.transformObj(player) ?: it.obj) }
-    }
-
-    private fun DropRollItem.withBonusDrops(): List<DropRollItem> =
-        listOf(this) + bonusDrops.flatMap { it.withBonusDrops() }
 
     private fun ProtectedAccess.findSpotter(stall: ThievingStallRow): Npc? {
         val owners = stall.owners.mapTo(HashSet()) { it.id }
@@ -275,7 +251,7 @@ constructor(
         double: Boolean,
     ): List<LootDrop> {
         val loot = mutableListOf<LootDrop>()
-        for ((drop, obj) in rollDrops(table)) {
+        for ((drop, obj) in player.rollDrops(table)) {
             val rolled = LootDrop(obj, drop.rollCount(random))
             loot +=
                 if (double && !drop.obj.startsWith(CLUE_PREFIX)) {

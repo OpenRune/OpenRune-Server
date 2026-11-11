@@ -45,6 +45,7 @@ dodgy_necklace_uses = 63251
 [gamevals.dbtable]
 thieving_pickpocket = 64000
 thieving_stall = 64001
+thieving_chest_config = 64002
 
 [gamevals.dbrow]
 thieving_pickpocket_citizen = 62700
@@ -109,3 +110,21 @@ thieving_pickpocket_wealthy_citizen = 62758
 thieving_pickpocket_pollnivneach_bandit = 62759
 thieving_pickpocket_menaphite_thug = 62760
 thieving_stall_ape_atoll_crafting = 62761
+thieving_chest_10_coins = 62762
+thieving_chest_nature_rune = 62763
+thieving_chest_50_coins = 62764
+thieving_chest_steel_arrowtips = 62765
+thieving_chest_blood_rune = 62766
+thieving_chest_ardougne_castle = 62767
+thieving_chest_rogues_castle = 62768
+thieving_chest_dorgesh_average = 62769
+thieving_chest_dorgesh_rich = 62770
+thieving_chest_isle_of_souls = 62771
+thieving_chest_aldarin_villas = 62772
+thieving_chest_stone = 62773
+thieving_chest_rusty_dognose = 62774
+thieving_chest_rusty_vatrachos = 62775
+thieving_chest_tarnished_crown_jewel = 62776
+thieving_chest_tarnished_shimmering_atoll = 62777
+thieving_chest_reinforced_ynysdail = 62778
+thieving_chest_reinforced_brittle = 62779
