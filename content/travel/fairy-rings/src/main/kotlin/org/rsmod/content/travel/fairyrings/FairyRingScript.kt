@@ -2,6 +2,7 @@ package org.rsmod.content.travel.fairyrings
 
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.player.output.ClientScripts.mesLayerClose
@@ -34,9 +35,60 @@ class FairyRingScript @Inject constructor() : PluginScript() {
         onIfClose(MAIN) { mesLayerClose(player, SEARCH_LAYER_MODE) }
         for (ring in rings.values) {
             val button = RSCM.getReverseMapping(RSCMType.COMPONENT, ring.textComponent.packed)
-            onIfModalButton(button) { useCode(ring.id) }
+            onIfModalButton(button) {
+                if (it.op == IfButtonOp.Op2) addFavourite(ring.id) else useCode(ring.id)
+            }
+            val icon = RSCM.getReverseMapping(RSCMType.COMPONENT, ring.faveIconComponent.packed)
+            onIfModalButton(icon) { addFavourite(ring.id) }
+        }
+        FAVOURITE_TEXTS.forEachIndexed { slot, button ->
+            onIfModalButton(button) {
+                val id = favourites().getOrNull(slot) ?: return@onIfModalButton
+                if (it.op == IfButtonOp.Op2) removeFavourite(id) else useCode(id)
+            }
         }
     }
+
+    private fun ProtectedAccess.favourites(): List<Int> =
+        FAVOURITE_VARBITS.map { vars[it] }
+            .filter { it >= FAVOURITE_SET }
+            .map { indexToId(it - FAVOURITE_SET) }
+
+    private fun ProtectedAccess.storeFavourites(ids: List<Int>) {
+        FAVOURITE_VARBITS.forEachIndexed { slot, varbit ->
+            val id = ids.getOrNull(slot)
+            vars[varbit] = if (id == null) 0 else FAVOURITE_SET + idToIndex(id)
+        }
+        refreshFavourites(ids)
+    }
+
+    private fun ProtectedAccess.refreshFavourites(ids: List<Int> = favourites()) {
+        FAVOURITE_TEXTS.forEachIndexed { slot, text ->
+            val ring = ids.getOrNull(slot)?.let { rings[it] }
+            ifSetText(text, ring?.desc ?: "")
+            ifSetText(FAVOURITE_CODES[slot], ring?.code ?: "")
+        }
+    }
+
+    private fun ProtectedAccess.addFavourite(id: Int) {
+        val current = favourites()
+        if (id in current) {
+            return
+        }
+        if (current.size >= FAVOURITE_VARBITS.size) {
+            mes(FAVOURITES_FULL)
+            return
+        }
+        storeFavourites(current + id)
+    }
+
+    private fun ProtectedAccess.removeFavourite(id: Int) {
+        storeFavourites(favourites() - id)
+    }
+
+    private fun idToIndex(id: Int): Int = id / 100 * 16 + id / 10 % 10 * 4 + id % 10
+
+    private fun indexToId(index: Int): Int = index / 16 * 100 + index / 4 % 4 * 10 + index % 4
 
     private fun ProtectedAccess.canUse(): Boolean {
         val staff = player.worn[Wearpos.RightHand.slot]
@@ -68,6 +120,7 @@ class FairyRingScript @Inject constructor() : PluginScript() {
             val text = RSCM.getReverseMapping(RSCMType.COMPONENT, ring.textComponent.packed)
             ifSetText(text, logText(ring))
         }
+        refreshFavourites()
         ifOpenMainSidePair(
             MAIN,
             SIDE,
@@ -118,9 +171,7 @@ class FairyRingScript @Inject constructor() : PluginScript() {
         if (vars[LAST_LOCATION_SET] == 0 || !canUse()) {
             return
         }
-        val last = vars[LAST_LOCATION]
-        val id = last / 16 * 100 + last / 4 % 4 * 10 + last % 4
-        travel(rings.getValue(id))
+        travel(rings.getValue(indexToId(vars[LAST_LOCATION])))
     }
 
     private suspend fun ProtectedAccess.travel(ring: FairyringRow) {
@@ -168,6 +219,47 @@ class FairyRingScript @Inject constructor() : PluginScript() {
             )
         private val DIAL_VARBITS =
             listOf("varbit.fairyring_1", "varbit.fairyring_2", "varbit.fairyring_3")
+        private val FAVOURITE_VARBITS =
+            listOf(
+                "varbit.fairyring_fave_1",
+                "varbit.fairyring_fave_2",
+                "varbit.fairyring_fave_3",
+                "varbit.fairyring_fave_4",
+                "varbit.fairyring_fave_5",
+                "varbit.fairyring_fave_6",
+                "varbit.fairyring_fave_7",
+                "varbit.fairyring_fave_8",
+                "varbit.fairyring_fave_9",
+                "varbit.fairyring_fave_10",
+            )
+        private val FAVOURITE_TEXTS =
+            listOf(
+                "component.fairyrings_log:fave_1",
+                "component.fairyrings_log:fave_2",
+                "component.fairyrings_log:fave_3",
+                "component.fairyrings_log:fave_4",
+                "component.fairyrings_log:fave_5",
+                "component.fairyrings_log:fave_6",
+                "component.fairyrings_log:fave_7",
+                "component.fairyrings_log:fave_8",
+                "component.fairyrings_log:fave_9",
+                "component.fairyrings_log:fave_10",
+            )
+        private val FAVOURITE_CODES =
+            listOf(
+                "component.fairyrings_log:fave_code_1",
+                "component.fairyrings_log:fave_code_2",
+                "component.fairyrings_log:fave_code_3",
+                "component.fairyrings_log:fave_code_4",
+                "component.fairyrings_log:fave_code_5",
+                "component.fairyrings_log:fave_code_6",
+                "component.fairyrings_log:fave_code_7",
+                "component.fairyrings_log:fave_code_8",
+                "component.fairyrings_log:fave_code_9",
+                "component.fairyrings_log:fave_code_10",
+            )
+        private const val FAVOURITE_SET = 64
+        private const val FAVOURITES_FULL = "Your favourites list is full."
         private const val DIAL_POSITIONS = 4
         private const val CLOCKWISE_STEP = 1
         private const val ANTICLOCKWISE_STEP = 3
