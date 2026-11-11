@@ -63,7 +63,7 @@ constructor(
 
     private suspend fun ProtectedAccess.rubSubOp(op: HeldOp, slot: Int, subop: Int) {
         if (op == HeldOp.Op4) {
-            useJewellery(inv, slot, subop - 1, rubbed = true)
+            useJewellery(inv, slot, subop, rubbed = true)
         }
     }
 
