@@ -15104,6 +15104,89 @@ inherit = "npc.green_dragon_myth_guild"
 "param.elemental_weakness_percent"=50
 
 [[npc]]
+id = "npc.pmoon_boss_blood_moon"
+inherit = "npc.pmoon_boss_blood_moon"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+"param.attack_range"=15
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.thrall_immunity"=1
+"param.burn_immunity"=1
+"param.freeze_resistance"=100
+"param.elemental_weakness_type"=0
+"param.elemental_weakness_percent"=15
+
+[[npc]]
+id = "npc.pmoon_boss_blue_moon"
+inherit = "npc.pmoon_boss_blue_moon"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+"param.attack_range"=15
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.thrall_immunity"=1
+"param.burn_immunity"=1
+"param.freeze_resistance"=100
+"param.elemental_weakness_type"=0
+"param.elemental_weakness_percent"=15
+
+[[npc]]
+id = "npc.pmoon_boss_eclipse_moon"
+inherit = "npc.pmoon_boss_eclipse_moon"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+"param.attack_range"=15
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.thrall_immunity"=1
+"param.burn_immunity"=1
+"param.freeze_resistance"=100
+"param.elemental_weakness_type"=0
+"param.elemental_weakness_percent"=15
+
+[[npc]]
+id = "npc.pmoon_boss_eclipse_clone"
+inherit = "npc.pmoon_boss_eclipse_clone"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+
+[[npc]]
+id = "npc.pmoon_boss_icicle_1"
+inherit = "npc.pmoon_boss_icicle_1"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+
+[[npc]]
+id = "npc.pmoon_boss_icicle_2"
+inherit = "npc.pmoon_boss_icicle_2"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+
+[[npc]]
+id = "npc.pmoon_boss_icicle_3"
+inherit = "npc.pmoon_boss_icicle_3"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+
+[[npc]]
 id = "npc.pmoon_boss_blood_moon_vis"
 inherit = "npc.pmoon_boss_blood_moon_vis"
 [npc.params]

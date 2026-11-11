@@ -1,0 +1,7 @@
+[gamevals.area]
+pmoon_blood_arena = 32445
+pmoon_blue_arena = 32446
+pmoon_eclipse_arena = 32447
+
+[gamevals.varp]
+pmoon_inside = 64500

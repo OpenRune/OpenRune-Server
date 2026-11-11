@@ -1,4 +1,4 @@
 [[spawn]]
-npc = "npc.pmoon_boss_blue_moon_vis"
-coords = "0_22_151_32_16"
+npc = "npc.pmoon_boss_blue_moon"
+coords = "0_22_151_30_14"
 
