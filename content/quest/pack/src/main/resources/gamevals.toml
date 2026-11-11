@@ -10,6 +10,7 @@ gertrudes_cat_state = 63711
 daddyshome_state = 64064
 waterfall_state = 64310
 sheep_shearer_state = 65472
+vampyre_slayer_state = 64600
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -34,6 +35,9 @@ waterfall_met_golrie = 64312
 waterfall_pillar_runes = 64313
 sheep_shearer_progress = 65449
 sheep_shearer_saw_thing = 65448
+vampyre_slayer_progress = 64600
+vampyre_slayer_met_harlow = 64601
+vampyre_slayer_cupboard_searched = 64602
 
 [gamevals.bas]
 waterfall_wading = 1

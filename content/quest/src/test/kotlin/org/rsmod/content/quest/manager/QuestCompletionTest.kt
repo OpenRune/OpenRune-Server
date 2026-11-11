@@ -166,7 +166,7 @@ class QuestCompletionTest {
             mapElement = row.mapelement,
             startCoord = row.startcoord,
             maxSteps = row.endstate,
-            questPoints = row.questpoints,
+            questPoints = row.questpointsOverride,
             questVarp = "varp.mistmyst_main",
             questVarbit = if (native) "varbit.mistmyst_progress" else null,
             rewards = QuestReward(xp = mapOf("stat.crafting" to 600.0), items = items),
