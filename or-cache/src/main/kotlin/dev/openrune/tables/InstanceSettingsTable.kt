@@ -349,11 +349,7 @@ object InstanceSettingsTable {
             column(TEAM_SIZE, 1)
             column(LOOT_MULTIPLIER, "x1.0")
             column(DESCRIPTION, "The venomous matriarch of the Araxyte caves.")
-            columnRSCM(
-                ENTER_OBJECT,
-                "loc.araxxor_boss_tunnel_multi",
-                "loc.araxxor_cave_outer_tunnel_op",
-            )
+            columnRSCM(ENTER_OBJECT, "loc.araxxor_boss_tunnel_multi")
             columnRSCM(EXIT_OBJECT, "loc.araxxor_cave_outer_tunnel_op_4")
         }
     }

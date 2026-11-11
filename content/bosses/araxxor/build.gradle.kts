@@ -20,6 +20,7 @@ dependencies {
     implementation(projects.api.repo)
     implementation(projects.api.script)
     implementation(projects.content.interfaces.collectionLog)
+    implementation(projects.content.travel.mapTransports)
     implementation(projects.engine.game)
     implementation(projects.engine.map)
     implementation(projects.engine.plugin)
