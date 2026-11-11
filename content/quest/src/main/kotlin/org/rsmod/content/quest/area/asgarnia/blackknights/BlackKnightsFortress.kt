@@ -1,18 +1,14 @@
 package org.rsmod.content.quest.area.asgarnia.blackknights
 
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.*
 import org.rsmod.api.table.BlackKnightsRoutesRow
 import org.rsmod.content.quest.manager.*
-import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
-class BlackKnightsFortress @Inject constructor(private val worldRepo: WorldRepository) :
+class BlackKnightsFortress @Inject constructor(private val scenes: BlackKnightsScene) :
     QuestScript(
         BlackKnightsProgress.QUEST,
         "varp.spy",
@@ -138,38 +134,7 @@ class BlackKnightsFortress @Inject constructor(private val worldRepo: WorldRepos
         }
         onOpLocU("loc.blackknighthole") {
             if (it.loc.coords != CoordGrid(3031, 3507, 1)) return@onOpLocU
-            if (p.sabotage(this, it.objType.internalName)) {
-                anim("seq.bkf_throw_cabbage")
-                spotanim("spotanim.bkfortress_cabbage_thrown")
-                worldRepo.projAnim(
-                    ProjAnim(
-                        spotanim = "spotanim.bkfortress_cabbage_travel".asRSCM(RSCMType.SPOTANIM),
-                        startHeight = 40,
-                        endHeight = 0,
-                        startTime = 0,
-                        endTime = 30,
-                        angle = 0,
-                        progress = 0,
-                        sourceIndex = 0,
-                        targetIndex = 0,
-                        startCoord = coords,
-                        endCoord = it.loc.coords,
-                    )
-                )
-                delay(2)
-                midiJingle("jingle.bkf_cutscene")
-                spotanimMap(
-                    worldRepo,
-                    "spotanim.bkfortress_cauldron_cabbage_bubbles",
-                    CoordGrid(3031, 3507),
-                )
-                resetAnim()
-                fadeOverlay(0, 0, 0, 255, 30)
-                closeFadeOverlay()
-                mes(
-                    "You drop the cabbage through the hole. The potion is ruined! Return to Sir Amik Varze in Falador."
-                )
-            } else
+            if (!scenes.sabotage(this, it.objType.internalName))
                 mes(
                     if (it.objType.internalName != "obj.cabbage")
                         "That is the wrong sort of cabbage or item. I must not help the witch."
@@ -182,25 +147,30 @@ class BlackKnightsFortress @Inject constructor(private val worldRepo: WorldRepos
     override fun subTitle() =
         "talking to <col=800000>Sir Amik Varze</col> on the second floor of <col=800000>White Knights' Castle</col> in Falador, with 12 quest points."
 
-    override fun questLog(player: ProtectedAccess) =
-        questJournal(player) {
-            val stage = p.stage(player.player)
-            line(
-                "Sir Amik Varze asked me to infiltrate the Black Knights' Fortress and destroy their secret weapon."
-            )
-            if (stage >= 2) {
-                strike(
-                    "I entered the fortress disguised as a guard and overheard the witch's plan."
-                )
-                line(
-                    "The witch is making an invincibility potion. An ordinary cabbage will ruin it; a Draynor Manor cabbage would help her."
-                )
-            } else line("I need to discover what the Black Knights are planning.")
-            if (stage >= 3) {
-                strike("I dropped an ordinary cabbage into the cauldron and destroyed the potion.")
-                line("I should return to Sir Amik Varze in White Knights' Castle.")
+    override fun questLog(player: ProtectedAccess) = questJournal(player) {
+        when (p.stage(player.player)) {
+            1 -> {
+                line("Sir Amik Varze asked me to infiltrate the Black Knights' Fortress and destroy their secret weapon.")
+                line("I need to discover what the Black Knights are planning.")
             }
+            2 -> listOf(
+                "<str>Sir Amik Varze asked me to investigate the Black Knights'",
+                "<str>Fortress. I sneaked inside disguised as a Guard.",
+                "<col=000080>I eavesdropped on a Witch and the Black Knight Captain and",
+                "<col=000080>discovered that their <col=800000>invincibility potion<col=000080> can be destroyed",
+                "<col=000080>with a normal <col=800000>cabbage<col=000080>.",
+            ).forEach { addRawLine(it) }
+            3 -> listOf(
+                "<str>Sir Amik Varze asked me to investigate the Black Knights'",
+                "<str>Fortress. I sneaked inside disguised as a Guard.",
+                "<str>I eavesdropped on a Witch and the Black Knight Captain and",
+                "<str>discovered that their invincibility potion could be destroyed",
+                "<str>with a normal cabbage.",
+                "<col=000080>Now that I have sabotaged the witch's potion, I can claim my",
+                "<col=000080><col=800000>reward<col=000080> from <col=800000>Sir Amik Varze<col=000080> in <col=800000>Falador Castle<col=000080>.",
+            ).forEach { addRawLine(it) }
         }
+    }
 
     override fun completedLog(player: ProtectedAccess) =
         completionJournal(player) {

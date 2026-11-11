@@ -40,16 +40,14 @@ internal object BlackKnightsProgress {
     fun hear(a: ProtectedAccess) =
         stage(a.player) == 1 && near(a.coords, CoordGrid(3026, 3507)) && quest.setQuestStage(a, 2)
 
-    fun sabotage(a: ProtectedAccess, item: String): Boolean {
-        if (
-            stage(a.player) != 2 ||
-                item != "obj.cabbage" ||
-                !near(a.coords, CoordGrid(3031, 3507, 1))
-        )
-            return false
-        if (!exchange(a, listOf(InvObj("obj.cabbage")), emptyList())) return false
-        return quest.setQuestStage(a, 3)
-    }
+    fun canSabotage(a: ProtectedAccess, item: String) =
+        stage(a.player) == 2 && item == "obj.cabbage" &&
+            near(a.coords, CoordGrid(3031, 3507, 1)) && "obj.cabbage" in a.inv
+
+    fun throwCabbage(a: ProtectedAccess, item: String): Boolean =
+        canSabotage(a, item) && exchange(a, listOf(InvObj("obj.cabbage")), emptyList())
+
+    fun sabotage(a: ProtectedAccess) = stage(a.player) == 2 && quest.setQuestStage(a, 3)
 
     fun finish(a: ProtectedAccess) = stage(a.player) == 3 && quest.completeQuest(a)
 

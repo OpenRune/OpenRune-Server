@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.misc.blackknights
 
+import dev.openrune.rscm.RSCM.asRSCM
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.npc.aggression.AggressionTolerance
@@ -107,6 +108,10 @@ constructor(
             if (coords != start) return
         }
         locs.change(door, "loc.inviswall", 2)
+        if (door.id in listOf("loc.bkfortressdoor1".asRSCM(), "loc.bkfortressdoor2".asRSCM(), "loc.bkfortressdoor3".asRSCM())) {
+            locs.add(across, "loc.inacbkfortressdoor", 2,
+                door.angle.turn(1), door.shape)
+        }
         val facing =
             when {
                 destination.x > coords.x -> constants.em_face_east

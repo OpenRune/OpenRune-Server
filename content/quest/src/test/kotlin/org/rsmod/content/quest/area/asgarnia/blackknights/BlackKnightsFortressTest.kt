@@ -67,7 +67,10 @@ class BlackKnightsFortressTest {
         assertEquals(2, f.stage)
         f.give("obj.cabbage")
         f.player.coords = org.rsmod.map.CoordGrid(3031, 3508, 1)
-        assertTrue(p.sabotage(f.access, "obj.cabbage"))
+        assertTrue(p.throwCabbage(f.access, "obj.cabbage"))
+        assertEquals(2, f.stage)
+        assertFalse(p.finish(f.access))
+        assertTrue(p.sabotage(f.access))
         assertEquals(0, f.player.inv.count("obj.cabbage"))
         assertEquals(3, f.stage)
         assertTrue(p.finish(f.access))
@@ -86,18 +89,18 @@ class BlackKnightsFortressTest {
         f.give("obj.cabbage")
         f.player.coords = org.rsmod.map.CoordGrid(3031, 3508, 1)
         val before = f.snapshot()
-        assertFalse(p.sabotage(f.access, "obj.cabbage"))
+        assertFalse(p.throwCabbage(f.access, "obj.cabbage"))
         assertEquals(before, f.snapshot())
         f.player.coords = org.rsmod.map.CoordGrid(3025, 3507)
         assertTrue(p.hear(f.access))
         val after = f.snapshot()
-        assertFalse(p.sabotage(f.access, "obj.cabbage"))
+        assertFalse(p.throwCabbage(f.access, "obj.cabbage"))
         assertEquals(after, f.snapshot())
         val draynor = checkNotNull(ServerCacheManager.getItem("obj.magic_cabbage".asRSCM()))
         f.give(draynor.internalName)
         f.player.coords = org.rsmod.map.CoordGrid(3031, 3508, 1)
         val wrong = f.snapshot()
-        assertFalse(p.sabotage(f.access, draynor.internalName))
+        assertFalse(p.throwCabbage(f.access, draynor.internalName))
         assertEquals(wrong, f.snapshot())
         assertFalse(p.hear(f.access))
     }
@@ -174,14 +177,14 @@ class BlackKnightsFortressTest {
     fun `journal recounts infiltration sabotage and the return objective and uses broken cauldron model`() {
         val f = Fixture(2)
         val journal = f.script.questLog(f.access)
-        assertTrue(journal.contains("overheard"))
-        assertTrue(journal.contains("ordinary cabbage"))
+        assertTrue(journal.contains("eavesdropped"))
+        assertTrue(journal.replace(Regex("<[^>]*>"), "").contains("normal cabbage"))
         assertFalse(journal.contains("ladder"))
         f.script.quest.setQuestStage(f.access, 3)
         val sabotaged = f.script.questLog(f.access)
-        assertTrue(sabotaged.contains("overheard"))
-        assertTrue(sabotaged.contains("destroyed the potion"))
-        assertTrue(sabotaged.contains("return to Sir Amik"))
+        assertTrue(sabotaged.contains("eavesdropped"))
+        assertTrue(sabotaged.contains("potion"))
+        assertTrue(sabotaged.contains("reward"))
         val complete = f.script.completedLog(f.access)
         assertTrue(complete.contains("2,500 coins and 3 quest points"))
         val model = f.script.quest.itemDisplay
@@ -283,7 +286,7 @@ class BlackKnightsFortressTest {
         @JvmStatic
         @BeforeAll
         fun cache() {
-            ServerCacheManager.init(241).close()
+            ServerCacheManager.init(242).close()
             for ((owner, name) in
                 listOf(
                     "org.rsmod.api.invtx.InvTransactionsScriptKt" to "cachedInventoryTransactions",

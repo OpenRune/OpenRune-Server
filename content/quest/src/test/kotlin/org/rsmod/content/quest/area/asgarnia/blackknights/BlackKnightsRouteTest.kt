@@ -80,7 +80,7 @@ class BlackKnightsRouteTest {
                     mockk(relaxed = true),
                 ),
             )
-            script(f, BlackKnightsFortress(io.mockk.mockk(relaxed = true)))
+            val scene = BlackKnightsSceneTest.Fixture(f, initializePlayer = false)
             fun op(type: String, at: CoordGrid) {
                 val l = f.find(type, at)
                 f.player.coords = f.approach(f.player.coords, l)
@@ -166,8 +166,7 @@ class BlackKnightsRouteTest {
                     )
                 }
             )
-            f.player.advanceActiveCoroutine()
-            f.tick(3)
+            scene.drain()
             assertEquals(3, f.player.vars["varbit.black_knights_progress"])
             assertEquals(0, f.player.inv.count("obj.cabbage"))
             op("loc.bksecretdoor", CoordGrid(3030, 3510, 1))
@@ -336,7 +335,7 @@ class BlackKnightsRouteTest {
     }
 
     private fun native(action: (dev.openrune.filesystem.Cache) -> Unit) {
-        val cache = ServerCacheManager.init(241)
+        val cache = ServerCacheManager.init(242)
         try {
             action(cache)
         } finally {
@@ -351,7 +350,7 @@ class BlackKnightsRouteTest {
         @JvmStatic
         @BeforeAll
         fun cache() {
-            ServerCacheManager.init(241).close()
+            ServerCacheManager.init(242).close()
             for ((owner, name) in
                 listOf(
                     "org.rsmod.api.invtx.InvTransactionsScriptKt" to "cachedInventoryTransactions",

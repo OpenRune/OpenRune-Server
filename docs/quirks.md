@@ -148,16 +148,23 @@ to the bank first, then inventory if necessary; Ultimate Ironmen use inventory o
 ### Black Knights' Fortress
 
 The quest follows the infiltration and sabotage route with shortened dialogue.
-Checked crossings retain a blocking invisible wall, move only the acting player,
-and restore the original location after two ticks. The meeting-room warning forces
-a nearby knight to attack even above the ordinary aggression combat-level cutoff.
-Listening and cabbage sequences, cabbage spot effects/projectile and the cutscene
-jingle use native cache symbols. The cauldron scene still uses a brief fade/message;
-camera choreography, opening visuals and exact timing have not been matched to the
-reviewer's newly available RSProx recordings. Those recordings were not available
-to this revision; this is an explicit presentation simplification, not captured parity.
-Journal wording is a history-based reconstruction rather than a verbatim transcript.
-Only the bronze-helm/iron-chain and ordinary full-black disguises are supported;
-elite/trimmed variants remain omitted.
-The reward bundle is 3 QP and 2,500 coins, matching this contribution's 20 October
-2026 cutoff. The 3 November Quest Month combat lamps are not included in this port.
+Checked crossings retain blocking invisible walls and recorded temporary opening
+leaves, move only the checked actor and restore the original door after two ticks.
+The meeting-room warning forces a nearby knight to attack above the normal
+aggression combat-level cutoff.
+
+The supplied normal-world revision240/241 captures were compared for listening,
+the cabbage throw, camera position/heights/rates, private scene actors, projectile
+frames, cauldron effects, dialogue cues and the return to the player's original
+hole-side tile. Scene delays follow the captured action cues; pauses waiting for
+dialogue input are not fixed recording-duration sleeps. Stage3 is granted only
+after the scene returns, and interruption restores camera/UI/position and permits
+another cabbage attempt without granting completion.
+
+The observed stage2/3 journal text is transcribed. Stage1 and completed-journal
+wording remain authored: the referenced revision231 completion capture was not
+among the four supplied files. Only bronze-helm/iron-chain and ordinary full-black
+disguises are supported; elite/trimmed variants remain omitted. The reward bundle
+is3QP and2500coins, retaining this contribution's20October2026cutoff; the3November
+Quest Month lamps are not part of this port. These are deliberate scope limits,
+not a claim that reference recordings are unavailable.
