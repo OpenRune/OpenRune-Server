@@ -239,3 +239,47 @@ angle = 2
 lengthAdjustment = 25
 progress = 11
 stepMultiplier = 5
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.powered_staff"
+startHeight = 92
+endHeight = 60
+delay = 51
+angle = 16
+lengthAdjustment = -5
+progress = 64
+stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.warped_sceptre"
+startHeight = 172
+endHeight = 124
+delay = 0
+angle = 16
+lengthAdjustment = 20
+progress = 64
+stepMultiplier = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.eye_of_ayak"
+startHeight = 172
+endHeight = 124
+delay = 51
+angle = 16
+lengthAdjustment = -5
+progress = 64
+stepMultiplier = 5
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.bone_staff"
+startHeight = 180
+endHeight = 92
+delay = 46
+angle = 10
+lengthAdjustment = 0
+progress = 64
+stepMultiplier = 10

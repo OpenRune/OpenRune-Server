@@ -36,3 +36,23 @@ objs = [
     "obj.godwars_godsword_hilt_bandos",
 ]
 npcs = ["npc.godwars_bandos_avatar"]
+
+[[boosted]]
+objs = ["obj.necklace_of_fangs"]
+npcs = ["npc.slayer_turoth_*", "npc.superior_turoth"]
+
+[[boosted]]
+objs = ["obj.air_diamond"]
+npcs = ["npc.slayer_killerwatt", "npc.slayer_killerwatt_ball"]
+
+[[boosted]]
+objs = ["obj.water_sapphire"]
+npcs = ["npc.royal_sea_snake_baby"]
+
+[[boosted]]
+objs = ["obj.earth_emerald"]
+npcs = ["npc.molanisk"]
+
+[[boosted]]
+objs = ["obj.fire_ruby"]
+npcs = ["npc.slayer_infernal_mage_*"]
