@@ -32,7 +32,6 @@ import org.rsmod.content.skills.thieving.ThievingEquipment.GLOVES_OF_SILENCE
 import org.rsmod.content.skills.thieving.ThievingEquipment.degradeGlovesOfSilence
 import org.rsmod.content.skills.thieving.ThievingEquipment.tryDodgyNecklace
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.inv.isType
 import org.rsmod.game.loc.BoundLocInfo
