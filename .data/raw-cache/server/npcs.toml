@@ -1771,6 +1771,8 @@ blockWalk = "None"
 id = "npc.araxyte_large"
 inherit = "npc.araxyte_large"
 huntMode = 1
+huntRange = 8
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
@@ -1778,11 +1780,14 @@ huntMode = 1
 "param.killcount_notify"=false
 "param.attack_anim"="seq.npc_araxyte01_attack"
 "param.death_anim"="seq.npc_araxyte01_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.araxyte_large_bigwander"
 inherit = "npc.araxyte_large_bigwander"
 huntMode = 1
+huntRange = 8
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
@@ -1790,11 +1795,14 @@ huntMode = 1
 "param.killcount_notify"=false
 "param.attack_anim"="seq.npc_araxyte01_attack"
 "param.death_anim"="seq.npc_araxyte01_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.araxyte_normal"
 inherit = "npc.araxyte_normal"
 huntMode = 1
+huntRange = 8
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
@@ -1802,11 +1810,14 @@ huntMode = 1
 "param.killcount_notify"=false
 "param.attack_anim"="seq.npc_araxyte01_attack"
 "param.death_anim"="seq.npc_araxyte01_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.araxyte_normal_bigwander"
 inherit = "npc.araxyte_normal_bigwander"
 huntMode = 1
+huntRange = 8
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
@@ -1814,6 +1825,7 @@ huntMode = 1
 "param.killcount_notify"=false
 "param.attack_anim"="seq.npc_araxyte01_attack"
 "param.death_anim"="seq.npc_araxyte01_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.arceuus_reanimated_bloodveld"
@@ -3768,6 +3780,8 @@ inherit = "npc.superior_aquanite"
 id = "npc.superior_araxyte"
 inherit = "npc.superior_araxyte"
 huntMode = 1
+huntRange = 8
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
@@ -3775,6 +3789,7 @@ huntMode = 1
 "param.killcount_notify"=false
 "param.attack_anim"="seq.npc_araxyte01_attack"
 "param.death_anim"="seq.npc_araxyte01_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.superior_banshee"
