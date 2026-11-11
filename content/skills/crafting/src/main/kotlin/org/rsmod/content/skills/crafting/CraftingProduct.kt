@@ -228,7 +228,7 @@ fun CraftingHandRow.toCraftingProduct(): CraftingProduct {
         failXp = failXp,
         extraTools = objValues(tool).map { it.internalName },
         xpExtra = statXp(xpExtra),
-        triggers = triggers,
+        triggers = objValues(triggers),
         message = message,
         actionName = actionName,
         confirmTitles = strValues(confirmTitle),

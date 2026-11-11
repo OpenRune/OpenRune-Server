@@ -1,0 +1,196 @@
+[[npc]]
+id = "npc.akkha_spawn"
+inherit = "npc.akkha_spawn"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+[npc.params]
+"param.amascutnpc" = 1
+"param.min_defence" = 70
+
+[[npc]]
+id = "npc.akkha_melee"
+inherit = "npc.akkha_melee"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.akkha_range"
+inherit = "npc.akkha_range"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.akkha_mage"
+inherit = "npc.akkha_mage"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.akkha_enrage_spawn"
+inherit = "npc.akkha_enrage_spawn"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.akkha_enrage_initial"
+inherit = "npc.akkha_enrage_initial"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.akkha_enrage"
+inherit = "npc.akkha_enrage"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.akkha_enrage_dummy"
+inherit = "npc.akkha_enrage_dummy"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+
+[[npc]]
+id = "npc.akkha_shadow"
+inherit = "npc.akkha_shadow"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.akkha_shadow_enrage"
+inherit = "npc.akkha_shadow_enrage"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.akkha_shadow_enrage_dummy"
+inherit = "npc.akkha_shadow_enrage_dummy"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+
+[[npc]]
+id = "npc.akkha_headbar_npc"
+inherit = "npc.akkha_headbar_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+blockWalk = "None"
+respawnDir = "West"
+regenRate = 0
+
+[[npc]]
+id = "npc.akkha_enrage_orb"
+inherit = "npc.akkha_enrage_orb"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.akkha_trail_orb_lightning"
+inherit = "npc.akkha_trail_orb_lightning"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.akkha_trail_orb_darkness"
+inherit = "npc.akkha_trail_orb_darkness"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.akkha_trail_orb_burn"
+inherit = "npc.akkha_trail_orb_burn"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.akkha_trail_orb_freeze"
+inherit = "npc.akkha_trail_orb_freeze"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_het_goal"
+inherit = "npc.toa_het_goal"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 8224
+"param.boss_hp_bar_colour_sliding" = 39032
+"param.boss_hp_bar_colour_remaining" = 53416
+
+[[npc]]
+id = "npc.toa_het_goal_vulnerable"
+inherit = "npc.toa_het_goal_vulnerable"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 8224
+"param.boss_hp_bar_colour_sliding" = 39032
+"param.boss_hp_bar_colour_remaining" = 53416
+
+[[npc]]
+id = "npc.toa_het_orb"
+inherit = "npc.toa_het_orb"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+regenRate = 0

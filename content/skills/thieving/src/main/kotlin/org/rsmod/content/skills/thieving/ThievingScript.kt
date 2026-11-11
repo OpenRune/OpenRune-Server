@@ -228,7 +228,7 @@ constructor(
         const val STUN_SPOTANIM = "spotanim.stunned_thieving"
         const val STUN_SPOTANIM_HEIGHT = 124
         const val STUN_BLOCK_SEQ = "seq.human_unarmedblock"
-        const val STUN_SYNTH = "synth.thieving_stunned"
+        const val STUN_SYNTH = "synth.stunned"
         const val STUN_TICKS = 9
         const val FREEZE_TIMER = "timer.combat_freeze"
         const val MAX_POUCHES = 28

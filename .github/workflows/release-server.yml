@@ -47,13 +47,7 @@ jobs:
           ./gradlew :or-cache:freshCache :or-cache:mergePluginGamevals :server:app:shadowJar --no-daemon --stacktrace
 
       - name: Prepare release bundle
-        run: |
-          mkdir -p release-bundle/.data
-          cp server/app/build/libs/server.jar release-bundle/
-          cp game.yml release-bundle/
-          rsync -a --exclude 'raw-cache' .data/ release-bundle/.data/
-          cd release-bundle
-          zip -r ../openrune-server-release.zip .
+        run: bash tools/scripts/package_server_release.sh
 
       - name: Set release metadata
         id: meta

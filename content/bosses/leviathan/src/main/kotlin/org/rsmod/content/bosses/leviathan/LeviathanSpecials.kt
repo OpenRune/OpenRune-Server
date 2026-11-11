@@ -10,7 +10,7 @@ internal object LeviathanSpecials {
     private const val RECOVERY = 2
 
     private const val LIGHTNING_MESSAGE = "<col=a53fff>The Leviathan charges up a lightning attack..."
-    private const val LIGHTNING_CHARGE_SYNTH = "synth.leviathan_lightning_charge"
+    private const val LIGHTNING_CHARGE_SYNTH = "synth.dt2_levboss_lightning_start_01"
     private const val BEAM_START_SEQ = "seq.npc_leviathan_01_360_start"
     private const val BEAM_LOOP_SEQ = "seq.npc_leviathan_01_360_loop"
     private const val BEAM_END_SEQ = "seq.npc_leviathan_01_360_end"
@@ -23,7 +23,7 @@ internal object LeviathanSpecials {
     private val LIGHTNING_DAMAGE = 20..30
     private const val LIGHTNING_ORB_SPOTANIM = "spotanim.dt2_leviathan_bomb01"
     private const val LIGHTNING_STRIKE_SPOTANIM = "spotanim.vfx_leviathan_360_lightning"
-    private const val LIGHTNING_STRIKE_SYNTH = "synth.leviathan_orb_magic"
+    private const val LIGHTNING_STRIKE_SYNTH = "synth.dt2_levboss_magic_launch_sound_01"
     private const val LIGHTNING_ORB_CYCLES = 40 + 110
     private val LIGHTNING_ORB_CONFIG =
         ProjectileConfig.fixed(startHeight = 800, endHeight = 0, delay = 40, travel = 110, angle = 3)
@@ -35,8 +35,8 @@ internal object LeviathanSpecials {
     private const val SPIT_LOOP_SEQ = "seq.npc_leviathan_01_spit_loop"
     private const val EXPLOSION_SEQ = "seq.npc_leviathan_01_explosion_start"
     private const val EXPLOSION_SPOTANIM = "spotanim.spotanim_leviathan_explode_02"
-    private const val SPIT_START_SYNTH = "synth.leviathan_spit_start"
-    private const val SPIT_LAUNCH_SYNTH = "synth.leviathan_spit_launch"
+    private const val SPIT_START_SYNTH = "synth.dt2_levboss_spit_start_01"
+    private const val SPIT_LAUNCH_SYNTH = "synth.dt2_levboss_spit_singleshot_04"
     private const val SMOKE_SPIT_START = 4
     private const val SMOKE_SPITS = 10
     private const val SMOKE_BLAST_DELAY = 2

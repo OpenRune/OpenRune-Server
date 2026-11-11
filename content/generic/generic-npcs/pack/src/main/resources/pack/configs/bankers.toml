@@ -563,3 +563,96 @@ id = "npc.sailing_bank_boat_banker"
 inherit = "npc.sailing_bank_boat_banker"
 moveRestrict = "NoMove"
 contentGroup = "content.banker"
+
+# Named bankers with the same Talk-to, Bank and Collect ops. They get the generic banker
+# dialogue until someone writes theirs.
+
+[[npc]]
+id = "npc.magearena_banker"
+inherit = "npc.magearena_banker"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.pest_squire_bank_2"
+inherit = "npc.pest_squire_bank_2"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.pest_squire_bank_man"
+inherit = "npc.pest_squire_bank_man"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.ahoy_ghost_banker"
+inherit = "npc.ahoy_ghost_banker"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.roguesden_banker"
+inherit = "npc.roguesden_banker"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.duel_fadli"
+inherit = "npc.duel_fadli"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.dream_birds_eye_jack"
+inherit = "npc.dream_birds_eye_jack"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.lunar_moonclan_monk_man"
+inherit = "npc.lunar_moonclan_monk_man"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.elid_banker"
+inherit = "npc.elid_banker"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.gnomebanker"
+inherit = "npc.gnomebanker"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.frisd_banker_normal"
+inherit = "npc.frisd_banker_normal"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.mm2_monkey_banker_model"
+inherit = "npc.mm2_monkey_banker_model"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.tzhaar_banker1"
+inherit = "npc.tzhaar_banker1"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.tzhaar_banker2"
+inherit = "npc.tzhaar_banker2"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.corscurs_banker_allops"
+inherit = "npc.corscurs_banker_allops"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.lotr_banker"
+inherit = "npc.lotr_banker"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.nex_story_npc_3op"
+inherit = "npc.nex_story_npc_3op"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.tfa_lobby_banker"
+inherit = "npc.tfa_lobby_banker"
+contentGroup = "content.banker"

@@ -69,7 +69,7 @@ constructor(
         player.mes("<col=ff0000>A bird's nest falls out of the tree.</col>")
         // TODO: 1/250 of drops play the Armadyl crossbow special attack sound instead; it has no
         //  synth gameval.
-        player.soundSynth("synth.bird_nest_fall")
+        player.soundSynth("synth.woodcutting_birdsnest")
         player.runClientScript(
             "clientscript.[clientscript,local_notification]".asRSCM(),
             "A bird's nest has spawned!",

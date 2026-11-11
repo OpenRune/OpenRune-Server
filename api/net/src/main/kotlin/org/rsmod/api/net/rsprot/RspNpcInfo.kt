@@ -1,12 +1,18 @@
 package org.rsmod.api.net.rsprot
 
+import dev.openrune.util.Wearpos
 import net.rsprot.protocol.game.outgoing.info.npcinfo.NpcAvatar
 import org.rsmod.api.net.rsprot.ext.setFaceTarget
+import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcInfoProtocol
 import org.rsmod.game.entity.npc.OpVisibility
+import org.rsmod.game.entity.util.EntityAnimationFreeze
 import org.rsmod.game.entity.util.EntityFaceTarget
+import org.rsmod.game.entity.util.EntityTinting
+import org.rsmod.game.entity.util.EntityTransparency
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
+import org.rsmod.game.type.getInvObj
 
 class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
     override fun setSequence(seq: Int, delay: Int) {
@@ -14,7 +20,11 @@ class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
     }
 
     override fun setSpotanim(spotanim: Int, delay: Int, height: Int, slot: Int) {
-        rspAvatar.extendedInfo.setSpotAnim(slot, spotanim, delay, height)
+        setSpotanim(spotanim, delay, height, slot, loop = false)
+    }
+
+    override fun setSpotanim(spotanim: Int, delay: Int, height: Int, slot: Int, loop: Boolean) {
+        rspAvatar.extendedInfo.setSpotAnim(slot, spotanim, delay, height, loop)
     }
 
     override fun setSay(text: String) {
@@ -51,8 +61,50 @@ class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
         rspAvatar.extendedInfo.setBodyCustomisation(emptyList(), recolours, emptyList())
     }
 
+    override fun setBodyColour(colour: Int) {
+        rspAvatar.extendedInfo.setBodyCustomisation(
+            emptyList(),
+            emptyList(),
+            emptyList(),
+            recolAll = colour,
+        )
+    }
+
     override fun resetBodyModel() {
         rspAvatar.extendedInfo.resetBodyCustomisations()
+    }
+
+    override fun mirrorPlayerAppearance() {
+        rspAvatar.extendedInfo.setBodyCustomisationMirrored()
+    }
+
+    override fun setPlayerAppearance(player: Player) {
+        val info = rspAvatar.extendedInfo
+        val appearance = player.appearance
+        info.resetBodyCustomisations()
+        info.setBodyCustomisationBodyType(appearance.bodyType)
+        appearance.identKitSnapshot().forEachIndexed { slot, kit ->
+            info.setBodyCustomisationIdentKit(slot, kit.toInt())
+        }
+        appearance.coloursSnapshot().forEachIndexed { slot, colour ->
+            info.setBodyCustomisationColour(slot, colour.toUByte().toInt())
+        }
+        for (wearpos in Wearpos.visibleWearpos) {
+            val obj = player.worn[wearpos.slot] ?: continue
+            val type = getInvObj(obj)
+            info.setBodyCustomisationWornObj(wearpos.slot, obj.id, type.wearpos2, type.wearpos3)
+        }
+    }
+
+    override fun setTransparency(effect: EntityTransparency) {
+        rspAvatar.extendedInfo.setTransparency(
+            effect.startTime, effect.endTime, effect.startTransparency, effect.endTransparency,
+            effect.useStartTransparency,
+        )
+    }
+
+    override fun setAnimationFreeze(effect: EntityAnimationFreeze) {
+        rspAvatar.extendedInfo.setFreeze(effect.delay, effect.duration, effect.cancelSequence)
     }
 
     override fun showHeadbar(headbar: Headbar) {
@@ -87,6 +139,17 @@ class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
 
     override fun setHeadIcon(slot: Int, graphic: Int, index: Int) {
         rspAvatar.extendedInfo.setHeadIconChange(slot, graphic, index)
+    }
+
+    override fun setTinting(tinting: EntityTinting) {
+        rspAvatar.extendedInfo.setTinting(
+            startTime = tinting.startCycle,
+            endTime = tinting.endCycle,
+            hue = tinting.hue and 0xFF,
+            saturation = tinting.saturation and 0xFF,
+            lightness = tinting.lightness and 0xFF,
+            weight = tinting.weight and 0xFF,
+        )
     }
 
     override fun exactMove(

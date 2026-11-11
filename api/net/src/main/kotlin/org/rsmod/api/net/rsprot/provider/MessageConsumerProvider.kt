@@ -13,9 +13,12 @@ import net.rsprot.protocol.game.incoming.events.EventKeyboard
 import net.rsprot.protocol.game.incoming.events.EventMouseClickV1
 import net.rsprot.protocol.game.incoming.events.EventMouseClickV2
 import net.rsprot.protocol.game.incoming.events.EventMouseScroll
-import net.rsprot.protocol.game.incoming.locs.OpLoc6
-import net.rsprot.protocol.game.incoming.locs.OpLocT
+import net.rsprot.protocol.game.incoming.locs.OpLoc6V1
+import net.rsprot.protocol.game.incoming.locs.OpLoc6V2
+import net.rsprot.protocol.game.incoming.locs.OpLocTV1
+import net.rsprot.protocol.game.incoming.locs.OpLocTV2
 import net.rsprot.protocol.game.incoming.locs.OpLocV2
+import net.rsprot.protocol.game.incoming.locs.OpLocV3
 import net.rsprot.protocol.game.incoming.messaging.MessagePrivate
 import net.rsprot.protocol.game.incoming.messaging.MessagePublic
 import net.rsprot.protocol.game.incoming.misc.client.Idle
@@ -36,6 +39,7 @@ import net.rsprot.protocol.game.incoming.objs.OpObjV2
 import net.rsprot.protocol.game.incoming.players.OpPlayer
 import net.rsprot.protocol.game.incoming.players.OpPlayerT
 import net.rsprot.protocol.game.incoming.resumed.ResumePCountDialog
+import net.rsprot.protocol.game.incoming.resumed.ResumePLongDialog
 import net.rsprot.protocol.game.incoming.resumed.ResumePNameDialog
 import net.rsprot.protocol.game.incoming.resumed.ResumePObjDialog
 import net.rsprot.protocol.game.incoming.resumed.ResumePStringDialog
@@ -78,6 +82,7 @@ import org.rsmod.api.net.rsprot.handlers.OpObjTHandler
 import org.rsmod.api.net.rsprot.handlers.OpPlayerHandler
 import org.rsmod.api.net.rsprot.handlers.OpPlayerTHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePCountDialogHandler
+import org.rsmod.api.net.rsprot.handlers.ResumePLongDialogHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePNameDialogHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePObjDialogHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePStringDialogHandler
@@ -121,6 +126,7 @@ constructor(
     private val opObjT: OpObjTHandler,
     private val ifSubOp: IfSubOpHandler,
     private val resumePCountDialog: ResumePCountDialogHandler,
+    private val resumePLongDialog: ResumePLongDialogHandler,
     private val resumePNameDialog: ResumePNameDialogHandler,
     private val resumePStringDialog: ResumePStringDialogHandler,
     private val resumePObjDialog: ResumePObjDialogHandler,
@@ -136,8 +142,11 @@ constructor(
         builder.addListener(MoveGameClick::class.java, moveGameClick)
         builder.addListener(MoveMinimapClick::class.java, moveMinimapClick)
         builder.addListener(OpLocV2::class.java, opLoc)
-        builder.addListener(OpLocT::class.java, opLocT)
-        builder.addListener(OpLoc6::class.java, opLoc6)
+        builder.addListener(OpLocV3::class.java, opLoc.v3)
+        builder.addListener(OpLocTV1::class.java, opLocT.v1)
+        builder.addListener(OpLocTV2::class.java, opLocT.v2)
+        builder.addListener(OpLoc6V1::class.java, opLoc6.v1)
+        builder.addListener(OpLoc6V2::class.java, opLoc6.v2)
         builder.addListener(ClientCheat::class.java, clientCheat)
         builder.addListener(ClickWorldMap::class.java, clickWorldMap)
         builder.addListener(OpNpcV2::class.java, opNpc)
@@ -162,6 +171,7 @@ constructor(
         builder.addListener(OpObjT::class.java, opObjT)
         builder.addListener(IfSubOp::class.java, ifSubOp)
         builder.addListener(ResumePCountDialog::class.java, resumePCountDialog)
+        builder.addListener(ResumePLongDialog::class.java, resumePLongDialog)
         builder.addListener(ResumePNameDialog::class.java, resumePNameDialog)
         builder.addListener(ResumePStringDialog::class.java, resumePStringDialog)
         builder.addListener(ResumePObjDialog::class.java, resumePObjDialog)

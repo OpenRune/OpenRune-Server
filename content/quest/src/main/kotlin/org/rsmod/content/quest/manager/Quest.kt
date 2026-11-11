@@ -20,7 +20,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
-const val QUEST_COMPLETE_JINGLE = "jingle.gaol"
+const val QUEST_COMPLETE_JINGLE = "jingle.quest_complete_1"
 
 internal const val QUEST_DIALOGUE_CLOSE_TIMER = "timer.quest_dialogue_close"
 internal const val QUEST_SCROLL_CLOSE_TIMER = "timer.quest_scroll_close"
@@ -98,24 +98,23 @@ data class Quest(
 
             val rowKeyID = "dbrow.${rowKey}".asRSCM()
             val questRow = QuestRow.getRow(rowKeyID)
-            val quest =
-                Quest(
-                    id = questRow.id,
-                    rowID = rowKeyID,
-                    key = rowKey,
-                    displayName = questRow.displayname,
-                    mapElement = questRow.mapelement,
-                    startCoord = questRow.startcoord,
-                    maxSteps = questRow.endstate,
-                    questPoints = questRow.questpoints,
-                    questVarp = varp,
-                    questVarbit = varbit,
-                    itemDisplay = itemDisplay,
-                    rewards = rewards,
-                    closeDialogue = closeDialogue,
-                    closeScroll = closeScroll,
-                    completeJingle = completeJingle,
-                )
+            val quest = Quest(
+                id = questRow.id,
+                rowID = rowKeyID,
+                key = rowKey,
+                displayName = questRow.displayname,
+                mapElement = questRow.mapelement,
+                startCoord = questRow.startcoord,
+                maxSteps = questRow.endstate,
+                questPoints = questRow.questpointsOverride,
+                questVarp = varp,
+                questVarbit = varbit,
+                itemDisplay = itemDisplay,
+                rewards = rewards,
+                closeDialogue = closeDialogue,
+                closeScroll = closeScroll,
+                completeJingle = completeJingle,
+            )
             questsByKey[rowKey.normalizedQuestKey()] = quest
             return quest
         }

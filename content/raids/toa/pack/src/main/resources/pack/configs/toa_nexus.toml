@@ -1,0 +1,11 @@
+[[npc]]
+id = "npc.toa_midraidloot_trader"
+inherit = "npc.toa_midraidloot_trader"
+respawnDir = "South"
+wanderRange = 0
+
+[[inventory]]
+isServerOnly = true
+id = "inv.toa_midraidloot_bag"
+inherit = "inv.toa_midraidloot_bag"
+protect = false

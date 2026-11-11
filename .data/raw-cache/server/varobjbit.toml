@@ -37,3 +37,13 @@ endBit = 15
 id = "varobj.bottomless_milk_type"
 startBit = 14
 endBit = 15
+
+[[varobj]]
+id = "varobj.charges_65535"
+startBit = 0
+endBit = 15
+
+[[varobj]]
+id = "varobj.ayak_rune_charges"
+startBit = 16
+endBit = 16

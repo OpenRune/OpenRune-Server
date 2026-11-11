@@ -2594,7 +2594,7 @@ class DemonLord @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     private companion object {
         private const val AVATAR = "npc.godwars_zamorak_avatar"
-        private const val HIT_SYNTH = "synth.leviathan_hit"
+        private const val HIT_SYNTH = "synth.dt2_levboss_hit_impact_01"
         private const val STAGGERED = "varn.demo_staggered"
         private const val FIRE_LOC = "loc.demo_fire"
         private const val PRAYER_SMASH = "demo.prayer_smash"

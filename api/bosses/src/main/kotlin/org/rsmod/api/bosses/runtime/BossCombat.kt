@@ -7,6 +7,7 @@ import java.util.IdentityHashMap
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.validation.SpecValidator
 import org.rsmod.api.bosses.validation.ValidationError
+import org.rsmod.api.mechanics.toxins.impl.PlayerBleed
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.script.onAiApPlayer2
@@ -134,6 +135,7 @@ object BossCombat {
      */
     private fun resetBoss(npc: Npc, deps: BossDeps) {
         deps.encounterRegistry.remove(npc)?.let(deps::disposeOwned)
+        PlayerBleed.clearOwnedBy(npc, deps.playerList)
         npc.movementLocked = false
         npc.apRangeOverride = null
         npc.apRequiresLineOfSight = true

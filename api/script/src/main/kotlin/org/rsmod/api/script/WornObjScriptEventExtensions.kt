@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import org.rsmod.api.player.events.interact.WornObjContentEvents
 import org.rsmod.api.player.events.interact.WornObjEvents
+import org.rsmod.api.player.events.interact.WornSubOpEvent
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -54,6 +55,11 @@ public fun ScriptContext.onOpWorn9(
     type: ItemServerType,
     action: suspend ProtectedAccess.(WornObjEvents.Op9) -> Unit,
 ): Unit = onProtectedEvent(type.id, action)
+
+public fun ScriptContext.onOpWornSubOp(
+    type: String,
+    action: suspend ProtectedAccess.(WornSubOpEvent) -> Unit,
+): Unit = onProtectedEvent(type.asRSCM(RSCMType.OBJ), action)
 
 /* Standard content op functions */
 /**

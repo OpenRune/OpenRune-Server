@@ -1,6 +1,11 @@
 id = "Animated Iron Armour Drops"
 npcs = ["npc.warguild_iron_armour"]
 
+# The npc's dropped_remains param already drops 1 token, so this is the wiki total minus one.
+[[guaranteed]]
+obj = "obj.warguild_tokens"
+count = 9
+
 [[guaranteed]]
 obj = "obj.iron_full_helm"
 count = 1

@@ -151,7 +151,18 @@ public object PathingEntityCommon {
     }
 
     public fun spotanim(entity: PathingEntity, spot: Int, delay: Int, height: Int, slot: Int) {
-        val spotanim = EntitySpotanim(spot, delay, height, slot)
+        spotanim(entity, spot, delay, height, slot, loop = false)
+    }
+
+    public fun spotanim(
+        entity: PathingEntity,
+        spot: Int,
+        delay: Int,
+        height: Int,
+        slot: Int,
+        loop: Boolean,
+    ) {
+        val spotanim = EntitySpotanim(spot, delay, height, slot, loop)
         entity.pendingSpotanims.add(spotanim.packed)
     }
 }

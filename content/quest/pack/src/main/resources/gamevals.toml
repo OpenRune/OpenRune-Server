@@ -1,83 +1,8 @@
-[gamevals.synth]
-mizgog_placebeads = 1632
-mizgog_beads = 1633
-coffin_close = 53
-rg_ghost_approach = 1743
-bigghost_appear = 1595
-rg_place_skull = 1744
-rg_skeleton_awake = 1746
-destroy_object = 2381
-shade_sigh = 748
-kittens_mew = 339
-purr = 340
-cat_hiss = 335
-meeoow = 1169
-skeleton_attack = 776
-skelly_hit = 779
-skeleton_death = 777
-bigdoor_close = 45
-bigdoor_open = 46
-bookcase_open_and_close = 42
-chicken_into_human = 1564
-coffin_open = 54
-creakydoor_open = 56
-cupboard_open = 58
-deadtree_attack = 651
-digspade = 1470
-ernest_clunk = 1565
-ernest_sprinkle = 1566
-fish_swim = 2601
-iron_door_open = 71
-swan_rumble = 1790
-unlock = 2419
-poh_build_furniture = 938
-poh_remove_furniture = 2097
-poh_remove_furniture_alt = 2098
-
-locked = 2402
-pyramid_block = 1395
-throwingknife = 2707
-scythe_double = 2522
-human_hit = 513
-scream2 = 660
-godwars_godsword_special_attack = 3869
-barbarian_grunt_death = 3382
-paper_move = 1412
-tree_rustle_01 = 2073
-tree_rustle_02 = 2074
-skullball_scratchy = 1940
-ds_big_door_unlock = 2972
-explosion = 1487
-climb_wall = 2453
-grim_piano_c4 = 3696
-grim_piano_d4 = 3698
-grim_piano_e4 = 3700
-grim_piano_f4 = 3702
-grim_piano_g4 = 3704
-grim_piano_a4 = 3692
-grim_piano_b4 = 3694
-grim_piano_c5 = 3697
-grim_piano_d5 = 3699
-grim_piano_e5 = 3701
-grim_piano_f5 = 3703
-grim_piano_g5 = 3705
-grim_piano_a5 = 3693
-grim_piano_b5 = 3695
-
-splash_and_river = 1308
-roof_collapse = 1384
-big_wooden_door_open = 44
-big_wooden_door_close = 43
-watersplash = 2496
-smokepuff = 1930
-chest_open = 52
-chest_close = 51
-irondoor_locked = 72
-
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
 restless_ghost_return_tile = 63704
 misthalin_return_tile = 63700
+gobdip_return_tile = 65471
 misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
@@ -157,6 +82,10 @@ daddys_home_hammers = 65460
 daddys_home_saws = 65461
 daddys_home_nails = 65462
 daddys_home_house_cities = 65463
+gobdip_mail_dyes = 65469
 
 [gamevals.clientscript]
 poh_furniture_creation_entry_old = 7988
+
+[gamevals.category]
+goblin_armour = 528

@@ -2,6 +2,7 @@ package org.rsmod.content.quest.area.varrock.childrenofthesun
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.boolVarBit
@@ -28,8 +29,9 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         "quest_childrenofthesun",
         "varp.vmq1_primary",
         rewards { extra("Access to Varlamore") },
-        ItemRewardDisplay(RewardModel),
+        ItemRewardDisplay(RewardModel, zoom = 400, x = 78, y = 128),
         questVarbit = "varbit.vmq1",
+        completeJingle = "jingle.quest_complete_1",
     ) {
 
     @Inject
@@ -38,7 +40,11 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         locRepo: LocRepository,
         collision: CollisionFlagMap,
         sight: RayCastValidator,
-    ) : this(WorldScenes(npcRepo, locRepo, collision), GuardTails(npcRepo, sight))
+        music: MusicPlayer,
+    ) : this(
+        WorldScenes(npcRepo, locRepo, collision, music),
+        GuardTails(npcRepo, sight),
+    )
 
     private var Player.metAlina by boolVarBit("varbit.vmq1_met_alina")
 
@@ -506,7 +512,7 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
                 chatPlayer(neutral, "Hello there. I'm $name.")
                 itzla(
                     happy,
-                    "$name? Kuaini! Pleased to meet you. Crown Prince Itzla Arkan, heir to the " +
+                    "$name? Kuani! Pleased to meet you. Crown Prince Itzla Arkan, heir to the " +
                         "Sun Throne, at your service.",
                 )
                 itzla(quiz, "Tell me, $name, are you the one who caught these would-be assassins?")
@@ -611,7 +617,7 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
     private class JournalStep(val from: Int, val until: Int, val text: String)
 
     private companion object {
-        private const val RewardModel = "obj.sunfirerune"
+        private const val RewardModel = "obj.cooked_chicken"
 
         private const val BanditCount = CotsNpc.BanditGuards
 

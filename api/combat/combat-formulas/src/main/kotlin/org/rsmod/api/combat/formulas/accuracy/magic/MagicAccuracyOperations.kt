@@ -25,6 +25,14 @@ private typealias NpcAttr = CombatNpcAttributes
 
 public object MagicAccuracyOperations {
     /**
+     * Drained magic defence lowers a positive bonus towards `0` but never raises a bonus that is
+     * already below it. The drain is tracked separately, so it keeps applying if the npc's bonus
+     * later changes.
+     */
+    public fun drainDefenceBonus(defenceBonus: Int, drain: Int): Int =
+        if (drain <= 0) defenceBonus else minOf(defenceBonus, maxOf(defenceBonus - drain, 0))
+
+    /**
      * @param targetWeaknessPercent The target's elemental weakness percentage (e.g., `1` = `1%`).
      */
     public fun modifySpellAttackRoll(

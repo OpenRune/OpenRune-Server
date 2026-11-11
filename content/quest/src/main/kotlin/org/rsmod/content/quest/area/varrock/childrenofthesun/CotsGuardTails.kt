@@ -31,13 +31,17 @@ constructor(private val npcRepo: NpcRepository, private val sight: RayCastValida
         val uuid = player.uuid ?: return
         stop(player)
         val tail =
-            GuardTail(CotsRoute.Tiles, CotsRoute.LookoutIndices) { guard, target ->
-                sight.hasLineOfSight(guard, target)
+            GuardTail(CotsRoute.Tiles, CotsRoute.LookoutIndices) { at, player ->
+                sight.hasLineOfSight(at, player) && sight.hasLineOfSight(player, at)
             }
-        val guard = Npc(GuardType, tail.guard)
+        val spawn = tail.guard
+        val guard = Npc(GuardType, spawn)
         npcRepo.add(guard, SessionLifespan)
         guard.noneMode()
         guard.moveRestrict = MoveRestrict.PassThru
+        guard.faceSquare(spawn.translateX(1))
+        tail.depart()
+        guard.walk(tail.guard)
         sessions[uuid] = Session(tail, guard)
         player.timer(TailTimer, 1)
     }
