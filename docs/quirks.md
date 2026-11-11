@@ -157,14 +157,14 @@ The supplied normal-world revision240/241 captures were compared for listening,
 the cabbage throw, camera position/heights/rates, private scene actors, projectile
 frames, cauldron effects, dialogue cues and the return to the player's original
 hole-side tile. Scene delays follow the captured action cues; pauses waiting for
-dialogue input are not fixed recording-duration sleeps. Stage3 is granted only
+dialogue input are not fixed recording-duration sleeps. Stage 3 is granted only
 after the scene returns, and interruption restores camera/UI/position and permits
 another cabbage attempt without granting completion.
 
-The observed stage2/3 journal text is transcribed. Stage1 and completed-journal
+The observed stage 2/3 journal text is transcribed. Stage 1 and completed-journal
 wording remain authored: the referenced revision231 completion capture was not
 among the four supplied files. Only bronze-helm/iron-chain and ordinary full-black
 disguises are supported; elite/trimmed variants remain omitted. The reward bundle
-is3QP and2500coins, retaining this contribution's20October2026cutoff; the3November
+is 3 QP and 2,500 coins, retaining this contribution's 20 October 2026 cutoff; the 3 November
 Quest Month lamps are not part of this port. These are deliberate scope limits,
 not a claim that reference recordings are unavailable.

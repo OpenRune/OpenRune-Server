@@ -64,7 +64,7 @@ class BlackKnightsScene @Inject constructor(
             val actors = instances.npcsForInstance(session.id)
             val witch = actors.single { it.isType("npc.fortwitch") }
             val captain = actors.single { it.isType("npc.grillknight") }
-            actors.forEach { it.noneMode() }
+            actors.forEach { it.defaultMode() }
             lockedScene(
                 vantage = created.enter,
                 faceAt = at(WITCH),
@@ -81,6 +81,7 @@ class BlackKnightsScene @Inject constructor(
                 afterPositioning = {
                     instances.finalizeEntry(player, session, mapClock)
                     entered = true
+                    midiSong("midi.silence")
                     midiJingle("jingle.bkf_cutscene")
                     delay(2)
                 },
@@ -101,11 +102,12 @@ class BlackKnightsScene @Inject constructor(
                     chatNpcSpecificNp("Witch", "npc.fortwitch", shocked,
                         "Hopefully Greldo with the cabbage... yes, look here it co....NOOOOOoooo!")
                     delay(1)
-                    cabbageFlight(at(CAULDRON), at(CAULDRON), 500, 50, 0, 100, 192, 128)
+                    cabbageFlight(at(CoordGrid(3032, 3507)), at(CAULDRON), 500, 50, 0, 100, 192, 128)
                     spotanimMap(worldRepo, "spotanim.bkfortress_cauldron_cabbage_bubbles", at(CAULDRON), delay = 100)
                     soundSynth("synth.bk_cabbage_land")
                     delay(5)
                     VarPlayerIntMapSetter.set(player, "varbit.spy_cauldron_multi", 1)
+                    midiSong("midi.knightmare")
                     chatNpcSpecificNp("Witch", "npc.fortwitch", shocked, "My potion!")
                     witch.anim("seq.emote_cry")
                     delay(1)

@@ -62,6 +62,8 @@ class BlackKnightsSceneTest {
             assertEquals(listOf(500, 50, 0, 100, 192, 128), f.flights.last().let {
                 listOf(it.startHeight, it.endHeight, it.startTime, it.endTime, it.angle, it.progress)
             })
+            assertEquals(CoordGrid(7032, 7507), f.flights.last().startCoord)
+            assertEquals(CoordGrid(7031, 7507), f.flights.last().endCoord)
             assertTrue(f.operate())
             assertEquals(1, f.map.player.inv.count("obj.cabbage"))
             verify(exactly = 1) { f.instances.create(any(), any(), any(), any(), any()) }
