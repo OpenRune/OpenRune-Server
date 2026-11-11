@@ -1,21 +1,18 @@
 package org.rsmod.content.bosses.sarachnis
 
 import jakarta.inject.Inject
-import kotlin.math.max
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.runtime.spawnOwnedNpc
-import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.bosses.spec.Area
-import org.rsmod.api.bosses.spec.DamageExpr
+import org.rsmod.api.bosses.spec.HitType as BossHitType
 import org.rsmod.api.combat.commons.CombatEffects
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.clearInteractionRoute
-import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.npc.interact.AiPlayerInteractions
@@ -24,14 +21,15 @@ import org.rsmod.api.player.feet
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.route.RouteFactory
+import org.rsmod.api.route.walkTo
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.inv.isType
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.collision.isWalkBlocked
+import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Bounds
 import org.rsmod.plugin.scripts.ScriptContext
@@ -53,12 +51,9 @@ constructor(
     override val spec = run {
         val rangedHit =
             hit {
-                damage(
-                    Accuracy(
-                        DamageExpr.Custom { npc, _ -> healAndRoll(npc, RANGED_HEAL) }
-                    )
-                )
+                damage(Accuracy(Roll(0..MAX_HIT)))
                 type(Ranged)
+                onHit(healEffect(Ranged, RANGED_HEAL))
             }
         val rangedAttack =
             onEach(
@@ -98,11 +93,12 @@ constructor(
                     hit {
                         damage(
                             Accuracy(
-                                DamageExpr.Custom { npc, _ -> healAndRoll(npc, MELEE_HEAL) },
+                                Roll(0..MAX_HIT),
                                 meleeAttackType = MeleeAttackType.Crush,
                             )
                         )
                         type(Melee)
+                        onHit(healEffect(Melee, MELEE_HEAL))
                     }
                 }
 
@@ -138,11 +134,14 @@ constructor(
         }
     }
 
-    private fun healAndRoll(npc: Npc, amount: Int): Int {
-        npc.spotanim(HEAL_SPOTANIM, height = HEAL_SPOTANIM_HEIGHT)
-        npc.heal(amount, showHitsplat = true)
-        return deps.random.of(MAX_HIT + 1)
-    }
+    private fun healEffect(hitType: BossHitType, amount: Int) =
+        whenever(
+            !TargetPraying(hitType),
+            parallel(
+                spotanim(HEAL_SPOTANIM, height = HEAL_SPOTANIM_HEIGHT),
+                healSelf(amount),
+            ),
+        )
 
     private fun registerExtensions() {
         deps.extensionRegistry.register(WEB_BIND_EXT) { _, _, target, _ ->
@@ -171,51 +170,33 @@ constructor(
 
     private fun repositionAfterWeb(npc: Npc, target: Player) {
         val destination = chooseWebCorner(npc)
-        val waypoints =
-            routeFactory.create(npc.avatar, destination).map { CoordGrid(it.x, it.z, it.level) }
-        val routeTiles = expandRoute(npc.coords, waypoints)
-        if (routeTiles.isEmpty()) return
-        val steps = (routeTiles.size + 1) / 2
-
         npc.abortRoute()
         npc.clearInteraction()
+        npc.resetFaceEntity()
+        npc.clearFacingLock()
         npc.ignoreCombatInteractions = true
-        npc.movementLocked = true
-        deps.suppressAttacks(npc, steps)
-        deps.encounter(npc).nextAttackTick = deps.mapClock.cycle + max(ATTACK_RATE, steps + 1)
-
-        for ((index, tile) in routeTiles.withIndex()) {
-            if (index % 2 == 0 && index != routeTiles.lastIndex) continue
-            val step = index / 2 + 1
-            deps.worldQueues.add(step) {
-                if (npc.isSlotAssigned) {
-                    PathingEntityCommon.teleport(npc, deps.collision, tile)
-                }
-            }
-        }
-
-        deps.worldQueues.add(steps + 1) {
-            if (!npc.isSlotAssigned) return@add
-            npc.movementLocked = false
+        npc.walkTo(routeFactory, destination, speed = MoveSpeed.Run) {
+            if (!npc.isSlotAssigned || npc.hitpoints <= 0) return@walkTo
             npc.ignoreCombatInteractions = false
-            if (target.isValidTarget()) {
-                npc.apPlayer2(target, aiPlayerInteractions)
+            val next = target.takeIf { it.isValidTarget() } ?: pickArenaTarget(npc)
+            if (next != null) {
+                npc.apPlayer2(next, aiPlayerInteractions)
             }
         }
     }
 
-    private fun expandRoute(start: CoordGrid, waypoints: List<CoordGrid>): List<CoordGrid> {
-        val tiles = mutableListOf<CoordGrid>()
-        var current = start
-        for (waypoint in waypoints) {
-            while (current != waypoint) {
-                val dx = (waypoint.x - current.x).coerceIn(-1, 1)
-                val dz = (waypoint.z - current.z).coerceIn(-1, 1)
-                current = current.translate(dx, dz)
-                tiles += current
+    private fun pickArenaTarget(npc: Npc): Player? {
+        val candidates =
+            deps.playerList.filter {
+                it.isValidTarget() &&
+                    it.coords.level == npc.coords.level &&
+                    it.coords.chebyshevDistance(npc.spawnCoords) <= npc.type.maxRange
             }
-        }
-        return tiles
+        if (candidates.isEmpty()) return null
+        val inAttackRange =
+            candidates.filter { it.coords.chebyshevDistance(npc.coords) <= npc.attackRange }
+        val pool = inAttackRange.ifEmpty { candidates }
+        return pool[deps.random.of(pool.size)]
     }
 
     private fun chooseWebCorner(npc: Npc): CoordGrid {
@@ -295,11 +276,13 @@ constructor(
         Bounds(tile, size).asSequence().none { deps.collision.isWalkBlocked(it) }
 
     private fun scheduleMinionDeath(npc: Npc) {
-        val minions = deps.encounter(npc).releaseOwnedNpcs()
+        // Keep ownership until the encounter is disposed so late-spawned minions are still removed.
+        val minions = deps.encounter(npc).ownedNpcsSnapshot()
         for (minion in minions) {
-            if (!minion.isSlotAssigned || minion.hitpoints <= 0) continue
+            if (minion.hitpoints <= 0) continue
             minion.clearInteractionRoute()
             minion.ignoreCombatInteractions = true
+            if (!minion.isSlotAssigned) continue
             minion.queueHit(
                 MINION_DEATH_DELAY,
                 HitType.Typeless,

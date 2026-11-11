@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.areaChecker)
     implementation(projects.api.bosses)
     implementation(projects.api.config)
     implementation(projects.api.pluginCommons)
