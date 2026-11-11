@@ -24,9 +24,12 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.EntityExactMove
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.HitType
-import org.rsmod.game.map.collision.isWalkBlocked
+import org.rsmod.game.map.Direction
+import org.rsmod.game.map.collision.canStep
+import org.rsmod.game.map.collision.get
 import org.rsmod.game.map.collision.isZoneValid
 import org.rsmod.map.CoordGrid
+import org.rsmod.routefinder.flag.CollisionFlag
 
 private const val BALL_ROLL_ANIM = "seq.araxxor_acid_cannon_projectile"
 private const val BALL_BURST_ANIM = "seq.araxxor_acid_cannon_explode"
@@ -50,6 +53,7 @@ private const val DRIP_MESSAGE =
 
 private const val CLIENT_CYCLES_PER_TICK = 30
 private const val BLOB_ATTEMPTS = 40
+private const val BLOCKING_FLAGS = CollisionFlag.BLOCK_WALK or CollisionFlag.LOC
 
 private class BlobShape(
     val start: Int,
@@ -173,10 +177,16 @@ class AraxxorAcid @Inject constructor(private val deps: BossDeps) {
      * as captured.
      */
     private fun openStride(middle: CoordGrid, dx: Int, dz: Int): Int {
+        val direction = Direction.entries.first { it.xOff == dx && it.zOff == dz }
         var stride = 0
         for (step in 1..BALL_STEP_TILES) {
+            val from = middle.translate(dx * (step - 1), dz * (step - 1))
             val front = middle.translate(dx * (step + SMALL_CENTRE_OFFSET), dz * (step + SMALL_CENTRE_OFFSET))
-            if (!isOpen(middle.translate(dx * step, dz * step)) || !deps.collision.isZoneValid(front)) {
+            if (
+                !isOpen(from.translate(dx, dz)) ||
+                    !deps.collision.isZoneValid(front) ||
+                    !deps.collision.canStep(from, direction)
+            ) {
                 break
             }
             stride = step
@@ -185,7 +195,7 @@ class AraxxorAcid @Inject constructor(private val deps: BossDeps) {
     }
 
     private fun isOpen(tile: CoordGrid): Boolean =
-        deps.collision.isZoneValid(tile) && !deps.collision.isWalkBlocked(tile)
+        deps.collision.isZoneValid(tile) && deps.collision[tile] and BLOCKING_FLAGS == 0
 
     fun acidicDeath(boss: Npc, minion: Npc) {
         if (!boss.isSlotAssigned || boss.hitpoints <= 0) return
