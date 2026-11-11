@@ -5,7 +5,6 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
-import kotlin.math.abs
 import kotlin.reflect.KMutableProperty0
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
@@ -55,7 +54,7 @@ private const val RANGED_PROJ = "spotanim.fx_venenatis_web_projectile"
 private const val MAGIC_PROJ = "spotanim.araxxor_magic_projectile"
 private const val MAGIC_IMPACT = "spotanim.araxxor_magic_impact"
 private const val MAGIC_IMPACT_HEIGHT = 50
-private const val ACIDIC_PROJ ="spotanim.tob_nylocas_rangedprojectile_sizemid"
+private const val ACIDIC_PROJ = "spotanim.tob_nylocas_rangedprojectile_sizemid"
 private const val ACIDIC_ANIM = "seq.npc_araxyte_acidic_01_attack"
 private const val MIRRORBACK_ANIM = "seq.npc_araxyte_mirror_back_01_attack"
 private const val RUPTURA_BURST_SPOT = "spotanim.araxyte_explosive_spider_explosion"
