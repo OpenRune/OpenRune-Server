@@ -72,6 +72,14 @@ object SpecValidator {
 
             spec.timers.forEach { timer(it, Scope("timer", deferred = true)) }
 
+            spec.personalHp?.let { personal ->
+                val scope = Scope("personalHp")
+                if (personal.maxHitpoints <= 0) {
+                    error("${scope.prefix}maxHitpoints '${personal.maxHitpoints}' must be greater than 0.")
+                }
+                personal.onDeath?.let { requireAbility(it, scope, "onDeath ability") }
+            }
+
             for ((ability, delay) in spec.abilityAttackDelays) {
                 val scope = Scope("ability '$ability'")
                 requireAbility(ability, scope, "attack delay")

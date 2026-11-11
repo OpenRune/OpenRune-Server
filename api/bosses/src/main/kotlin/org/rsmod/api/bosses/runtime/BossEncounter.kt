@@ -29,6 +29,8 @@ class BossEncounter(
     var damageScale: Double = 1.0
     var lethalHandled: Boolean = false
 
+    val personalHp: PersonalHpTracker? = spec.personalHp?.let(::PersonalHpTracker)
+
     /** Tick until which multi-tick effects are still running; nothing new may start before it. */
     var busyUntil: Int = 0
 

@@ -18,6 +18,7 @@ import org.rsmod.api.script.onNpcHit
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
+import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.plugin.scripts.ScriptContext
 
 object BossCombat {
@@ -104,6 +105,7 @@ object BossCombat {
                         else (hit.damage * encounter.damageScale).toInt()
                     hitRules.getValue(encounter.spec).applyIncoming(this, encounter)
                     onModifyHit?.invoke(this)
+                    applyPersonalDamage(this, encounter, deps)
                     if (
                         onLethal != null &&
                             !encounter.lethalHandled &&
@@ -126,6 +128,19 @@ object BossCombat {
                 }
             }
         }
+    }
+
+    private fun applyPersonalDamage(
+        event: NpcHitEvents.Modify,
+        encounter: BossEncounter,
+        deps: BossDeps,
+    ) {
+        val tracker = encounter.personalHp ?: return
+        if (!event.hit.isFromPlayer) return
+        val attacker = event.hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) } ?: return
+        if (!tracker.damage(attacker, event.hit.damage)) return
+        val onDeath = encounter.spec.personalHp?.onDeath ?: return
+        deps.runAbility(event.npc, attacker, onDeath)
     }
 
     /**

@@ -232,6 +232,10 @@ fun lockMovement(): Effect = Effect.LockMovement(true)
 
 fun unlockMovement(): Effect = Effect.LockMovement(false)
 
+fun invulnerable(): Effect = Effect.Invulnerable(true)
+
+fun vulnerable(): Effect = Effect.Invulnerable(false)
+
 fun healSelf(amount: Int): Effect = Effect.HealSelf(amount)
 
 fun area(sw: TargetExpr.Single, ne: TargetExpr.Single): Area = Area(sw, ne)
