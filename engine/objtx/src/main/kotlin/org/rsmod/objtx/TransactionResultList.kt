@@ -9,6 +9,12 @@ public data class TransactionResultList<T>(
     public var commited: Boolean = false
         private set
 
+    /**
+     * When set, [commitAll] hands the inventories and the function that performs the commit to
+     * this, so it can look at the inventories before they change and act once they have.
+     */
+    public var commitInterceptor: ((List<TransactionInventory<T>>, () -> Unit) -> Unit)? = null
+
     public val size: Int
         get() = results.size
 
@@ -20,7 +26,12 @@ public data class TransactionResultList<T>(
 
     public fun commitAll() {
         check(!commited) { "Transaction already commited!" }
-        inventories.commitAll()
+        val interceptor = commitInterceptor
+        if (interceptor == null) {
+            inventories.commitAll()
+        } else {
+            interceptor(inventories) { inventories.commitAll() }
+        }
         commited = true
     }
 

@@ -3,6 +3,7 @@ package org.rsmod.content.bosses.doom
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
+import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
 
 internal object DoomVarns {
     const val CHARGE = "varn.dom_charge"
@@ -13,9 +14,9 @@ internal object DoomVarns {
     const val CHARGE_LOOP_FROM = "varn.dom_charge_loop_from"
     const val ROTATION_STEP = "varn.dom_rotation_step"
     const val STEP_ATTACKS = "varn.dom_step_attacks"
-    const val IMMUNE_MELEE = "varn.immune_melee"
-    const val IMMUNE_RANGED = "varn.immune_ranged"
-    const val IMMUNE_MAGIC = "varn.immune_magic"
+    const val PROTECT_MELEE = "varn.protect_melee"
+    const val PROTECT_RANGED = "varn.protect_ranged"
+    const val PROTECT_MAGIC = "varn.protect_magic"
     const val GUARANTEED_HIT = "varn.guaranteed_hit"
 
     const val CHARGE_NONE = 0
@@ -58,8 +59,8 @@ internal object DoomCharge {
     private val clearCharge: Effect =
         sequence(
             setVarn(DoomVarns.CHARGE, DoomVarns.CHARGE_NONE),
-            setVarn(DoomVarns.IMMUNE_RANGED, 0),
-            setVarn(DoomVarns.IMMUNE_MAGIC, 0),
+            setVarn(DoomVarns.PROTECT_RANGED, 0),
+            setVarn(DoomVarns.PROTECT_MAGIC, 0),
             setVarn(DoomVarns.GUARANTEED_HIT, 0),
             clearHeadIcon(HEAD_ICON_SLOT),
             clearHeadbar(CHARGE_BAR),
@@ -68,8 +69,8 @@ internal object DoomCharge {
     fun meleeCharge(delve: DoomDelve): Effect =
         sequence(
             setVarn(DoomVarns.CHARGE, DoomVarns.CHARGE_MELEE),
-            setVarn(DoomVarns.IMMUNE_RANGED, 1),
-            setVarn(DoomVarns.IMMUNE_MAGIC, 1),
+            setVarn(DoomVarns.PROTECT_RANGED, FULL_STYLE_PROTECTION),
+            setVarn(DoomVarns.PROTECT_MAGIC, FULL_STYLE_PROTECTION),
             setVarn(DoomVarns.GUARANTEED_HIT, 1),
             headIcon(HEAD_ICON_SLOT, HEAD_ICON_GRAPHIC, PROTECT_MISSILES_AND_MAGIC),
             anim(CHARGE_SEQ),

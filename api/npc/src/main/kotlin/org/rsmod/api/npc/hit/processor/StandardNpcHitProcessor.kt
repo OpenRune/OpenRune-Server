@@ -12,6 +12,7 @@ import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.npc.headbar.InternalNpcHeadbars
 import org.rsmod.api.npc.hit.NpcDamageContributor
 import org.rsmod.api.npc.hit.NpcHitpointsFloorHook
+import org.rsmod.api.player.events.publishAttackImpact
 import org.rsmod.api.player.ironman.shouldBlockNpcCombatXp
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.events.EventBus
@@ -101,6 +102,7 @@ constructor(
 
         val queueDeath = !locked && npc.hitpoints == 0 && "queue.death" !in npc.queueList
         if (queueDeath) {
+            npc.killingHit = hit
             queueDeath()
         }
 
@@ -114,6 +116,7 @@ constructor(
         }
 
         npc.publishHitEvent(hit)
+        eventBus.publishAttackImpact(npc, hit, playerList)
     }
 
     private val Npc.hitpointsLocked: Boolean

@@ -1,0 +1,26 @@
+[[league_task_craft_some_pottery_in_sophanem]]
+trigger = "product"
+stat = "stat.crafting"
+area = "area.league_sophanem"
+
+[[league_task_craft_100_blood_runes]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.bloodrune"
+area = "area.league_region_kourend"
+times = 100
+counter = "varbit.league_task_craft_blood_runes"
+
+[[league_task_fill_a_bucket_with_sand_at_the_sunset_coast]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.bucket_sand"
+area = "area.league_region_varlamore"
+
+[[league_task_fill_up_20_buckets_of_sand_in_rellekka]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.bucket_sand"
+area = "area.league_region_fremennik"
+times = 20
+counter = "varbit.league_counter_fill_sand_in_rellekka"

@@ -17,6 +17,7 @@ import org.rsmod.api.enums.NamedEnums.emote_names
 import org.rsmod.api.enums.SkillCapeEnums.skill_cape_anims
 import org.rsmod.api.enums.SkillCapeEnums.skill_cape_spots
 import org.rsmod.api.player.back
+import org.rsmod.api.player.events.PlayerEmoteEvent
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifClose
@@ -44,6 +45,7 @@ private constructor(
     private val skillCapeEmotes: SkillCapeEmoteResolver,
 ) : PluginScript() {
     private lateinit var emoteSlotRange: IntRange
+    private val performing = HashMap<Player, String>()
 
     override fun ScriptContext.startup() {
         loadEmotesEnum()
@@ -68,7 +70,16 @@ private constructor(
     private fun Player.selectEmote(emoteSlot: Int, op: IfButtonOp) {
         val emote = emote_names.getValue(emoteSlot)
         ifClose(eventBus)
-        protectedAccess.launch(this) { selectEmote(emote, op) }
+        protectedAccess.launch(this) { selectTrackedEmote(emote, op) }
+    }
+
+    private suspend fun ProtectedAccess.selectTrackedEmote(emote: String, op: IfButtonOp) {
+        performing[player] = emote
+        try {
+            selectEmote(emote, op)
+        } finally {
+            performing.remove(player)
+        }
     }
 
     private suspend fun ProtectedAccess.selectEmote(emote: String, op: IfButtonOp) {
@@ -454,6 +465,7 @@ private constructor(
         faceEntitySquare(npc)
         npcRepo.add(npc, duration = 30)
         npc.anim("seq.diary_emote_spotanim")
+        publishEmoteEvent("seq.diary_emote_playeranim")
         delay(31)
         rebuildAppearance()
     }
@@ -569,8 +581,11 @@ private constructor(
     }
 
     private fun ProtectedAccess.publishEmoteEvent(seq: String) {
-        val event = PlayEmote(player, ServerCacheManager.getAnim(seq.asRSCM(RSCMType.SEQ))!!)
-        eventBus.publish(event)
+        val emote = performing[player] ?: return
+        eventBus.publishIfHeard {
+            val type = ServerCacheManager.getAnim(seq.asRSCM(RSCMType.SEQ)) ?: error("Invalid sequence: $seq")
+            PlayerEmoteEvent(player, emote, type)
+        }
     }
 
     private fun Player.onTabOpen() {

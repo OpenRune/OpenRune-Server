@@ -1,0 +1,119 @@
+[[league_task_50_lizardmen_shaman_kills]]
+trigger = "kill"
+npc = [
+    "npc.zeah_lizardshaman_1",
+    "npc.zeah_lizardshaman_2",
+    "npc.raids_lizardshaman_a",
+    "npc.raids_lizardshaman_b",
+    "npc.lizardman_cave_shaman_1",
+    "npc.lizardman_cave_shaman_2",
+    "npc.molch_lizardshaman_1",
+]
+times = 50
+counter = "varbit.league_counter_kill_lizardman_shamans"
+
+[[league_task_150_lizardmen_shaman_kills]]
+trigger = "kill"
+npc = [
+    "npc.zeah_lizardshaman_1",
+    "npc.zeah_lizardshaman_2",
+    "npc.raids_lizardshaman_a",
+    "npc.raids_lizardshaman_b",
+    "npc.lizardman_cave_shaman_1",
+    "npc.lizardman_cave_shaman_2",
+    "npc.molch_lizardshaman_1",
+]
+times = 150
+counter = "varbit.league_counter_kill_lizardman_shamans"
+
+[[league_task_300_lizardmen_shaman_kills]]
+trigger = "kill"
+npc = [
+    "npc.zeah_lizardshaman_1",
+    "npc.zeah_lizardshaman_2",
+    "npc.raids_lizardshaman_a",
+    "npc.raids_lizardshaman_b",
+    "npc.lizardman_cave_shaman_1",
+    "npc.lizardman_cave_shaman_2",
+    "npc.molch_lizardshaman_1",
+]
+times = 300
+counter = "varbit.league_counter_kill_lizardman_shamans"
+
+[[league_task_defeat_150_demonic_gorillas]]
+trigger = "kill"
+npc = [
+    "npc.mm2_demon_gorilla_1_melee",
+    "npc.mm2_demon_gorilla_1_ranged",
+    "npc.mm2_demon_gorilla_1_magic",
+    "npc.mm2_demon_gorilla_2_melee",
+    "npc.mm2_demon_gorilla_2_ranged",
+    "npc.mm2_demon_gorilla_2_magic",
+    "npc.mm2_demon_gorilla_noncombat",
+]
+times = 150
+counter = "varbit.league_counter_kill_demonic_gorillas"
+
+[[league_task_defeat_300_demonic_gorillas]]
+trigger = "kill"
+npc = [
+    "npc.mm2_demon_gorilla_1_melee",
+    "npc.mm2_demon_gorilla_1_ranged",
+    "npc.mm2_demon_gorilla_1_magic",
+    "npc.mm2_demon_gorilla_2_melee",
+    "npc.mm2_demon_gorilla_2_ranged",
+    "npc.mm2_demon_gorilla_2_magic",
+    "npc.mm2_demon_gorilla_noncombat",
+]
+times = 300
+counter = "varbit.league_counter_kill_demonic_gorillas"
+
+[[league_task_defeat_500_demonic_gorillas]]
+trigger = "kill"
+npc = [
+    "npc.mm2_demon_gorilla_1_melee",
+    "npc.mm2_demon_gorilla_1_ranged",
+    "npc.mm2_demon_gorilla_1_magic",
+    "npc.mm2_demon_gorilla_2_melee",
+    "npc.mm2_demon_gorilla_2_ranged",
+    "npc.mm2_demon_gorilla_2_magic",
+    "npc.mm2_demon_gorilla_noncombat",
+]
+times = 500
+counter = "varbit.league_counter_kill_demonic_gorillas"
+
+[[league_task_kill_5_spinners]]
+trigger = "kill"
+npc = [
+    "npc.pest_spinner_1",
+    "npc.pest_spinner_2",
+    "npc.pest_spinner_3",
+    "npc.pest_spinner_4",
+    "npc.pest_spinner_5",
+]
+times = 5
+counter = "varbit.league_task_kill_spinners"
+
+[[league_task_kill_5_bunnies]]
+trigger = "kill"
+npc = [
+    "npc.fairy2_rabbit1",
+    "npc.fairy2_rabbit2",
+    "npc.regicide_rabbit",
+    "npc.regicide_bunny1",
+    "npc.regicide_bunny2",
+    "npc.misc_rabbit",
+    "npc.misc_rabbit2",
+    "npc.viking_bunny_1",
+    "npc.viking_bunny_2",
+    "npc.castlewars_rabbit",
+    "npc.farming_guild_rabbit1",
+    "npc.farming_guild_rabbit2",
+    "npc.farming_guild_rabbit3",
+    "npc.caerbannog",
+    "npc.rabbit_1",
+    "npc.rabbit_2",
+    "npc.rabbit_3",
+]
+times = 5
+counter = "varbit.league_counter_kill_bunnies"

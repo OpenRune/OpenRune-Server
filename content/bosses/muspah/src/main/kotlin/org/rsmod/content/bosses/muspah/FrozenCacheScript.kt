@@ -6,44 +6,38 @@ import dtx.core.flatten
 import jakarta.inject.Inject
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.nothing
-import org.rsmod.api.droptable.rollCount
 import org.rsmod.api.droptable.rsPlayerWeightedTable
+import org.rsmod.api.droptable.toDropList
+import org.rsmod.api.player.events.LootSource
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld1
+import org.rsmod.content.drops.LootDelivery
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class FrozenCacheScript @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
+class FrozenCacheScript @Inject constructor(private val loot: LootDelivery) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpHeld1("obj.frozen_cache") { open() }
+        onOpHeld1(FROZEN_CACHE) { open() }
     }
 
     private fun ProtectedAccess.open() {
-        if (invDel(inv, "obj.frozen_cache", 1).failure) {
+        if (invDel(inv, FROZEN_CACHE, 1).failure) {
             return
         }
 
         val preRoll = preRollTable.roll(player, ArgMap()).flatten()
         val preRollHit = preRoll is RollResult.Single && !preRoll.result.isNothing
-        val result = if (preRollHit) preRoll else mainTable.roll(player, ArgMap()).flatten()
-        when (result) {
-            is RollResult.Nothing -> Unit
-            is RollResult.Single -> give(result.result)
-            is RollResult.ListOf -> result.results.forEach { give(it) }
-        }
-    }
-
-    private fun ProtectedAccess.give(drop: DropRollItem) {
-        if (drop.isNothing) return
-        val count = drop.rollCount(random)
-        if (drop.obj == "obj.frozen_cache") {
+        val result = if (preRollHit) preRoll else mainTable.roll(player, ArgMap())
+        val drops = result.toDropList()
+        if (drops.any { it.obj == FROZEN_CACHE }) {
             mes("You open the frozen cache and find... another frozen cache inside! How peculiar.")
         }
-        invAddOrDrop(objRepo, drop.obj, count)
+        loot.give(player, LootSource.Obj(FROZEN_CACHE), drops)
     }
 
     private companion object {
+        const val FROZEN_CACHE = "obj.frozen_cache"
+
         val preRollTable =
             rsPlayerWeightedTable(total = 500) {
                 name("Frozen Cache Pre-roll")

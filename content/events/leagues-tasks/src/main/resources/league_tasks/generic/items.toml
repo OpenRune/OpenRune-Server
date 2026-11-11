@@ -1,0 +1,87 @@
+[[league_task_obtain_a_bird_nest]]
+trigger = "obtain"
+obj = [
+    "obj.bird_nest_egg_red",
+    "obj.bird_nest_egg_green",
+    "obj.bird_nest_egg_blue",
+    "obj.bird_nest_seeds",
+    "obj.bird_nest_ring",
+    "obj.bird_nest_empty",
+    "obj.bird_nest_cheapseeds",
+    "obj.bird_nest_decentseeds",
+]
+
+[[league_task_receive_an_agility_arena_ticket]]
+trigger = "obtain"
+obj = ["obj.agilityarena_ticket", "obj.agilityarena_ticket_new"]
+
+[[league_task_obtain_20_golden_nuggets]]
+trigger = "obtain"
+obj = "obj.motherlode_nugget"
+times = 20
+counter = "varbit.league_task_motherlode_nugget"
+
+[[league_task_obtain_an_ecumenical_key]]
+trigger = "obtain"
+obj = "obj.ecumenical_key"
+
+[[league_task_obtain_the_big_harpoonfish]]
+trigger = "obtain"
+obj = "obj.poh_trophydrop_harpoonfish"
+
+[[league_task_obtain_the_plank_sack]]
+trigger = "obtain"
+obj = "obj.plank_sack"
+
+[[league_task_obtain_the_temple_key]]
+trigger = "obtain"
+obj = "obj.hosdun_temple_key"
+
+[[league_task_obtain_the_huntsmans_kit]]
+trigger = "obtain"
+obj = "obj.huntsmans_kit"
+
+[[league_task_obtain_the_fish_barrel]]
+trigger = "obtain"
+obj = "obj.fish_barrel_closed"
+
+[[league_task_obtain_a_crystal_tool_seed]]
+trigger = "obtain"
+obj = "obj.prif_tool_seed"
+
+[[league_task_obtain_a_zalcano_shard]]
+trigger = "obtain"
+obj = "obj.zalcano_pickaxe_kit"
+
+[[action_obtain_an_old_boot_from_a_fishing_spot]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.old_boot"
+
+[[league_task_buy_a_snapdragon_from_pirate_jackie_the_fruit]]
+trigger = "shop_buy"
+obj = "obj.snapdragon_seed"
+
+[[league_task_purchase_a_seed_box]]
+trigger = "shop_buy"
+obj = "obj.seed_box"
+
+[[league_task_purchase_the_reagents_pouch]]
+trigger = "shop_buy"
+obj = "obj.mm_secondary_pouch"
+
+[[league_task_purchase_a_celestial_ring]]
+trigger = "shop_buy"
+obj = "obj.celestial_ring"
+
+[[league_task_purchase_the_chugging_barrel]]
+trigger = "shop_buy"
+obj = "obj.mm_prepot_device"
+
+[[league_task_purchase_an_onyx_in_mor_ul_rek]]
+trigger = "shop_buy"
+obj = "obj.onyx"
+
+[[league_task_pick_up_snapegrass]]
+trigger = "obtain"
+obj = "obj.snape_grass"

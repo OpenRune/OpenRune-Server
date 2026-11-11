@@ -1,0 +1,87 @@
+[[league_task_smelt_a_bronze_bar]]
+trigger = "product"
+stat = "stat.smithing"
+obj = "obj.bronze_bar"
+
+[[league_task_smelt_an_iron_bar]]
+trigger = "product"
+stat = "stat.smithing"
+obj = "obj.iron_bar"
+
+[[league_task_smelt_a_steel_bar]]
+trigger = "product"
+stat = "stat.smithing"
+obj = "obj.steel_bar"
+
+[[league_task_smelt_a_runite_bar]]
+trigger = "product"
+stat = "stat.smithing"
+obj = "obj.runite_bar"
+
+[[league_task_smith_10_steel_bolts_unf]]
+trigger = "product"
+stat = "stat.smithing"
+obj = "obj.xbows_crossbow_bolts_steel_unfeathered"
+times = 10
+counter = "varbit.league_counter_smith_steel_bolts"
+
+[[league_task_smith_150_iron_arrowtips]]
+trigger = "product"
+stat = "stat.smithing"
+obj = "obj.iron_arrowheads"
+times = 150
+counter = "varbit.league_counter_smith_iron_arrowtips"
+
+[[league_task_smith_250_mithril_bolts_unf]]
+trigger = "product"
+stat = "stat.smithing"
+obj = "obj.xbows_crossbow_bolts_mithril_unfeathered"
+times = 250
+counter = "varbit.league_task_smith_mithril_bolts"
+
+[[action_smith_a_steel_2h_sword]]
+trigger = "product"
+stat = "stat.smithing"
+obj = "obj.steel_2h_sword"
+
+[[league_task_smith_shayzien_1]]
+trigger = "product"
+stat = "stat.smithing"
+obj = [
+    "obj.shayzien_gloves_1",
+    "obj.shayzien_boots_1",
+    "obj.shayzien_helm_1",
+    "obj.shayzien_legs_1",
+    "obj.shayzien_body_1",
+]
+
+[[league_task_smith_a_rune_item]]
+trigger = "product"
+stat = "stat.smithing"
+obj = [
+    "obj.rune_dagger",
+    "obj.rune_axe",
+    "obj.rune_mace",
+    "obj.rune_med_helm",
+    "obj.rune_sword",
+    "obj.rune_scimitar",
+    "obj.rune_longsword",
+    "obj.rune_full_helm",
+    "obj.rune_sq_shield",
+    "obj.rune_warhammer",
+    "obj.rune_battleaxe",
+    "obj.rune_chainbody",
+    "obj.rune_kiteshield",
+    "obj.rune_claws",
+    "obj.rune_2h_sword",
+    "obj.rune_platelegs",
+    "obj.rune_plateskirt",
+    "obj.rune_platebody",
+    "obj.rune_knife",
+    "obj.xbows_crossbow_limbs_runite",
+]
+
+[[league_task_smith_a_dragonfire_shield]]
+trigger = "product"
+stat = "stat.smithing"
+obj = ["obj.dragonfire_shield", "obj.dragonfire_shield_uncharged"]

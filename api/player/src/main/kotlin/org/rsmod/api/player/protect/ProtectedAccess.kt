@@ -50,6 +50,7 @@ import org.rsmod.api.player.cinematic.Cinematic
 import org.rsmod.api.player.cinematic.MinimapState
 import org.rsmod.api.player.combatClearQueue
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.events.publishAttackImpact
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modifier.StandardPlayerHitModifier
@@ -318,7 +319,7 @@ public class ProtectedAccess(
         collision: CollisionFlagMap,
         teleportType: TeleportType = TeleportType.Standard,
     ) {
-        if (!validateTeleport(teleportType)) {
+        if (!validateTeleport(dest, teleportType)) {
             return
         }
         if (!collision.isZoneValid(dest)) {
@@ -338,7 +339,7 @@ public class ProtectedAccess(
         collision: CollisionFlagMap,
         teleportType: TeleportType = TeleportType.Standard,
     ) {
-        if (!validateTeleport(teleportType)) {
+        if (!validateTeleport(dest, teleportType)) {
             return
         }
         if (!collision.isZoneValid(dest)) {
@@ -373,7 +374,7 @@ public class ProtectedAccess(
         dir: Int,
         teleportType: TeleportType = TeleportType.Standard,
     ) {
-        if (!validateTeleport(teleportType)) {
+        if (!validateTeleport(end, teleportType)) {
             return
         }
         val collision = context.collision
@@ -385,11 +386,12 @@ public class ProtectedAccess(
         PathingEntityCommon.exactMove(player, start, end, delay1, delay2, dir, collision)
     }
 
-    private fun validateTeleport(teleportType: TeleportType): Boolean {
+    private fun validateTeleport(dest: CoordGrid, teleportType: TeleportType): Boolean {
         if (teleportType == TeleportType.Exempt) {
             return true
         }
-        val denial = context.teleportValidator.validate(player, teleportType, context.areaChecker)
+        val denial =
+            context.teleportValidator.validate(player, dest, teleportType, context.areaChecker)
         if (denial == null) {
             return true
         }
@@ -1370,8 +1372,14 @@ public class ProtectedAccess(
     }
 
     /** @see [org.rsmod.api.player.stat.statRandom] */
-    public fun statRandom(stat: String, low: Int, high: Int, invisibleBoost: Int): Boolean {
-        return player.statRandom(random, stat, low, high, invisibleBoost)
+    public fun statRandom(
+        stat: String,
+        low: Int,
+        high: Int,
+        invisibleBoost: Int,
+        subject: String? = null,
+    ): Boolean {
+        return player.statRandom(random, stat, low, high, invisibleBoost, subject)
     }
 
     /** @see [org.rsmod.api.player.stat.statRandom] */
@@ -1380,8 +1388,9 @@ public class ProtectedAccess(
         low: Int,
         high: Int,
         invisibleLevels: InvisibleLevels,
+        subject: String? = null,
     ): Boolean {
-        return player.statRandom(random, stat, low, high, invisibleLevels)
+        return player.statRandom(random, stat, low, high, invisibleLevels, subject)
     }
 
     public fun isInCombat(): Boolean {
@@ -1789,6 +1798,10 @@ public class ProtectedAccess(
 
     internal fun findHitPlayerSource(hit: Hit): Player? {
         return hit.resolvePlayerSource(context.playerList)
+    }
+
+    internal fun publishAttackImpact(hit: Hit) {
+        context.eventBus.publishAttackImpact(player, hit, context.playerList)
     }
 
     internal fun recordHitDamage(target: PathingEntity, hit: Hit, damage: Int) {

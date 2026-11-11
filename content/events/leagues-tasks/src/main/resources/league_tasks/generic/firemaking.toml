@@ -1,0 +1,41 @@
+[[league_task_burn_some_normal_logs]]
+trigger = "firemaking"
+obj = "obj.logs"
+
+[[league_task_burn_some_oak_logs]]
+trigger = "firemaking"
+obj = "obj.oak_logs"
+
+[[league_task_burn_some_magic_logs]]
+trigger = "firemaking"
+obj = "obj.magic_logs"
+
+[[league_task_burn_25_maple_logs]]
+trigger = "firemaking"
+obj = "obj.maple_logs"
+times = 25
+counter = "varbit.league_task_burn_maple_logs"
+
+[[league_task_burn_100_willow_logs]]
+trigger = "firemaking"
+obj = "obj.willow_logs"
+times = 100
+counter = "varbit.league_counter_burn_willow_logs"
+
+[[league_task_burn_100_yew_logs]]
+trigger = "firemaking"
+obj = "obj.yew_logs"
+times = 100
+counter = "varbit.league_counter_burn_yew_logs"
+
+[[league_task_burn_20_blisterwood_logs]]
+trigger = "firemaking"
+obj = "obj.blisterwood_logs"
+times = 20
+counter = "varbit.league_counter_burn_blisterwood_logs"
+
+[[league_task_burn_200_redwood_logs]]
+trigger = "firemaking"
+obj = "obj.redwood_logs"
+times = 200
+counter = "varbit.league_counter_burn_redwood_logs"

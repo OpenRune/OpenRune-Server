@@ -1,0 +1,546 @@
+[[varp]]
+id = "varp.league_counters_0"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_chop_willow_logs"
+varp = "varp.league_counters_0"
+startBit = 0
+endBit = 6
+
+[[varbit]]
+id = "varbit.league_counter_chop_blisterwood_logs"
+varp = "varp.league_counters_0"
+startBit = 7
+endBit = 13
+
+[[varbit]]
+id = "varbit.league_counter_chop_magic_logs"
+varp = "varp.league_counters_0"
+startBit = 14
+endBit = 20
+
+[[varbit]]
+id = "varbit.league_counter_chop_maples_in_tirannwn"
+varp = "varp.league_counters_0"
+startBit = 21
+endBit = 27
+
+[[varp]]
+id = "varp.league_counters_1"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_chop_teak_logs_in_prifddinas"
+varp = "varp.league_counters_1"
+startBit = 0
+endBit = 6
+
+[[varbit]]
+id = "varbit.league_counter_mine_tin_ore"
+varp = "varp.league_counters_1"
+startBit = 7
+endBit = 9
+
+[[varbit]]
+id = "varbit.league_counter_mine_silver_ore"
+varp = "varp.league_counters_1"
+startBit = 10
+endBit = 13
+
+[[varbit]]
+id = "varbit.league_counter_mine_iron_ore"
+varp = "varp.league_counters_1"
+startBit = 14
+endBit = 19
+
+[[varbit]]
+id = "varbit.league_counter_mine_granite_in_the_necropolis"
+varp = "varp.league_counters_1"
+startBit = 20
+endBit = 23
+
+[[varbit]]
+id = "varbit.league_counter_mine_gold_in_tirannwn"
+varp = "varp.league_counters_1"
+startBit = 24
+endBit = 28
+
+[[varp]]
+id = "varp.league_counters_2"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_mine_granite"
+varp = "varp.league_counters_2"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.league_counter_mine_adamantite_ore"
+varp = "varp.league_counters_2"
+startBit = 5
+endBit = 10
+
+[[varbit]]
+id = "varbit.league_counter_mine_soft_clay_in_tirannwn"
+varp = "varp.league_counters_2"
+startBit = 11
+endBit = 18
+
+[[varbit]]
+id = "varbit.league_counter_mine_runite_in_tirannwn"
+varp = "varp.league_counters_2"
+startBit = 19
+endBit = 25
+
+[[varbit]]
+id = "varbit.league_counter_catch_cod"
+varp = "varp.league_counters_2"
+startBit = 26
+endBit = 29
+
+[[varp]]
+id = "varp.league_counters_3"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_catch_swordfish"
+varp = "varp.league_counters_3"
+startBit = 0
+endBit = 6
+
+[[varbit]]
+id = "varbit.league_counter_catch_tuna"
+varp = "varp.league_counters_3"
+startBit = 7
+endBit = 13
+
+[[varbit]]
+id = "varbit.league_counter_catch_mackerel"
+varp = "varp.league_counters_3"
+startBit = 14
+endBit = 18
+
+[[varbit]]
+id = "varbit.league_counter_catch_lobsters"
+varp = "varp.league_counters_3"
+startBit = 19
+endBit = 25
+
+[[varp]]
+id = "varp.league_counters_4"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_catch_trout"
+varp = "varp.league_counters_4"
+startBit = 0
+endBit = 6
+
+[[varbit]]
+id = "varbit.league_counter_catch_karambwan_on_karamja"
+varp = "varp.league_counters_4"
+startBit = 7
+endBit = 12
+
+[[varbit]]
+id = "varbit.league_counter_catch_shark"
+varp = "varp.league_counters_4"
+startBit = 13
+endBit = 19
+
+[[varbit]]
+id = "varbit.league_counter_catch_dark_crabs"
+varp = "varp.league_counters_4"
+startBit = 20
+endBit = 26
+
+[[varp]]
+id = "varp.league_counters_5"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_cook_swordfish"
+varp = "varp.league_counters_5"
+startBit = 0
+endBit = 6
+
+[[varbit]]
+id = "varbit.league_counter_cook_tuna"
+varp = "varp.league_counters_5"
+startBit = 7
+endBit = 12
+
+[[varbit]]
+id = "varbit.league_counter_cook_sharks"
+varp = "varp.league_counters_5"
+startBit = 13
+endBit = 19
+
+[[varbit]]
+id = "varbit.league_counter_cook_meat_pies"
+varp = "varp.league_counters_5"
+startBit = 20
+endBit = 24
+
+[[varbit]]
+id = "varbit.league_counter_cook_karambwans"
+varp = "varp.league_counters_5"
+startBit = 25
+endBit = 31
+
+[[varp]]
+id = "varp.league_counters_6"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_cook_sharks_in_darkmeyer"
+varp = "varp.league_counters_6"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.league_counter_cook_anglerfish"
+varp = "varp.league_counters_6"
+startBit = 5
+endBit = 11
+
+[[varbit]]
+id = "varbit.league_counter_burn_willow_logs"
+varp = "varp.league_counters_6"
+startBit = 12
+endBit = 18
+
+[[varbit]]
+id = "varbit.league_counter_burn_yew_logs"
+varp = "varp.league_counters_6"
+startBit = 19
+endBit = 25
+
+[[varbit]]
+id = "varbit.league_counter_burn_blisterwood_logs"
+varp = "varp.league_counters_6"
+startBit = 26
+endBit = 30
+
+[[varp]]
+id = "varp.league_counters_7"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_burn_redwood_logs"
+varp = "varp.league_counters_7"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+id = "varbit.league_counter_make_stamina_potions"
+varp = "varp.league_counters_7"
+startBit = 8
+endBit = 12
+
+[[varbit]]
+id = "varbit.league_counter_make_prayer_potions"
+varp = "varp.league_counters_7"
+startBit = 13
+endBit = 17
+
+[[varbit]]
+id = "varbit.league_counter_make_ancient_brews"
+varp = "varp.league_counters_7"
+startBit = 18
+endBit = 23
+
+[[varbit]]
+id = "varbit.league_counter_make_ranging_potions"
+varp = "varp.league_counters_7"
+startBit = 24
+endBit = 28
+
+[[varp]]
+id = "varp.league_counters_8"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_make_magic_potions"
+varp = "varp.league_counters_8"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.league_counter_make_menaphite_remedies"
+varp = "varp.league_counters_8"
+startBit = 5
+endBit = 10
+
+[[varbit]]
+id = "varbit.league_counter_make_divine_ranging_potions"
+varp = "varp.league_counters_8"
+startBit = 11
+endBit = 17
+
+[[varbit]]
+id = "varbit.league_counter_make_divine_super_combat_potions"
+varp = "varp.league_counters_8"
+startBit = 18
+endBit = 24
+
+[[varbit]]
+id = "varbit.league_counter_make_forgotten_brews"
+varp = "varp.league_counters_8"
+startBit = 25
+endBit = 30
+
+[[varp]]
+id = "varp.league_counters_9"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_smith_steel_bolts"
+varp = "varp.league_counters_9"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+id = "varbit.league_counter_smith_iron_arrowtips"
+varp = "varp.league_counters_9"
+startBit = 4
+endBit = 11
+
+[[varbit]]
+id = "varbit.league_counter_craft_astral_runes"
+varp = "varp.league_counters_9"
+startBit = 12
+endBit = 17
+
+[[varbit]]
+id = "varbit.league_counter_craft_nature_runes"
+varp = "varp.league_counters_9"
+startBit = 18
+endBit = 23
+
+[[varbit]]
+id = "varbit.league_counter_blow_light_orbs"
+varp = "varp.league_counters_9"
+startBit = 24
+endBit = 30
+
+[[varp]]
+id = "varp.league_counters_10"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_craft_unpowered_orbs"
+varp = "varp.league_counters_10"
+startBit = 0
+endBit = 6
+
+[[varbit]]
+id = "varbit.league_counter_craft_blue_dragonhide_bodies"
+varp = "varp.league_counters_10"
+startBit = 7
+endBit = 11
+
+[[varbit]]
+id = "varbit.league_counter_craft_death_runes"
+varp = "varp.league_counters_10"
+startBit = 12
+endBit = 17
+
+[[varbit]]
+id = "varbit.league_counter_craft_law_runes"
+varp = "varp.league_counters_10"
+startBit = 18
+endBit = 23
+
+[[varp]]
+id = "varp.league_counters_11"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_kill_godwars_bosses"
+varp = "varp.league_counters_11"
+startBit = 0
+endBit = 8
+
+[[varbit]]
+id = "varbit.league_counter_open_grubby_chests"
+varp = "varp.league_counters_11"
+startBit = 9
+endBit = 13
+
+[[varbit]]
+id = "varbit.league_counter_open_larrans_chests"
+varp = "varp.league_counters_11"
+startBit = 14
+endBit = 19
+
+[[varbit]]
+id = "varbit.league_counter_open_zombie_pirate_lockers"
+varp = "varp.league_counters_11"
+startBit = 20
+endBit = 25
+
+[[varbit]]
+id = "varbit.league_counter_open_muddy_chests"
+varp = "varp.league_counters_11"
+startBit = 26
+endBit = 29
+
+[[varp]]
+id = "varp.league_counters_12"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_pickpocket_knights_of_varlamore"
+varp = "varp.league_counters_12"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.league_counter_pickpocket_knights_of_ardougne"
+varp = "varp.league_counters_12"
+startBit = 5
+endBit = 10
+
+[[varbit]]
+id = "varbit.league_counter_pickpocket_menaphite_thugs"
+varp = "varp.league_counters_12"
+startBit = 11
+endBit = 16
+
+[[varbit]]
+id = "varbit.league_counter_kill_lizardman_shamans"
+varp = "varp.league_counters_12"
+startBit = 17
+endBit = 25
+
+[[varp]]
+id = "varp.league_counters_13"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_kill_demonic_gorillas"
+varp = "varp.league_counters_13"
+startBit = 0
+endBit = 8
+
+[[varbit]]
+id = "varbit.league_counter_kill_bandits"
+varp = "varp.league_counters_13"
+startBit = 9
+endBit = 13
+
+[[varbit]]
+id = "varbit.league_counter_kill_elves_in_tirannwn"
+varp = "varp.league_counters_13"
+startBit = 14
+endBit = 19
+
+[[varbit]]
+id = "varbit.league_counter_kill_bunnies"
+varp = "varp.league_counters_13"
+startBit = 20
+endBit = 22
+
+[[varbit]]
+id = "varbit.league_counter_kill_superiors"
+varp = "varp.league_counters_13"
+startBit = 23
+endBit = 29
+
+[[varp]]
+id = "varp.league_counters_14"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_counter_complete_slayer_tasks"
+varp = "varp.league_counters_14"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+id = "varbit.league_counter_slay_task_creatures"
+varp = "varp.league_counters_14"
+startBit = 8
+endBit = 15
+
+[[varp]]
+id = "varp.league_task_windows"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_window_chicken_kills"
+varp = "varp.league_task_windows"
+startBit = 0
+endBit = 1
+
+[[varbit]]
+id = "varbit.league_window_penguin_kills"
+varp = "varp.league_task_windows"
+startBit = 2
+endBit = 5
+
+[[varp]]
+id = "varp.league_worn_collections"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.league_worn_godswords"
+varp = "varp.league_worn_collections"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.league_worn_dagannoth_rings"
+varp = "varp.league_worn_collections"
+startBit = 5
+endBit = 8
+
+[[varbit]]
+id = "varbit.league_worn_zenyte"
+varp = "varp.league_worn_collections"
+startBit = 9
+endBit = 12
+
+[[varbit]]
+id = "varbit.league_worn_god_books"
+varp = "varp.league_worn_collections"
+startBit = 13
+endBit = 18
+
+[[varbit]]
+id = "varbit.league_worn_cerberus_boots"
+varp = "varp.league_worn_collections"
+startBit = 19
+endBit = 21
+
+[[varbit]]
+id = "varbit.league_worn_snelms"
+varp = "varp.league_worn_collections"
+startBit = 22
+endBit = 30
+
+[[varbit]]
+id = "varbit.league_counter_fill_sand_in_rellekka"
+varp = "varp.league_counters_14"
+startBit = 16
+endBit = 20

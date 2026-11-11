@@ -1,0 +1,12 @@
+[[league_task_cast_home_teleport]]
+trigger = "spell"
+obj = [
+    "obj.48_home_teleport",
+    "obj.01_zaros_home_tele",
+    "obj.01_lunar_home_tele",
+    "obj.deadman_level99_lamp",
+    "obj.league_6_home_teleport_standard",
+    "obj.league_6_home_teleport_ancient",
+    "obj.league_6_home_teleport_lunar",
+    "obj.league_6_home_teleport_arceuus",
+]

@@ -1,0 +1,437 @@
+[[league_task_defeat_the_chaos_fanatic]]
+trigger = "var"
+value = 1
+varp = "varp.total_chaosfanatic_kills"
+
+[[league_task_defeat_the_crazy_archaeologist]]
+trigger = "var"
+value = 1
+varp = "varp.total_crazyarchaeologist_kills"
+
+[[league_task_defeat_the_giant_mole]]
+trigger = "var"
+value = 1
+varp = "varp.total_mole_kills"
+
+[[league_task_defeat_royal_titans]]
+trigger = "var"
+value = 1
+varp = "varp.total_royal_titan_kills"
+
+[[league_task_defeat_the_abyssal_sire]]
+trigger = "var"
+value = 1
+varp = "varp.total_abyssalsire_kills"
+
+[[league_task_defeat_vardorvis]]
+trigger = "var"
+value = 1
+varp = "varp.total_vardorvis_kills"
+
+[[league_task_defeat_callisto]]
+trigger = "var"
+value = 1
+varp = "varp.total_callisto_kills"
+
+[[league_task_defeat_cerberus]]
+trigger = "var"
+value = 1
+varp = "varp.total_cerberus_kills"
+
+[[league_task_defeat_commander_zilyana]]
+trigger = "var"
+value = 1
+varp = "varp.total_saradomin_kills"
+
+[[league_task_defeat_duke_sucellus]]
+trigger = "var"
+value = 1
+varp = "varp.total_duke_sucellus_kills"
+
+[[league_task_defeat_general_graardor]]
+trigger = "var"
+value = 1
+varp = "varp.total_bandos_kills"
+
+[[league_task_defeat_kril_tsutsaroth]]
+trigger = "var"
+value = 1
+varp = "varp.total_zamorak_kills"
+
+[[league_task_defeat_kreearra]]
+trigger = "var"
+value = 1
+varp = "varp.total_armadyl_kills"
+
+[[league_task_defeat_leviathan]]
+trigger = "var"
+value = 1
+varp = "varp.total_leviathan_kills"
+
+[[league_task_defeat_nex]]
+trigger = "var"
+value = 1
+varp = "varp.total_nex_kills"
+
+[[league_task_defeat_phantom_muspah]]
+trigger = "var"
+value = 1
+varp = "varp.total_muspah_kills"
+
+[[league_task_defeat_scorpia]]
+trigger = "var"
+value = 1
+varp = "varp.total_scorpia_kills"
+
+[[league_task_defeat_the_nightmare]]
+trigger = "var"
+value = 1
+varp = "varp.total_nightmare_kills"
+
+[[league_task_defeat_venenatis]]
+trigger = "var"
+value = 1
+varp = "varp.total_venenatis_kills"
+
+[[league_task_defeat_vetion]]
+trigger = "var"
+value = 1
+varp = "varp.total_vetion_kills"
+
+[[league_task_defeat_vorkath]]
+trigger = "var"
+value = 1
+varp = "varp.total_vorkath_kills"
+
+[[league_task_defeat_whisperer]]
+trigger = "var"
+value = 1
+varp = "varp.total_whisperer_kills"
+
+[[league_task_defeat_zalcano]]
+trigger = "var"
+value = 1
+varp = "varp.total_zalcano_kills"
+
+[[league_task_defeat_zulrah]]
+trigger = "var"
+value = 1
+varp = "varp.total_snakeboss_kills"
+
+[[league_task_defeat_the_chaos_elemental]]
+trigger = "var"
+value = 1
+varp = "varp.total_chaosele_kills"
+
+[[league_task_defeat_the_corporeal_beast]]
+trigger = "var"
+value = 1
+varp = "varp.total_corp_kills"
+
+[[league_task_defeat_the_grotesque_guardians]]
+trigger = "var"
+value = 1
+varp = "varp.total_gargboss_kills"
+
+[[league_task_defeat_the_kalphite_queen]]
+trigger = "var"
+value = 1
+varp = "varp.total_kalphite_kills"
+
+[[league_task_defeat_the_thermonuclear_smoke_devil]]
+trigger = "var"
+value = 1
+varp = "varp.total_thermy_kills"
+
+[[league_task_kill_a_frog]]
+trigger = "kill"
+npc = [
+    "npc.macro_frog_nohat",
+    "npc.little_frog",
+    "npc.makeover_mage_frog",
+    "npc.macro_frog_crier",
+    "npc.macro_frog_generic",
+    "npc.macro_frog_sulking",
+    "npc.macro_frog_noncombat",
+    "npc.fairy_frog",
+    "npc.little_frog_nodrops",
+    "npc.camdozaal_little_frog",
+    "npc.frog_quest_gary_unnamed_noop",
+    "npc.frog_quest_gary_unnamed",
+    "npc.frog_quest_dave_unnamed_noop",
+    "npc.frog_quest_dave_unnamed",
+    "npc.frog_quest_sue_unnamed_noop",
+    "npc.frog_quest_sue_unnamed",
+    "npc.frog_quest_jane_unnamed_noop",
+    "npc.frog_quest_jane_unnamed",
+    "npc.frog_quest_cuthbert_unnamed_noop",
+    "npc.frog_quest_cuthbert_unnamed",
+    "npc.pmoon_little_frog",
+]
+
+[[league_task_kill_a_rat]]
+trigger = "kill"
+npc = [
+    "npc.pitrat_sarim_def",
+    "npc.pitrat_sarim_agr",
+    "npc.pitrat_sarim_neu",
+    "npc.sos_war_rat",
+    "npc.sos_fam_rat",
+    "npc.rat",
+    "npc.rat_indoors",
+    "npc.vc_party_rat",
+    "npc.vc_rat",
+    "npc.pitrat_varrock_def",
+    "npc.pitrat_varrock_agr",
+    "npc.pitrat_varrock_neu",
+    "npc.pitrat_ardougne_def",
+    "npc.pitrat_ardougne_agr",
+    "npc.pitrat_ardougne_neu",
+    "npc.pitrat_keldagrim_def",
+    "npc.pitrat_keldagrim_agr",
+    "npc.pitrat_keldagrim_neu",
+    "npc.bim_rat",
+    "npc.rat_lowwander",
+    "npc.sailing_bt_rat",
+]
+
+[[league_task_kill_a_buffalo]]
+trigger = "kill"
+npc = [
+    "npc.varlamore_buffalo",
+    "npc.varlamore_buffalo_unattackable",
+    "npc.varlamore_buffalo_gear_unattackable",
+]
+
+[[league_task_kill_salarin_the_twisted]]
+trigger = "kill"
+npc = "npc.salarin_the_twisted"
+
+[[league_task_kill_a_billy_goat]]
+trigger = "kill"
+npc = ["npc.desert_goat_black3", "npc.desert_goat_white3"]
+
+[[league_task_defeat_a_chaos_dwarf_in_the_wilderness]]
+trigger = "kill"
+npc = ["npc.dwarf_chaos", "npc.forget_cutscene_chaos_dwarf"]
+area = "area.wilderness"
+
+[[league_task_defeat_a_fire_giant_in_the_wilderness]]
+trigger = "kill"
+npc = [
+    "npc.firegiant_big",
+    "npc.firegiant_big2",
+    "npc.firegiant_big3",
+    "npc.firegiant",
+    "npc.firegiant2",
+    "npc.firegiant3",
+    "npc.firegiant_strongholdcave_1",
+    "npc.firegiant_strongholdcave_2",
+    "npc.firegiant_strongholdcave_3",
+    "npc.firegiant_strongholdcave_4",
+    "npc.kourend_firegiant1",
+    "npc.kourend_firegiant2",
+]
+area = "area.wilderness"
+
+[[league_task_kill_a_rooster]]
+trigger = "kill"
+npc = ["npc.rooster", "npc.farm_rooster", "npc.misc_rooster"]
+
+[[league_task_kill_a_yak]]
+trigger = "kill"
+npc = "npc.yak"
+
+[[league_task_defeat_an_al_kharid_warrior]]
+trigger = "kill"
+npc = "npc.al_kharid_warrior"
+
+[[league_task_kill_a_dire_wolf]]
+trigger = "kill"
+npc = ["npc.direwolf", "npc.gwenith_white_wolf", "npc.mag_direwolf_minion"]
+
+[[league_task_kill_a_brine_rat]]
+trigger = "kill"
+npc = "npc.olaf2_brine_rats"
+
+[[league_task_defeat_a_drake]]
+trigger = "kill"
+npc = ["npc.duck_update_on_land_drake", "npc.drake", "npc.drake_death"]
+
+[[league_task_defeat_a_fiyr_shade]]
+trigger = "kill"
+npc = "npc.shade_level5"
+
+[[league_task_kill_a_frogeel]]
+trigger = "kill"
+npc = "npc.tol_frogeel"
+
+[[league_task_defeat_a_green_dragon_in_the_wilderness]]
+trigger = "kill"
+npc = [
+    "npc.green_dragon",
+    "npc.green_dragon2",
+    "npc.green_dragon3",
+    "npc.green_dragon4",
+    "npc.green_dragon5",
+    "npc.wild_cave_green_dragon",
+    "npc.wild_cave_green_dragon2",
+    "npc.wild_cave_green_dragon3",
+    "npc.ds2_green_dragon_flying",
+    "npc.ds2_green_dragon_cutscene_flying",
+    "npc.ds2_green_dragon",
+    "npc.green_dragon_myth_guild",
+    "npc.green_dragon_myth_guild_2",
+]
+area = "area.wilderness"
+
+[[league_task_defeat_a_kalphite_guardian]]
+trigger = "kill"
+npc = ["npc.kalphite_lord", "npc.kalphite_lord_strongholdcave", "npc.kalphite_lord_chamber"]
+
+[[league_task_kill_a_king_sand_crab]]
+trigger = "kill"
+npc = "npc.kourend_rockcrab"
+
+[[league_task_defeat_a_lava_dragon_in_the_wilderness]]
+trigger = "kill"
+npc = ["npc.lava_dragon", "npc.lava_dragon2", "npc.lava_dragon3"]
+area = "area.wilderness"
+
+[[league_task_kill_a_newtroost]]
+trigger = "kill"
+npc = "npc.tol_newtroost"
+
+[[league_task_defeat_a_scarab_mage]]
+trigger = "kill"
+npc = [
+    "npc.contact_insectoid_mage",
+    "npc.contact_insectoid_mage_b",
+    "npc.bcs_scarab_mage",
+    "npc.bcs_scarab_mage_friendly_n",
+    "npc.bcs_scarab_mage_friendly_s",
+]
+
+[[league_task_defeat_a_skeletal_wyvern]]
+trigger = "kill"
+npc = [
+    "npc.skeletal_wyvern1",
+    "npc.skeletal_wyvern2",
+    "npc.skeletal_wyvern3",
+    "npc.skeletal_wyvern4",
+]
+
+[[league_task_kill_a_suqah]]
+trigger = "kill"
+npc = [
+    "npc.lunar_suqka",
+    "npc.lunar_suqka2",
+    "npc.lunar_suqka3",
+    "npc.lunar_suqka4",
+    "npc.lunar_suqka5",
+    "npc.lunar_suqka6",
+    "npc.lunar_suqka7",
+]
+
+[[league_task_kill_a_swordchick]]
+trigger = "kill"
+npc = "npc.tol_swordchick"
+
+[[league_task_defeat_a_vyrewatch_sentinel]]
+trigger = "kill"
+npc = [
+    "npc.myq5_vyrewatch_elite_1",
+    "npc.myq5_vyrewatch_elite_2",
+    "npc.myq5_vyrewatch_elite_3",
+    "npc.myq5_vyrewatch_elite_4",
+    "npc.myq5_vyrewatch_elite_5",
+    "npc.myq5_vyrewatch_elite_6",
+    "npc.vyrewatch_elite_1",
+    "npc.vyrewatch_elite_2",
+    "npc.vyrewatch_elite_3",
+    "npc.vyrewatch_elite_4",
+    "npc.vyrewatch_elite_5",
+    "npc.vyrewatch_elite_6",
+    "npc.vyrewatch_elite_7",
+    "npc.vyrewatch_elite_8",
+    "npc.myq6_vyrewatch_elite_1_postquest_vis",
+    "npc.myq6_vyrewatch_elite_2_postquest_vis",
+    "npc.myq6_vyrewatch_elite",
+    "npc.myq6_vyrewatch_elite_2",
+    "npc.myq6_defending_ivan_vyrewatch_elite_1",
+    "npc.myq6_defending_ivan_vyrewatch_elite_2",
+    "npc.myq6_defending_ivan_vyrewatch_elite_3",
+    "npc.myq6_defending_ivan_vyrewatch_elite_4",
+]
+
+[[league_task_defeat_a_basilisk_knight]]
+trigger = "kill"
+npc = "npc.basilisk_knight"
+
+[[league_task_defeat_a_cave_kraken]]
+trigger = "kill"
+npc = "npc.slayer_kraken"
+
+[[league_task_defeat_a_demonic_gorilla]]
+trigger = "kill"
+npc = [
+    "npc.mm2_demon_gorilla_1_melee",
+    "npc.mm2_demon_gorilla_1_ranged",
+    "npc.mm2_demon_gorilla_1_magic",
+    "npc.mm2_demon_gorilla_2_melee",
+    "npc.mm2_demon_gorilla_2_ranged",
+    "npc.mm2_demon_gorilla_2_magic",
+    "npc.mm2_demon_gorilla_noncombat",
+]
+
+[[league_task_defeat_a_hydra]]
+trigger = "kill"
+npc = "npc.hydra"
+
+[[league_task_defeat_a_mithril_dragon]]
+trigger = "kill"
+npc = ["npc.brut_mithril_dragon", "npc.ds2_mithril_dragon_cutscene", "npc.ds2_mithril_dragon"]
+
+[[league_task_kill_a_rock_lobster]]
+trigger = "kill"
+npc = "npc.dagannoth_rock_lobster_2x2"
+
+[[league_task_defeat_a_runite_golem]]
+trigger = "kill"
+npc = "npc.wilderness_rune_golem"
+
+[[league_task_defeat_a_smoke_devil]]
+trigger = "kill"
+npc = [
+    "npc.smoke_devil",
+    "npc.smoke_pet",
+    "npc.poh_smoke_pet",
+    "npc.poh_smoke_pet_old",
+    "npc.smoke_pet_old",
+]
+
+[[league_task_defeat_a_urium_shade]]
+trigger = "kill"
+npc = "npc.shade_level6"
+
+[[league_task_defeat_the_penance_queen]]
+trigger = "kill"
+npc = "npc.barbassault_pen_queen_new"
+
+[[league_task_defeat_phosanis_nightmare]]
+trigger = "kill"
+npc = [
+    "npc.nightmare_challenge_dead",
+    "npc.nightmare_challenge_phase_01",
+    "npc.nightmare_challenge_phase_02",
+    "npc.nightmare_challenge_phase_03",
+    "npc.nightmare_challenge_weak_phase_01",
+    "npc.nightmare_challenge_weak_phase_02",
+    "npc.nightmare_challenge_weak_phase_03",
+    "npc.nightmare_challenge_blast",
+    "npc.nightmare_challenge_initial",
+    "npc.nightmare_challenge_dying",
+    "npc.nightmare_challenge_phase_04",
+    "npc.nightmare_challenge_phase_05",
+    "npc.nightmare_challenge_weak_phase_04",
+]

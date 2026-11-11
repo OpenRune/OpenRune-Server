@@ -18,9 +18,10 @@ import org.rsmod.api.bosses.runtime.repeatTick
 import org.rsmod.api.bosses.runtime.spawnOwnedNpc
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.heal
-import org.rsmod.api.npc.hit.isStyleImmuneTo
+import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
+import org.rsmod.api.npc.hit.styleReduction
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.mes
@@ -50,18 +51,18 @@ internal enum class LarvaPrayer {
 private enum class LarvaKind(
     val npc: String,
     val iconIndex: Int?,
-    val immuneTo: List<String>,
+    val prayers: List<String>,
     val potency: Int = 1,
 ) {
     Neutral("npc.dom_demonic_energy", null, emptyList()),
-    PraysMelee("npc.dom_demonic_energy", 0, listOf(DoomVarns.IMMUNE_MELEE)),
-    PraysMissiles("npc.dom_demonic_energy", 1, listOf(DoomVarns.IMMUNE_RANGED)),
-    PraysMagic("npc.dom_demonic_energy", 2, listOf(DoomVarns.IMMUNE_MAGIC)),
-    Melee("npc.dom_demonic_energy_melee", 6, listOf(DoomVarns.IMMUNE_RANGED, DoomVarns.IMMUNE_MAGIC)),
-    Mage("npc.dom_demonic_energy_mage", 7, listOf(DoomVarns.IMMUNE_MELEE, DoomVarns.IMMUNE_RANGED)),
-    Range("npc.dom_demonic_energy_range", 8, listOf(DoomVarns.IMMUNE_MELEE, DoomVarns.IMMUNE_MAGIC)),
-    GiantMage("npc.dom_demonic_energy_giant_mage", 7, listOf(DoomVarns.IMMUNE_MELEE, DoomVarns.IMMUNE_RANGED), potency = 3),
-    GiantRange("npc.dom_demonic_energy_giant_range", 8, listOf(DoomVarns.IMMUNE_MELEE, DoomVarns.IMMUNE_MAGIC), potency = 3),
+    PraysMelee("npc.dom_demonic_energy", 0, listOf(DoomVarns.PROTECT_MELEE)),
+    PraysMissiles("npc.dom_demonic_energy", 1, listOf(DoomVarns.PROTECT_RANGED)),
+    PraysMagic("npc.dom_demonic_energy", 2, listOf(DoomVarns.PROTECT_MAGIC)),
+    Melee("npc.dom_demonic_energy_melee", 6, listOf(DoomVarns.PROTECT_RANGED, DoomVarns.PROTECT_MAGIC)),
+    Mage("npc.dom_demonic_energy_mage", 7, listOf(DoomVarns.PROTECT_MELEE, DoomVarns.PROTECT_RANGED)),
+    Range("npc.dom_demonic_energy_range", 8, listOf(DoomVarns.PROTECT_MELEE, DoomVarns.PROTECT_MAGIC)),
+    GiantMage("npc.dom_demonic_energy_giant_mage", 7, listOf(DoomVarns.PROTECT_MELEE, DoomVarns.PROTECT_RANGED), potency = 3),
+    GiantRange("npc.dom_demonic_energy_giant_range", 8, listOf(DoomVarns.PROTECT_MELEE, DoomVarns.PROTECT_MAGIC), potency = 3),
 }
 
 @Singleton
@@ -145,7 +146,7 @@ constructor(
         larva.ignoreCombatInteractions = true
         larva.moveRestrict = MoveRestrict.PassThru
         larva.defaultMoveSpeed = MoveSpeed.Crawl
-        kind.immuneTo.forEach { larva.vars[it] = 1 }
+        kind.prayers.forEach { larva.vars[it] = FULL_STYLE_PROTECTION }
         kind.iconIndex?.let { larva.setHeadIcon(HEAD_ICON_SLOT, HEAD_ICON_GRAPHIC, it) }
         larva.anim(SPAWN_SEQ)
         larva.spotanim(SPAWN_SPOTANIM)
@@ -238,7 +239,7 @@ constructor(
         val attacker = hit.playerAttacker(deps.playerList) ?: return
         val demonbaneOrEye = hit.isDemonbaneOrEyeOfAyak()
         if (demonbaneOrEye) attacker.clearAttackDelay()
-        if (larva.isStyleImmuneTo(hit.type)) {
+        if (larva.styleReduction(hit.type, hit.penetration) >= FULL_STYLE_PROTECTION) {
             attacker.mes(RESIST_MESSAGE)
             return
         }

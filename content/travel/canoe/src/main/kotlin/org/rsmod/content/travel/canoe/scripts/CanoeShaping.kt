@@ -143,7 +143,8 @@ constructor(
             faceSquare(loc.adjustedCentre)
         } else if (actionDelay == mapClock) {
             val (low, high) = axeSuccessRates(axe, canoe_shaping_axe_rates)
-            finishShape = statRandom("stat.woodcutting", low, high, invisibleLvls)
+            val subject = ServerCacheManager.getObject(loc.id)?.internalName
+            finishShape = statRandom("stat.woodcutting", low, high, invisibleLvls, subject)
         }
 
         if (finishShape) {

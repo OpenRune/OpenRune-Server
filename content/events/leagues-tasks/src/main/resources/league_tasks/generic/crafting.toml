@@ -1,0 +1,183 @@
+[[action_craft_leather_chaps]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.leather_chaps"
+
+[[action_cut_a_ruby]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.ruby"
+
+[[league_task_spin_a_ball_of_wool]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.ball_of_wool"
+
+[[league_task_successfully_cut_a_red_topaz]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.red_topaz"
+
+[[league_task_craft_a_snelm]]
+trigger = "product"
+stat = "stat.crafting"
+obj = [
+    "obj.snelm_round_swamp",
+    "obj.snelm_round_red+black",
+    "obj.snelm_round_yellow",
+    "obj.snelm_round_blue",
+    "obj.snelm_round_orange",
+    "obj.snelm_point_swamp",
+    "obj.snelm_point_red+black",
+    "obj.snelm_point_yellow",
+    "obj.snelm_point_blue",
+    "obj.snelm_vampyre",
+]
+
+[[action_craft_a_sapphire_amulet]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.unstrung_sapphire_amulet"
+
+[[league_task_craft_an_emerald_ring]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.emerald_ring"
+
+[[league_task_assemble_a_slayer_helm]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.slayer_helm"
+
+[[league_task_craft_a_dragonstone_amulet]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.unstrung_dragonstone_amulet"
+
+[[league_task_craft_an_onyx_amulet]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.unstrung_onyx_amulet"
+
+[[league_task_blow_100_light_orbs]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.dorgesh_lightbulb_nofilament"
+times = 100
+counter = "varbit.league_counter_blow_light_orbs"
+
+[[league_task_craft_100_unpowered_orbs]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.stafforb"
+times = 100
+counter = "varbit.league_counter_craft_unpowered_orbs"
+
+[[league_task_craft_30_blue_dragonhide_bodies]]
+trigger = "product"
+stat = "stat.crafting"
+obj = "obj.blue_dragonhide_body"
+times = 30
+counter = "varbit.league_counter_craft_blue_dragonhide_bodies"
+
+[[league_task_craft_a_piece_of_crystal_armour]]
+trigger = "product"
+stat = "stat.smithing"
+obj = [
+    "obj.crystal_helmet",
+    "obj.crystal_chestplate",
+    "obj.crystal_platelegs",
+    "obj.crystal_helmet_inactive",
+    "obj.crystal_chestplate_inactive",
+    "obj.crystal_platelegs_inactive",
+]
+
+[[league_task_equip_a_full_set_of_yakhide_armour]]
+trigger = "equip"
+obj = ["obj.yak_hide_armour_body", "obj.yak_hide_armour_greaves"]
+times = 2
+
+[[league_task_craft_a_fire_rune]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.firerune"
+
+[[league_task_craft_an_air_rune]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.airrune"
+
+[[league_task_craft_a_body_rune]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.bodyrune"
+
+[[league_task_craft_a_lava_rune_at_the_fire_altar]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.lavarune"
+
+[[league_task_craft_a_wrath_rune]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.wrathrune"
+
+[[league_task_craft_any_combination_rune]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = [
+    "obj.mistrune",
+    "obj.dustrune",
+    "obj.mudrune",
+    "obj.smokerune",
+    "obj.steamrune",
+    "obj.lavarune",
+    "obj.sunfirerune",
+]
+
+[[league_task_craft_50_astral_runes]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.astralrune"
+times = 50
+counter = "varbit.league_counter_craft_astral_runes"
+
+[[league_task_craft_50_nature_runes]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.naturerune"
+times = 50
+counter = "varbit.league_counter_craft_nature_runes"
+
+[[league_task_craft_50_death_runes]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.deathrune"
+times = 50
+counter = "varbit.league_counter_craft_death_runes"
+
+[[league_task_craft_50_law_runes]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.lawrune"
+times = 50
+counter = "varbit.league_counter_craft_law_runes"
+
+[[league_task_craft_1000_sunfire_runes]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.sunfirerune"
+times = 1000
+counter = "varbit.league_task_craft_sunfire_runes"
+
+[[league_task_craft_100_aether_runes]]
+trigger = "product"
+stat = "stat.runecrafting"
+obj = "obj.aetherrune"
+times = 100
+counter = "varbit.league_task_craft_aether_runes"
+
+[[league_task_craft_a_ghorrock_teleport_tablet]]
+trigger = "product"
+stat = "stat.magic"
+obj = "obj.tablet_ghorrock"

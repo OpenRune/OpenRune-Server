@@ -3,7 +3,13 @@ package org.rsmod.content.skills.smithing
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onIfModalButton
@@ -202,24 +208,27 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
         soundSynth("synth.anvil02")
         weakQueue(
             "queue.smithing_anvil",
-            SmithingUtils.anvilActionDelay(player),
+            player.skillCycles("stat.smithing", SmithingUtils.anvilActionDelay(player)),
             task.copy(completed = completed),
         )
     }
 
     private fun ProtectedAccess.performSmith(meta: SmithingProductMeta) {
-        val barRemoved =
-            invDel(inv, meta.bar.output.internalName, meta.barCount, strict = true).success
-        if (!barRemoved) {
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.smithing",
+                item = meta.product.internalName,
+                count = meta.numProduced,
+                experience = meta.barCount * meta.bar.smithxp / 10.0 * xpMods.get(player, "stat.smithing"),
+                source = SkillingProductSource.Anvil(meta.bar, meta.product, meta.barCount),
+                inputs = listOf(SkillingInput(meta.bar.output.internalName, meta.barCount)),
+            )
+        if (awardSkillingProduct(product) != SkillingAwardResult.Success) {
             resetAnim()
             return
         }
-
-        if (invAdd(inv, meta.product.internalName, meta.numProduced).success) {
-            spam(forgedMessage(meta))
-            val xp = meta.barCount * meta.bar.smithxp / 10.0 * xpMods.get(player, "stat.smithing")
-            statAdvance("stat.smithing", xp)
-        }
+        spam(forgedMessage(meta))
     }
 
     private fun forgedMessage(meta: SmithingProductMeta): String {

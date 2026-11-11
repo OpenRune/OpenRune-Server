@@ -1,0 +1,316 @@
+# PLACEHOLDER league region bounds: rough rectangles, to be traced properly later.
+# Surface rectangles cover levels 0 to 3; underground parts are listed where a task needs them.
+
+[[area]]
+name = "League region: Asgarnia"
+area_id = "area.league_region_asgarnia"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2880, 3136], [3071, 3136], [3071, 3519], [2880, 3519]]
+
+[[area.polygons]]
+vertices = [[2816, 3520], [2943, 3520], [2943, 3647], [2816, 3647]]
+
+[[area]]
+name = "League region: Kandarin"
+area_id = "area.league_region_kandarin"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2368, 2944], [2879, 2944], [2879, 3583], [2368, 3583]]
+
+[[area]]
+name = "League region: Karamja"
+area_id = "area.league_region_karamja"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2688, 2880], [2943, 2880], [2943, 3263], [2688, 3263]]
+
+[[area.polygons]]
+vertices = [[2368, 5056], [2559, 5056], [2559, 5183], [2368, 5183]]
+
+[[area]]
+name = "League region: Morytania"
+area_id = "area.league_region_morytania"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3392, 3136], [3903, 3136], [3903, 3583], [3392, 3583]]
+
+[[area.polygons]]
+vertices = [[3640, 2944], [3903, 2944], [3903, 3135], [3640, 3135]]
+
+[[area]]
+name = "League region: Kharidian Desert"
+area_id = "area.league_region_desert"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3136, 2688], [3519, 2688], [3519, 3135], [3136, 3135]]
+
+[[area.polygons]]
+vertices = [[3264, 3136], [3391, 3136], [3391, 3263], [3264, 3263]]
+
+[[area]]
+name = "League region: Tirannwn"
+area_id = "area.league_region_tirannwn"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2112, 3008], [2367, 3008], [2367, 3455], [2112, 3455]]
+
+[[area.polygons]]
+vertices = [[3200, 6016], [3327, 6016], [3327, 6143], [3200, 6143]]
+
+[[area]]
+name = "League region: Fremennik Provinces"
+area_id = "area.league_region_fremennik"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2048, 3584], [2815, 3584], [2815, 3967], [2048, 3967]]
+
+[[area]]
+name = "League region: Kourend & Kebos"
+area_id = "area.league_region_kourend"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1152, 3392], [1855, 3392], [1855, 4095], [1152, 4095]]
+
+[[area]]
+name = "League region: Wilderness"
+area_id = "area.league_region_wilderness"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2944, 3520], [3391, 3520], [3391, 3967], [2944, 3967]]
+
+[[area.polygons]]
+vertices = [[2944, 9920], [3391, 9920], [3391, 10367], [2944, 10367]]
+
+[[area]]
+name = "League region: Varlamore"
+area_id = "area.league_region_varlamore"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1152, 2816], [1855, 2816], [1855, 3391], [1152, 3391]]
+
+[[area.polygons]]
+vertices = [[1216, 9280], [1855, 9280], [1855, 9663], [1216, 9663]]
+
+[[area]]
+name = "League region: Misthalin"
+area_id = "area.league_region_misthalin"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3072, 3136], [3263, 3136], [3263, 3519], [3072, 3519]]
+
+[[area.polygons]]
+vertices = [[3264, 3264], [3391, 3264], [3391, 3519], [3264, 3519]]
+
+# PLACEHOLDER sub-areas named by tasks.
+
+[[area]]
+name = "Shayzien"
+area_id = "area.league_shayzien"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1408, 3520], [1599, 3520], [1599, 3647], [1408, 3647]]
+
+[[area]]
+name = "Prifddinas"
+area_id = "area.league_prifddinas"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3200, 6016], [3327, 6016], [3327, 6143], [3200, 6143]]
+
+[[area]]
+name = "Tlati Rainforest"
+area_id = "area.league_tlati_rainforest"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1216, 3008], [1407, 3008], [1407, 3135], [1216, 3135]]
+
+[[area]]
+name = "Forsaken Tower"
+area_id = "area.league_forsaken_tower"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1360, 3800], [1400, 3800], [1400, 3840], [1360, 3840]]
+
+[[area]]
+name = "Stonecutter Outpost"
+area_id = "area.league_stonecutter_outpost"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1720, 2840], [1780, 2840], [1780, 2900], [1720, 2900]]
+
+[[area]]
+name = "Necropolis"
+area_id = "area.league_necropolis"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3300, 2690], [3380, 2690], [3380, 2770], [3300, 2770]]
+
+[[area]]
+name = "Piscatoris Fishing Colony"
+area_id = "area.league_piscatoris"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2304, 3648], [2367, 3648], [2367, 3711], [2304, 3711]]
+
+[[area]]
+name = "Port Phasmatys"
+area_id = "area.league_port_phasmatys"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3650, 3450], [3710, 3450], [3710, 3510], [3650, 3510]]
+
+[[area]]
+name = "Kourend Castle"
+area_id = "area.league_kourend_castle"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1590, 3650], [1640, 3650], [1640, 3700], [1590, 3700]]
+
+[[area]]
+name = "Sophanem"
+area_id = "area.league_sophanem"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3270, 2750], [3325, 2750], [3325, 2810], [3270, 2810]]
+
+[[area]]
+name = "Woodcutting Guild"
+area_id = "area.league_woodcutting_guild"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1560, 3470], [1660, 3470], [1660, 3520], [1560, 3520]]
+
+[[area]]
+name = "Crafting Guild"
+area_id = "area.league_crafting_guild"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2930, 3276], [2943, 3276], [2943, 3288], [2930, 3288]]
+
+[[area]]
+name = "Ranging Guild"
+area_id = "area.league_ranging_guild"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2650, 3418], [2681, 3418], [2681, 3449], [2650, 3449]]
+
+[[area]]
+name = "Wizards' Guild"
+area_id = "area.league_wizards_guild"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2585, 3082], [2597, 3082], [2597, 3094], [2585, 3094]]
+
+[[area]]
+name = "Farming Guild"
+area_id = "area.league_farming_guild"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1231, 3718], [1268, 3718], [1268, 3758], [1231, 3758]]
+
+[[area]]
+name = "Tree Gnome Stronghold"
+area_id = "area.league_gnome_stronghold"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2370, 3380], [2500, 3380], [2500, 3520], [2370, 3520]]
+
+[[area]]
+name = "Tree Gnome Village"
+area_id = "area.league_gnome_village"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2500, 3140], [2560, 3140], [2560, 3190], [2500, 3190]]
+
+[[area]]
+name = "Harmony Island"
+area_id = "area.league_harmony_island"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3780, 2830], [3830, 2830], [3830, 2880], [3780, 2880]]
+
+[[area]]
+name = "Mos Le'Harmless"
+area_id = "area.league_mos_leharmless"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3640, 2920], [3860, 2920], [3860, 3070], [3640, 3070]]
+
+[[area]]
+name = "Wilderness Resource Area"
+area_id = "area.league_wilderness_resource_area"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3174, 3924], [3196, 3924], [3196, 3944], [3174, 3944]]
+
+[[area]]
+name = "Nardah bank"
+area_id = "area.league_nardah_bank"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3419, 2883], [3431, 2883], [3431, 2900], [3419, 2900]]
+
+[[area]]
+name = "Mage Arena bank"
+area_id = "area.league_mage_arena_bank"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2526, 4706], [2542, 4706], [2542, 4722], [2526, 4722]]
+
+[[area]]
+name = "Lletya bank"
+area_id = "area.league_lletya_bank"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2346, 3160], [2360, 3160], [2360, 3172], [2346, 3172]]
+
+[[area]]
+name = "Jatizso bank"
+area_id = "area.league_jatizso_bank"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2410, 3793], [2422, 3793], [2422, 3805], [2410, 3805]]
+
+[[area]]
+name = "Neitiznot bank"
+area_id = "area.league_neitiznot_bank"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2331, 3801], [2345, 3801], [2345, 3813], [2331, 3813]]

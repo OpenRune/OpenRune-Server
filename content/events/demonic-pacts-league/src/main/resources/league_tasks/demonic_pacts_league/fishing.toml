@@ -1,0 +1,31 @@
+[[league_task_catch_a_karambwanji]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.tbwt_raw_karambwanji"
+area = "area.league_region_karamja"
+
+[[league_task_catch_a_salmon]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_salmon"
+area = "area.league_region_desert"
+
+[[league_task_catch_a_salmon_on_karamja]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_salmon"
+area = "area.league_region_karamja"
+
+[[league_task_catch_a_monkfish]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_monkfish"
+area = "area.league_piscatoris"
+
+[[league_task_catch_50_karambwan]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.tbwt_raw_karambwan"
+area = "area.league_region_karamja"
+times = 50
+counter = "varbit.league_counter_catch_karambwan_on_karamja"

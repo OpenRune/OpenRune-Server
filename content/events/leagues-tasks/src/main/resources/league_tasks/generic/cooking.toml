@@ -1,0 +1,76 @@
+[[league_task_cook_shrimp]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.shrimp"
+
+[[action_make_a_meat_pizza]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.meat_pizza"
+
+[[league_task_cook_a_dark_crab]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.dark_crab"
+
+[[league_task_butter_a_potato]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.potato_butter"
+
+[[league_task_cook_100_swordfish]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.swordfish"
+times = 100
+counter = "varbit.league_counter_cook_swordfish"
+
+[[league_task_cook_50_tuna]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.tuna"
+times = 50
+counter = "varbit.league_counter_cook_tuna"
+
+[[league_task_cook_100_sharks]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.shark"
+times = 100
+counter = "varbit.league_counter_cook_sharks"
+
+[[league_task_cook_25_meat_pies]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.meat_pie"
+times = 25
+counter = "varbit.league_counter_cook_meat_pies"
+
+[[league_task_cook_100_karambwans]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.tbwt_cooked_karambwan"
+times = 100
+counter = "varbit.league_counter_cook_karambwans"
+
+[[league_task_cook_100_anglerfish]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.anglerfish"
+times = 100
+counter = "varbit.league_counter_cook_anglerfish"
+
+[[league_task_cook_20_sharks_in_darkmeyer]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.shark"
+area = "area.darkmeyer"
+times = 20
+counter = "varbit.league_counter_cook_sharks_in_darkmeyer"
+
+[[league_task_cook_100_moonlight_antelopes]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.antelopemoon_cooked"
+times = 100
+counter = "varbit.league_task_cook_moonlight_antelopes"

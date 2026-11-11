@@ -1,0 +1,53 @@
+[[league_task_complete_the_gauntlet]]
+trigger = "var"
+value = 1
+varp = "varp.total_completed_gauntlet"
+
+[[league_task_complete_the_corrupted_gauntlet]]
+trigger = "var"
+value = 1
+varp = "varp.total_completed_gauntlet_hm"
+
+[[league_task_complete_the_corrupted_gauntlet_50_times]]
+trigger = "var"
+value = 50
+varp = "varp.total_completed_gauntlet_hm"
+
+[[league_task_complete_the_corrupted_gauntlet_100_times]]
+trigger = "var"
+value = 100
+varp = "varp.total_completed_gauntlet_hm"
+
+[[league_task_giants_foundry_10_handins]]
+trigger = "var"
+value = 10
+varp = "varp.giants_foundry_swords_made"
+
+[[league_task_giants_foundry_25_handins]]
+trigger = "var"
+value = 25
+varp = "varp.giants_foundry_swords_made"
+
+[[league_task_giants_foundry_50_handins]]
+trigger = "var"
+value = 50
+varp = "varp.giants_foundry_swords_made"
+
+[[league_task_giants_foundry_50_quality_sword]]
+trigger = "var"
+value = 50
+varp = "varp.giants_foundry_best_quality"
+
+[[league_task_giants_foundry_125_quality_sword]]
+trigger = "var"
+value = 125
+varp = "varp.giants_foundry_best_quality"
+
+[[league_task_giants_foundry_150_quality_sword]]
+trigger = "var"
+value = 150
+varp = "varp.giants_foundry_best_quality"
+
+[[league_task_drink_kovacs_grog]]
+trigger = "consume"
+obj = "obj.kovacs_grog"

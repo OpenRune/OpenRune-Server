@@ -6,6 +6,7 @@ dependencies {
     implementation(projects.api.bosses)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
+    implementation(projects.content.drops)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.player)
     implementation(projects.api.npc)

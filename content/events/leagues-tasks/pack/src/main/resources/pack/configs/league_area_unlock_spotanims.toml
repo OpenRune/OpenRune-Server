@@ -1,0 +1,20 @@
+# `region_data:region_id` -> the spotanim played with `seq.trailblazer_league_area_unlock_emote`.
+# Demonic Pacts reuses the league 5 set (rsprox-1098 Karamja 3191, rsprox-1102 Tirannwn 3195).
+[[enum]]
+isServerOnly = true
+id = "enum.league_area_unlock_spotanims"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+1 = "spotanim.league_5_area_unlock_emote_spotanim_misthalin"
+2 = "spotanim.league_5_area_unlock_emote_spotanim_karamja"
+3 = "spotanim.league_5_area_unlock_emote_spotanim_asgarnia"
+4 = "spotanim.league_5_area_unlock_emote_spotanim_kandarin"
+5 = "spotanim.league_5_area_unlock_emote_spotanim_morytania"
+6 = "spotanim.league_5_area_unlock_emote_spotanim_kharidian_desert"
+7 = "spotanim.league_5_area_unlock_emote_spotanim_tirannwn"
+8 = "spotanim.league_5_area_unlock_emote_spotanim_fremennik"
+11 = "spotanim.league_5_area_unlock_emote_spotanim_wilderness"
+20 = "spotanim.league_5_area_unlock_emote_spotanim_kourend"
+21 = "spotanim.league_5_area_unlock_emote_spotanim_varlamore"

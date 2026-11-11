@@ -559,7 +559,7 @@ class StrongholdInteractionTest {
                     getAlignment = { TextAlignment() },
                     getCollision = { collision },
                     getRandom = { random },
-                    getTeleportValidator = { PlayerTeleportValidator(emptySet()) },
+                    getTeleportValidator = { PlayerTeleportValidator(emptySet(), EventBus()) },
                     getAreaChecker = { AreaChecker(regions, AreaIndex()) },
                     getNpcInteractions = { NpcInteractions(events) },
                 )

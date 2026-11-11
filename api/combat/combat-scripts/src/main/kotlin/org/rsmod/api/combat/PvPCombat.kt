@@ -48,11 +48,13 @@ constructor(
     private val pjTimer: WildernessPjTimer,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Player, attack: CombatAttack.PlayerAttack) {
-        when (attack) {
-            is CombatAttack.Melee -> access.attackMelee(target, attack)
-            is CombatAttack.Ranged -> access.attackRanged(target, attack)
-            is CombatAttack.Spell -> access.attackMagicSpell(target, attack)
-            is CombatAttack.Staff -> access.attackMagicStaff(target, attack)
+        manager.recordingAttack(access, target, attack) {
+            when (attack) {
+                is CombatAttack.Melee -> access.attackMelee(target, attack)
+                is CombatAttack.Ranged -> access.attackRanged(target, attack)
+                is CombatAttack.Spell -> access.attackMagicSpell(target, attack)
+                is CombatAttack.Staff -> access.attackMagicStaff(target, attack)
+            }
         }
     }
 

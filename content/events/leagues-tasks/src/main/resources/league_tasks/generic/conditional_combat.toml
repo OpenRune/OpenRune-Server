@@ -1,0 +1,14 @@
+[[league_task_kill_a_moss_fire_hill_giant_in_kourend]]
+trigger = "kill"
+npc = "npc.kourend_mossgiant"
+counter = "varbit.league_killed_moss_giant_kourend"
+
+[[league_task_kill_a_moss_fire_hill_giant_in_kourend]]
+trigger = "kill"
+npc = ["npc.kourend_firegiant1", "npc.kourend_firegiant2"]
+counter = "varbit.league_killed_fire_giant_kourend"
+
+[[league_task_kill_a_moss_fire_hill_giant_in_kourend]]
+trigger = "kill"
+npc = "npc.kourend_hillgiant"
+counter = "varbit.league_killed_hill_giant_kourend"

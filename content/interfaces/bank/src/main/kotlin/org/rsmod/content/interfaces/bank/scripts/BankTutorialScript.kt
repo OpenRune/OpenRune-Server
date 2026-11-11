@@ -1,53 +1,44 @@
 package org.rsmod.content.interfaces.bank.scripts
 
-import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.vars.intVarBit
-import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
-import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.content.interfaces.bank.highlightNoClickClear
 import org.rsmod.content.interfaces.bank.openBank
 import org.rsmod.content.interfaces.bank.openBankWithoutEvents
+import org.rsmod.content.interfaces.screenhighlight.HighlightFrame
+import org.rsmod.content.interfaces.screenhighlight.HighlightPage
+import org.rsmod.content.interfaces.screenhighlight.ScreenHighlightTour
+import org.rsmod.content.interfaces.screenhighlight.ScreenHighlightTours
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class BankTutorialScript @Inject constructor(private val eventBus: EventBus) : PluginScript() {
-    private var Player.tutorialPage by intVarBit("varbit.hnt_hint_step")
-    private var Player.tutorialTotalPages by intVarBit("varbit.hnt_hint_max_step")
+class BankTutorialScript
+@Inject
+constructor(private val eventBus: EventBus, private val tours: ScreenHighlightTours) :
+    PluginScript() {
+    private val tour =
+        ScreenHighlightTour(
+            host = "component.bankmain:bank_highlight".asRSCM(RSCMType.COMPONENT),
+            pages = pages.map { it.toHighlightPage() },
+            onClose = { it.onTutorialClose() },
+        )
 
     override fun ScriptContext.startup() {
         onIfModalButton("component.bankmain:bank_tut") { selectTutorial() }
-        onIfOverlayButton("component.screenhighlight:previous") { player.previousPage() }
-        onIfOverlayButton("component.screenhighlight:continue") { player.nextPage() }
-        onIfClose("interface.screenhighlight") { player.onTutorialClose() }
     }
 
     suspend fun begin(access: ProtectedAccess) {
         val player = access.player
-
         player.openBankWithoutEvents(eventBus)
-
-        player.tutorialTotalPages = pages.size
-
         player.highlightNoClick()
-        access.ifOpenOverlay(
-            "interface.screenhighlight",
-            "component.bankmain:bank_highlight",
-        )
-        access.ifSetEvents("component.screenhighlight:continue", 9..9, IfEvent.Op1)
-        access.ifSetEvents("component.screenhighlight:previous", 9..9, IfEvent.Op1)
-        player.highlightStart()
-        player.showPage(0)
-        access.ifSetEvents("component.screenhighlight:pausebutton", -1..-1, IfEvent.PauseButton)
-
+        tours.start(player, tour)
         access.pauseButton()
     }
 
@@ -58,96 +49,23 @@ class BankTutorialScript @Inject constructor(private val eventBus: EventBus) : P
         player.openBank(eventBus)
     }
 
-    private fun Player.showPage(pageIndex: Int) {
-        val page = pages.getOrNull(pageIndex)
-        requireNotNull(page)
-        tutorialPage = pageIndex
-
-        highlightScreen(
-            offX = page.offX,
-            offY = page.offY,
-            offH = page.offH,
-            offW = page.offW,
-            setPosH = page.setPosH,
-            setPosV = page.setPosV,
-            transparency = page.transparency,
-            hideCom7 = page.hideCom7,
-        )
-        highlightTextbox(page.text, isLastPage = pageIndex == pages.size - 1)
-    }
-
-    private fun Player.previousPage() {
-        val pageIndex = tutorialPage - 1
-        if (pageIndex in pages.indices) {
-            showPage(pageIndex)
-        } else {
-            showPage(tutorialPage)
-        }
-    }
-
-    private fun Player.nextPage() {
-        val pageIndex = tutorialPage + 1
-        if (pageIndex in pages.indices) {
-            showPage(pageIndex)
-        } else {
-            showPage(tutorialPage)
-        }
-    }
-
     private fun Player.onTutorialClose() {
-        highlightScreenHideLayer()
+        tours.hide(this, tour)
         highlightNoClickClear()
     }
 
     private fun Player.highlightNoClick() {
         runClientScript(3406, "component.bankside:bankside_highlight".asRSCM(RSCMType.COMPONENT))
     }
-
-    private fun Player.highlightStart() {
-        runClientScript(3408, "component.bankmain:bank_highlight".asRSCM(RSCMType.COMPONENT))
-    }
-
-    private fun Player.highlightScreen(
-        offX: Int,
-        offY: Int,
-        offH: Int,
-        offW: Int,
-        setPosH: Int,
-        setPosV: Int,
-        transparency: Int,
-        hideCom7: Boolean,
-    ) {
-        runClientScript(
-            3409,
-            "component.bankmain:bank_highlight".asRSCM(RSCMType.COMPONENT),
-            offX,
-            offY,
-            offH,
-            offW,
-            setPosH,
-            setPosV,
-            transparency,
-            if (hideCom7) 1 else 0,
-        )
-    }
-
-    private fun Player.highlightTextbox(text: String, isLastPage: Boolean) {
-        val colour = -1
-        val showCom29 = true
-        runClientScript(
-            3413,
-            text,
-            colour,
-            if (isLastPage) 1 else 0,
-            if (showCom29) 1 else 0,
-            "component.bankmain:bank_highlight".asRSCM(RSCMType.COMPONENT),
-        )
-    }
-
-    private fun Player.highlightScreenHideLayer() {
-        runClientScript(3412, "component.bankmain:bank_highlight".asRSCM(RSCMType.COMPONENT))
-    }
 }
+
+private fun Page.toHighlightPage(): HighlightPage =
+    HighlightPage(
+        frame =
+            HighlightFrame.Screen(offX, offY, offH, offW, setPosH, setPosV, transparency, hideCom7),
+        text = text,
+        showClose = true,
+    )
 
 // Consider moving these to cache. Could use a struct, but do not want to deal with a bunch of
 // parameters for now. Might be less annoying to do once we have support for db types.

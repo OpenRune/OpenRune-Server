@@ -12,3 +12,5 @@ toa_vault_displays=64111
 warguild_animator_sets=64900
 warguild_catapult_shots=64901
 warguild_dummies=64902
+league_tutorial_hint=40001
+league_relic_passive=40002

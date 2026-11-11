@@ -14,6 +14,8 @@ import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.ChatType
@@ -78,7 +80,7 @@ constructor(
             return
         }
 
-        if (!canTeleport()) {
+        if (!canTeleport(destination)) {
             return
         }
 
@@ -102,10 +104,11 @@ constructor(
 
     private fun ProtectedAccess.processQueuedTeleport(task: PendingSpellTeleport) {
         val spell = task.teleport.resolveSpell() ?: return
-        if (!canTeleport()) {
+        val destination = CoordGrid(task.destination)
+        if (!canTeleport(destination)) {
             return
         }
-        telejump(landingSquare(CoordGrid(task.destination), task.teleport.landingRadius))
+        telejump(landingSquare(destination, task.teleport.landingRadius))
         val endAnim = task.teleport.style.endAnim
         if (endAnim != null) anim(endAnim) else resetAnim()
         statAdvance("stat.magic", spell.castXp)
@@ -161,21 +164,26 @@ constructor(
         vars[Busy] = 1
         delay(HomeTeleportLandingTick - stage.tick)
         player.clearWalkTrigger()
-        val allowed = canTeleport()
+        val destination = CoordGrid(task.destination)
+        val allowed = canTeleport(destination)
         if (allowed) {
             vars[HomeTeleportTimer] = epochMinute()
         }
         vars[Busy] = 0
         if (allowed) {
-            telejump(landingSquare(CoordGrid(task.destination), task.teleport.landingRadius))
+            task.teleport.resolveSpell()?.let { spell ->
+                val cast = SkillingActionContext.SpellCast(spell.obj)
+                publish(SkillingActionCompleteEvent(player, cast))
+            }
+            telejump(landingSquare(destination, task.teleport.landingRadius))
         }
         resetAnim()
         resetSpotanim()
     }
 
-    private fun ProtectedAccess.canTeleport(): Boolean {
+    private fun ProtectedAccess.canTeleport(dest: CoordGrid): Boolean {
         val denial =
-            teleportValidator.validate(player, TeleportType.Standard, areaChecker)
+            teleportValidator.validate(player, dest, TeleportType.Standard, areaChecker)
         if (denial == null) {
             return true
         }
@@ -205,7 +213,16 @@ constructor(
             }
 
         if (castSpell.objReqs.isEmpty()) {
-            return runes.canCastSpell(player, castSpell)
+            val allowed = runes.canCastSpell(player, castSpell)
+            if (allowed) {
+                publish(
+                    SkillingActionCompleteEvent(
+                        player,
+                        SkillingActionContext.SpellCast(castSpell.obj),
+                    ),
+                )
+            }
+            return allowed
         }
         return !runes.attemptCast(player, castSpell).isFailure()
     }

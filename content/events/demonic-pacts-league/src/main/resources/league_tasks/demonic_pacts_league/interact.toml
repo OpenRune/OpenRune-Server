@@ -1,0 +1,35 @@
+[[league_task_pet_xolo_in_civitas]]
+trigger = "interact"
+npc = ["npc.varlamore_dog_xolo", "npc.varlamore_dog_xolo_indoors"]
+area = "area.league_region_varlamore"
+option = 1
+
+[[league_task_talk_to_ilfeen_in_tirannwn]]
+trigger = "interact"
+npc = ["npc.roving_ilfeen_1op", "npc.roving_ilfeen_2ops", "npc.sote_ilfeen_vis"]
+area = "area.league_region_tirannwn"
+option = 1
+
+[[league_task_talk_to_the_mysterious_old_man_in_falador]]
+trigger = "interact"
+npc = [
+    "npc.macro_cubenpc",
+    "npc.macro_mysterious_old_man",
+    "npc.macro_mysterious_old_man_underwater",
+    "npc.macro_maze_invitation",
+    "npc.macro_mime_invitation",
+]
+area = "area.league_region_asgarnia"
+option = 1
+
+[[league_task_use_the_pottery_oven_in_civitas]]
+trigger = "interact"
+loc = [
+    "loc.viking_potteryoven",
+    "loc.fai_barbarian_pottery_oven",
+    "loc.potteryoven",
+    "loc.darkm_poor_pottery_oven",
+    "loc.amenity_potteryoven_built",
+]
+area = "area.league_region_varlamore"
+option = 1

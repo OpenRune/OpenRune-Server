@@ -1,0 +1,27 @@
+[[league_task_pick_6_flax]]
+trigger = "pick"
+obj = "obj.flax"
+times = 6
+counter = "varbit.league_task_flax_picked"
+
+[[league_task_pick_some_sweetcorn_from_a_field]]
+trigger = "pick"
+obj = "obj.sweetcorn"
+
+[[league_task_pick_6_wheat_6_cabbages_and_6_potatoes]]
+trigger = "pick"
+obj = "obj.grain"
+times = 6
+counter = "varbit.league_task_wheat_picked"
+
+[[league_task_pick_6_wheat_6_cabbages_and_6_potatoes]]
+trigger = "pick"
+obj = "obj.cabbage"
+times = 6
+counter = "varbit.league_task_cabbage_picked"
+
+[[league_task_pick_6_wheat_6_cabbages_and_6_potatoes]]
+trigger = "pick"
+obj = "obj.potato"
+times = 6
+counter = "varbit.league_task_potatoes_picked"

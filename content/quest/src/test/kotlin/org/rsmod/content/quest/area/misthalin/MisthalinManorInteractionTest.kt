@@ -421,7 +421,7 @@ class MisthalinManorInteractionTest {
             getEventBus = { events }, getAlignment = { TextAlignment() },
             getCollision = { collision },
             getNpcInteractions = { NpcInteractions(events) },
-            getTeleportValidator = { PlayerTeleportValidator(emptySet()) },
+            getTeleportValidator = { PlayerTeleportValidator(emptySet(), EventBus()) },
             getAreaChecker = { AreaChecker(regions, AreaIndex()) },
         )
         private val movement = PlayerMovementProcessor(collision, RouteFactory(collision), StepFactory(collision), events)

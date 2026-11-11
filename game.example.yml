@@ -16,7 +16,8 @@ world: 255
 #   world-types: ["gridmaster", "raging_echoes_league"]
 #
 # Valid keys (org.rsmod.game.world.WorldType): main, twisted_league, trailblazer_league,
-# shattered_relics_league, trailblazer_reloaded_league, raging_echoes_league, gridmaster.
+# shattered_relics_league, trailblazer_reloaded_league, raging_echoes_league,
+# demonic_pacts_league, gridmaster.
 world-types: ["main"]
 
 gameplay:

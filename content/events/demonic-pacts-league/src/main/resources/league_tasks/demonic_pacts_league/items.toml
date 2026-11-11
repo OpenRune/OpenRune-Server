@@ -1,0 +1,6 @@
+[[league_task_pick_up_10_whiteberries_in_tirannwn]]
+trigger = "obtain"
+obj = "obj.white_berries"
+area = "area.league_region_tirannwn"
+times = 10
+counter = "varbit.league_task_pick_up_whiteberries_in_tirannwn"

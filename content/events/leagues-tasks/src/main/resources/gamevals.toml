@@ -1,0 +1,189 @@
+[gamevals.enum]
+league_types = 2670
+league_task_tier_points = 2671
+league_task_tier_names = 2673
+league_task_types = 3411
+league_task_areas = 3412
+league_6_tasks = 5950
+league_6_pact_tasks = 5952
+league_6_pact_reset_tasks = 5953
+talent_tree_nodes = 5942
+league_region_areas = 63895
+talent_effect_varbits = 63896
+league_area_unlock_thresholds = 5677
+league_area_unlock_spotanims = 63897
+
+[gamevals.param]
+league_message_colour = 2050
+league_colour = 1027
+league_task_list = 2573
+league_relic_tiers = 870
+league_relic_tier_points = 877
+league_relic_tier_relics = 878
+league_relic_tier_passives = 2045
+league_relic_name = 879
+league_relic_description = 880
+league_relic_passive_description = 1020
+league_relic_unlock_spotanim = 1021
+league_area_unlock_tasks = 1010
+league_home_coord = 864
+
+[gamevals.timer]
+league_points_claim = 63440
+league_task_sync = 63441
+league_chicken_window = 63442
+league_penguin_window = 63443
+league_area_notification = 63444
+league_tutorial_resume = 63445
+league_infinite_run = 63446
+
+[gamevals.queue]
+league_home_teleport = 64480
+
+[gamevals.dbtable]
+league_tutorial_hint = 40001
+league_relic_passive = 40002
+
+[gamevals.clientscript]
+league_task_override_task_wipe = 9404
+script9397 = 9397
+script9431 = 9431
+
+[gamevals.category]
+bones = 6
+
+[gamevals.area]
+league_region_asgarnia = 32600
+league_region_kandarin = 32601
+league_region_karamja = 32602
+league_region_morytania = 32603
+league_region_desert = 32604
+league_region_tirannwn = 32605
+league_region_fremennik = 32606
+league_region_kourend = 32607
+league_region_wilderness = 32608
+league_region_varlamore = 32609
+league_region_misthalin = 32635
+league_shayzien = 32610
+league_prifddinas = 32611
+league_tlati_rainforest = 32612
+league_forsaken_tower = 32613
+league_stonecutter_outpost = 32614
+league_necropolis = 32615
+league_piscatoris = 32616
+league_port_phasmatys = 32617
+league_kourend_castle = 32618
+league_sophanem = 32619
+league_wilderness_resource_area = 32629
+league_mos_leharmless = 32628
+league_harmony_island = 32627
+league_gnome_village = 32620
+league_gnome_stronghold = 32621
+league_farming_guild = 32622
+league_wizards_guild = 32623
+league_ranging_guild = 32624
+league_crafting_guild = 32625
+league_woodcutting_guild = 32626
+league_nardah_bank = 32630
+league_mage_arena_bank = 32631
+league_lletya_bank = 32632
+league_jatizso_bank = 32633
+league_neitiznot_bank = 32634
+
+[gamevals.varp]
+league_counters_0 = 62000
+league_counters_1 = 62001
+league_counters_2 = 62002
+league_counters_3 = 62003
+league_counters_4 = 62004
+league_counters_5 = 62005
+league_counters_6 = 62006
+league_counters_7 = 62007
+league_counters_8 = 62008
+league_counters_9 = 62009
+league_counters_10 = 62010
+league_counters_11 = 62011
+league_counters_12 = 62012
+league_counters_13 = 62013
+league_counters_14 = 62014
+league_task_windows = 62015
+league_worn_collections = 62016
+
+[gamevals.varbit]
+league_counter_chop_willow_logs = 62000
+league_counter_chop_blisterwood_logs = 62001
+league_counter_chop_magic_logs = 62002
+league_counter_chop_maples_in_tirannwn = 62003
+league_counter_chop_teak_logs_in_prifddinas = 62004
+league_counter_mine_tin_ore = 62005
+league_counter_mine_silver_ore = 62006
+league_counter_mine_iron_ore = 62007
+league_counter_mine_granite_in_the_necropolis = 62008
+league_counter_mine_gold_in_tirannwn = 62009
+league_counter_mine_granite = 62010
+league_counter_mine_adamantite_ore = 62011
+league_counter_mine_soft_clay_in_tirannwn = 62012
+league_counter_mine_runite_in_tirannwn = 62013
+league_counter_catch_cod = 62014
+league_counter_catch_swordfish = 62015
+league_counter_catch_tuna = 62016
+league_counter_catch_mackerel = 62017
+league_counter_catch_lobsters = 62018
+league_counter_catch_trout = 62019
+league_counter_catch_karambwan_on_karamja = 62020
+league_counter_catch_shark = 62021
+league_counter_catch_dark_crabs = 62022
+league_counter_cook_swordfish = 62023
+league_counter_cook_tuna = 62024
+league_counter_cook_sharks = 62025
+league_counter_cook_meat_pies = 62026
+league_counter_cook_karambwans = 62027
+league_counter_cook_sharks_in_darkmeyer = 62028
+league_counter_cook_anglerfish = 62029
+league_counter_burn_willow_logs = 62030
+league_counter_burn_yew_logs = 62031
+league_counter_burn_blisterwood_logs = 62032
+league_counter_burn_redwood_logs = 62033
+league_counter_make_stamina_potions = 62034
+league_counter_make_prayer_potions = 62035
+league_counter_make_ancient_brews = 62036
+league_counter_make_ranging_potions = 62037
+league_counter_make_magic_potions = 62038
+league_counter_make_menaphite_remedies = 62039
+league_counter_make_divine_ranging_potions = 62040
+league_counter_make_divine_super_combat_potions = 62041
+league_counter_make_forgotten_brews = 62042
+league_counter_smith_steel_bolts = 62043
+league_counter_smith_iron_arrowtips = 62044
+league_counter_craft_astral_runes = 62045
+league_counter_craft_nature_runes = 62046
+league_counter_blow_light_orbs = 62047
+league_counter_craft_unpowered_orbs = 62048
+league_counter_craft_blue_dragonhide_bodies = 62049
+league_counter_craft_death_runes = 62050
+league_counter_craft_law_runes = 62051
+league_counter_kill_godwars_bosses = 62052
+league_counter_open_grubby_chests = 62053
+league_counter_open_larrans_chests = 62054
+league_counter_open_zombie_pirate_lockers = 62055
+league_counter_open_muddy_chests = 62056
+league_counter_pickpocket_knights_of_varlamore = 62057
+league_counter_pickpocket_knights_of_ardougne = 62058
+league_counter_pickpocket_menaphite_thugs = 62059
+league_counter_kill_lizardman_shamans = 62060
+league_counter_kill_demonic_gorillas = 62061
+league_counter_kill_bandits = 62062
+league_counter_kill_elves_in_tirannwn = 62063
+league_counter_kill_bunnies = 62064
+league_counter_kill_superiors = 62065
+league_counter_complete_slayer_tasks = 62066
+league_counter_slay_task_creatures = 62067
+league_window_chicken_kills = 62068
+league_window_penguin_kills = 62069
+league_worn_godswords = 62070
+league_worn_dagannoth_rings = 62071
+league_worn_zenyte = 62072
+league_worn_god_books = 62073
+league_worn_cerberus_boots = 62074
+league_worn_snelms = 62075
+league_counter_fill_sand_in_rellekka = 62076

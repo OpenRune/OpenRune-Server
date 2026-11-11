@@ -1,0 +1,35 @@
+[[league_task_fill_something_up_from_a_water_pump]]
+trigger = "use_on"
+obj = [
+    "obj.bucket_empty",
+    "obj.jug_empty",
+    "obj.bowl_empty",
+    "obj.vial_empty",
+    "obj.cup_empty",
+    "obj.fishbowl_empty",
+    "obj.watering_can_0",
+    "obj.watering_can_1",
+    "obj.watering_can_2",
+    "obj.watering_can_3",
+    "obj.watering_can_4",
+    "obj.watering_can_5",
+    "obj.watering_can_6",
+    "obj.watering_can_7",
+    "obj.zeah_wateringcan",
+    "obj.water_skin0",
+    "obj.water_skin1",
+    "obj.water_skin2",
+    "obj.water_skin3",
+]
+loc = "loc.fortis_water_pump"
+
+[[league_task_feed_a_dog_some_bones]]
+trigger = "use_on"
+npc = [
+    "npc.dog_stray",
+    "npc.dog_stray2",
+    "npc.varlamore_dog_chiribaya_1",
+    "npc.varlamore_dog_chiribaya_2",
+    "npc.varlamore_dog_chiribaya_1_indoors",
+]
+category = "category.bones"

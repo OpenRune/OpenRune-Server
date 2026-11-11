@@ -1,20 +1,17 @@
 package org.rsmod.content.areas.wilderness.locs
 
 import dtx.core.ArgMap
-import dtx.core.RollResult
-import dtx.core.flatten
 import jakarta.inject.Inject
-import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropTableRegistry
-import org.rsmod.api.droptable.rollCount
+import org.rsmod.api.droptable.toDropList
+import org.rsmod.api.player.events.LootSource
 import org.rsmod.api.player.front
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.loc.LocRepository
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.content.interfaces.collectionlog.CollectionLog
+import org.rsmod.content.drops.LootDelivery
 import org.rsmod.game.inv.isType
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
@@ -33,7 +30,7 @@ class ZombiePirateLockerScript
 @Inject
 constructor(
     private val locRepo: LocRepository,
-    private val objRepo: ObjRepository,
+    private val loot: LootDelivery,
     private val dropRegistry: DropTableRegistry,
 ) : PluginScript() {
 
@@ -58,23 +55,13 @@ constructor(
         VarPlayerIntMapSetter.set(player, VARP_KC, player.vars[VARP_KC] + 1)
 
         val table = dropRegistry.forLoc(LOCKER_CLOSED) ?: return
-        when (val result = table.roll(player, ArgMap()).flatten()) {
-            is RollResult.Nothing -> Unit
-            is RollResult.Single -> giveDrop(result.result)
-            is RollResult.ListOf -> result.results.forEach { giveDrop(it) }
-        }
-        delay(1)
-    }
-
-    private fun ProtectedAccess.giveDrop(drop: DropRollItem) {
-        if (drop.isNothing || !drop.condition(player)) return
-        var obj = drop.transformObj(player) ?: drop.obj
+        val source = LootSource.Loc(LOCKER_CLOSED)
+        val items = loot.resolve(player, source, table.roll(player, ArgMap()).toDropList())
         if (player.front.isType("obj.wild_cave_amulet")) {
-            obj = ocCert(obj).internalName
+            for (item in items) item.item = ocCert(item.item).internalName
         }
-        val count = drop.rollCount(random)
-        CollectionLog.grant(player, obj, count)
-        invAddOrDrop(objRepo, obj, count)
+        loot.give(player, source, items)
+        delay(1)
     }
 
     private suspend fun ProtectedAccess.unlockBlipScroll() {
@@ -103,5 +90,4 @@ constructor(
         objbox(SCROLL, "You study the scroll and become immune to the Abyssal demon and Elder Chaos druid teleportation attacks.")
         VarPlayerIntMapSetter.set(player, VARBIT_SCROLL, 1)
     }
-
 }

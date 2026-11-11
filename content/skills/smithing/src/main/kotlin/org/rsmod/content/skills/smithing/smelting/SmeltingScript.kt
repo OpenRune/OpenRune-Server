@@ -2,7 +2,14 @@ package org.rsmod.content.skills.smithing.smelting
 
 import jakarta.inject.Inject
 import kotlin.random.Random
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.resolveSkillRoll
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocCategory2
 import org.rsmod.api.script.onOpLocCategoryU
@@ -201,10 +208,19 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
     ) {
         weakQueue(
             "queue.smithing_bar_smelt",
-            if (completed == 0) SMELT_INITIAL_DELAY else SMELT_CYCLE_DELAY,
+            if (completed == 0) SMELT_INITIAL_DELAY else smeltWait(),
             SmeltTask(bar, amount, completed, isSuperHeat, furnaceLocInternal, furnaceCoords, regularFurnace),
         )
     }
+
+    /** One bar takes the wait between smelts plus the furnace animation, split so both can shrink. */
+    private fun ProtectedAccess.smeltCycle(): Int =
+        player.skillCycles("stat.smithing", SMELT_CYCLE_DELAY + SMELT_ANIM_DELAY)
+
+    private fun ProtectedAccess.smeltAnimDelay(): Int =
+        minOf(SMELT_ANIM_DELAY, smeltCycle() - 1).coerceAtLeast(1)
+
+    private fun ProtectedAccess.smeltWait(): Int = (smeltCycle() - smeltAnimDelay()).coerceAtLeast(1)
 
     private suspend fun ProtectedAccess.performSmelt(
         bar: SmithingBarsRow,
@@ -216,22 +232,25 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
     ): Int {
         anim("seq.human_furnace")
         soundSynth("synth.furnace")
-        delay(2)
-
-        if (!consumeBarInputs(bar, regularFurnace)) {
-            return 1
-        }
+        delay(smeltAnimDelay())
 
         val isIronBar = bar.output.internalName == "obj.iron_bar"
         val hasRingOfForging = "obj.ring_of_forging" in player.worn
         val success = if (isIronBar && !hasRingOfForging && !isSuperHeat) {
-            Random.nextBoolean()
+            player.resolveSkillRoll("stat.smithing", 0.5, Random.nextBoolean(), bar.output.internalName)
         } else {
             true
         }
 
         if (!success) {
-            mes("The ore is too impure and you fail to refine it.")
+            if (invDel(inv, bar.input.first().internalName, bar.inputAmount.first()).success) {
+                mes("The ore is too impure and you fail to refine it.")
+            }
+            return 1
+        }
+
+        val product = smeltProduct(bar, isSuperHeat, regularFurnace)
+        if (awardSkillingProduct(product) != SkillingAwardResult.Success) {
             return 1
         }
 
@@ -241,50 +260,45 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
                 remaining > 1 &&
                 varrockExtraBar(bar, furnaceLocInternal, furnaceCoords) &&
                 hasItemsForBar(bar, regularFurnace) &&
-                consumeBarInputs(bar, regularFurnace)
-        val bars = if (extra) 2 else 1
-        if (!invAdd(inv, bar.output.internalName, bars).success) {
-            return bars
-        }
-        repeat(bars) {
-            val xp = SmithingSmeltXp.resolve(player, inv, bar, isSuperHeat, xpMods, regularFurnace)
-            statAdvance("stat.smithing", xp)
-        }
+                awardSkillingProduct(smeltProduct(bar, isSuperHeat, regularFurnace, isBonus = true)) ==
+                SkillingAwardResult.Success
         if (extra) {
             spam("The Varrock platebody enabled you to smelt your next ore simultaneously.")
         }
         val metal = SmithingUtils.itemName(bar.output, "bar").removeSuffix(" bar").lowercase()
         spam("You retrieve a bar of $metal.")
-        return bars
+        return if (extra) 2 else 1
     }
 
-    private fun ProtectedAccess.consumeBarInputs(bar: SmithingBarsRow, regularFurnace: Boolean): Boolean {
-        val primaryAmt = bar.inputAmount.first()
+    private fun ProtectedAccess.smeltProduct(
+        bar: SmithingBarsRow,
+        isSuperHeat: Boolean,
+        regularFurnace: Boolean,
+        isBonus: Boolean = false,
+    ): SkillingProduct =
+        SkillingProduct(
+            player = player,
+            skill = "stat.smithing",
+            item = bar.output.internalName,
+            experience = SmithingSmeltXp.resolve(player, inv, bar, isSuperHeat, xpMods, regularFurnace),
+            source = SkillingProductSource.Smelting(bar),
+            isBonus = isBonus,
+            inputs = smeltInputs(bar, regularFurnace),
+        )
+
+    private fun ProtectedAccess.smeltInputs(
+        bar: SmithingBarsRow,
+        regularFurnace: Boolean,
+    ): List<SkillingInput> = buildList {
+        add(SkillingInput(bar.input.first().internalName, bar.inputAmount.first()))
         val secondary = bar.input.getOrNull(1)
-        val requiresSecondary = secondary != null && (bar.input.getOrNull(1)?.let { bar.inputAmount.getOrNull(1) } ?: 0) > 0
-        val effectiveSecondaryAmt =
-            if (requiresSecondary) {
-                effectiveCoalAmount(player, inv, bar, regularFurnace)
-            } else {
-                0
-            }
-
-        val primaryRemoved = invDel(inv, bar.input.first().internalName, primaryAmt).success
-        val secondaryRemoved =
-            if (!requiresSecondary) {
-                true
-            } else {
-                invDel(inv, secondary.internalName, effectiveSecondaryAmt).success
-            }
-
-        if (!primaryRemoved || !secondaryRemoved) {
-            return false
+        if (secondary != null && (bar.inputAmount.getOrNull(1) ?: 0) > 0) {
+            val amount = effectiveCoalAmount(player, inv, bar, regularFurnace)
+            add(SkillingInput(secondary.internalName, amount))
         }
-
         if (shouldConsumeSmithingCatalyst(player, inv, bar, regularFurnace)) {
-            invDel(inv, SmithingBonuses.SMITHING_CATALYST, 1)
+            add(SkillingInput(SmithingBonuses.SMITHING_CATALYST))
         }
-        return true
     }
 
     private fun ProtectedAccess.varrockExtraBar(
@@ -382,5 +396,6 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
     private companion object {
         private const val SMELT_INITIAL_DELAY = 1
         private const val SMELT_CYCLE_DELAY = 5
+        private const val SMELT_ANIM_DELAY = 2
     }
 }

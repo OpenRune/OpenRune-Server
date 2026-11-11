@@ -1,23 +1,17 @@
 package org.rsmod.content.minigames.gauntlet
 
 import dtx.core.ArgMap
-import dtx.core.RollResult
-import dtx.core.flatten
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropTableRegistry
-import org.rsmod.api.droptable.rollCount
-import org.rsmod.api.invtx.invAddOrDrop
+import org.rsmod.api.droptable.toDropList
+import org.rsmod.api.player.events.LootSource
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarp
-import org.rsmod.api.random.GameRandom
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.content.interfaces.collectionlog.CollectionLog
-import org.rsmod.content.other.pets.PetRewards
+import org.rsmod.content.drops.LootDelivery
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -53,10 +47,8 @@ internal fun Player.addGauntletPoints(points: Int) {
 class GauntletRewards
 @Inject
 constructor(
-    private val objRepo: ObjRepository,
-    private val pets: PetRewards,
     private val registry: DropTableRegistry,
-    private val random: GameRandom,
+    private val loot: LootDelivery,
 ) {
     fun complete(player: Player, run: GauntletRun) {
         if (run.completed) return
@@ -78,7 +70,7 @@ constructor(
         if (tier != RewardTier.NONE) store(player, tier)
     }
 
-    suspend fun ProtectedAccess.claim() {
+    suspend fun ProtectedAccess.claim(chest: String) {
         if (!player.gauntletRewardAvailable) {
             mes("Looks pretty empty to me.")
             return
@@ -96,35 +88,15 @@ constructor(
         player.gauntletRewardTier = 0
         mes("You find some treasure in the chest!")
         val table = tier.tableKey?.let(registry::forLoc) ?: return
-        when (val result = table.roll(player, ArgMap()).flatten()) {
-            is RollResult.Nothing -> Unit
-            is RollResult.Single -> award(result.result)
-            is RollResult.ListOf -> result.results.forEach { award(it) }
+        val drops = table.roll(player, ArgMap()).toDropList()
+        for (item in loot.give(player, LootSource.Loc(chest), drops)) {
+            if (item.item == SHARD) mes("<col=ef1020>Untradeable drop: ${item.count} x Crystal shard</col>")
         }
-    }
-
-    private fun ProtectedAccess.award(drop: DropRollItem) {
-        if (drop.isNothing || !drop.condition(player)) return
-        val obj = drop.transformObj(player) ?: drop.obj
-        val count = drop.rollCount(random)
-        if (pets.give(player, obj)) {
-            CollectionLog.grant(player, obj, count)
-            return
-        }
-        give(obj, count)
     }
 
     private fun store(player: Player, tier: RewardTier) {
         player.gauntletRewardTier = tier.ordinal
         player.gauntletRewardAvailable = true
-    }
-
-    private fun ProtectedAccess.give(obj: String, count: Int) {
-        if (obj == SHARD) {
-            mes("<col=ef1020>Untradeable drop: $count x Crystal shard</col>")
-        }
-        invAddOrDrop(objRepo, obj, count)
-        CollectionLog.grant(player, obj, count)
     }
 
     private companion object {
@@ -136,7 +108,7 @@ class GauntletChest @Inject internal constructor(private val rewards: GauntletRe
     PluginScript() {
     override fun ScriptContext.startup() {
         for (chest in CHESTS) {
-            onOpLoc1(chest) { with(rewards) { claim() } }
+            onOpLoc1(chest) { with(rewards) { claim(chest) } }
         }
     }
 

@@ -1,0 +1,70 @@
+[[league_task_bow_near_a_quetzal]]
+trigger = "emote"
+npc = ["npc.hg_quetzal", "npc.vmq2_quetzal_noname"]
+emote = "Bow"
+
+[[league_task_cry_near_a_child]]
+trigger = "emote"
+npc = [
+    "npc.cam_torum_child_m_1",
+    "npc.cam_torum_child_m_2",
+    "npc.cam_torum_child_f_1",
+    "npc.cam_torum_child_f_2",
+    "npc.varlamore_child_poor_m_1",
+    "npc.varlamore_child_poor_m_2",
+    "npc.varlamore_child_poor_f_1",
+    "npc.varlamore_child_poor_f_2",
+    "npc.varlamore_child_normal_m_1",
+    "npc.varlamore_child_normal_m_2",
+    "npc.varlamore_child_normal_f_1",
+    "npc.varlamore_child_normal_f_2",
+    "npc.aldarin_child_f_1",
+    "npc.aldarin_child_m_1",
+    "npc.mistrock_child_m_1",
+    "npc.mistrock_child_m_2",
+    "npc.mistrock_child_f_1",
+    "npc.mistrock_child_f_2",
+    "npc.auburn_child_f_1",
+    "npc.auburn_child_m_1",
+    "npc.kastori_child_m_1",
+    "npc.kastori_child_f_1",
+    "npc.tal_teklan_child_m_1",
+    "npc.tal_teklan_child_f_1",
+]
+emote = "Cry"
+
+[[league_task_dance_near_a_bard]]
+trigger = "emote"
+npc = [
+    "npc.avium_savannah_bard_conch",
+    "npc.avium_savannah_bard_singer",
+    "npc.avium_savannah_bard_trumpet",
+    "npc.rainforest_troupe_singer_1",
+    "npc.rainforest_troupe_singer_2",
+    "npc.rainforest_troupe_singer_3",
+]
+emote = "Dance"
+
+[[league_task_headbang_with_ketsal_kuk]]
+trigger = "emote"
+npc = "npc.molch_altar_shaman"
+emote = "Headbang"
+
+[[league_task_salute_next_to_a_statue_of_quoatlos]]
+trigger = "emote"
+loc = [
+    "loc.civitas_museum_statue_quoatlos",
+    "loc.statues_civitas01_serpent01",
+    "loc.statues_civitas01_serpent02",
+    "loc.varlamore_statue01_quoatlos01_1x1",
+    "loc.varlamore_statue01_quoatlos01_2x2",
+    "loc.varlamore_statue01_quoatlos01_3x3",
+    "loc.varlamore_statue01_quoatlos01_4x4",
+    "loc.varlamore_statue01_quoatlos02_3x3",
+]
+emote = "Salute"
+
+[[league_task_sit_near_a_stolen_cabbage]]
+trigger = "emote"
+loc = ["loc.avium_cabbage_dog01", "loc.avium_cabbage_dog02"]
+emote = "Sit down"

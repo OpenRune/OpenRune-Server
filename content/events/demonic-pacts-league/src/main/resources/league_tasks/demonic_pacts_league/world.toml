@@ -1,0 +1,77 @@
+[[league_task_open_the_leagues_menu]]
+trigger = "interface"
+interface = "interface.league_side_panel"
+
+[[league_task_complete_the_leagues_tutorial]]
+trigger = "var"
+value = 14
+varbit = "varbit.league_tutorial_completed"
+
+[[league_task_use_the_bank_in_nardah]]
+trigger = "interface"
+area = "area.league_nardah_bank"
+interface = "interface.bankmain"
+
+[[league_task_use_the_bank_at_the_mage_arena]]
+trigger = "interface"
+area = "area.league_mage_arena_bank"
+interface = "interface.bankmain"
+
+[[league_task_use_the_bank_in_lletya]]
+trigger = "interface"
+area = "area.league_lletya_bank"
+interface = "interface.bankmain"
+
+[[league_task_use_the_bank_on_jatizso]]
+trigger = "interface"
+area = "area.league_jatizso_bank"
+interface = "interface.bankmain"
+
+[[league_task_use_the_bank_on_neitiznot]]
+trigger = "interface"
+area = "area.league_neitiznot_bank"
+interface = "interface.bankmain"
+
+[[league_task_visit_port_phasmatys]]
+trigger = "enter"
+area = "area.league_port_phasmatys"
+
+[[league_task_enter_the_woodcutting_guild]]
+trigger = "enter"
+area = "area.league_woodcutting_guild"
+
+[[league_task_enter_the_crafting_guild]]
+trigger = "enter"
+area = "area.league_crafting_guild"
+
+[[league_task_enter_the_ranging_guild]]
+trigger = "enter"
+area = "area.league_ranging_guild"
+
+[[league_task_enter_the_wizards_guild]]
+trigger = "enter"
+area = "area.league_wizards_guild"
+
+[[league_task_enter_the_farming_guild]]
+trigger = "enter"
+area = "area.league_farming_guild"
+
+[[league_task_visit_the_tree_gnome_stronghold]]
+trigger = "enter"
+area = "area.league_gnome_stronghold"
+
+[[league_task_visit_the_tree_gnome_village]]
+trigger = "enter"
+area = "area.league_gnome_village"
+
+[[league_task_visit_harmony_island]]
+trigger = "enter"
+area = "area.league_harmony_island"
+
+[[league_task_visit_mos_leharmless]]
+trigger = "enter"
+area = "area.league_mos_leharmless"
+
+[[league_task_enter_the_wilderness_resource_area]]
+trigger = "enter"
+area = "area.league_wilderness_resource_area"

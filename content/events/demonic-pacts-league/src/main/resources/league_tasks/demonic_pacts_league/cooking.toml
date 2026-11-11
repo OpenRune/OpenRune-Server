@@ -1,0 +1,5 @@
+[[league_task_cook_a_rabbit_in_tirannwn]]
+trigger = "product"
+stat = "stat.cooking"
+obj = "obj.cooked_rabbit"
+area = "area.league_region_tirannwn"

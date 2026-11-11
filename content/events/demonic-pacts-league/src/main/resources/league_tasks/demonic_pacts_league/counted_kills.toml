@@ -1,0 +1,47 @@
+[[league_task_kill_30_bandits]]
+trigger = "kill"
+npc = [
+    "npc.fourdiamonds_sword_bandit_1",
+    "npc.fourdiamonds_sword_bandit_sitsouth",
+    "npc.fourdiamonds_sword_bandit_sitnorth",
+    "npc.fourdiamonds_sword_bandit_siteast",
+    "npc.fourdiamonds_sword_bandit_sitwest",
+    "npc.fourdiamonds_sword_bandit_free",
+    "npc.feud_arabian_guard1_1",
+    "npc.feud_arabian_guard1_2",
+    "npc.feud_arabian_guard2_1",
+    "npc.feud_arabian_guard2_2",
+    "npc.brawling_bandit",
+    "npc.wilderness_bandit",
+    "npc.shayzien_bandit_1",
+    "npc.shayzien_bandit_2",
+    "npc.shayzien_bandit_3",
+    "npc.vmq1_bandit_1_vis",
+    "npc.vmq1_bandit_2_vis",
+    "npc.vmq1_bandit_3_vis",
+    "npc.vmq1_bandit_4_vis",
+    "npc.vmq1_bandit_4_cutscene",
+    "npc.varlamore_bandit_m_1",
+    "npc.varlamore_bandit_m_2",
+    "npc.varlamore_bandit_m_3",
+    "npc.varlamore_bandit_m_4",
+    "npc.varlamore_bandit_f_1",
+    "npc.varlamore_bandit_f_2",
+    "npc.varlamore_bandit_f_3",
+    "npc.varlamore_bandit_f_4",
+]
+area = "area.league_region_desert"
+times = 30
+counter = "varbit.league_counter_kill_bandits"
+
+[[league_task_kill_50_elves_in_tirannwn]]
+trigger = "kill"
+npc = [
+    "npc.mourning_guard_melee",
+    "npc.mourning_guard_melee2",
+    "npc.mourning_guard_range",
+    "npc.mourning_guard_range2",
+]
+area = "area.league_region_tirannwn"
+times = 50
+counter = "varbit.league_counter_kill_elves_in_tirannwn"

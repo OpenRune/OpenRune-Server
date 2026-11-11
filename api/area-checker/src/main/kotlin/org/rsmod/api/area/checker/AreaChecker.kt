@@ -1,9 +1,7 @@
 package org.rsmod.api.area.checker
 
-import dev.openrune.map.MapSingletons
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.aconverted.AreaType
 import it.unimi.dsi.fastutil.shorts.ShortArrayList
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet
 import jakarta.inject.Inject
@@ -18,11 +16,14 @@ public class AreaChecker @Inject constructor(
     private val areaBuffer = ShortArrayList()
     private val visited = ShortOpenHashSet()
 
-    public fun inArea(area: String, coords: CoordGrid): Boolean {
+    public fun inArea(area: String, coords: CoordGrid): Boolean =
+        inArea(area.asRSCM(RSCMType.AREA), coords)
+
+    public fun inArea(area: Int, coords: CoordGrid): Boolean {
         areaBuffer.clear()
         visited.clear()
 
-        val target = area.asRSCM(RSCMType.AREA).toShort()
+        val target = area.toShort()
         val normalized = coords.normalized()
 
         areaIndex.putAreas(normalized, areaBuffer)

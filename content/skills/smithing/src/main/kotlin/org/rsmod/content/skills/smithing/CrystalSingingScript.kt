@@ -1,7 +1,12 @@
 package org.rsmod.content.skills.smithing
 
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.craftingLvl
 import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.api.script.onOpLoc1
@@ -151,7 +156,7 @@ class CrystalSingingScript : PluginScript() {
         queueNext(task.item, task.amount, completed)
     }
 
-    private fun ProtectedAccess.queueNext(item: SmithingCrystalSingingRow, amount: Int, completed: Int, ) {
+    private fun ProtectedAccess.queueNext(item: SmithingCrystalSingingRow, amount: Int, completed: Int,) {
         weakQueue(
             "queue.smithing_crystal_singing",
             1,
@@ -159,25 +164,30 @@ class CrystalSingingScript : PluginScript() {
         )
     }
 
-    private fun ProtectedAccess.performSing(item: SmithingCrystalSingingRow, ) {
+    private fun ProtectedAccess.performSing(item: SmithingCrystalSingingRow,) {
         anim("seq.prif_crystal_singing")
         soundSynth("synth.toa_wardens_square_thunder3_01")
 
-        val removed = item.input.zip(item.inputAmount).all { (material, amount) ->
-            invDel(inv, material.internalName, amount).success
-        }
-
-        if (!removed) {
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.smithing",
+                item = item.output.internalName,
+                experience = item.xp.toDouble(),
+                source = SkillingProductSource.CrystalSinging(item),
+                inputs =
+                    item.input.zip(item.inputAmount).map { (material, amount) ->
+                        SkillingInput(material.internalName, amount)
+                    },
+            )
+        if (awardSkillingProduct(product) != SkillingAwardResult.Success) {
             return
         }
 
-        invAdd(inv, item.output.internalName, 1)
-
-        statAdvance("stat.smithing", item.xp.toDouble())
         statAdvance("stat.crafting", item.xp.toDouble())
     }
 
-    private suspend fun ProtectedAccess.canProduce(item: SmithingCrystalSingingRow, ): Boolean {
+    private suspend fun ProtectedAccess.canProduce(item: SmithingCrystalSingingRow,): Boolean {
         val missingMaterials = item.input.zip(item.inputAmount).mapNotNull { (material, required) ->
             val missing = required - inv.count(material.internalName)
 
@@ -210,10 +220,10 @@ class CrystalSingingScript : PluginScript() {
         )
     }
 
-    private fun maxCraftCount(inventory: Inventory, item: SmithingCrystalSingingRow, ): Int =
+    private fun maxCraftCount(inventory: Inventory, item: SmithingCrystalSingingRow,): Int =
         item.input.zip(item.inputAmount).minOfOrNull { (material, required) ->
             inventory.count(material.internalName) / required
-        }?: 0
+        } ?: 0
 
     private data class CrystalSingTask(
         val item: SmithingCrystalSingingRow,

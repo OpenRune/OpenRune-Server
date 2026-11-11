@@ -1,0 +1,262 @@
+[[league_task_clean_a_grimy_guam]]
+trigger = "product"
+stat = "stat.herblore"
+obj = "obj.guam_leaf"
+
+[[league_task_clean_a_grimy_avantoe]]
+trigger = "product"
+stat = "stat.herblore"
+obj = "obj.avantoe"
+
+[[league_task_clean_15_grimy_tarromin]]
+trigger = "product"
+stat = "stat.herblore"
+obj = "obj.tarromin"
+times = 15
+counter = "varbit.league_task_clean_grimy_tarromin"
+
+[[league_task_clean_25_grimy_guam_leafs]]
+trigger = "product"
+stat = "stat.herblore"
+obj = "obj.guam_leaf"
+times = 25
+counter = "varbit.league_task_clean_grimy_guam_leafs"
+
+[[league_task_clean_50_grimy_cadantine]]
+trigger = "product"
+stat = "stat.herblore"
+obj = "obj.cadantine"
+times = 50
+counter = "varbit.league_task_clean_grimy_cadantine"
+
+[[league_task_clean_50_grimy_ranarr_weed]]
+trigger = "product"
+stat = "stat.herblore"
+obj = "obj.ranarr_weed"
+times = 50
+counter = "varbit.league_task_clean_grimy_ranarr_weed"
+
+[[league_task_clean_100_grimy_avantoe]]
+trigger = "product"
+stat = "stat.herblore"
+obj = "obj.avantoe"
+times = 100
+counter = "varbit.league_task_clean_grimy_avantoe"
+
+[[league_task_clean_50_grimy_lantadyme]]
+trigger = "product"
+stat = "stat.herblore"
+obj = "obj.lantadyme"
+times = 50
+counter = "varbit.league_task_clean_grimy_lantadyme"
+
+[[league_task_create_an_antipoison]]
+trigger = "product"
+stat = "stat.herblore"
+obj = ["obj.1doseantipoison", "obj.2doseantipoison", "obj.3doseantipoison", "obj.4doseantipoison"]
+
+[[league_task_make_a_combat_potion]]
+trigger = "product"
+stat = "stat.herblore"
+obj = ["obj.1dosecombat", "obj.2dosecombat", "obj.3dosecombat", "obj.4dosecombat"]
+
+[[league_task_make_a_saradomin_brew]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1dosepotionofsaradomin",
+    "obj.2dosepotionofsaradomin",
+    "obj.3dosepotionofsaradomin",
+    "obj.4dosepotionofsaradomin",
+]
+
+[[league_task_make_a_super_combat_potion]]
+trigger = "product"
+stat = "stat.herblore"
+obj = ["obj.1dose2combat", "obj.2dose2combat", "obj.3dose2combat", "obj.4dose2combat"]
+
+[[league_task_make_an_extended_antifire_potion]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1dose2antidragon",
+    "obj.2dose2antidragon",
+    "obj.3dose2antidragon",
+    "obj.4dose2antidragon",
+]
+
+[[league_task_make_20_stamina_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = ["obj.1dosestamina", "obj.2dosestamina", "obj.3dosestamina", "obj.4dosestamina"]
+times = 20
+counter = "varbit.league_counter_make_stamina_potions"
+
+[[league_task_make_30_prayer_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1doseprayerrestore",
+    "obj.2doseprayerrestore",
+    "obj.3doseprayerrestore",
+    "obj.4doseprayerrestore",
+]
+times = 30
+counter = "varbit.league_counter_make_prayer_potions"
+
+[[league_task_make_50_ancient_brews]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1doseancientbrew",
+    "obj.2doseancientbrew",
+    "obj.3doseancientbrew",
+    "obj.4doseancientbrew",
+]
+times = 50
+counter = "varbit.league_counter_make_ancient_brews"
+
+[[league_task_make_20_ranging_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1doserangerspotion",
+    "obj.2doserangerspotion",
+    "obj.3doserangerspotion",
+    "obj.4doserangerspotion",
+]
+times = 20
+counter = "varbit.league_counter_make_ranging_potions"
+
+[[league_task_make_20_magic_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = ["obj.1dose1magic", "obj.2dose1magic", "obj.3dose1magic", "obj.4dose1magic"]
+times = 20
+counter = "varbit.league_counter_make_magic_potions"
+
+[[league_task_make_50_menaphite_remedies]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1dosestatrenewal",
+    "obj.2dosestatrenewal",
+    "obj.3dosestatrenewal",
+    "obj.4dosestatrenewal",
+]
+times = 50
+counter = "varbit.league_counter_make_menaphite_remedies"
+
+[[league_task_make_50_forgotten_brews]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1doseforgottenbrew",
+    "obj.2doseforgottenbrew",
+    "obj.3doseforgottenbrew",
+    "obj.4doseforgottenbrew",
+]
+times = 50
+counter = "varbit.league_counter_make_forgotten_brews"
+
+[[league_task_make_100_prayer_regeneration_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1dose1prayer_regeneration",
+    "obj.2dose1prayer_regeneration",
+    "obj.3dose1prayer_regeneration",
+    "obj.4dose1prayer_regeneration",
+]
+times = 100
+counter = "varbit.league_task_make_prayer_regeneration_potions"
+
+[[league_task_make_50_goading_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = ["obj.1dosegoading", "obj.2dosegoading", "obj.3dosegoading", "obj.4dosegoading"]
+times = 50
+counter = "varbit.league_task_make_goading_potions"
+
+[[league_task_make_100_antivenom_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = ["obj.antivenom1", "obj.antivenom2", "obj.antivenom3", "obj.antivenom4"]
+times = 100
+counter = "varbit.league_task_create_antivenom_potions"
+
+[["league_task_make_50_antivenom+_potions"]]
+trigger = "product"
+stat = "stat.herblore"
+obj = ["obj.antivenom+1", "obj.antivenom+2", "obj.antivenom+3", "obj.antivenom+4"]
+times = 50
+counter = "varbit.league_task_create_antivenom_plus_potions"
+
+[[league_task_create_25_divine_super_attack_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1dosedivineattack",
+    "obj.2dosedivineattack",
+    "obj.3dosedivineattack",
+    "obj.4dosedivineattack",
+]
+times = 25
+counter = "varbit.league_task_create_divine_super_attack_potions"
+
+[[league_task_create_25_divine_super_strength_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1dosedivinestrength",
+    "obj.2dosedivinestrength",
+    "obj.3dosedivinestrength",
+    "obj.4dosedivinestrength",
+]
+times = 25
+counter = "varbit.league_task_create_divine_super_strength_potions"
+
+[[league_task_create_100_divine_ranging_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1dosedivinerange",
+    "obj.2dosedivinerange",
+    "obj.3dosedivinerange",
+    "obj.4dosedivinerange",
+]
+times = 100
+counter = "varbit.league_counter_make_divine_ranging_potions"
+
+[[league_task_create_100_divine_super_combat_potions]]
+trigger = "product"
+stat = "stat.herblore"
+obj = [
+    "obj.1dosedivinecombat",
+    "obj.2dosedivinecombat",
+    "obj.3dosedivinecombat",
+    "obj.4dosedivinecombat",
+]
+times = 100
+counter = "varbit.league_counter_make_divine_super_combat_potions"
+
+[[league_task_equip_a_piece_of_alchemists_outfit]]
+trigger = "equip"
+obj = [
+    "obj.mm_alchemist_body",
+    "obj.mm_alchemist_body_alt",
+    "obj.mm_alchemist_legs",
+    "obj.mm_alchemist_legs_alt",
+    "obj.mm_alchemist_gloves",
+]
+
+[[league_task_equip_full_alchemists_outfit]]
+trigger = "equip"
+obj = [
+    "obj.mm_alchemist_body",
+    "obj.mm_alchemist_body_alt",
+    "obj.mm_alchemist_legs",
+    "obj.mm_alchemist_legs_alt",
+    "obj.mm_alchemist_gloves",
+]
+times = 3

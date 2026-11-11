@@ -18,6 +18,7 @@ internal fun Player.openJournalTab(tab: SideJournalTab, eventBus: EventBus) =
         SideJournalTab.Summary -> openSummaryTab(eventBus)
         SideJournalTab.Quests -> openQuestTab(eventBus)
         SideJournalTab.Tasks -> openTaskTab(eventBus)
+        SideJournalTab.League -> openLeagueTab(eventBus)
     }
 
 internal fun Player.openSummaryTab(eventBus: EventBus) {
@@ -54,11 +55,16 @@ internal fun Player.openTaskTab(eventBus: EventBus) {
     ifOpenOverlay("interface.area_task", "component.side_journal:tab_container", eventBus)
 }
 
+internal fun Player.openLeagueTab(eventBus: EventBus) {
+    ifOpenOverlay("interface.league_side_panel", "component.side_journal:tab_container", eventBus)
+}
+
 internal fun Player.prepareJournalTab(tab: SideJournalTab) =
     when (tab) {
         SideJournalTab.Summary -> prepareSummaryTab()
         SideJournalTab.Quests -> prepareQuestTab()
-        SideJournalTab.Tasks -> {}
+        SideJournalTab.Tasks,
+        SideJournalTab.League -> {}
     }
 
 internal fun Player.prepareSummaryTab() {
@@ -86,9 +92,10 @@ internal fun Player.closeJournalTab(tab: SideJournalTab, eventBus: EventBus) =
         SideJournalTab.Summary -> ifCloseSub("interface.account_summary_sidepanel", eventBus)
         SideJournalTab.Quests -> ifCloseSub("interface.questlist", eventBus)
         SideJournalTab.Tasks -> ifCloseSub("interface.area_task", eventBus)
+        SideJournalTab.League -> ifCloseSub("interface.league_side_panel", eventBus)
     }
 
-internal fun Player.switchJournalTab(open: SideJournalTab, eventBus: EventBus) {
+public fun Player.switchJournalTab(open: SideJournalTab, eventBus: EventBus) {
     val previous = sideJournalTab
     sideJournalTab = open
     closeJournalTab(previous, eventBus)

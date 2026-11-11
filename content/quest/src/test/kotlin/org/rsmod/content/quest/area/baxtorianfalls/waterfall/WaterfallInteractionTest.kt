@@ -510,7 +510,7 @@ class WaterfallInteractionTest {
                     getNpcInteractions = { NpcInteractions(events) },
                     getCollision = { collision },
                     getNpcList = { npcList },
-                    getTeleportValidator = { PlayerTeleportValidator(emptySet()) },
+                    getTeleportValidator = { PlayerTeleportValidator(emptySet(), EventBus()) },
                     getAreaChecker = { AreaChecker(regions, AreaIndex()) },
                     getRandom = { DefaultGameRandom(1) },
                 )

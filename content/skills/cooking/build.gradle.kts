@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
@@ -8,4 +9,6 @@ dependencies {
     implementation(projects.content.skills.utils)
     implementation(projects.content.generic.genericLocs)
     implementation(projects.content.quest)
+
+    testImplementation(projects.api.invStorage)
 }

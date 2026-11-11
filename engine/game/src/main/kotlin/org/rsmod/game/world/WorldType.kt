@@ -14,6 +14,7 @@ public enum class WorldType(public val key: String, public val label: String) {
     SHATTERED_RELICS_LEAGUE("shattered_relics_league", "Shattered Relics League"),
     TRAILBLAZER_RELOADED_LEAGUE("trailblazer_reloaded_league", "Trailblazer Reloaded League"),
     RAGING_ECHOES_LEAGUE("raging_echoes_league", "Raging Echoes League"),
+    DEMONIC_PACTS_LEAGUE("demonic_pacts_league", "Demonic Pacts League"),
     GRIDMASTER("gridmaster", "Gridmaster");
 
     public val isLeague: Boolean

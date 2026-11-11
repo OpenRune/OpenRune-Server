@@ -1,0 +1,60 @@
+[[league_task_chop_some_logs]]
+trigger = "product"
+stat = "stat.woodcutting"
+
+[[league_task_chop_some_logs_with_a_steel_axe]]
+trigger = "product"
+stat = "stat.woodcutting"
+tool = "obj.steel_axe"
+
+[[league_task_chop_some_logs_with_a_rune_axe]]
+trigger = "product"
+stat = "stat.woodcutting"
+tool = "obj.rune_axe"
+
+[[league_task_chop_down_an_arctic_pine_tree]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.arctic_pine_log"
+
+[[league_task_chop_100_willow_logs]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.willow_logs"
+times = 100
+counter = "varbit.league_counter_chop_willow_logs"
+
+[[league_task_cut_50_maple_logs]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.maple_logs"
+times = 50
+counter = "varbit.league_task_cut_maple_logs"
+
+[[league_task_chop_100_blisterwood_logs]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.blisterwood_logs"
+times = 100
+counter = "varbit.league_counter_chop_blisterwood_logs"
+
+[[league_task_chop_25_juniper_logs]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.juniper_logs"
+times = 25
+counter = "varbit.league_task_chop_juniper_logs"
+
+[[league_task_chop_100_yew_logs]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.yew_logs"
+times = 100
+counter = "varbit.league_task_chop_yew_logs"
+
+[[league_task_chop_75_magic_logs]]
+trigger = "product"
+stat = "stat.woodcutting"
+obj = "obj.magic_logs"
+times = 75
+counter = "varbit.league_counter_chop_magic_logs"

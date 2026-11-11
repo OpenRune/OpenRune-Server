@@ -14,11 +14,11 @@ import org.rsmod.api.bosses.spec.DamageExpr
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.npc.events.NpcHitEvents
+import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
 import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.script.onEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
-import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitType
@@ -212,15 +212,15 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
 
     private fun currentProtectStyle(npc: Npc): String =
         when {
-            npc.vars["varn.immune_melee"] == 1 -> PHASE_MELEE
-            npc.vars["varn.immune_ranged"] == 1 -> PHASE_RANGED
+            npc.vars["varn.protect_melee"] > 0 -> PHASE_MELEE
+            npc.vars["varn.protect_ranged"] > 0 -> PHASE_RANGED
             else -> PHASE_MAGIC
         }
 
     private fun applyImmunity(npc: Npc, style: String) {
-        npc.vars["varn.immune_melee"] = if (style == PHASE_MELEE) 1 else 0
-        npc.vars["varn.immune_ranged"] = if (style == PHASE_RANGED) 1 else 0
-        npc.vars["varn.immune_magic"] = if (style == PHASE_MAGIC) 1 else 0
+        npc.vars["varn.protect_melee"] = if (style == PHASE_MELEE) FULL_STYLE_PROTECTION else 0
+        npc.vars["varn.protect_ranged"] = if (style == PHASE_RANGED) FULL_STYLE_PROTECTION else 0
+        npc.vars["varn.protect_magic"] = if (style == PHASE_MAGIC) FULL_STYLE_PROTECTION else 0
     }
 
     @OptIn(InternalApi::class)

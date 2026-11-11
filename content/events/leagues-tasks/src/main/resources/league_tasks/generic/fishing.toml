@@ -1,0 +1,100 @@
+[[league_task_catch_a_herring]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_herring"
+
+[[league_task_catch_a_shrimp]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_shrimp"
+
+[[league_task_catch_an_anchovy]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_anchovies"
+
+[[league_task_catch_10_cod]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_cod"
+times = 10
+counter = "varbit.league_counter_catch_cod"
+
+[[league_task_catch_100_swordfish]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_swordfish"
+times = 100
+counter = "varbit.league_counter_catch_swordfish"
+
+[[league_task_catch_50_tuna]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_tuna"
+times = 50
+counter = "varbit.league_counter_catch_tuna"
+
+[[league_task_catch_100_tuna]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_tuna"
+times = 100
+counter = "varbit.league_counter_catch_tuna"
+
+[[league_task_catch_20_mackerel]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_mackerel"
+times = 20
+counter = "varbit.league_counter_catch_mackerel"
+
+[[league_task_catch_75_lobsters]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_lobster"
+times = 75
+counter = "varbit.league_counter_catch_lobsters"
+
+[[league_task_catch_75_trout]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_trout"
+times = 75
+counter = "varbit.league_counter_catch_trout"
+
+[[league_task_catch_100_shark]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_shark"
+times = 100
+counter = "varbit.league_counter_catch_shark"
+
+[[league_task_catch_100_dark_crabs]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_dark_crab"
+area = "area.wilderness"
+times = 100
+counter = "varbit.league_counter_catch_dark_crabs"
+
+[[league_task_catch_150_anglerfish]]
+trigger = "product"
+stat = "stat.fishing"
+obj = "obj.raw_anglerfish"
+times = 150
+counter = "varbit.league_task_catch_anglerfish"
+
+[[league_task_equip_a_full_anglers_outfit]]
+trigger = "equip"
+obj = [
+    "obj.trawler_reward_hat",
+    "obj.trawler_reward_top",
+    "obj.trawler_reward_legs",
+    "obj.trawler_reward_boots",
+    "obj.spirit_angler_hat",
+    "obj.krill_angler_hat",
+    "obj.spirit_angler_top",
+    "obj.spirit_angler_legs",
+    "obj.spirit_angler_boots",
+]
+times = 4

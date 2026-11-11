@@ -6,6 +6,7 @@ import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
+import org.rsmod.content.interfaces.journal.tab.JournalStoneSelectedEvent
 import org.rsmod.content.interfaces.journal.tab.SideJournalTab
 import org.rsmod.content.interfaces.journal.tab.openJournalTab
 import org.rsmod.content.interfaces.journal.tab.sideJournalTab
@@ -31,6 +32,10 @@ class JournalTabScript @Inject constructor(private val eventBus: EventBus) : Plu
             player.switchJournalTab(SideJournalTab.Tasks)
         }
 
+        onIfOverlayButton("component.side_journal:league_list") {
+            player.switchJournalTab(SideJournalTab.League)
+        }
+
         onIfOverlayButton("component.toplevel_osrs_stretch:stone2") { player.selectStoneOp(it.op) }
     }
 
@@ -40,6 +45,10 @@ class JournalTabScript @Inject constructor(private val eventBus: EventBus) : Plu
                 IfButtonOp.Op2 -> SideJournalTab.Summary
                 IfButtonOp.Op3 -> SideJournalTab.Quests
                 IfButtonOp.Op4 -> SideJournalTab.Tasks
+                IfButtonOp.Op1 -> {
+                    eventBus.publish(JournalStoneSelectedEvent(this))
+                    return
+                }
                 else -> return
             }
         ClientScripts.toplevelSidebuttonSwitch(this, 2)

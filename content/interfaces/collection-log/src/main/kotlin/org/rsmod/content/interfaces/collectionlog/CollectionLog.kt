@@ -48,8 +48,27 @@ public object CollectionLog {
         }
     }
 
+    /**
+     * How many distinct slots [player] has filled across the `dbtable.collection_log_categories`
+     * rows in [categories], or across the whole log when it is empty.
+     */
+    public fun filledSlots(player: Player, categories: Collection<Int>): Int {
+        if (categories.isEmpty()) {
+            return CollectionLogItems.obtainedCount(player)
+        }
+        val inv = player.collectionTransmit
+        val items =
+            categories.flatMapTo(HashSet()) { row ->
+                checkNotNull(CollectionLogCategories.forRow(row)) {
+                    "Unknown collection log category row $row."
+                }.itemIds
+            }
+        return items.count { inv.countOf(it) > 0 }
+    }
+
     /** Runs the first time [objId] is added to [player]'s collection log. */
     private fun onNewItemObtained(player: Player, objId: Int) {
+        player.applyCollectionCount()
         for (slot in LATEST_ITEM_SLOT_COUNT - 1 downTo 1) {
             val previousObj = player.vars[latestItemVarp(slot - 1)]
             val previousDate = player.vars[latestItemDateVarp(slot - 1)]

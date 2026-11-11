@@ -8,9 +8,12 @@ import jakarta.inject.Inject
 import kotlin.math.abs
 import org.rsmod.api.controller.vars.intVarCon
 import org.rsmod.api.player.events.interact.LocUEvents
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.firemakingLvl
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.repo.controller.ControllerRepository
 import org.rsmod.api.repo.loc.LocRepository
@@ -133,11 +136,18 @@ class CampfireEvents @Inject constructor(
         val xpModifier = xpMods.get(player, "stat.firemaking")
         val xp = task.log.xp * xpModifier
         statAdvance("stat.firemaking", xp)
+        val context =
+            SkillingActionContext.Firemaking(
+                log = task.log.input.internalName,
+                experienceGranted = xp,
+                campfire = true,
+            )
+        publish(SkillingActionCompleteEvent(player, context))
         invDel(player.inv, task.log.input.internalName, 1)
 
         spotanimMap(worldRepo, "spotanim.forestry_campfire_burning_spotanim", camp.coords)
 
-        weakQueue("queue.firemaking_campfire_tend", 9, task)
+        weakQueue("queue.firemaking_campfire_tend", player.skillCycles("stat.firemaking", 9), task)
     }
 
     private fun ProtectedAccess.showCampfireStatus(camp: BoundLocInfo) {
@@ -199,7 +209,6 @@ class CampfireEvents @Inject constructor(
         FiremakingLogsRow.all().filter {
             player.firemakingLvl >= it.statReq.first().t1 && inv.count(it.input.internalName) > 0
         }
-
 
     private fun spawnCampfire(template: BoundLocInfo, id: String, duration: Int) {
         val coords = template.coords

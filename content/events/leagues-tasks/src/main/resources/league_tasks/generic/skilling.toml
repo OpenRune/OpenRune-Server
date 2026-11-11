@@ -1,0 +1,54 @@
+[[action_cast_low_level_alchemy]]
+trigger = "spell"
+obj = "obj.21_low_alchemy"
+
+[[action_alchemy_500]]
+trigger = "alchemy"
+value = 500
+
+[[league_task_bury_6_bones]]
+trigger = "bury"
+times = 6
+counter = "varbit.league_task_bones_counter"
+
+[[league_task_bury_some_wyvern_or_dragon_bones]]
+trigger = "bury"
+obj = ["obj.wyvern_bones", "obj.dragon_bones"]
+
+[[league_task_bury_some_lava_dragon_bones]]
+trigger = "bury"
+obj = "obj.lava_dragon_bones"
+
+[[league_task_sacrifice_some_bones_at_the_chaos_temple]]
+trigger = "offer"
+area = "area.chaos_temple"
+
+[[league_task_sacrifice_some_dragon_bones_at_the_chaos_temple]]
+trigger = "offer"
+obj = "obj.dragon_bones"
+area = "area.chaos_temple"
+
+[[league_task_eat_an_onion]]
+trigger = "consume"
+obj = "obj.onion"
+
+[[league_task_eat_a_rabbit]]
+trigger = "consume"
+obj = "obj.cooked_rabbit"
+
+[[league_task_drink_a_strength_potion]]
+trigger = "consume"
+obj = [
+    "obj.strength4",
+    "obj.3dose1strength",
+    "obj.2dose1strength",
+    "obj.1dose1strength",
+    "obj.4dosemoonlightpotion",
+    "obj.3dosemoonlightpotion",
+    "obj.2dosemoonlightpotion",
+    "obj.1dosemoonlightpotion",
+]
+
+[[league_task_bury_ourg_bone]]
+trigger = "bury"
+obj = "obj.zogre_ancestral_bones_ourg"

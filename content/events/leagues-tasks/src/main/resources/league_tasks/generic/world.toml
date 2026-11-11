@@ -1,0 +1,20 @@
+[[league_task_enter_the_taverley_dungeon]]
+trigger = "enter"
+area = "area.taverley_dungeon"
+
+[[league_task_enter_the_brimhaven_dungeon]]
+trigger = "enter"
+area = "area.brimhaven_dungeon"
+
+[[league_task_enter_the_fishing_guild]]
+trigger = "enter"
+area = "area.fishing_guild"
+
+[[league_task_visit_ferox_enclave]]
+trigger = "enter"
+area = "area.ferox_enclave"
+
+[[league_task_open_the_crystal_chest]]
+trigger = "var"
+value = 1
+varp = "varp.kc_crystal_chest"

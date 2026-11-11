@@ -8,6 +8,7 @@ import org.rsmod.api.table.CollectionLogCategoriesRow
 import org.rsmod.game.entity.Player
 
 internal data class CollectionLogCategory(
+    val rowId: Int,
     val structId: Int,
     val completedVarbit: VarBitType,
     val itemIds: Set<Int>,
@@ -64,6 +65,11 @@ internal object CollectionLogCategories {
             .toMap()
     }
 
+    private val categoryByRow: Map<Int, CollectionLogCategory> =
+        allCategories.associateBy { it.rowId }
+
+    fun forRow(rowId: Int): CollectionLogCategory? = categoryByRow[rowId]
+
     fun categoriesContaining(itemId: Int): List<CollectionLogCategory> =
         itemIdToCategories[itemId] ?: emptyList()
 
@@ -88,6 +94,6 @@ internal object CollectionLogCategories {
             listOfNotNull(row.countVarp1, row.countVarp2, row.countVarp3).mapNotNull { varpId ->
                 ServerCacheManager.getVarp(varpId)
             }
-        return CollectionLogCategory(row.structId, completedVarbit, itemIds, countVarps)
+        return CollectionLogCategory(row.rowId, row.structId, completedVarbit, itemIds, countVarps)
     }
 }

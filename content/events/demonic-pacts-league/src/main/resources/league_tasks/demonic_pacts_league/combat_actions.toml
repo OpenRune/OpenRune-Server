@@ -1,0 +1,40 @@
+[[league_task_use_the_special_attack_of_a_dragon_axe]]
+trigger = "special_attack"
+obj = [
+    "obj.dragon_axe",
+    "obj.trailblazer_axe_no_infernal",
+    "obj.trailblazer_reloaded_axe_no_infernal",
+    "obj.dragon_axe_2h",
+]
+
+[[league_task_kill_an_imp_with_an_earth_spell]]
+trigger = "kill"
+npc = [
+    "npc.godwars_ancient_imp",
+    "npc.imp",
+    "npc.castlewars_imp",
+    "npc.yama_imp",
+    "npc.chasm_smithing_imp_noname",
+    "npc.magic_hunter_npc",
+    "npc.imp_notele",
+    "npc.ic_basement_imp",
+    "npc.minion_imp_chathead",
+    "npc.league6_imp_relic_carry_1",
+    "npc.league6_imp_relic_carry_2",
+    "npc.league6_imp_relic_carry_3",
+    "npc.league6_imp_relic_carry_4",
+    "npc.league6_imp_reading_1",
+    "npc.league6_imp_reading_2",
+    "npc.league6_imp_reading_3",
+    "npc.league6_imp_jumping_1",
+    "npc.league6_imp_jumping_2",
+    "npc.league6_imp_jumping_3",
+    "npc.tfa_dagonhai_demon",
+]
+tool = [
+    "obj.09_earth_strike",
+    "obj.29_earth_bolt",
+    "obj.53_earth_blast",
+    "obj.70_earth_wave",
+    "obj.90_earth_surge",
+]

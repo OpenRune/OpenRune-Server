@@ -1,0 +1,129 @@
+[[league_task_5_collection_log_slots]]
+trigger = "collection_slots"
+value = 5
+
+[[league_task_15_collection_log_slots]]
+trigger = "collection_slots"
+value = 15
+
+[[league_task_30_collection_log_slots]]
+trigger = "collection_slots"
+value = 30
+
+[[league_task_50_collection_log_slots]]
+trigger = "collection_slots"
+value = 50
+
+[[league_task_100_collection_log_slots]]
+trigger = "collection_slots"
+value = 100
+
+[[league_task_200_collection_log_slots]]
+trigger = "collection_slots"
+value = 200
+
+[[league_task_350_collection_log_slots]]
+trigger = "collection_slots"
+value = 350
+
+[[league_task_500_collection_log_slots]]
+trigger = "collection_slots"
+value = 500
+
+[[league_task_750_collection_log_slots]]
+trigger = "collection_slots"
+value = 750
+
+[[league_task_fill_5_easy_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = "dbrow.collection_log_category_easy_treasure_trails"
+value = 5
+
+[[league_task_fill_20_easy_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = "dbrow.collection_log_category_easy_treasure_trails"
+value = 20
+
+[[league_task_fill_50_easy_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = "dbrow.collection_log_category_easy_treasure_trails"
+value = 50
+
+[[league_task_fill_5_medium_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = "dbrow.collection_log_category_medium_treasure_trails"
+value = 5
+
+[[league_task_fill_20_medium_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = "dbrow.collection_log_category_medium_treasure_trails"
+value = 20
+
+[[league_task_fill_40_medium_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = "dbrow.collection_log_category_medium_treasure_trails"
+value = 40
+
+[[league_task_fill_3_hard_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = [
+    "dbrow.collection_log_category_hard_treasure_trails",
+    "dbrow.collection_log_category_hard_treasure_trails_rare",
+]
+value = 3
+
+[[league_task_fill_15_hard_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = [
+    "dbrow.collection_log_category_hard_treasure_trails",
+    "dbrow.collection_log_category_hard_treasure_trails_rare",
+]
+value = 15
+
+[[league_task_fill_30_hard_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = [
+    "dbrow.collection_log_category_hard_treasure_trails",
+    "dbrow.collection_log_category_hard_treasure_trails_rare",
+]
+value = 30
+
+[[league_task_fill_3_elite_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = [
+    "dbrow.collection_log_category_elite_treasure_trails",
+    "dbrow.collection_log_category_elite_treasure_trails_rare",
+]
+value = 3
+
+[[league_task_fill_10_elite_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = [
+    "dbrow.collection_log_category_elite_treasure_trails",
+    "dbrow.collection_log_category_elite_treasure_trails_rare",
+]
+value = 10
+
+[[league_task_fill_25_elite_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = [
+    "dbrow.collection_log_category_elite_treasure_trails",
+    "dbrow.collection_log_category_elite_treasure_trails_rare",
+]
+value = 25
+
+[[league_task_fill_5_master_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = [
+    "dbrow.collection_log_category_master_treasure_trails",
+    "dbrow.collection_log_category_master_treasure_trails_rare",
+]
+value = 5
+
+[[league_task_fill_25_master_clue_collection_log_slots]]
+trigger = "collection_slots"
+collection = [
+    "dbrow.collection_log_category_master_treasure_trails",
+    "dbrow.collection_log_category_master_treasure_trails_rare",
+]
+value = 25
