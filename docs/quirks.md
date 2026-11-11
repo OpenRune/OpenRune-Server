@@ -148,16 +148,22 @@ to the bank first, then inventory if necessary; Ultimate Ironmen use inventory o
 ### Priest in Peril
 
 The quest uses shortened dialogue and a private guardian encounter. Checked doors
-retain invisible blocking walls and move only the acting player; native opening
-leaves are not yet drawn. Ordinary monks punch and cast Weaken; the hooded monk
-also uses Fire Bolt. Both styles use the standard accuracy/protection paths, but
-exact native attack-selection odds and regeneration timing remain unverified.
-The water-blessing flag is distinct from the player's persistent stage-61 blessing.
-Existing completed characters that earned the old player-blessing flag migrate on
-login; new water blessings never grant passage by themselves under respect-progress.
-The journal preserves history and the remaining passage instruction using authored
-wording. Exact text, camera/animation/effect/sound timing still need comparison with
-the reviewer's newly available RSProx recordings, which this revision did not use.
-Reward labels/order/model zoom follow the concrete values supplied in the review.
+retain blocking invisible walls and draw the recorded temporary opening leaves;
+only the checked actor crosses. Unlocking the cell consumes the iron key before
+a separate opening/crossing action.
+
+The 17 October and 2 November 2026 scrubbed RSProx captures were compared for
+monk punches, Weaken/Confuse/Curse and hooded Fire Bolt, adjacent projectile
+frames, well filling, the distinct water/player blessings, coffin effects,
+journal history and reward-scroll presentation. The hooded monk's magic damage
+is capped at the wiki's eight rather than the generic spell's twelve. Selection
+weights and exact fast regeneration remain approximations, not measured odds or
+regeneration parity. The supplied combat samples do not establish those rates.
+
+Captured journal wording is retained at the observed stages, including the
+post-completion passage instruction and native61 blessing. The uncaptured stage7
+next-step line is authored; unobserved essence counts use the captured wording
+with the remaining quantity. Legacy earned player blessings still migrate on
+login; a new water blessing alone never grants respect-progress passage.
 Optional souvenir monument exchanges and the later Varrock Museum Kudos claim
 are not included in this quest port.

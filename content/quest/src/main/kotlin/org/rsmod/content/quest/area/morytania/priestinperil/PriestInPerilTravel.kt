@@ -15,6 +15,7 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onModifyNpcHit
 import org.rsmod.api.script.onOpLoc1
@@ -36,6 +37,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.BoundLocInfo
+import org.rsmod.game.loc.LocAngle
+import org.rsmod.game.loc.LocShape
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Translation
 import org.rsmod.plugin.scripts.PluginScript
@@ -50,6 +53,7 @@ constructor(
     private val instances: InstanceManager,
     private val locs: LocRepository,
     private val clock: MapClock,
+    private val worldRepo: WorldRepository,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         // The old members' gates are still present on the only western approach.
@@ -151,8 +155,11 @@ constructor(
                 mes("I don't need this water just now.")
                 return@onOpLocU
             }
-            if (quest.exchange(this, "obj.bucket_empty", MURKY_WATER))
+            if (quest.exchange(this, "obj.bucket_empty", MURKY_WATER)) {
+                anim("seq.human_pickuptable")
+                soundSynth("synth.well_fill")
                 objbox(MURKY_WATER, "You draw murky water from the well.")
+            }
         }
         onOpLoc1("loc.priestperil_coffin_noanim") {
             arriveDelay()
@@ -164,12 +171,14 @@ constructor(
                 mes("The coffin does not need more blessed water.")
                 return@onOpLocU
             }
-            anim("seq.human_pickupfloor")
-            delay(1)
             if (
                 quest.stage(player) == CELL_UNLOCKED &&
                     quest.exchange(this, BLESSED_WATER, "obj.bucket_empty")
             ) {
+                anim("seq.throw_bucketofwater")
+                spotanimMap(worldRepo, "spotanim.priestperil_coffin_spell", CoordGrid(3413, 3486, 2), delay = 34)
+                spotanimMap(worldRepo, "spotanim.priestperil_coffin_spell", CoordGrid(3413, 3487, 2), delay = 34)
+                soundSynth("synth.holy_water_pour", delay = 30)
                 quest.quest.setQuestStage(this, COFFIN_SEALED)
                 mesbox("You pour the blessed water over the coffin, sealing the vampyre inside.")
             }
@@ -331,17 +340,20 @@ constructor(
 
     private suspend fun ProtectedAccess.cellDoor(loc: BoundLocInfo) {
         arriveDelay()
-        if (
-            coords.x <= loc.x &&
-                !quest.policyAccess(player) &&
-                (quest.stage(player) < MET_DREZEL ||
-                    (quest.stage(player) == MET_DREZEL && IRON_KEY !in inv))
-        ) {
-            mes("The cell gate is locked.")
-            return
+        if (coords.x <= loc.x && !quest.policyAccess(player)) {
+            if (quest.stage(player) < MET_DREZEL) {
+                mes("The cell gate is locked.")
+                return
+            }
+            if (quest.stage(player) == MET_DREZEL) {
+                if (quest.unlockCell(this)) {
+                    soundSynth("synth.unlock")
+                    objbox(IRON_KEY, "The key fit the lock!")
+                } else mes("The cell gate is locked.")
+                return
+            }
         }
-        if (crossWall(loc) && coords.x > loc.x && quest.stage(player) == MET_DREZEL)
-            quest.quest.setQuestStage(this, CELL_UNLOCKED)
+        crossWall(loc)
     }
 
     private suspend fun ProtectedAccess.crossWall(loc: BoundLocInfo): Boolean {
@@ -362,6 +374,7 @@ constructor(
         }
         soundSynth("synth.door_open")
         locs.change(loc, "loc.inviswall", 2)
+        openLeaves(loc, across)
         val facing =
             when {
                 destination.x > start.x -> constants.em_face_east
@@ -372,6 +385,24 @@ constructor(
         exactMove(start, destination, 0, 30, facing, TeleportType.Exempt)
         delay(1)
         return coords == destination
+    }
+
+    private fun openLeaves(loc: BoundLocInfo, across: CoordGrid) {
+        when (loc.id) {
+            "loc.priestperiltempledoorl".asRSCM(), "loc.priestperiltempledoorr".asRSCM() -> {
+                for ((symbol, z) in listOf("loc.priestperiltempledoorl" to 3489, "loc.priestperiltempledoorr" to 3488)) {
+                    val other = locs.findExact(CoordGrid(3408, z), LocShape.WallStraight)
+                    if (other != null && other.id == symbol.asRSCM())
+                        locs.change(other, checkNotNull(ServerCacheManager.getObject("loc.inviswall".asRSCM())), 2)
+                }
+                locs.add(CoordGrid(3409, 3489), "loc.inactivetempledoorl", 2, LocAngle.North, LocShape.WallStraight)
+                locs.add(CoordGrid(3409, 3488), "loc.inactivetempledoorr", 2, LocAngle.South, LocShape.WallStraight)
+            }
+            "loc.pip_prisondoor".asRSCM() ->
+                locs.add(across, "loc.inactive_pipprisondoor", 2, loc.angle.turn(1), loc.shape)
+            "loc.pip_underground_door1".asRSCM(), "loc.pip_underground_door2".asRSCM() ->
+                locs.add(across, "loc.inacpip_underground_door", 2, loc.angle.turn(1), loc.shape)
+        }
     }
 
     companion object {

@@ -38,11 +38,11 @@ class PriestInPeril :
     override fun ScriptContext.init() {
         check(quest.maxSteps == COMPLETE)
         onOpNpc1("npc.king_roald") { startDialogue(it.npc) { roald() } }
-        onOpNpc1("npc.priestperiltrappedmonk") { startDialogue(it.npc) { imprisonedDrezel() } }
+        onOpNpc1("npc.priestperiltrappedmonk") { startDialogue(it.npc) { imprisonedDrezel(it.npc) } }
         onApNpc1("npc.priestperiltrappedmonk") {
-            if (isWithinApRange(it.npc, 3)) startDialogue(it.npc) { imprisonedDrezel() }
+            if (isWithinApRange(it.npc, 3)) startDialogue(it.npc) { imprisonedDrezel(it.npc) }
         }
-        onOpNpc1("npc.priestperiltrappedmonk2") { startDialogue(it.npc) { undergroundDrezel() } }
+        onOpNpc1("npc.priestperiltrappedmonk2") { startDialogue(it.npc) { undergroundDrezel(it.npc) } }
         onOpNpcU("npc.priestperiltrappedmonk2") {
             val essence = it.objType.internalName
             if (donateOne(this, it.objType.internalName))
@@ -101,6 +101,16 @@ class PriestInPeril :
         VarPlayerIntMapSetter.set(access.player, STATE, access.player.vars[STATE] or STATE_FORMAT)
         VarPlayerIntMapSetter.set(access.player, SALVE_BLESSING, 1)
         return true
+    }
+
+    internal fun unlockCell(access: ProtectedAccess): Boolean {
+        if (stage(access.player) != MET_DREZEL) return false
+        val tx = access.player.invTransaction(access.inv, autoCommit = false) {
+            delete(select(access.inv), IRON_KEY.asRSCM(), 1)
+        }
+        if (tx.failure) return false
+        tx.commitAll()
+        return quest.setQuestStage(access, CELL_UNLOCKED)
     }
 
     internal fun replaceWolfbane(access: ProtectedAccess): Boolean {
@@ -183,7 +193,7 @@ class PriestInPeril :
         }
     }
 
-    private suspend fun Dialogue.imprisonedDrezel() {
+    private suspend fun Dialogue.imprisonedDrezel(npc: Npc) {
         when (stage(player)) {
             RETURNED_TO_ROALD -> {
                 chatNpc(
@@ -207,8 +217,10 @@ class PriestInPeril :
                         neutral,
                         "The well's water carries the Salve's blessing. Let me strengthen it for you.",
                     )
-                    if (blessWater(access))
+                    if (blessWater(access)) {
+                        blessingEffect(npc)
                         chatNpc(neutral, "Pour this over the coffin to keep the vampyre asleep.")
+                    }
                 } else
                     chatNpc(
                         neutral,
@@ -226,7 +238,7 @@ class PriestInPeril :
         }
     }
 
-    private suspend fun Dialogue.undergroundDrezel() {
+    private suspend fun Dialogue.undergroundDrezel(npc: Npc) {
         val current = stage(player)
         if (current >= COMPLETE) {
             if (!ownsWolfbane(player)) {
@@ -245,7 +257,7 @@ class PriestInPeril :
                 )
                 if (choice2("Yes, please bless me so I can pass.", 1, "Not yet.", 2) == 1) {
                     chatNpc(neutral, "May Saradomin's blessing protect you beyond the river.")
-                    blessPlayer(access)
+                    if (blessPlayer(access)) blessingEffect(npc)
                 }
             } else {
                 chatNpc(happy, "The passage is open to you. Take care in Morytania.")
@@ -280,6 +292,12 @@ class PriestInPeril :
         )
         if (!finish(access))
             chatNpc(neutral, "Please make room in your pack for Wolfbane, then speak to me again.")
+    }
+
+    private fun Dialogue.blessingEffect(npc: Npc) {
+        npc.anim("seq.human_castentangle")
+        access.spotanim("spotanim.heal_casting", height = 120)
+        access.soundSynth("synth.heal")
     }
 
     /**
@@ -348,62 +366,15 @@ class PriestInPeril :
     override fun subTitle() =
         "talking to <col=800000>King Roald</col> in <col=800000>Varrock Palace</col>."
 
-    private fun history(current: Int): List<String> = buildList {
-        if (current >= STARTED)
-            add("King Roald asked me to investigate Drezel's disappearance at Paterdomus.")
-        if (current >= GUARDIAN_DEAD)
-            add("The men in the temple tricked me into killing the guardian beneath the mausoleum.")
-        if (current >= RETURNED_TO_ROALD)
-            add(
-                "King Roald sent me back to rescue Drezel and restore the protection of the River Salve."
-            )
-        if (current >= MET_DREZEL)
-            add("I found Drezel imprisoned above the temple with a vampyre's coffin.")
-        if (current >= CELL_UNLOCKED)
-            add("I exchanged a golden key for an iron key and unlocked Drezel's cell.")
-        if (current >= COFFIN_SEALED)
-            add("I used water blessed by Drezel to seal the vampyre's coffin.")
-        if (current >= MOVED_UNDERGROUND)
-            add("Drezel moved into the mausoleum to restore the Salve's holy protection.")
-        if (current >= COMPLETE)
-            add("I brought Drezel fifty pieces of essence and helped cleanse the River Salve.")
+    override fun questLog(player: ProtectedAccess) = questJournal(player) {
+        PriestInPerilJournal.progress(stage(player.player), ESSENCE_REQUIRED - donatedEssence(player.player))
+            .forEach { addRawLine(it) }
     }
 
-    override fun questLog(player: ProtectedAccess) =
-        questJournal(player) {
-            val current = stage(player.player)
-            history(current).forEach { strike(it) }
-            line(
-                when (current) {
-                    STARTED -> "I should investigate the temple east of Varrock."
-                    GUARDIAN_REQUESTED ->
-                        "The men behind the temple door asked me to kill the guardian beneath the northern trapdoor."
-                    GUARDIAN_DEAD -> "I should report the guardian's death to King Roald."
-                    RETURNED_TO_ROALD -> "I must find the real Drezel on the temple's upper floor."
-                    MET_DREZEL ->
-                        "The monuments below the temple may hold the correct key for Drezel's cell."
-                    CELL_UNLOCKED ->
-                        "I must ask Drezel to bless water from the well and pour it over the coffin."
-                    COFFIN_SEALED ->
-                        "I should tell Drezel that the coffin is sealed and he can leave."
-                    else ->
-                        "I must bring Drezel ${ESSENCE_REQUIRED - donatedEssence(player.player)} more unnoted rune or pure essence."
-                }
-            )
-        }
-
-    override fun completedLog(player: ProtectedAccess) =
-        completionJournal(player) {
-            history(COMPLETE).forEach { line(it) }
-            line(
-                "King Roald rewarded my help with a quest point; Drezel gave me Prayer experience and the Wolfbane dagger."
-            )
-            if (canPass(player.player)) line("Drezel blessed me to pass into Morytania.")
-            else
-                objective(
-                    "I should speak to Drezel again for his blessing before using the eastern passage into Morytania."
-                ) {}
-        }
+    override fun completedLog(player: ProtectedAccess) = questJournal(player) {
+        PriestInPerilJournal.completed(player.player.vars["varp.priestperil"] >= PLAYER_BLESSED)
+            .forEach { addRawLine(it) }
+    }
 
     companion object {
         internal const val STARTED = 1

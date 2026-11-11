@@ -289,6 +289,7 @@ class PriestInPerilTest {
                     io.mockk.mockk(),
                     io.mockk.mockk(),
                     org.rsmod.game.MapClock(100),
+                    mockk(relaxed = true),
                 )
             with(script) { ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup() }
             val type =
@@ -473,7 +474,7 @@ class PriestInPerilTest {
 
     @Test
     fun `native temple gates block followers and permit safe exits without granting progress`() {
-        val cache = ServerCacheManager.init(241)
+        val cache = ServerCacheManager.init(242)
         try {
             val f =
                 PriestMapFixture(
@@ -486,7 +487,7 @@ class PriestInPerilTest {
             val access = ProtectedAccess(f.player, GameCoroutine("native-gates"), f.context)
             val instances = mockk<org.rsmod.api.instances.InstanceManager>()
             every { instances.sessionForPlayer(any()) } returns null
-            with(PriestInPerilTravel(quest, instances, f.repository, f.clock)) {
+            with(PriestInPerilTravel(quest, instances, f.repository, f.clock, mockk(relaxed = true))) {
                 ScriptContext(f.events, CheatCommandMap(), EngineQueueCache()).startup()
             }
             val steps = org.rsmod.routefinder.StepValidator(f.collision)
@@ -546,16 +547,16 @@ class PriestInPerilTest {
             assertEquals(0, quest.stage(f.player))
             val prison = CoordGrid(3415, 3489, 2)
             exercise("loc.pip_prisondoor", prison, prison, prison.translateX(1), 5, null, false)
-            exercise(
-                "loc.pip_prisondoor",
-                prison,
-                prison,
-                prison.translateX(1),
-                5,
-                PriestInPeril.IRON_KEY,
-                true,
-            )
+            f.player.coords = prison
+            f.player.inv[0] = InvObj(PriestInPeril.IRON_KEY)
+            f.operate(f.find("loc.pip_prisondoor", prison), 1)
+            f.tick(1)
+            assertEquals(prison, f.player.coords)
             assertEquals(6, quest.stage(f.player))
+            assertEquals(0, f.player.inv.count(PriestInPeril.IRON_KEY))
+            f.player.ifClose(f.events)
+            f.tick(1)
+            exercise("loc.pip_prisondoor", prison, prison, prison.translateX(1), 6, null, true)
             exercise("loc.pip_prisondoor", prison, prison.translateX(1), prison, 0, null, true)
             assertEquals(0, quest.stage(f.player))
             val mausoleum = CoordGrid(3405, 9895)
@@ -653,10 +654,13 @@ class PriestInPerilTest {
         val maxHit = mockk<org.rsmod.api.combat.formulas.MaxHitFormulae>()
         every { maxHit.getMeleeMaxHit(any(), any<Player>(), any()) } returns 5
         val queues = WorldQueueList()
+        val flights = mutableListOf<org.rsmod.game.proj.ProjAnim>()
+        val world = mockk<org.rsmod.api.repo.world.WorldRepository>(relaxed = true)
+        every { world.projAnim(capture(flights)) } answers { Unit }
         val deps =
             BossDeps(
                 random,
-                mockk(relaxed = true),
+                world,
                 mockk(),
                 mockk(),
                 mockk(),
@@ -684,6 +688,15 @@ class PriestInPerilTest {
         interpreter.run(null, script.hooded.abilities.getValue("fire_bolt"))
         assertEquals(HitType.Magic, hits.last().type)
         assertEquals(0, hits.last().damage)
+        VarPlayerIntMapSetter.set(f.player, "varbit.prayer_protectfrommagic", 0)
+        interpreter.run(null, script.hooded.abilities.getValue("fire_bolt"))
+        assertEquals(HitType.Magic, hits.last().type)
+        assertEquals(8, hits.last().damage)
+        val fireFlight = flights.last()
+        assertEquals(listOf(172, 124, 51, 90, 16, 64), listOf(
+            fireFlight.startHeight, fireFlight.endHeight, fireFlight.startTime,
+            fireFlight.endTime, fireFlight.angle, fireFlight.progress,
+        ))
         val count = hits.size
         interpreter.run(null, script.hooded.abilities.getValue("weaken"))
         repeat(5) {
@@ -700,15 +713,39 @@ class PriestInPerilTest {
         }
         assertEquals(57, f.player.statMap.getCurrentLevel("stat.strength").toInt())
         assertEquals(count, hits.size)
-        assertEquals(setOf("punch", "weaken"), script.ordinary.abilities.keys)
+        assertEquals(setOf("punch", "weaken", "confuse", "curse"), script.ordinary.abilities.keys)
+        f.player.statMap.setBaseLevel("stat.attack", 60)
+        f.player.statMap.setCurrentLevel("stat.attack", 60)
+        f.player.statMap.setBaseLevel("stat.defence", 60)
+        f.player.statMap.setCurrentLevel("stat.defence", 60)
+        val ordinary = Npc("npc.priestperilevilmonk1", CoordGrid(3411, 3489)).apply {
+            slotId = 3
+            assignUid()
+        }
+        val ordinaryInterpreter = EffectInterpreter(ordinary, f.player, script.ordinary,
+            deps.encounterRegistry.of(ordinary), deps)
+        ordinaryInterpreter.run(null, script.ordinary.abilities.getValue("confuse"))
+        ordinaryInterpreter.run(null, script.ordinary.abilities.getValue("curse"))
+        repeat(5) {
+            val iterator = queues.iterator()
+            while (iterator.hasNext()) {
+                val queue = iterator.next()
+                queue.remainingCycles--
+                if (queue.remainingCycles <= 0) { iterator.remove(); queue.action() }
+            }
+            iterator.cleanUp()
+        }
+        assertEquals(57, f.player.statMap.getCurrentLevel("stat.attack").toInt())
+        assertEquals(57, f.player.statMap.getCurrentLevel("stat.defence").toInt())
+        assertEquals(count, hits.size)
     }
 
     @Test
     fun `journal keeps the quest history and completion scroll orders access before XP and item`() {
         val f = Fixture(59, 50)
         val journal = f.script.questLog(f.access)
-        assertTrue(journal.contains("tricked me"))
-        assertTrue(journal.contains("seal the vampyre"))
+        assertTrue(journal.contains("pretended to be Drezel"))
+        assertTrue(journal.contains("used it to deal with the Vampyre"))
         assertTrue(f.script.finish(f.access))
         val text =
             (f.player.client as RecordingClient)
@@ -721,8 +758,8 @@ class PriestInPerilTest {
         assertEquals(expected, displayed)
         assertEquals(400, f.script.quest.itemDisplay.zoom)
         val complete = f.script.completedLog(f.access)
-        assertTrue(complete.contains("fifty pieces"))
-        assertTrue(complete.contains("speak to Drezel again"))
+        assertTrue(complete.contains("polluted the river"))
+        assertTrue(complete.replace(Regex("<[^>]*>"), "").contains("If I wish to travel into Morytania"))
     }
 
     private fun login(f: Fixture) {
@@ -815,7 +852,7 @@ class PriestInPerilTest {
         @JvmStatic
         @BeforeAll
         fun cache() {
-            ServerCacheManager.init(241).close()
+            ServerCacheManager.init(242).close()
             val oldPolicy = QuestRequirements.activePolicy()
             restored += { QuestRequirements.install(oldPolicy) }
             QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
