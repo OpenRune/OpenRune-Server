@@ -1,6 +1,7 @@
 package org.rsmod.api.game.process.player
 
 import dev.openrune.util.Wearpos
+import jakarta.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.api.config.constants
@@ -11,11 +12,15 @@ import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.vars.armRunAutoEnable
 import org.rsmod.api.player.vars.setActiveMoveSpeed
 import org.rsmod.api.player.vars.varMoveSpeed
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.game.entity.Player
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.game.type.getOrNull
 
-public class PlayerRunUpdateProcessor {
+public class PlayerRunUpdateProcessor @Inject constructor(config: ServerConfig) {
+    private val drainDenominator = config.gameplay.runEnergy.drainDenominator.coerceAtLeast(1)
+    private val infiniteRun = config.gameplay.runEnergy.infinite
+
     public fun process(player: Player) {
         player.updateRunWeight()
         player.updateRunEnergy()
@@ -31,7 +36,9 @@ public class PlayerRunUpdateProcessor {
         val startRunEnergy = runEnergy
 
         if (pendingStepCount > 1) {
-            decreaseRunEnergy()
+            if (!infiniteRun) {
+                decreaseRunEnergy()
+            }
         } else {
             restoreRunEnergy()
         }
@@ -51,6 +58,7 @@ public class PlayerRunUpdateProcessor {
         } else if (hasStaminaEffect()) {
             loss = (loss * 30) / 100
         }
+        loss = max(1, loss / drainDenominator)
 
         runEnergy = max(0, runEnergy - loss)
         if (runEnergy == 0 && isRunning()) {
