@@ -29,9 +29,15 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
     private val hitReactions = mutableListOf<HitReaction>()
     private val incomingRules = mutableListOf<IncomingRule>()
     private val timers = mutableListOf<TimerSpec>()
+    private var personalHp: PersonalHpSpec? = null
 
     fun stats(attackRate: Int = 4) {
         stats = BossStats(attackRate)
+    }
+
+    /** See [PersonalHpSpec]. */
+    fun personalHp(maxHitpoints: Int, hpVarbit: String? = null, onDeath: AbilityRef? = null) {
+        personalHp = PersonalHpSpec(maxHitpoints, hpVarbit, onDeath?.name)
     }
 
     fun ability(name: String, block: AbilityBuilder.() -> Unit): AbilityRef {
@@ -115,6 +121,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
                 incomingRules,
                 abilityAttackDelays,
                 timers,
+                personalHp,
             )
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {

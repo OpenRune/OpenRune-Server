@@ -10,6 +10,7 @@ import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.HitReaction
 import org.rsmod.api.bosses.spec.IncomingAction
 import org.rsmod.api.bosses.spec.IncomingRule
+import org.rsmod.api.bosses.spec.PersonalHpSpec
 import org.rsmod.api.bosses.spec.PhaseSpec
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.bosses.spec.TimerSpec
@@ -327,6 +328,18 @@ class SpecValidatorTest {
     fun `phaseTicksAtLeast must not be negative`() {
         assertEquals(emptyList<String>(), errorsFor(whenever(phaseTicksAtLeast(0), resetAnim())))
         assertHasError(errorsFor(whenever(phaseTicksAtLeast(-1), resetAnim())), "must not be negative")
+    }
+
+    @Test
+    fun `personalHp must be positive and its onDeath must be an ability`() {
+        val base = spec(mapOf("a" to resetAnim()))
+        val valid = base.copy(personalHp = PersonalHpSpec(500, onDeath = "a"))
+        assertEquals(emptyList<String>(), SpecValidator.validate(valid).map { it.message })
+
+        val invalid = base.copy(personalHp = PersonalHpSpec(0, onDeath = "missing"))
+        val errors = SpecValidator.validate(invalid).map { it.message }
+        assertHasError(errors, "maxHitpoints '0'")
+        assertHasError(errors, "onDeath ability 'missing'")
     }
 
     private fun errorsFor(effect: Effect): List<String> =

@@ -2034,7 +2034,30 @@ if one is evaluated without a hit.
 
 `BossEncounter.invulnerable` / `damageScale` are per-encounter fields set from Kotlin (for
 example the Whisperer sets `invulnerable` around its shield). They apply to all hits in the
-Modify hook, as above. There is no DSL effect for them; use an `external()` handler.
+Modify hook, as above. `invulnerable()` / `vulnerable()` set the first from a spec; `damageScale`
+has no DSL effect, so use an `external()` handler.
+
+#### Personal HP
+
+For a boss that is one shared npc but has a separate hp pool per player (the Moons of Peril):
+
+```kotlin
+val subdued = ability("subdued", external("moon_subdued"))
+personalHp(maxHitpoints = 500, hpVarbit = "varbit.pmoon_boss_hp", onDeath = subdued)
+```
+
+- Give the npc `param.hitpoints_locked = true`. Its own hp then never moves, it never dies and
+  `onLethal` never fires; hits still grant xp and show hitmarks as normal.
+- Content decides who is in the fight: `deps.encounter(npc).personalHp?.add(player)` on entry and
+  `remove(player)` on exit. A hit from a player without a pool changes nothing.
+- Each player hit takes its final damage (after `invulnerable`, `damageScale`, incoming rules and
+  `onModifyHit`) from the attacker's pool and writes `hpVarbit`.
+- `onDeath` runs once for the player whose pool reaches 0, without npc access (like a hit
+  reaction), so its `external()` handler must work from the player and `deps`.
+- `PersonalHpTracker` also has `heal`, `set`, `of`, `players` and `reset` for specials that move a
+  player's pool directly.
+- `HpBelow` conditions and `entryHp` phases read the npc's own hp, which is locked; do not use them
+  on a personal-hp boss.
 
 ### Registering a boss
 

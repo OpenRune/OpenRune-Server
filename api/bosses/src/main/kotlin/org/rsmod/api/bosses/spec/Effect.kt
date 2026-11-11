@@ -231,6 +231,9 @@ sealed interface Effect {
      */
     data class LockMovement(val locked: Boolean) : Effect
 
+    /** Sets [org.rsmod.api.bosses.runtime.BossEncounter.invulnerable]. */
+    data class Invulnerable(val invulnerable: Boolean) : Effect
+
     /** Heals the caster by [amount], capped at its max hp, with a heal hitsplat. */
     data class HealSelf(val amount: Int) : Effect
 
