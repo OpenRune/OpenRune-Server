@@ -37,7 +37,7 @@ internal class XericTalismanCharges(
         }
         val added = minOf(fangs, max - current)
         val total = current + added
-        inv[fangSlot] = if (added == fangs) null else InvObj(fangName,fangs - added)
+        inv[fangSlot] = if (added == fangs) null else InvObj(fangName, fangs - added)
         inv[slot] = InvObj(chargedName, 1, talisman.vars.withBits(bits, total))
         return ChargeResult.Charged(total)
     }
@@ -60,8 +60,8 @@ internal class XericTalismanCharges(
         if (held.toLong() + count > Int.MAX_VALUE) {
             return UnchargeResult.NoSpace
         }
-        inv[target] = InvObj(fangName,held + count)
-        inv[slot] = InvObj(inertName,1, talisman.vars.withBits(bits, 0))
+        inv[target] = InvObj(fangName, held + count)
+        inv[slot] = InvObj(inertName, 1, talisman.vars.withBits(bits, 0))
         return UnchargeResult.Uncharged(count)
     }
 
@@ -77,7 +77,7 @@ internal class XericTalismanCharges(
         val left = count - 1
         inv[slot] =
             if (left == 0) {
-                InvObj(inertName,1, talisman.vars.withBits(bits, 0))
+                InvObj(inertName, 1, talisman.vars.withBits(bits, 0))
             } else {
                 talisman.copy(vars = talisman.vars.withBits(bits, left))
             }
@@ -91,14 +91,14 @@ internal class XericTalismanCharges(
         }
         val fangSlot = inv.indexOfFirst { it?.id == fang }
         if (fangSlot < 0) {
-            inv[slot] = InvObj(fangName,shards)
+            inv[slot] = InvObj(fangName, shards)
             return true
         }
         val held = inv.getValue(fangSlot).count
         if (held.toLong() + shards > Int.MAX_VALUE) {
             return false
         }
-        inv[fangSlot] = InvObj(fangName,held + shards)
+        inv[fangSlot] = InvObj(fangName, held + shards)
         inv[slot] = null
         return true
     }

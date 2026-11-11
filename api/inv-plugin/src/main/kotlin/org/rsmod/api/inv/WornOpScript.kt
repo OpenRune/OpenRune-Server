@@ -1,6 +1,5 @@
 package org.rsmod.api.inv
 
-import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
@@ -77,6 +76,6 @@ constructor(
         val invalidComponent = resolver.values.filter { it == null }
         check(invalidComponent.isEmpty()) { "Equipment enum must not have null values: $resolver" }
 
-        return resolver.associate { checkNotNull(Wearpos[it.key]) to checkNotNull(RSCM.getReverseMapping(RSCMType.COMPONENT,it.value!!.packed)) }
+        return resolver.associate { checkNotNull(Wearpos[it.key]) to checkNotNull(RSCM.getReverseMapping(RSCMType.COMPONENT, it.value!!.packed)) }
     }
 }

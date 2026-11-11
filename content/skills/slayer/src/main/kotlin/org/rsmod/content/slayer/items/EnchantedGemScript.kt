@@ -7,8 +7,8 @@ import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpWorn2
 import org.rsmod.api.script.onOpWorn4
-import org.rsmod.content.slayer.dialogue.SlayerContact.contactSlayerMaster
 import org.rsmod.content.slayer.dialogue.SlayerContact.checkSlayerTask
+import org.rsmod.content.slayer.dialogue.SlayerContact.contactSlayerMaster
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 

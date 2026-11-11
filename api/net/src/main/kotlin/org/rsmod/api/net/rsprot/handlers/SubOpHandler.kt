@@ -1,8 +1,8 @@
 package org.rsmod.api.net.rsprot.handlers
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
