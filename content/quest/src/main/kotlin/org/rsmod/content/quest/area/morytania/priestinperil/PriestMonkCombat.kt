@@ -111,7 +111,7 @@ class PriestMonkCombat @Inject constructor(private val deps: BossDeps) : PluginS
                     }
                 else null
             phase("combat") {
-                // Both styles are supported; exact native selection odds await a trace comparison.
+                // These weights are provisional; the captures do not establish selection odds.
                 weightedSelectorRandom {
                     +random(punch, weight = if (hooded) 1 else 3, requires = WithinMeleeRange)
                     +random(weaken, weight = 1, requires = WithinMeleeRange)

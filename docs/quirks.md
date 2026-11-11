@@ -157,8 +157,9 @@ monk punches, Weaken/Confuse/Curse and hooded Fire Bolt, adjacent projectile
 frames, well filling, the distinct water/player blessings, coffin effects,
 journal history and reward-scroll presentation. The hooded monk's magic damage
 is capped at the wiki's eight rather than the generic spell's twelve. Selection
-weights and exact fast regeneration remain approximations, not measured odds or
-regeneration parity. The supplied combat samples do not establish those rates.
+weights remain provisional, and the monks still use standard NPC regeneration.
+The supplied samples do not establish exact selection odds or a regeneration
+interval; fast-regeneration parity is not claimed.
 
 Captured journal wording is retained at the observed stages, including the
 post-completion passage instruction and native61 blessing. The uncaptured stage7
