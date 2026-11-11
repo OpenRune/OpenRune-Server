@@ -3778,6 +3778,140 @@ coords = "0_57_153_36_47"
 npc = "npc.araxyte_normal"
 coords = "0_57_153_39_48"
 
+## Morytania Spider Cave task-only area
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_45_53"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_48_55"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_49_49"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_52_43"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_52_46"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_52_51"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_52_53"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_54_40"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_55_53"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_56_45"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_57_42"
+
+[[spawn]]
+npc = "npc.araxyte_normal_bigwander"
+coords = "0_57_153_57_48"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_20_59"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_27_63"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_29_60"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_33_61"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_38_30"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_41_25"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_43_28"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_44_21"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_47_29"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_49_22"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_52_25"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_53_28"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_153_54_20"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_154_18_2"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_154_21_3"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_154_27_3"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_154_31_3"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_154_35_3"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_154_39_1"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_154_44_0"
+
+[[spawn]]
+npc = "npc.araxyte_large_bigwander"
+coords = "0_57_154_48_2"
+
 ## Barrows
 
 [[spawn]]
