@@ -1770,38 +1770,50 @@ blockWalk = "None"
 [[npc]]
 id = "npc.araxyte_large"
 inherit = "npc.araxyte_large"
+huntMode = 1
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_araxyte"
 "param.killcount_notify"=false
+"param.attack_anim"="seq.npc_araxyte01_attack"
+"param.death_anim"="seq.npc_araxyte01_death"
 
 [[npc]]
 id = "npc.araxyte_large_bigwander"
 inherit = "npc.araxyte_large_bigwander"
+huntMode = 1
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_araxyte"
 "param.killcount_notify"=false
+"param.attack_anim"="seq.npc_araxyte01_attack"
+"param.death_anim"="seq.npc_araxyte01_death"
 
 [[npc]]
 id = "npc.araxyte_normal"
 inherit = "npc.araxyte_normal"
+huntMode = 1
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_araxyte"
 "param.killcount_notify"=false
+"param.attack_anim"="seq.npc_araxyte01_attack"
+"param.death_anim"="seq.npc_araxyte01_death"
 
 [[npc]]
 id = "npc.araxyte_normal_bigwander"
 inherit = "npc.araxyte_normal_bigwander"
+huntMode = 1
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_araxyte"
 "param.killcount_notify"=false
+"param.attack_anim"="seq.npc_araxyte01_attack"
+"param.death_anim"="seq.npc_araxyte01_death"
 
 [[npc]]
 id = "npc.arceuus_reanimated_bloodveld"
@@ -3755,11 +3767,14 @@ inherit = "npc.superior_aquanite"
 [[npc]]
 id = "npc.superior_araxyte"
 inherit = "npc.superior_araxyte"
+huntMode = 1
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_superior_monster"
 "param.killcount_notify"=false
+"param.attack_anim"="seq.npc_araxyte01_attack"
+"param.death_anim"="seq.npc_araxyte01_death"
 
 [[npc]]
 id = "npc.superior_banshee"
