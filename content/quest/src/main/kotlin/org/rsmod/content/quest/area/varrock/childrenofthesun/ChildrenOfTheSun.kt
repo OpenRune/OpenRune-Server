@@ -31,7 +31,7 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         rewards { extra("Access to Varlamore") },
         ItemRewardDisplay(RewardModel, zoom = 400, x = 78, y = 128),
         questVarbit = "varbit.vmq1",
-        completeJingle = "jingle.mastermindless",
+        completeJingle = "jingle.quest_complete_1",
     ) {
 
     @Inject
