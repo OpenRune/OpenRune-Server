@@ -67,15 +67,16 @@ class FarmingSaplingsTest {
 
     @Test
     fun `selected standard can waters with its exact dose and empty can does not borrow another`() {
-        for (doses in 0..8) {
+        val standard = WateringCans.CANS.take(9)
+        for ((doses, can) in standard.withIndex()) {
             val player = player()
-            player.inv[0] = InvObj("obj.watering_can_$doses")
-            player.inv[1] = InvObj("obj.watering_can_8")
+            player.inv[0] = InvObj(can)
+            player.inv[1] = InvObj(standard[8])
             player.inv[2] = InvObj(chain.dry)
-            assertEquals(doses > 0, water(player, 2, "obj.watering_can_$doses", 0))
+            assertEquals(doses > 0, water(player, 2, can, 0))
             assertEquals((if (doses > 0) chain.wet else chain.dry).id, player.inv[2]?.id)
-            assertEquals("obj.watering_can_${maxOf(0, doses - 1)}".asRSCM(), player.inv[0]?.id)
-            assertEquals("obj.watering_can_8".asRSCM(), player.inv[1]?.id)
+            assertEquals(standard[maxOf(0, doses - 1)].asRSCM(), player.inv[0]?.id)
+            assertEquals(standard[8].asRSCM(), player.inv[1]?.id)
         }
         val noted = player()
         noted.inv[0] = InvObj(chain.dry)

@@ -120,11 +120,11 @@ constructor(
     }
 
     public fun change(from: LocInfo, into: ObjectServerType, duration: Int) {
-        add(from.coords, into, duration, from.angle, from.shape)
+        add(from.coords, into.internalName, duration, from.angle, from.shape)
     }
 
     public fun change(from: BoundLocInfo, into: ObjectServerType, duration: Int) {
-        add(from.coords, into, duration, from.angle, from.shape)
+        add(from.coords, into.internalName, duration, from.angle, from.shape)
     }
 
     public fun change(from: BoundLocInfo, internal: String, duration: Int) {

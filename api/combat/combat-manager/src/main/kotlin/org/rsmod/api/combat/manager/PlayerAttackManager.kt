@@ -552,7 +552,7 @@ constructor(
         blockType: MeleeAttackType?,
         multiplier: Double,
     ): Boolean {
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || forcesMaxHit(target, FORCED_MELEE)) {
             return true
         }
         return when (target) {
@@ -625,7 +625,7 @@ constructor(
     ): Int {
         val maxHit =
             calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier, roundUp)
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || forcesMaxHit(target, FORCED_MELEE)) {
             return maxHit
         }
         return random.of(1..maxHit)
@@ -817,7 +817,7 @@ constructor(
         blockType: RangedAttackType?,
         multiplier: Double,
     ): Boolean {
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || forcesMaxHit(target, FORCED_RANGED)) {
             return true
         }
         return when (target) {
@@ -895,7 +895,7 @@ constructor(
                 multiplier = multiplier,
                 boltSpecDamage = boltSpecDamage,
             )
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || forcesMaxHit(target, FORCED_RANGED)) {
             return maxHit
         }
         return random.of(1..maxHit)
@@ -1169,7 +1169,7 @@ constructor(
         spellbook: Spellbook?,
         sunfireRune: Boolean,
     ): Boolean {
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || forcesMaxHit(target, FORCED_MAGIC)) {
             return true
         }
         return when (target) {
@@ -1248,7 +1248,7 @@ constructor(
                 attackRate = attackRate,
                 sunfireRune = sunfireRune,
             )
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || forcesMaxHit(target, FORCED_MAGIC)) {
             return hitRange.last
         }
         return random.of(hitRange)
@@ -1360,6 +1360,9 @@ constructor(
         attackStyle: MagicAttackStyle?,
         multiplier: Double,
     ): Boolean {
+        if (source.adminMaxHit || forcesMaxHit(target, FORCED_MAGIC)) {
+            return true
+        }
         return when (target) {
             is Npc -> rollStaffAccuracy(source, target, attackStyle, multiplier)
             is Player -> rollStaffAccuracy(source, target, attackStyle, multiplier)
@@ -1414,7 +1417,7 @@ constructor(
         multiplier: Double,
     ): Int {
         val maxHit = calculateStaffMaxHit(source, target, baseMaxHit, multiplier)
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || forcesMaxHit(target, FORCED_MAGIC)) {
             return maxHit
         }
         return random.of(1..maxHit)
@@ -2114,4 +2117,13 @@ constructor(
             radius = radius,
             size = size,
         )
+
+    private fun forcesMaxHit(target: PathingEntity, styleBit: Int): Boolean =
+        target is Npc && target.vars["varn.forced_max_hit_styles"] and styleBit != 0
+
+    private companion object {
+        const val FORCED_MELEE = 1
+        const val FORCED_RANGED = 2
+        const val FORCED_MAGIC = 4
+    }
 }

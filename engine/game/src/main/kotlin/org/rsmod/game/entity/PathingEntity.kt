@@ -291,6 +291,20 @@ public sealed class PathingEntity {
     public abstract fun spotanim(spot: String, delay: Int = 0, height: Int = 0, slot: Int = 0)
 
     /**
+     * Plays a spot animation in [slot] after [delay] client cycles.
+     * [loop] repeats the effect when its sequence supports looping.
+     */
+    public open fun spotanim(
+        spot: String,
+        delay: Int = 0,
+        height: Int = 0,
+        slot: Int = 0,
+        loop: Boolean,
+    ) {
+        spotanim(spot, delay, height, slot)
+    }
+
+    /**
      * Sets the [pendingFaceSquare] for [target] to face as soon as this [PathingEntity] is not
      * moving, whenever that may be.
      */

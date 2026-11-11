@@ -39,3 +39,7 @@ whisperer_insanity=116
 whisperer_fade=117
 barrows_crypt=118
 npc_poison=119
+player_bleed=120
+warguild_cyclops=64900
+warguild_kegs=64901
+warguild_shield=64902

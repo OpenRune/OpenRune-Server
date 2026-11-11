@@ -30,7 +30,7 @@ class AlKharidMineShortcut : PluginScript() {
 
     private companion object {
         private const val AGILITY_LEVEL = 38
-        private const val CLIMB_SYNTH = "synth.raft_climb"
+        private const val CLIMB_SYNTH = "synth.climbing_loop"
         private const val CLIMB_LOOPS = 4
         private const val CLIMB_DELAY = 3
 

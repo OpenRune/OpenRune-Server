@@ -19,7 +19,7 @@ public data class MeleeAnimationAndSound(
                 animParam = params.attack_anim_stance1,
                 soundParam = params.attack_sound_stance1,
                 defaultAnim = "seq.human_unarmedpunch",
-                defaultSound = "synth.human_unarmedpunch",
+                defaultSound = "synth.human_attack",
             )
 
         private val stance2 =
@@ -27,7 +27,7 @@ public data class MeleeAnimationAndSound(
                 animParam = params.attack_anim_stance2,
                 soundParam = params.attack_sound_stance2,
                 defaultAnim = "seq.human_unarmedkick",
-                defaultSound = "synth.human_unarmedkick",
+                defaultSound = "synth.unarmed_kick",
             )
 
         private val stance3 =
@@ -35,7 +35,7 @@ public data class MeleeAnimationAndSound(
                 animParam = params.attack_anim_stance3,
                 soundParam = params.attack_sound_stance3,
                 defaultAnim = "seq.human_unarmedpunch",
-                defaultSound = "synth.human_unarmedpunch",
+                defaultSound = "synth.human_attack",
             )
 
         private val stance4 =
@@ -43,7 +43,7 @@ public data class MeleeAnimationAndSound(
                 animParam = params.attack_anim_stance4,
                 soundParam = params.attack_sound_stance4,
                 defaultAnim = "seq.human_unarmedpunch",
-                defaultSound = "synth.human_unarmedpunch",
+                defaultSound = "synth.human_attack",
             )
 
         public fun from(stance: CombatStance?): MeleeAnimationAndSound =

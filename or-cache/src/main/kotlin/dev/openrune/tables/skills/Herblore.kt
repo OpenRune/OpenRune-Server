@@ -1301,6 +1301,15 @@ object Herblore {
                     category("Crushing")
                 }
             }
+            row("dbrow.herblore_crush_ashes") {
+                production {
+                    input("obj.ashes")
+                    statReq("stat.herblore", 1)
+                    xp(0)
+                    output("obj.war_strength_fine_ashes")
+                    category("Crushing")
+                }
+            }
             row("dbrow.herblore_crush_superior_dragon_bones") {
                 production {
                     input("obj.dragon_bones_superior")

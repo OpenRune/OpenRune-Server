@@ -317,12 +317,12 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
 
     internal companion object {
         const val BUILD_SEQ = "seq.human_poh_build"
-        const val BUILD_SYNTH = "synth.poh_build_furniture"
+        const val BUILD_SYNTH = "synth.poh_build_wood"
         const val NAILS_PER_STROKE = 2
         const val NAIL_MESSAGE = "You use a nail."
         const val DEMOLISH_SEQ = "seq.human_throw_away"
-        const val DEMOLISH_SYNTH = "synth.poh_remove_furniture"
-        const val DEMOLISH_SYNTH_ALT = "synth.poh_remove_furniture_alt"
+        const val DEMOLISH_SYNTH = "synth.demolish_1"
+        const val DEMOLISH_SYNTH_ALT = "synth.demolish_2"
         const val DEMOLISH_SYNTH_DELAY = 20
         const val DEMOLISH_DELAY = 1
         const val BUILD_MENU = "interface.poh_furniture_creation"

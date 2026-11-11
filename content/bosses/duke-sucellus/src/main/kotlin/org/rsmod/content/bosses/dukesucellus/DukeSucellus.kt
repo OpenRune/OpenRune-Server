@@ -394,7 +394,7 @@ constructor(
         private const val GAS_FLARE_CAST = "duke_sucellus.gas_flare_cast"
         private const val GAS_FLARE_ECHO_CAST = "duke_sucellus.gas_flare_echo_cast"
         private const val GAS_FLARE_SEQ = "seq.npc_duke_sucellus01_magic_attack_faster01"
-        private const val GAS_FLARE_SYNTH = 5002
+        private const val GAS_FLARE_SYNTH = "synth.akd_xamphur_magic_attack"
         private const val GAS_FLARE_PROJECTILE = "spotanim.projanim_duke_spit_01"
         private const val GAS_SOURCE_DX = 3
         private const val GAS_SOURCE_DY = 1

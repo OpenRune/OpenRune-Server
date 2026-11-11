@@ -10,12 +10,12 @@ import kotlin.random.Random
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class ShootingstarsSettings(
-    @JsonProperty("is_enabled") val isEnabled: Boolean = true,
-    @JsonProperty("spawn_interval_minutes") val spawnIntervalMinutes: Int = 90,
-    @JsonProperty("spawn_variation_minutes") val spawnVariationMinutes: Int = 15,
-    @JsonProperty("boot_spawn_min_minutes") val bootSpawnMinMinutes: Int = 20,
-    @JsonProperty("boot_spawn_max_minutes") val bootSpawnMaxMinutes: Int = 50,
-    @JsonProperty("star_teleport_enabled") val starTeleportEnabled: Boolean = true,
+    @param:JsonProperty("is_enabled") val isEnabled: Boolean = true,
+    @param:JsonProperty("spawn_interval_minutes") val spawnIntervalMinutes: Int = 90,
+    @param:JsonProperty("spawn_variation_minutes") val spawnVariationMinutes: Int = 15,
+    @param:JsonProperty("boot_spawn_min_minutes") val bootSpawnMinMinutes: Int = 20,
+    @param:JsonProperty("boot_spawn_max_minutes") val bootSpawnMaxMinutes: Int = 50,
+    @param:JsonProperty("star_teleport_enabled") val starTeleportEnabled: Boolean = true,
 ) {
     fun spawnIntervalCycles(): Int = spawnIntervalMinutes * CYCLES_PER_MINUTE
 

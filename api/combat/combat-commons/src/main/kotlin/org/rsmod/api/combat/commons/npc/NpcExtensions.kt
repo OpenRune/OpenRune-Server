@@ -22,7 +22,7 @@ private var Npc.aggressivePlayer by typePlayerUidVarn("varn.aggressive_player")
 private var Npc.attackingPlayer by typePlayerUidVarn("varn.attacking_player")
 
 public fun Npc.canRetaliate(): Boolean {
-    if (ignoreCombatInteractions) {
+    if (ignoreCombatInteractions || pvpInterruptionUntil > currentMapClock) {
         return false
     }
     if (actionDelay + constants.combat_activecombat_delay < currentMapClock) {

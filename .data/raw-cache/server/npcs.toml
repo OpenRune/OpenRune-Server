@@ -64,16 +64,6 @@ inherit = "npc.deadman_banker_blue_south"
 contentGroup = "content.banker"
 
 [[npc]]
-id = "npc.aide_tutor_banker"
-inherit = "npc.aide_tutor_banker"
-contentGroup = "content.banker_tutor"
-
-[[npc]]
-id = "npc.aide_tutor_prayer"
-inherit = "npc.aide_tutor_prayer"
-moveRestrict = "Indoors"
-
-[[npc]]
 id = "npc.father_aereck"
 inherit = "npc.father_aereck"
 moveRestrict = "Indoors"
@@ -152,22 +142,10 @@ wanderRange = 0
 respawnDir = "East"
 
 [[npc]]
-id = "npc.aide_tutor_clues"
-inherit = "npc.aide_tutor_clues"
-wanderRange = 0
-timer = 20
-respawnDir = "North"
-
-[[npc]]
 id = "npc.ram_bartender"
 inherit = "npc.ram_bartender"
 wanderRange = 0
 respawnDir = "West"
-
-[[npc]]
-id = "npc.aide_tutor_smithing_apprentice"
-inherit = "npc.aide_tutor_smithing_apprentice"
-moveRestrict = "Indoors"
 
 [[npc]]
 id = "npc.veos_lumbridge"
@@ -182,12 +160,6 @@ wanderRange = 0
 [[npc]]
 id = "npc.mistmyst_hewey"
 inherit = "npc.mistmyst_hewey"
-wanderRange = 0
-respawnDir = "East"
-
-[[npc]]
-id = "npc.aide_tutor_fishing"
-inherit = "npc.aide_tutor_fishing"
 wanderRange = 0
 respawnDir = "East"
 
@@ -8210,9 +8182,20 @@ inherit = "npc.black_demon5"
 [[npc]]
 id = "npc.chaoselemental"
 inherit = "npc.chaoselemental"
+huntMode = 2
+huntRange = 30
+maxRange = 30
+attackRange = 10
+wanderRange = 5
+respawnRate = 14
+defaultMode = "Wander"
+
 [npc.params]
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=50
+"param.venom_immunity"=1
+"param.death_anim"="seq.chaoselemental_death"
+"param.boss_hp_bar_mode"=1
 
 [[npc]]
 id = "npc.firegiant_big"
@@ -8703,6 +8686,13 @@ inherit = "npc.warguild_bronze_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_iron_armour"
@@ -8710,6 +8700,13 @@ inherit = "npc.warguild_iron_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_steel_armour"
@@ -8717,6 +8714,13 @@ inherit = "npc.warguild_steel_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_black_armour"
@@ -8724,6 +8728,13 @@ inherit = "npc.warguild_black_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_mithril_armour"
@@ -8731,6 +8742,13 @@ inherit = "npc.warguild_mithril_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_adamant_armour"
@@ -8738,6 +8756,13 @@ inherit = "npc.warguild_adamant_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.warguild_rune_armour"
@@ -8745,6 +8770,13 @@ inherit = "npc.warguild_rune_armour"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_def"
+"param.death_anim"="seq.warguild_animate_reverse"
+"param.death_sound"="synth.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.poison_immunity"=1
+"param.venom_immunity"=1
 
 [[npc]]
 id = "npc.sos_pest_giantspider1"

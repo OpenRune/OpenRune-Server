@@ -30,7 +30,7 @@ class PrayerTabFilterScript : PluginScript() {
         }
         hideFilterButton = !hideFilterButton
         ClientScripts.toplevelSidebuttonSwitch(this, 5)
-        soundSynth("synth.interface_select")
+        soundSynth("synth.interface_select1")
     }
 
     private fun Player.toggleFilter(comsub: Int) {

@@ -2,7 +2,7 @@
 # You want to edit these to fit your game.
 name: "OpenRune"
 game-port: 43594
-revision: 241
+revision: 242
 environment: "LIVE"
 world: 255
 
@@ -37,6 +37,8 @@ gameplay:
   # Random events (the Genie) appear during play, as on live. false turns the schedule off;
   # `::randomevent` still summons one.
   random-events: true
+  # Allow cosmetic bots, including manual spawns through ::bots.
+  bots-enabled: true
   gravestones:
     # Lost items go to a gravestone the player can reclaim; false drops them on the floor instead.
     enabled: true

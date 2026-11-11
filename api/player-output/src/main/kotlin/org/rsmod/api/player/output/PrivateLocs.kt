@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCMType
 import net.rsprot.protocol.game.outgoing.util.OpFlags
 import net.rsprot.protocol.game.outgoing.zone.header.UpdateZonePartialFollows
 import net.rsprot.protocol.game.outgoing.zone.payload.LocAddChangeV2
+import net.rsprot.protocol.game.outgoing.zone.payload.LocAddChangeV3
 import net.rsprot.protocol.game.outgoing.zone.payload.LocDel
 import net.rsprot.protocol.message.ZoneProt
 import org.rsmod.game.entity.Player
@@ -22,11 +23,7 @@ import org.rsmod.map.zone.ZoneKey
  */
 public object PrivateLocs {
     public fun addChange(player: Player, coords: CoordGrid, loc: Int, shape: Int, angle: Int) {
-        val inZone = ZoneGrid.from(coords)
-        player.writeZoneProt(
-            coords,
-            LocAddChangeV2(loc, inZone.x, inZone.z, shape, angle, OpFlags.ALL_SHOWN),
-        )
+        player.writeZoneProt(coords, locAddChangePacket(coords, loc, shape, angle))
     }
 
     public fun del(player: Player, coords: CoordGrid, shape: Int, angle: Int) {
@@ -48,12 +45,41 @@ public object PrivateLocs {
     private const val BuildAreaSize = 104
 }
 
-/** @see [PrivateLocs.addChange] */
+/**
+ * Builds a scenery add/change packet for [coords]. Uses V2 for two-byte ids and
+ * V3 for larger ids that fit three bytes. [shape] and [angle] describe the scenery
+ * layer and rotation. The packet exposes the cache-defined options.
+ */
+public fun locAddChangePacket(coords: CoordGrid, id: Int, shape: Int, angle: Int): ZoneProt {
+    require(id in 0..0xFFFFFF) { "Invalid loc id: $id" }
+    val zone = ZoneGrid.from(coords)
+    return if (id <= 0xFFFF) {
+        LocAddChangeV2(id, zone.x, zone.z, shape, angle, OpFlags.ALL_SHOWN)
+    } else {
+        LocAddChangeV3(id, zone.x, zone.z, shape, angle, OpFlags.ALL_SHOWN)
+    }
+}
+
+/**
+ * Displays scenery from the [loc] gameval at [coords] for this player.
+ *
+ * [shape] selects the scenery layer and [angle] sets its rotation. The update applies
+ * within the player's current build area.
+ *
+ * @see PrivateLocs.addChange
+ */
 public fun Player.locAddChangePrivate(coords: CoordGrid, loc: String, shape: Int, angle: Int) {
     PrivateLocs.addChange(this, coords, loc.asRSCM(RSCMType.LOC), shape, angle)
 }
 
-/** @see [PrivateLocs.del] */
+/**
+ * Hides scenery at [coords] for this player, using [shape] and [angle] to identify its layer
+ * and rotation.
+ *
+ * Use [locAddChangePrivate] to restore the scenery before the client rebuilds the zone.
+ *
+ * @see PrivateLocs.del
+ */
 public fun Player.locDelPrivate(coords: CoordGrid, shape: Int, angle: Int) {
     PrivateLocs.del(this, coords, shape, angle)
 }
