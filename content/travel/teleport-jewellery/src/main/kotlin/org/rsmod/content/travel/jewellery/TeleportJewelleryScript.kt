@@ -129,21 +129,24 @@ constructor(
 
     private suspend fun ProtectedAccess.pickDestination(
         options: List<TeleportJewelleryDestinationsRow>,
+        offset: Int = 0,
     ): Int {
-        val labels = options.map { "${it.label}." }
-        return when (labels.size) {
+        if (options.size - offset <= MAX_CHOICES) {
+            return offset + choose(options.drop(offset).map { "${it.label}." })
+        }
+        val page = options.subList(offset, offset + MAX_CHOICES - 1).map { "${it.label}." }
+        val picked = choose(page + MORE)
+        return if (picked < page.size) offset + picked else pickDestination(options, offset + page.size)
+    }
+
+    private suspend fun ProtectedAccess.choose(labels: List<String>): Int =
+        when (labels.size) {
             1 -> 0
             2 -> choice2(labels[0], 0, labels[1], 1, TITLE)
             3 -> choice3(labels[0], 0, labels[1], 1, labels[2], 2, TITLE)
             4 -> choice4(labels[0], 0, labels[1], 1, labels[2], 2, labels[3], 3, TITLE)
-            5 -> choice5(labels[0], 0, labels[1], 1, labels[2], 2, labels[3], 3, labels[4], 4, TITLE)
-            else -> {
-                val choice = menu(TITLE, hotkeys = true, options.map { it.label })
-                ifClose()
-                choice
-            }
+            else -> choice5(labels[0], 0, labels[1], 1, labels[2], 2, labels[3], 3, labels[4], 4, TITLE)
         }
-    }
 
     private suspend fun ProtectedAccess.confirmWilderness(target: CoordGrid): Boolean {
         val level = target.wildernessLevel(areaChecker)
@@ -426,6 +429,8 @@ constructor(
         private const val UNLIMITED_MESSAGE =
             "No charges were used since it holds unlimited charges."
         private const val TITLE = "Where would you like to teleport to?"
+        private const val MORE = "More..."
+        private const val MAX_CHOICES = 5
         private const val LOCKED_DESTINATION = "You have not yet unlocked that destination."
         private const val CHARGE_COLOUR = "7f007f"
         private val NUMBER_WORDS =
