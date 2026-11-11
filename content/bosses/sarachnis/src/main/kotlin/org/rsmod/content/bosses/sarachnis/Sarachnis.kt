@@ -332,8 +332,8 @@ constructor(
         private const val ARANEA_BOOTS_MESSAGE =
             "Your Aranea boots let you avoid the spider-based attack."
 
-        private const val MELEE_SOUND = "synth.sarachnis_melee"
-        private const val RANGED_SOUND = "synth.sarachnis_ranged"
+        private const val MELEE_SOUND = "synth.kilrag_attack"
+        private const val RANGED_SOUND = "synth.kalphite_queen_spines"
         private const val WEB_BIND_TICKS = 6
 
         // The bind runs from the pre-tick world queue, before the map clock advances.

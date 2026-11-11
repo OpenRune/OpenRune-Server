@@ -56,7 +56,7 @@ object WebInteraction {
 
     private const val ARANEA_BOOTS = "obj.aranea_boots"
     private const val WADE_SEQ = "seq.human_aranea_boots_wade"
-    private const val WADE_SOUND = "synth.raft_climb"
+    private const val WADE_SOUND = "synth.climbing_loop"
     private const val SLASH_SEQ = "seq.human_sword_slash"
     private const val KNIFE_SLASH_SEQ = "seq.human_knife_slash"
 }

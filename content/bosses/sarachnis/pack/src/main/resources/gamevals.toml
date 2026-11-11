@@ -3,10 +3,6 @@ sarachnis_bolt = 65523
 sarachnis_ranged = 65522
 sarachnis_web = 65521
 
-[gamevals.synth]
-sarachnis_melee = 541
-sarachnis_ranged = 555
-
 [gamevals.area]
 sarachnis_lair = 32444
 
