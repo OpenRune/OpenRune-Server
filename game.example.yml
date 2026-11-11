@@ -49,6 +49,11 @@ gameplay:
     mode: "assume-completed"
     virtual-completions: []
     virtual-lines: []
+  run-energy:
+    # 2 makes run energy last twice as long, 3 three times, and so on.
+    drain-denominator: 1
+    # Run energy never drains while true.
+    infinite: false
 
 central:
   same-instance: true
