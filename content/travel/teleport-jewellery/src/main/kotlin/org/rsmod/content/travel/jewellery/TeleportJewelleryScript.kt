@@ -8,6 +8,7 @@ import org.rsmod.api.area.checker.wildernessLevel
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpHeld4
+import org.rsmod.api.script.onOpHeldSubOp
 import org.rsmod.api.script.onOpWorn2
 import org.rsmod.api.script.onOpWorn3
 import org.rsmod.api.script.onOpWorn4
@@ -16,6 +17,7 @@ import org.rsmod.api.script.onOpWorn6
 import org.rsmod.api.script.onOpWorn7
 import org.rsmod.api.table.TeleportJewelleryDestinationsRow
 import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.interact.HeldOp
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.map.CoordGrid
@@ -40,9 +42,13 @@ constructor(
             val count = destinations.getValue(piece.destinations).size
             for (item in piece.charged + piece.eternal) {
                 onOpHeld4(item) { useJewellery(inv, it.slot, destination = null) }
+                onOpHeldSubOp(item) { rubSubOp(it.op, it.slot, it.subop) }
                 bindWornOps(item, count)
             }
-            piece.spent?.let { onOpHeld4(it) { useJewellery(inv, it.slot, destination = null) } }
+            piece.spent?.let {
+                onOpHeld4(it) { useJewellery(inv, it.slot, destination = null) }
+                onOpHeldSubOp(it) { rubSubOp(it.op, it.slot, it.subop) }
+            }
         }
     }
 
@@ -55,10 +61,17 @@ constructor(
         if (count >= 6) onOpWorn7(item) { useJewellery(player.worn, it.slot, 5) }
     }
 
+    private suspend fun ProtectedAccess.rubSubOp(op: HeldOp, slot: Int, subop: Int) {
+        if (op == HeldOp.Op4) {
+            useJewellery(inv, slot, subop - 1, rubbed = true)
+        }
+    }
+
     private suspend fun ProtectedAccess.useJewellery(
         container: Inventory,
         slot: Int,
         destination: Int?,
+        rubbed: Boolean = false,
     ) {
         if (actionDelay > mapClock) {
             return
@@ -74,7 +87,10 @@ constructor(
         val options = destinations.getValue(piece.destinations)
         val row =
             if (destination != null) {
-                options[destination]
+                if (rubbed) {
+                    piece.rubMessage?.let { mes(it) }
+                }
+                options.getOrNull(destination) ?: return
             } else {
                 piece.rubMessage?.let { mes(it) }
                 options[pickDestination(options)]
@@ -114,14 +130,18 @@ constructor(
     private suspend fun ProtectedAccess.pickDestination(
         options: List<TeleportJewelleryDestinationsRow>,
     ): Int {
-        val labels = options.map { it.label }
+        val labels = options.map { "${it.label}." }
         return when (labels.size) {
             1 -> 0
             2 -> choice2(labels[0], 0, labels[1], 1, TITLE)
             3 -> choice3(labels[0], 0, labels[1], 1, labels[2], 2, TITLE)
             4 -> choice4(labels[0], 0, labels[1], 1, labels[2], 2, labels[3], 3, TITLE)
             5 -> choice5(labels[0], 0, labels[1], 1, labels[2], 2, labels[3], 3, labels[4], 4, TITLE)
-            else -> menu(TITLE, hotkeys = false, labels)
+            else -> {
+                val choice = menu(TITLE, hotkeys = true, options.map { it.label })
+                ifClose()
+                choice
+            }
         }
     }
 

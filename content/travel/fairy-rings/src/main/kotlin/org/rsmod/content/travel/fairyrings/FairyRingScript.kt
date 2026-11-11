@@ -4,7 +4,9 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
+import org.rsmod.api.player.output.ClientScripts.mesLayerClose
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
@@ -29,6 +31,7 @@ class FairyRingScript @Inject constructor() : PluginScript() {
             onIfModalButton(anticlockwise) { rotate(index, ANTICLOCKWISE_STEP) }
         }
         onIfModalButton(CONFIRM) { confirm() }
+        onIfClose(MAIN) { mesLayerClose(player, SEARCH_LAYER_MODE) }
         for (ring in rings.values) {
             val button = RSCM.getReverseMapping(RSCMType.COMPONENT, ring.textComponent.packed)
             onIfModalButton(button) { useCode(ring.id) }
@@ -154,6 +157,7 @@ class FairyRingScript @Inject constructor() : PluginScript() {
         private const val SIDE = "interface.fairyrings_log"
         private const val CONFIRM = "component.fairyrings:confirm"
         private const val BACKGROUND_COLOUR = 4212288
+        private const val SEARCH_LAYER_MODE = 28
         private const val BACKGROUND_TRANSPARENCY = 50
 
         private val DIAL_BUTTONS =
