@@ -231,7 +231,7 @@ internal class TheRestlessGhostCutscene(
         const val FirstSay = "Release! Thank you"
         const val SecondSay = "stranger.."
 
-        const val CompletionJingle = "jingle.mastermindless"
+        const val CompletionJingle = "jingle.quest_complete_1"
 
         const val CaptureFrameRate = 100
 

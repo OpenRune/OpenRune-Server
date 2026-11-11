@@ -105,3 +105,13 @@ denominator = 121
 obj = "obj.trail_medium_emote_exp1"
 count = 1
 clue_scroll_box = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 64
+boosted = true
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.water_sapphire"
+count = 1

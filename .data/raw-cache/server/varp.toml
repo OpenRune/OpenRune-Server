@@ -923,3 +923,9 @@ isServerOnly = true
 id = "varp.brutus_best_time"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.mcannon_ornament"
+scope = "Perm"
+transmit = "Never"

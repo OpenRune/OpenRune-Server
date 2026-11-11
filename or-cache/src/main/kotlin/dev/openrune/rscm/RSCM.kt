@@ -4,6 +4,7 @@ import dev.openrune.definition.constants.ConstantProvider
 import dev.openrune.rscm.RSCMType.Companion.RSCM_PREFIXES
 
 enum class RSCMType(val prefix: String) {
+    AMBIENTSOUNDS("ambientsounds"),
     AREA("area"),
     BAS("bas"),
     CATEGORY("category"),

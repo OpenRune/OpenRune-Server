@@ -29,7 +29,7 @@ class WorldMapScript @Inject constructor(
     private var Player.orbsMinimized by boolVarBit("varbit.minimap_toggle")
 
     private val mapInterface = "interface.worldmap"
-    private val synthSound = "synth.interface_select"
+    private val synthSound = "synth.interface_select1"
 
     private val worldMapOrb = "component.orbs:worldmap"
     private val worldMapClose = "component.worldmap:close"

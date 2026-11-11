@@ -84,7 +84,7 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
         player.currMusicId = music.id
 
         val fadeSpeed = if (currMusicId == 0) 0 else MUSIC_PLAY_FADE
-        player.midiSong(music.midi.id, fadeOutSpeed = fadeSpeed, fadeInDelay = fadeSpeed)
+        player.midiSong(music.midi, fadeOutSpeed = fadeSpeed, fadeInDelay = fadeSpeed)
         player.ifSetText("component.music:now_playing_text", music.displayName)
     }
 
@@ -104,7 +104,7 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
         player.currMusicId = 0
         player.musicClocks = 0
         player.musicDuration = 0
-        player.midiSong("midi.stop_music", fadeOutSpeed = MUSIC_END_FADE)
+        player.midiSong("midi.silence", fadeOutSpeed = MUSIC_END_FADE)
         if (player.playMode == MusicPlayMode.Manual) {
             setEmptyMusicText(player)
         }

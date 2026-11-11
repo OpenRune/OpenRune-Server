@@ -33,6 +33,17 @@ class NpcCanRetaliateTest {
         assertFalse(npc.canRetaliate())
     }
 
+    @Test
+    fun `a monster interrupted in singles plus can retaliate again when its timer expires`() {
+        val npc = newNpc()
+        npc.pvpInterruptionUntil = 120
+        npc.currentMapClock = 119
+        assertFalse(npc.canRetaliate())
+
+        npc.currentMapClock = 120
+        assertTrue(npc.canRetaliate())
+    }
+
     private fun newNpc(): Npc {
         val type = NpcServerType(id = 1, name = "Man", size = 1, hitpoints = 50)
         return Npc(type, CoordGrid(0, 1, 1, 0, 0))

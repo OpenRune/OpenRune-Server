@@ -3,7 +3,7 @@ package org.rsmod.content.areas.city.portsarim.travel
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.map.CoordGrid
 
-private const val VOYAGE_JINGLE = "jingle.body_parts"
+private const val VOYAGE_JINGLE = "jingle.sailing_journey"
 private const val FADE_CYCLES = 50
 
 /** The boats whose crossing hides the minimap for the whole trip, like the Karamja ferry. */

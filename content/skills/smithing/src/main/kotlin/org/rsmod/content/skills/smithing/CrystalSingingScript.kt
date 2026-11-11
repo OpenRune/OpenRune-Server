@@ -161,7 +161,7 @@ class CrystalSingingScript : PluginScript() {
 
     private fun ProtectedAccess.performSing(item: SmithingCrystalSingingRow, ) {
         anim("seq.prif_crystal_singing")
-        soundSynth("synth.crystal_sing")
+        soundSynth("synth.toa_wardens_square_thunder3_01")
 
         val removed = item.input.zip(item.inputAmount).all { (material, amount) ->
             invDel(inv, material.internalName, amount).success

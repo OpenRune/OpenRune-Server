@@ -23,7 +23,7 @@ class VarrockShortcutScript : PluginScript() {
         val facing = if (north) FACE_SOUTH else FACE_NORTH
         exactMove(coords, dest, delay1 = JUMP_START_CYCLES, delay2 = JUMP_END_CYCLES, dir = facing)
         anim("seq.human_spot_jump")
-        soundSynth("synth.varrock_fence_jump")
+        soundSynth("synth.jump")
         delay(1)
     }
 

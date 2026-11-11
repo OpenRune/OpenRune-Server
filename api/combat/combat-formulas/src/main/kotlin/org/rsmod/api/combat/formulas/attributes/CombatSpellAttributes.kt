@@ -10,6 +10,7 @@ public enum class CombatSpellAttributes {
     MagicDart,
     SlayerStaffE,
     ChaosGauntlets,
+    ElementalAmulet,
     BoltSpell,
     ChargeSpell,
     SmokeStaff,
