@@ -2,6 +2,7 @@
 name = "Forthos Dungeon"
 area_id = "area.forthos_dungeon"
 levels = [0, 1, 2, 3]
+excludes = ["area.sarachnis_lair"]
 
 [[area.polygons]]
 vertices = [

@@ -1,0 +1,57 @@
+[[npc]]
+id = "npc.sarachnis"
+inherit = "npc.sarachnis"
+respawnRate = 17
+huntMode = 8
+huntRange = 15
+attackRange = 10
+maxRange = 30
+
+[npc.params]
+"param.killcount_varp" = "varp.total_sarachnis_kills"
+"param.slayer_experience" = 430
+"param.poison_immunity" = 1
+"param.venom_immunity" = 2
+"param.attackrate" = 4
+"param.death_anim" = "seq.hosdun_spider_boss_death"
+"param.death_sound" = 539
+"param.defend_sound" = 543
+"param.ranged_strength" = 15
+"param.defence_ranged" = 300
+"param.defence_light" = 300
+"param.defence_standard" = 300
+"param.defence_heavy" = 300
+
+[[npc]]
+id = "npc.sarachnis_melee_spawn"
+inherit = "npc.sarachnis_melee_spawn"
+defaultMode = "None"
+huntMode = 8
+huntRange = 15
+attackRange = 1
+maxRange = 30
+
+[npc.params]
+"param.attack_anim" = "seq.hosdun_spider_boss_attack_melee"
+"param.attack_sound" = 537
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.death_anim" = "seq.hosdun_spider_boss_death"
+"param.death_sound" = 538
+
+[[npc]]
+id = "npc.sarachnis_mage_spawn"
+inherit = "npc.sarachnis_mage_spawn"
+defaultMode = "None"
+huntMode = 8
+huntRange = 15
+attackRange = 8
+maxRange = 30
+
+[npc.params]
+"param.attack_anim" = "seq.hosdun_spider_boss_attack_ranged"
+"param.attack_sound" = 543
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.proj_travel" = "spotanim.hosdun_spider_bolt_travel"
+"param.proj_type" = "projanim.sarachnis_bolt"
+"param.death_anim" = "seq.hosdun_spider_boss_death"
+"param.death_sound" = 538

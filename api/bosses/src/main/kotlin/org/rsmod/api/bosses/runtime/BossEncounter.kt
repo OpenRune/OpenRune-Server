@@ -63,6 +63,8 @@ class BossEncounter(
         ownedNpcs += npc
     }
 
+    fun ownedNpcsSnapshot(): List<Npc> = ownedNpcs.toList()
+
     fun releaseOwnedNpcs(): List<Npc> {
         val released = ownedNpcs.toList()
         ownedNpcs.clear()

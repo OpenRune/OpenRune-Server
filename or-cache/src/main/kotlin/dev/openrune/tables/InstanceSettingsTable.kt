@@ -317,6 +317,24 @@ object InstanceSettingsTable {
             )
         }
 
+        row("dbrow.instance_sarachnis") {
+            column(KEY, "sarachnis")
+            columnCoord(EXIT_COORD, CoordGrid(1842, 9913))
+            columnCoord(ENTER_COORD, CoordGrid(1842, 9913))
+            column(FEE, 25_000)
+            column(FEE_FROM_BANK, true)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            column(BOSS_NAME, "Sarachnis")
+            column(RECOMMENDED_COMBAT, 70, 100)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "Mother of the temple spiders.")
+            columnRSCM(ENTER_OBJECT, "loc.hosdun_sarachnis_entrance")
+            columnRSCM(EXIT_OBJECT, "loc.hosdun_sarachnis_exit")
+        }
+
         row("dbrow.instance_amoxliatl") {
             column(KEY, "amoxliatl")
             columnCoord(EXIT_COORD, CoordGrid(1602, 9631, 0))

@@ -3,6 +3,7 @@ package org.rsmod.game.entity.player
 import dev.openrune.types.BasType
 import dev.openrune.types.NpcServerType
 import dev.openrune.util.Wearpos
+import org.rsmod.game.inv.InvObj
 
 public data class WornObjCustomisation(
     public val objId: Int,
@@ -12,6 +13,17 @@ public data class WornObjCustomisation(
 )
 
 public class Appearance {
+    /**
+     * Visually replaces the right-hand item without changing worn equipment. Interactions that
+     * animate the player with an item that is not equipped (such as slashing a web) set this for
+     * the duration of the animation.
+     */
+    public var weaponOverride: InvObj? = null
+        set(value) {
+            field = value
+            rebuild = true
+        }
+
     /**
      * Tracks whether the player's appearance needs to be updated. Initially set to `true` so that
      * the player's appearance can be synchronized in the next update block.

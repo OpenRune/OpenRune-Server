@@ -36,3 +36,8 @@ objs = [
     "obj.godwars_godsword_hilt_bandos",
 ]
 npcs = ["npc.godwars_bandos_avatar"]
+
+[[boosted]]
+objs = ["obj.sarachnis_cudgel"]
+npcs = ["npc.sarachnis"]
+rolls = ["pre_roll"]

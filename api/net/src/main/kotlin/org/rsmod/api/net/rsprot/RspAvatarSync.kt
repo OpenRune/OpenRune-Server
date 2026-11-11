@@ -318,7 +318,12 @@ class RspAvatarSync(private val infos: Infos) {
 
         info.setForceModelRefresh(false)
         for (wearpos in Wearpos.visibleWearpos) {
-            val obj = worn[wearpos.slot]
+            val obj =
+                if (wearpos == Wearpos.RightHand) {
+                    appearance.weaponOverride ?: worn[wearpos.slot]
+                } else {
+                    worn[wearpos.slot]
+                }
             val customisation = appearance.wornObjCustomisation(wearpos, obj?.id)
             if (customisation != knownWornObjCustomisations[wearpos]) {
                 if (customisation == null) {

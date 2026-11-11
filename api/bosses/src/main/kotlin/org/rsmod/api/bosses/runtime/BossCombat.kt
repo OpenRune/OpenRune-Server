@@ -153,6 +153,7 @@ object BossCombat {
         onCombatTick?.invoke(this, target)
 
         val encounter = deps.encounterRegistry.of(npc)
+        if (encounter.lethalHandled || npc.hitpoints <= 0) return
         val spec = encounter.spec
         if (encounter.currentPhase == null) return
         val tick = deps.mapClock.cycle
