@@ -200,7 +200,8 @@ object SlayerTaskManager {
     fun isTaskNpcType(type: NpcServerType, taskKey: Int): Boolean =
         SlayerTaskCredit.counts(type, taskKey)
 
-    fun countsAsTaskKill(npc: Npc, taskKey: Int): Boolean = isTaskNpc(npc, taskKey)
+    fun countsAsTaskKill(npc: Npc, taskKey: Int): Boolean =
+        isTaskNpc(npc, taskKey) && npc.visType.paramOrNull(BaseParams.slayer_no_task_credit) != true
 
     fun slayerXpForKill(npc: Npc): Double {
         val paramXp = npc.visType.paramOrNull(BaseParams.slayer_experience)

@@ -15289,6 +15289,7 @@ maxRange = 40
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.death_anim"="seq.npc_araxyte_mirror_back_death"
+"param.slayer_no_task_credit"=true
 
 [[npc]]
 id = "npc.araxxor_minion_explode"
@@ -15298,6 +15299,7 @@ maxRange = 40
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.death_anim"="seq.npc_araxyte02_death"
+"param.slayer_no_task_credit"=true
 
 [[npc]]
 id = "npc.araxxor_minion_venom"
@@ -15307,24 +15309,28 @@ maxRange = 40
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.death_anim"="seq.npc_araxyte_explode"
+"param.slayer_no_task_credit"=true
 
 [[npc]]
 id = "npc.araxxor_minion_egg_venom"
 inherit = "npc.araxxor_minion_egg_venom"
 [npc.params]
 "param.death_anim"="seq.egg_araxyte_death_01"
+"param.slayer_no_task_credit"=true
 
 [[npc]]
 id = "npc.araxxor_minion_egg_mirrorback"
 inherit = "npc.araxxor_minion_egg_mirrorback"
 [npc.params]
 "param.death_anim"="seq.egg_araxyte_death_01"
+"param.slayer_no_task_credit"=true
 
 [[npc]]
 id = "npc.araxxor_minion_egg_explode"
 inherit = "npc.araxxor_minion_egg_explode"
 [npc.params]
 "param.death_anim"="seq.egg_araxyte_death_01"
+"param.slayer_no_task_credit"=true
 
 [[npc]]
 id = "npc.amoxliatl_quest"
