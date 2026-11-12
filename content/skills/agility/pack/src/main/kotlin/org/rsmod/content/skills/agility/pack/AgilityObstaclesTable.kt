@@ -12,6 +12,8 @@ import org.rsmod.content.skills.agility.pack.rooftop.pollnivneachObstacles
 import org.rsmod.content.skills.agility.pack.rooftop.rellekkaObstacles
 import org.rsmod.content.skills.agility.pack.rooftop.seersObstacles
 import org.rsmod.content.skills.agility.pack.rooftop.varrockObstacles
+import org.rsmod.content.skills.agility.pack.shortcut.fossilUnderwaterObstacles
+import org.rsmod.content.skills.agility.pack.shortcut.shortcutObstacles
 
 /**
  * Every course obstacle in lap order. A lane is one way across: the player is put on its start
@@ -138,6 +140,8 @@ object AgilityObstaclesTable {
             pollnivneachObstacles()
             rellekkaObstacles()
             ardougneObstacles()
+            shortcutObstacles()
+            fossilUnderwaterObstacles()
         }
 
     const val RECOVERY_STEP = -1
