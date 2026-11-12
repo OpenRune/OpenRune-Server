@@ -15193,6 +15193,7 @@ moveRestrict = "NoMove"
 wanderRange = 0
 [npc.params]
 "param.hitpoints_locked"=true
+"param.headbar_hidden"=true
 
 [[npc]]
 id = "npc.pmoon_boss_icicle_2"
@@ -15201,6 +15202,7 @@ moveRestrict = "NoMove"
 wanderRange = 0
 [npc.params]
 "param.hitpoints_locked"=true
+"param.headbar_hidden"=true
 
 [[npc]]
 id = "npc.pmoon_boss_icicle_3"
@@ -15209,6 +15211,7 @@ moveRestrict = "NoMove"
 wanderRange = 0
 [npc.params]
 "param.hitpoints_locked"=true
+"param.headbar_hidden"=true
 
 [[npc]]
 id = "npc.pmoon_boss_blood_moon_vis"

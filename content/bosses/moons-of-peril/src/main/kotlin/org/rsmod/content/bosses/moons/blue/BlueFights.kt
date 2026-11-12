@@ -25,6 +25,7 @@ import org.rsmod.content.bosses.moons.blue.FrozenWeapons.ReleaseResult
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.PathingEntityCommon
+import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.proj.ProjAnim
@@ -110,6 +111,7 @@ constructor(
     fun icicleSpawned(npc: Npc, index: Int) {
         icicles[index] = npc
         npc.ignoreCombatInteractions = true
+        npc.vars["varn.forced_max_hit_styles"] = FORCED_MAX_HIT_STYLES
         npc.anim(BLOCK_RISE_SEQ)
     }
 
@@ -184,17 +186,25 @@ constructor(
         player.queueHit(npc, 1, HitType.Typeless, damage, deps.playerHitModifier)
     }
 
-    fun punch(npc: Npc, attacker: Player): Int {
+    fun punch(npc: Npc, attacker: Player, damage: Int): Int {
         val fight = fights.of(attacker) ?: return 0
         if (fight.moon != moon || fight.subdued) return 0
         val index = icicles.indexOfFirst { it === npc }
         if (index < 0 || index != fight.freezeTarget) return 0
         val remaining = attacker.vars[AD_HP]
-        if (remaining <= 0 || attacker.vars[ICICLE_STATE] != 0) return 0
-        attacker.set(AD_HP, (remaining - PUNCH_DAMAGE).coerceAtLeast(0))
+        if (damage <= 0 || remaining <= 0 || attacker.vars[ICICLE_STATE] != 0) return 0
+        val left = (remaining - damage).coerceAtLeast(0)
+        attacker.set(AD_HP, left)
+        showBlockHeadbar(npc, attacker, left)
         attacker.soundSynth(PUNCH_SYNTH)
-        if (remaining - PUNCH_DAMAGE <= 0) retrieveBlock(attacker, fight, npc)
-        return PUNCH_DAMAGE
+        if (left <= 0) retrieveBlock(attacker, fight, npc)
+        return damage
+    }
+
+    private fun showBlockHeadbar(npc: Npc, attacker: Player, left: Int) {
+        val bar = ServerCacheManager.getHealthBar(BLOCK_HEADBAR.asRSCM(RSCMType.HEADBAR)) ?: return
+        val fill = left * bar.segments / BLOCK_HITPOINTS
+        npc.showHeadbar(Headbar.fromPlayerSource(bar.id, null, fill, fill, 0, 0, attacker.slotId))
     }
 
     private fun retrieveBlock(player: Player, fight: MoonsFight, block: Npc) {
@@ -329,7 +339,8 @@ constructor(
         private const val DISARM_DELAY = 4
         private const val DISARM_RETRY_LIMIT = 47
         private const val BLOCK_HITPOINTS = 72
-        private const val PUNCH_DAMAGE = 8
+        private const val FORCED_MAX_HIT_STYLES = 7
+        private const val BLOCK_HEADBAR = "headbar.health_160"
         private const val COLD_DECAY = 2
         private const val COLD_WARNING_1 = 3
         private const val COLD_WARNING_2 = 9
