@@ -9,6 +9,7 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.script.onOpNpc5
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.travel.teleports.CharterShips
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -31,7 +32,6 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
             val isStan = crew == TRADER_STAN
             onOpNpc1(crew) { startDialogue(it.npc) { traderCrewmember(isStan) } }
             onOpNpc3(crew) { player.openTraderStan() }
-            onOpNpc4(crew) { mes(CHARTER_UNAVAILABLE) }
         }
 
         for (crate in CRATES) {
@@ -244,7 +244,7 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
             CrewTopic.Charter -> {
                 chatPlayer(neutral, "Yes, I would like to charter a ship.")
                 chatNpc(neutral, "Certainly, ${sirOrMadam()}. Where would you like to go?")
-                access.mes(CHARTER_UNAVAILABLE)
+                with(CharterShips) { access.chooseCharter() }
             }
             CrewTopic.Trade -> {
                 chatPlayer(neutral, "Yes, let's see what you're trading.")
@@ -297,7 +297,6 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
         const val WILL_NAME = "Will"
         const val SAILING_LOCKED =
             "You need to complete the Pandemonium quest to access the Sailing skill."
-        const val CHARTER_UNAVAILABLE = "Charter ships aren't available yet."
 
         val TRADER_CREW =
             listOf(

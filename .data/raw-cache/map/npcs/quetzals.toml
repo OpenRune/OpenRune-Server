@@ -1,0 +1,55 @@
+[[spawn]]
+npc = "npc.quetzal_aldarin"
+coords = "0_21_45_45_19"
+
+[[spawn]]
+npc = "npc.quetzal_auburnvalley"
+coords = "0_22_52_2_35"
+
+[[spawn]]
+npc = "npc.quetzal_fortis"
+coords = "0_26_49_32_5"
+
+[[spawn]]
+npc = "npc.quetzal_hunterguild"
+coords = "0_24_47_48_47"
+
+[[spawn]]
+npc = "npc.quetzal_quetzacalligorge"
+coords = "0_23_50_40_22"
+
+[[spawn]]
+npc = "npc.quetzal_sunsetcoast"
+coords = "0_24_46_12_53"
+
+[[spawn]]
+npc = "npc.quetzal_talteklan"
+coords = "0_19_48_9_17"
+
+[[spawn]]
+npc = "npc.quetzal_teomat"
+coords = "0_22_49_29_33"
+
+[[spawn]]
+npc = "npc.quetzal_camtorum"
+coords = "0_22_48_40_36"
+
+[[spawn]]
+npc = "npc.quetzal_colossalwyrm"
+coords = "0_26_45_8_53"
+
+[[spawn]]
+npc = "npc.quetzal_colosseum"
+coords = "0_27_48_48_39"
+
+[[spawn]]
+npc = "npc.quetzal_kastori"
+coords = "0_20_47_63_12"
+
+[[spawn]]
+npc = "npc.quetzal_outerfortis"
+coords = "0_26_47_39_29"
+
+[[spawn]]
+npc = "npc.quetzal_salvageroverlook"
+coords = "0_25_51_13_38"
