@@ -93,6 +93,9 @@ internal class OmnishopStock(private val shop: RawDbRow, private val stock: RawD
     val multiplier: Int
         get() = stock.int(STOCK_MULTIPLIER)?.takeIf { it > 0 } ?: 1
 
+    val virtual: Boolean
+        get() = stock.int(STOCK_MULTIPLIER) == 0
+
     val buyable: Boolean
         get() = stock.bool(STOCK_BUYABLE) ?: true
 
