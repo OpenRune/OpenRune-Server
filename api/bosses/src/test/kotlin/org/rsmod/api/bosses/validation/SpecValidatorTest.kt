@@ -342,6 +342,43 @@ class SpecValidatorTest {
         assertHasError(errors, "onDeath ability 'missing'")
     }
 
+    @Test
+    fun `ambient spec rejects effects aimed at the current target`() {
+        val slash = hit {
+            damage(0..4).roll()
+            type(Typeless)
+        }
+        assertHasError(ambientErrorsFor(slash), "needs a current target")
+        assertHasError(ambientErrorsFor(message("hello")), "needs a current target")
+        assertEquals(emptyList<String>(), errorsFor(slash))
+    }
+
+    @Test
+    fun `ambient spec accepts per-player work inside onEach`() {
+        val slash = hit {
+            damage(0..4).roll()
+            type(Typeless)
+        }
+        val effect =
+            sequence(
+                external("moons.focus"),
+                mapSpotanim("spotanim.x", spawnTile(1, 1)),
+                onEach(playersIn(arena), sequence(slash, message("hello"), external("moons.chain"))),
+            )
+        assertEquals(emptyList<String>(), ambientErrorsFor(effect))
+    }
+
+    @Test
+    fun `ambient personal hp onDeath ability keeps its attacker target`() {
+        val ambient =
+            spec(mapOf("subdued" to message("subdued")))
+                .copy(ambient = true, personalHp = PersonalHpSpec(500, onDeath = "subdued"))
+        assertEquals(emptyList<String>(), SpecValidator.validate(ambient).map { it.message })
+    }
+
+    private fun ambientErrorsFor(effect: Effect): List<String> =
+        SpecValidator.validate(spec(mapOf("a" to effect)).copy(ambient = true)).map { it.message }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 

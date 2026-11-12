@@ -11,6 +11,7 @@ data class BossSpec(
     val abilityAttackDelays: Map<String, Int> = emptyMap(),
     val timers: List<TimerSpec> = emptyList(),
     val personalHp: PersonalHpSpec? = null,
+    val ambient: Boolean = false,
 )
 
 data class BossStats(val attackRate: Int = 4)
