@@ -51,7 +51,7 @@ class IcicleAttackHook @Inject constructor(private val fights: MoonsFights) :
         private const val RETRIEVED_MESSAGE = "You've already retrieved your weapon!"
         private const val PUNCH_SYNTH = "synth.varl_pm_boss_blue_weapon_ice_block_cracking_01"
         private val ICICLE_IDS =
-            listOf("npc.pmoon_boss_icicle_1", "npc.pmoon_boss_icicle_2", "npc.pmoon_boss_icicle_3")
+            MoonsFights.ICICLE_NPCS
                 .map { it.asRSCM(RSCMType.NPC) }
                 .toSet()
     }

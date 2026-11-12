@@ -4,6 +4,7 @@ import dev.openrune.types.MoveRestrict
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.util.IdentityHashMap
+import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.hook.NeypotzliHook
 import org.rsmod.api.player.hook.NeypotzliMoon
@@ -17,6 +18,9 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.table.PmoonRuinsPartsRow
+import org.rsmod.api.table.PmoonRuinsSpawnsRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
@@ -25,117 +29,48 @@ import org.rsmod.game.loc.LocShape
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
-internal enum class RuinsArea(
-    private val zoneX: Int,
-    private val zoneZ: Int,
-    private val zonesLong: Int = ZONES,
-) {
-    Antechamber(176, 1200),
-    AncientPrison(168, 1192),
-    EarthboundCavern(168, 1208, zonesLong = ZONES * 2),
-    StreamboundCavern(184, 1208),
-    Vault(184, 1192);
-
-    val southWest = CoordGrid(zoneX * ZONE_SIZE, zoneZ * ZONE_SIZE)
-
-    val template: RegionTemplate =
-        RegionTemplate.create {
-            copyAllLevels(zoneX, zoneZ) {
-                zoneWidth = ZONES
-                zoneLength = zonesLong
-            }
-        }
-
-    operator fun contains(coords: CoordGrid): Boolean =
-        coords.x in southWest.x until southWest.x + ZONES * ZONE_SIZE &&
-            coords.z in southWest.z until southWest.z + zonesLong * ZONE_SIZE
-
-    companion object {
-        fun of(coords: CoordGrid): RuinsArea? = entries.firstOrNull { coords in it }
-    }
-}
-
 private const val ZONE_SIZE = 8
 private const val ZONES = 8
 
-/** [pieces] are the built camp's scenery tiles that an unbuilt camp does not have. */
-internal enum class CampSite(
-    val area: RuinsArea,
-    val spot: CoordGrid,
-    val stove: CoordGrid,
-    val pieces: List<CoordGrid>,
-) {
-    AncientPrison(
-        RuinsArea.AncientPrison,
-        spot = CoordGrid(1348, 9580),
-        stove = CoordGrid(1349, 9580),
-        pieces =
-            listOf(
-                CoordGrid(1348, 9580),
-                CoordGrid(1349, 9580),
-                CoordGrid(1351, 9581),
-                CoordGrid(1348, 9582),
-                CoordGrid(1348, 9581),
-            ),
-    ),
-    EarthboundCavern(
-        RuinsArea.EarthboundCavern,
-        spot = CoordGrid(1373, 9710),
-        stove = CoordGrid(1374, 9710),
-        pieces =
-            listOf(
-                CoordGrid(1373, 9710),
-                CoordGrid(1374, 9710),
-                CoordGrid(1374, 9709),
-                CoordGrid(1376, 9711),
-                CoordGrid(1375, 9712),
-            ),
-    ),
-    StreamboundCavern(
-        RuinsArea.StreamboundCavern,
-        spot = CoordGrid(1509, 9693),
-        stove = CoordGrid(1510, 9693),
-        pieces =
-            listOf(
-                CoordGrid(1510, 9693),
-                CoordGrid(1509, 9694),
-                CoordGrid(1511, 9692),
-                CoordGrid(1511, 9695),
-                CoordGrid(1510, 9695),
-            ),
-    );
-
-    fun built(player: Player): Boolean =
-        when (this) {
-            AncientPrison -> player.pmoonCamp1
-            EarthboundCavern -> player.pmoonCamp2
-            StreamboundCavern -> player.pmoonCamp3
-        }
-
-    fun markBuilt(player: Player) {
-        when (this) {
-            AncientPrison -> player.pmoonCamp1 = true
-            EarthboundCavern -> player.pmoonCamp2 = true
-            StreamboundCavern -> player.pmoonCamp3 = true
-        }
-    }
+private object RuinsParts {
+    val ANTECHAMBER = PmoonRuinsPartsRow.getRow("dbrow.pmoon_ruins_antechamber")
+    val ALL: List<PmoonRuinsPartsRow> = PmoonRuinsPartsRow.all()
+    val CAMPS: List<PmoonRuinsPartsRow> = ALL.filter { it.campVarbit != null }
+    val SPAWNS: List<PmoonRuinsSpawnsRow> = PmoonRuinsSpawnsRow.all()
 }
 
-private class RuinsCopy(val area: RuinsArea, val region: Region) {
+private fun PmoonRuinsPartsRow.southWest() = CoordGrid(zoneX * ZONE_SIZE, zoneZ * ZONE_SIZE)
+
+private fun PmoonRuinsPartsRow.template(): RegionTemplate =
+    RegionTemplate.create {
+        copyAllLevels(zoneX, zoneZ) {
+            zoneWidth = ZONES
+            zoneLength = zonesLong
+        }
+    }
+
+private fun PmoonRuinsPartsRow.built(player: Player): Boolean =
+    player.vars[checkNotNull(campVarbit)] == 1
+
+private fun PmoonRuinsPartsRow.markBuilt(player: Player) =
+    VarPlayerIntMapSetter.set(player, checkNotNull(campVarbit), 1)
+
+private class RuinsCopy(val part: PmoonRuinsPartsRow, val region: Region) {
     val npcs = mutableListOf<Npc>()
     val campScenery = mutableListOf<LocInfo>()
     val campSpot = mutableListOf<LocInfo>()
     var attala: Npc? = null
     var zuma: Npc? = null
 
-    private val origin = region.normal[area.southWest]
+    private val southWest = part.southWest()
+    private val origin = region.normal[southWest]
 
     fun toRegion(coords: CoordGrid): CoordGrid = region.normal[coords]
 
     fun toNormal(coords: CoordGrid): CoordGrid =
         CoordGrid(
-            area.southWest.x + coords.x - origin.x,
-            area.southWest.z + coords.z - origin.z,
+            southWest.x + coords.x - origin.x,
+            southWest.z + coords.z - origin.z,
             coords.level,
         )
 }
@@ -153,6 +88,7 @@ constructor(
     private val locRepo: LocRepository,
     private val npcRepo: NpcRepository,
     private val scenes: PerilousMoonsScenes,
+    private val areas: AreaChecker,
 ) : NeypotzliHook {
     private val copies = IdentityHashMap<Player, RuinsCopy>()
 
@@ -179,7 +115,7 @@ constructor(
                     return false
                 }
             NeypotzliPassageKind.Cavern -> {
-                val leavingAntechamber = passage.origin in RuinsArea.Antechamber
+                val leavingAntechamber = areas.inArea(RuinsParts.ANTECHAMBER.area, passage.origin)
                 if (leavingAntechamber && stage < PmoonStage.BUILD_CAMPS) {
                     startDialogue {
                         chatPlayer(
@@ -237,12 +173,12 @@ constructor(
         ) {
             player.pmoonStage = PmoonStage.MURALS
         }
-        val area = RuinsArea.of(passage.destination)
-        if (area == null || player.pmoonStage !in PmoonStage.INSTANCED) {
+        val part = partAt(passage.destination)
+        if (part == null || player.pmoonStage !in PmoonStage.INSTANCED) {
             leave(player)
             return false
         }
-        val copy = enter(player, area) ?: return false
+        val copy = enter(player, part) ?: return false
         telejump(copy.toRegion(passage.destination), TeleportType.Exempt)
         return true
     }
@@ -292,23 +228,25 @@ constructor(
         copy.zuma?.walk(copy.toRegion(PmoonPlace.ZUMA_REST))
     }
 
-    private fun enter(player: Player, area: RuinsArea): RuinsCopy? {
+    private fun partAt(coords: CoordGrid): PmoonRuinsPartsRow? =
+        RuinsParts.ALL.firstOrNull { areas.inArea(it.area, coords) }
+
+    private fun enter(player: Player, part: PmoonRuinsPartsRow): RuinsCopy? {
         leave(player)
-        val region = regionRepo.add(area.template) ?: return null
+        val region = regionRepo.add(part.template()) ?: return null
         regionRepo.protect(region)
-        val copy = RuinsCopy(area, region)
+        val copy = RuinsCopy(part, region)
         copies[player] = copy
-        if (area == RuinsArea.Antechamber) {
+        if (part.rowId == RuinsParts.ANTECHAMBER.rowId) {
             furnishAntechamber(player, copy)
         }
-        for ((type, tile) in CREATURES[area].orEmpty()) {
-            val npc = Npc(type, copy.toRegion(tile))
+        for (spawn in RuinsParts.SPAWNS.filter { it.part.rowId == part.rowId }) {
+            val npc = Npc(spawn.npc, copy.toRegion(spawn.tile))
             npcRepo.add(npc, Int.MAX_VALUE)
             copy.npcs += npc
         }
-        val site = CampSite.entries.firstOrNull { it.area == area }
-        if (site != null && !site.built(player)) {
-            unbuildCamp(copy, site)
+        if (part.campVarbit != null && !part.built(player)) {
+            unbuildCamp(copy, part)
         }
         return copy
     }
@@ -347,8 +285,8 @@ constructor(
         return npc
     }
 
-    private fun unbuildCamp(copy: RuinsCopy, site: CampSite) {
-        for (piece in site.pieces) {
+    private fun unbuildCamp(copy: RuinsCopy, site: PmoonRuinsPartsRow) {
+        for (piece in site.campPieces) {
             for (level in CAMP_LEVELS) {
                 val tile = copy.toRegion(CoordGrid(piece.x, piece.z, level))
                 val scenery =
@@ -360,15 +298,17 @@ constructor(
             }
         }
         val level = copy.campScenery.firstOrNull()?.coords?.level ?: 0
+        val spot = checkNotNull(site.campSpot)
+        val stoveTile = checkNotNull(site.campStove)
         copy.campSpot +=
             locRepo.add(
-                copy.toRegion(CoordGrid(site.spot.x, site.spot.z, level)),
+                copy.toRegion(CoordGrid(spot.x, spot.z, level)),
                 "loc.pmoon_campbox",
                 Int.MAX_VALUE,
                 LocAngle.West,
                 LocShape.CentrepieceStraight,
             )
-        val stove = copy.toRegion(CoordGrid(site.stove.x, site.stove.z, level))
+        val stove = copy.toRegion(CoordGrid(stoveTile.x, stoveTile.z, level))
         copy.campSpot +=
             locRepo.add(
                 stove,
@@ -390,7 +330,7 @@ constructor(
             }
             return
         }
-        val campsLeft = CampSite.entries.size - player.pmoonCampsBuilt
+        val campsLeft = RuinsParts.CAMPS.size - player.pmoonCampsBuilt
         val supplies = (campsLeft - inv.count(PmoonObj.BUILDING_SUPPLIES)).coerceAtLeast(0)
         val tools = listOf(PmoonObj.HAMMER, PmoonObj.SAW).filter { inv.count(it) == 0 }
         val needed = supplies + tools.size
@@ -417,7 +357,7 @@ constructor(
 
     suspend fun ProtectedAccess.buildCamp() {
         val copy = copies[player] ?: return
-        val site = CampSite.entries.firstOrNull { it.area == copy.area } ?: return
+        val site = copy.part.takeIf { it.campVarbit != null } ?: return
         if (site.built(player)) return
         if (!hasSupplies() || inv.count(PmoonObj.HAMMER) == 0 || inv.count(PmoonObj.SAW) == 0) {
             startDialogue { needSupplies() }
@@ -450,7 +390,7 @@ constructor(
         player.runEnergy = Constants.run_max_energy
         UpdateRun.energy(player, player.runEnergy)
         site.markBuilt(player)
-        if (player.pmoonCampsBuilt == CampSite.entries.size) {
+        if (player.pmoonCampsBuilt == RuinsParts.CAMPS.size) {
             player.pmoonStage = PmoonStage.CAMPS_BUILT
         }
     }
@@ -467,124 +407,6 @@ constructor(
                 "loc.pmoon_camp_supplies_1" to CoordGrid(1435, 9636, 1),
                 "loc.pmoon_camp_supplies_2" to CoordGrid(1436, 9636, 1),
                 "loc.pmoon_camp_supplies_3" to CoordGrid(1436, 9637, 1),
-            )
-
-        private fun spawns(
-            type: String,
-            vararg tiles: Pair<Int, Int>,
-        ): List<Pair<String, CoordGrid>> = tiles.map { (x, z) -> type to CoordGrid(x, z) }
-
-        private val CREATURES: Map<RuinsArea, List<Pair<String, CoordGrid>>> =
-            mapOf(
-                RuinsArea.AncientPrison to
-                    spawns(
-                        "npc.pmoon_sulphur_nagua",
-                        1355 to 9563,
-                        1358 to 9556,
-                        1358 to 9573,
-                        1359 to 9550,
-                        1359 to 9567,
-                        1372 to 9557,
-                        1372 to 9563,
-                        1375 to 9560,
-                        1378 to 9557,
-                        1378 to 9563,
-                        1350 to 9558,
-                        1351 to 9574,
-                        1352 to 9552,
-                        1352 to 9568,
-                    ),
-                RuinsArea.EarthboundCavern to
-                    spawns(
-                        "npc.varlamore_cockatrice_moon01",
-                        1354 to 9697,
-                        1355 to 9683,
-                        1356 to 9677,
-                        1358 to 9681,
-                        1358 to 9700,
-                        1359 to 9687,
-                        1359 to 9694,
-                        1352 to 9680,
-                        1355 to 9692,
-                    ) +
-                        spawns(
-                            "npc.moth_moonlight",
-                            1364 to 9704,
-                            1366 to 9695,
-                            1366 to 9700,
-                            1369 to 9693,
-                            1370 to 9684,
-                            1370 to 9697,
-                            1371 to 9707,
-                            1373 to 9673,
-                            1373 to 9681,
-                            1374 to 9671,
-                            1374 to 9675,
-                            1374 to 9685,
-                            1375 to 9672,
-                            1376 to 9677,
-                            1377 to 9685,
-                            1377 to 9707,
-                            1379 to 9712,
-                            1380 to 9696,
-                            1380 to 9709,
-                            1382 to 9707,
-                            1382 to 9710,
-                            1385 to 9708,
-                            1385 to 9711,
-                            1386 to 9680,
-                            1390 to 9682,
-                            1394 to 9680,
-                            1394 to 9698,
-                            1396 to 9687,
-                            1396 to 9695,
-                            1396 to 9701,
-                            1397 to 9684,
-                            1398 to 9689,
-                            1398 to 9706,
-                        ),
-                RuinsArea.StreamboundCavern to
-                    spawns(
-                        "npc.moth_moonlight",
-                        1481 to 9680,
-                        1482 to 9699,
-                        1483 to 9690,
-                        1486 to 9679,
-                        1497 to 9712,
-                        1504 to 9679,
-                        1507 to 9716,
-                        1509 to 9678,
-                        1513 to 9675,
-                        1517 to 9710,
-                        1519 to 9713,
-                        1520 to 9710,
-                        1521 to 9715,
-                        1523 to 9671,
-                        1524 to 9706,
-                        1525 to 9674,
-                    ) +
-                        spawns(
-                            "npc.grimy_lizard",
-                            1483 to 9716,
-                            1489 to 9704,
-                            1490 to 9714,
-                            1494 to 9711,
-                            1498 to 9709,
-                            1499 to 9718,
-                            1504 to 9714,
-                            1510 to 9715,
-                        ) +
-                        spawns(
-                            "npc.pmoon_little_frog",
-                            1498 to 9691,
-                            1501 to 9682,
-                            1504 to 9692,
-                            1506 to 9684,
-                            1508 to 9688,
-                            1517 to 9688,
-                            1521 to 9696,
-                            1524 to 9687,
-                        ),
             )
     }
 }

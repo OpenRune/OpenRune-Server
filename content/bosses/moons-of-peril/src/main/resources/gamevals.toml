@@ -7,6 +7,7 @@ pmoon_eclipse_arena = 32447
 pmoon_inside = 64500
 pmoon_trap_first_rock = 64501
 pmoon_unique_mask = 64502
+pmoon_fight_state = 64503
 
 [gamevals.headbar]
 blood_120 = 63
@@ -15,3 +16,22 @@ heat_120 = 65
 
 [gamevals.inv]
 pmoon_frozen_weapon = 64500
+
+[gamevals.varbit]
+pmoon_fight_burn = 64500
+pmoon_fight_subdued = 64501
+pmoon_fight_cold_locked = 64502
+pmoon_fight_relight_side = 64503
+pmoon_fight_freeze_target = 64504
+
+[gamevals.timer]
+pmoon_chain = 64800
+pmoon_parry = 64801
+
+[gamevals.dbtable]
+pmoon_moons = 64800
+
+[gamevals.dbrow]
+pmoon_moon_blood = 62800
+pmoon_moon_blue = 62801
+pmoon_moon_eclipse = 62802

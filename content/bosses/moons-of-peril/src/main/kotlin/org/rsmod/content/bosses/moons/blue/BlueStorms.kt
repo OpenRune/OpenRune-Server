@@ -86,18 +86,17 @@ constructor(private val deps: BossDeps, private val fights: MoonsFights) {
     }
 
     fun spawn() {
-        if (fights.playersIn(moon).isEmpty()) return
+        if (deps.random.of(0, 99) >= FIRST_SPAWN_PERCENT) return
         spawnOne()
         if (deps.random.of(0, 99) < SECOND_SPAWN_PERCENT) spawnOne()
     }
 
     private fun spawnOne() {
-        if (deps.random.of(0, 99) >= FIRST_SPAWN_PERCENT) return
         val dx = deps.random.of(COLUMN_WEST, COLUMN_EAST)
         val column = columns.getOrPut(dx) { column(dx) } ?: return
         val path =
             if (deps.random.of(0, 1) == 0) column
-            else column.reversed().dropWhile { it.z > moon.southWest.z + SOUTH_START }
+            else column.reversed()
         val npc = Npc(STORM_NPC, path.first())
         deps.npcRepo.add(npc, STORM_LIFESPAN)
         npc.noneMode()
@@ -203,9 +202,8 @@ constructor(private val deps: BossDeps, private val fights: MoonsFights) {
         private const val SECOND_SPAWN_PERCENT = 15
         private const val COLUMN_WEST = -10
         private const val COLUMN_EAST = 14
-        private const val COLUMN_SOUTH = -6
-        private const val SOUTH_START = 10
-        private const val COLUMN_NORTH = 11
+        private const val COLUMN_SOUTH = -9
+        private const val COLUMN_NORTH = 13
         private const val FIRE_WEST = -5
         private const val FIRE_EAST = 9
         private val FIRE_ROWS = listOf(-6, 10)

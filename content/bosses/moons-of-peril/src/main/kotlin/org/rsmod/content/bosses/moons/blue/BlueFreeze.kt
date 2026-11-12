@@ -19,6 +19,7 @@ import org.rsmod.api.bosses.dsl.vulnerable
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.content.bosses.moons.Moon
 import org.rsmod.content.bosses.moons.MoonsExternals
+import org.rsmod.content.bosses.moons.MoonsFights
 import org.rsmod.content.bosses.moons.arena
 
 internal object BlueFreeze {
@@ -43,8 +44,6 @@ internal object BlueFreeze {
     private const val RISE_SYNTH = "synth.varl_pm_boss_blue_weapon_ice_block"
     private const val EXPLODE_SYNTH = "synth.varl_pm_boss_blue_weapon_ice_block_despawn"
     private const val HIDE_NPC = "varbit.pmoon_boss_hide_npc"
-    private val ICICLES =
-        listOf("npc.pmoon_boss_icicle_1", "npc.pmoon_boss_icicle_2", "npc.pmoon_boss_icicle_3")
     private val OVERLAYS =
         listOf(
             "loc.pmoon_boss_overlay_new_blocking",
@@ -76,7 +75,7 @@ internal object BlueFreeze {
                     *blocks
                         .map {
                             summon(
-                                ICICLES[it],
+                                MoonsFights.ICICLE_NPCS[it],
                                 radius = 0,
                                 centeredOn = tile(it),
                                 mode = NpcMode.None,

@@ -59,6 +59,7 @@ constructor(
 ) {
     private var shield: Npc? = null
     private var shieldStep = 0
+    private var facingShield = false
     private var clonesActive = false
     private val clones = EnumMap<Side, Npc>(Side::class.java)
 
@@ -93,7 +94,16 @@ constructor(
         spawned.ignoreCombatInteractions = true
         spawned.anim(SHIELD_RISE_SEQ)
         spawned.faceSquare(moon.southWest.translate(-2, -2))
+        facingShield = true
         fights.npc(moon)?.facePathingEntitySquare(spawned)
+    }
+
+    fun shieldUnface() {
+        facingShield = false
+        fights.npc(moon)?.let {
+            it.resetFaceEntity()
+            it.resetPendingFaceSquare()
+        }
     }
 
     fun shieldStep() {
@@ -102,6 +112,7 @@ constructor(
         val (x, z) = EclipseGeometry.shieldPosition(step)
         val dest = moon.southWest.translate(x, z)
         if (dest != current.coords) PathingEntityCommon.teleport(current, deps.collision, dest)
+        if (facingShield) fights.npc(moon)?.facePathingEntitySquare(current)
         EclipseGeometry.turnAt(step)?.let { (dx, dz) ->
             current.faceSquare(dest.translate(dx * FACE_REACH, dz * FACE_REACH))
         }
@@ -181,7 +192,7 @@ constructor(
         clonesActive = false
         for (player in fights.playersIn(moon)) {
             player.bound = false
-            fights.of(player)?.parryUntil = -1
+            fights.of(player)?.clearParry()
         }
     }
 
@@ -198,7 +209,7 @@ constructor(
 
     fun subdued(player: Player) {
         player.bound = false
-        fights.of(player)?.parryUntil = -1
+        fights.of(player)?.clearParry()
         if (fighters().isEmpty()) clones.values.forEach(::hideClone)
     }
 
@@ -239,7 +250,7 @@ constructor(
 
     private fun parry(player: Player, fight: MoonsFight, clone: Npc) {
         player.queueHit(clone, 1, HitType.Typeless, 0, deps.playerHitModifier)
-        fight.parryUntil = deps.mapClock.cycle + PARRY_WINDOW
+        fight.startParry(PARRY_WINDOW)
         val launched = protectedAccess.launch(player) { weaponParry(clone) }
         if (launched) return
         player.anim(attackAnim(player))
@@ -274,7 +285,7 @@ constructor(
     /** A hit on a clone: only hits landing inside a parry window count, and they come off the attacker's Moon pool. */
     fun cloneHit(player: Player, damage: Int): Int {
         val fight = fights.of(player) ?: return 0
-        if (deps.mapClock.cycle > fight.parryUntil) return 0
+        if (!fight.parryActive) return 0
         val dealt = glanced(player, damage, CLONES_GLANCE_REDUCTION)
         moon.hitSynth?.let(player::soundSynth)
         fights.damagePool(player, dealt)

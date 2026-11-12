@@ -7,6 +7,7 @@ import jakarta.inject.Singleton
 import java.util.EnumMap
 import java.util.IdentityHashMap
 import org.rsmod.api.bossbar.plugin.BossHpBarScript
+import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.runtime.Angles
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.PersonalHpTracker
@@ -15,7 +16,11 @@ import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.hit.queueHit
+import org.rsmod.api.player.music.MusicPlayer
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.stat.statHeal
+import org.rsmod.api.player.ui.ifOpenFullOverlay
+import org.rsmod.api.table.MusicRow
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
@@ -43,17 +48,65 @@ interface BlueHooks {
 }
 
 class MoonsFight(val player: Player, val moon: Moon) {
-    var burn: Int = BURN_START
-    var subdued: Boolean = false
-    var chainUntil: Int = -1
-    var parryUntil: Int = -1
-    var coldLocked: Boolean = false
-    var relightSide: Int = -1
-    var freezeTarget: Int = -1
+    var burn: Int
+        get() = player.vars[BURN]
+        set(value) = VarPlayerIntMapSetter.set(player, BURN, value)
+
+    var subdued: Boolean
+        get() = player.vars[SUBDUED] == 1
+        set(value) = VarPlayerIntMapSetter.set(player, SUBDUED, if (value) 1 else 0)
+
+    var coldLocked: Boolean
+        get() = player.vars[COLD_LOCKED] == 1
+        set(value) = VarPlayerIntMapSetter.set(player, COLD_LOCKED, if (value) 1 else 0)
+
+    var relightSide: Int
+        get() = player.vars[RELIGHT_SIDE] - 1
+        set(value) = VarPlayerIntMapSetter.set(player, RELIGHT_SIDE, value + 1)
+
+    var freezeTarget: Int
+        get() = player.vars[FREEZE_TARGET] - 1
+        set(value) = VarPlayerIntMapSetter.set(player, FREEZE_TARGET, value + 1)
+
+    val chainActive: Boolean
+        get() = player.timerActive(CHAIN_TIMER)
+
+    val parryActive: Boolean
+        get() = player.timerActive(PARRY_TIMER)
+
+    fun startChain(ticks: Int) = player.softTimer(CHAIN_TIMER, ticks)
+
+    fun startParry(window: Int) = player.softTimer(PARRY_TIMER, window + 1)
+
+    fun clearParry() = player.clearSoftTimer(PARRY_TIMER)
+
+    init {
+        burn = BURN_START
+        subdued = false
+        coldLocked = false
+        relightSide = NONE
+        freezeTarget = NONE
+        player.clearSoftTimer(CHAIN_TIMER)
+        player.clearSoftTimer(PARRY_TIMER)
+    }
+
+    @OptIn(InternalApi::class)
+    private fun Player.timerActive(timer: String): Boolean {
+        val packed = softTimerMap[timer.asRSCM(RSCMType.TIMER).toShort()] ?: return false
+        return currentMapClock < softTimerMap.extractExpiry(packed)
+    }
 
     companion object {
         const val BURN_START = 1
         const val BURN_MAX = 16
+        const val NONE = -1
+        const val CHAIN_TIMER = "timer.pmoon_chain"
+        const val PARRY_TIMER = "timer.pmoon_parry"
+        const val BURN = "varbit.pmoon_fight_burn"
+        const val SUBDUED = "varbit.pmoon_fight_subdued"
+        const val COLD_LOCKED = "varbit.pmoon_fight_cold_locked"
+        const val RELIGHT_SIDE = "varbit.pmoon_fight_relight_side"
+        const val FREEZE_TARGET = "varbit.pmoon_fight_freeze_target"
     }
 }
 
@@ -69,10 +122,10 @@ constructor(
     private val deps: BossDeps,
     private val eventBus: EventBus,
     private val bossBar: BossHpBarScript,
+    private val music: MusicPlayer,
 ) {
     private val npcs = EnumMap<Moon, Npc>(Moon::class.java)
     private val focus = EnumMap<Moon, Int>(Moon::class.java)
-    private val debugging = java.util.Collections.newSetFromMap(IdentityHashMap<Player, Boolean>())
     private val focusSince = EnumMap<Moon, Int>(Moon::class.java)
     private val fights = IdentityHashMap<Player, MoonsFight>()
     private val jaguars = EnumMap<Moon, MutableList<Npc>>(Moon::class.java)
@@ -103,7 +156,6 @@ constructor(
         val npc = npcs[moon] ?: return
         val tracker = tracker(moon) ?: return
         fights[player] = MoonsFight(player, moon)
-        debugging.add(player)
         tracker.add(player)
 
         val current = focus(moon)
@@ -119,15 +171,27 @@ constructor(
         bossBar.onUpdate(player, npc, Moon.MAX_HITPOINTS, Moon.MAX_HITPOINTS)
         player.set("varp.pmoon_inside", 1)
         player.ifOpenOverlay(HUD, HUD_TARGET, eventBus)
+        music.unlockAndPlay(player, MusicRow.getRow(MUSIC))
+    }
+
+    fun portalOpen(player: Player, model: Int, colour: Int) {
+        player.ifOpenFullOverlay(PORTAL_OVERLAY, eventBus)
+        player.runClientScript(PORTAL_SCRIPT.asRSCM(RSCMType.CLIENTSCRIPT), model, colour)
+    }
+
+    fun portalClose(player: Player) {
+        player.runClientScript(PORTAL_REMOVE_SCRIPT.asRSCM(RSCMType.CLIENTSCRIPT))
+        deps.worldQueues.add(1) {
+            if (player.isSlotAssigned) player.ifCloseOverlay(PORTAL_OVERLAY, eventBus)
+        }
     }
 
     /** [quiet] skips everything sent to the client, for a player who is logging out. */
     fun end(player: Player, quiet: Boolean = false) {
         val fight = fights.remove(player) ?: return
         if (fight.moon == Moon.Blue) blueHooks?.left(player, loggedOut = quiet)
-        debugging.remove(player)
         player.bound = false
-        fight.parryUntil = -1
+        fight.clearParry()
         val moon = fight.moon
         tracker(moon)?.remove(player)
         if (!quiet) {
@@ -172,19 +236,12 @@ constructor(
     fun standardAttack(npc: Npc, player: Player) {
         val fight = fights[player]
         if (fight == null || fight.subdued) return
-        fight.chainUntil = deps.mapClock.cycle + CHAIN_MAX_HITS.size - 1
+        fight.startChain(CHAIN_MAX_HITS.size)
         val chain = HitChain()
-        debug(player, "attack started: chain hits at +0,+1,+2")
         chainHit(fight, npc, 0, chain)
         for (index in 1 until CHAIN_MAX_HITS.size) {
             deps.worldQueues.add(index) { chainHit(fight, npc, index, chain) }
         }
-    }
-
-    fun toggleDebug(player: Player): Boolean = if (debugging.add(player)) true else !debugging.remove(player)
-
-    private fun debug(player: Player, text: String) {
-        if (player in debugging) player.spam("[moon t=${deps.mapClock.cycle}] $text")
     }
 
     private class HitChain(
@@ -200,14 +257,12 @@ constructor(
         val last = index == CHAIN_MAX_HITS.lastIndex
         val onGlyph = moon.onGlyph(focus(moon), player.coords)
         if (!onGlyph || chain.missed) {
-            debug(player, "chain hit ${index + 1}: skipped (${if (onGlyph) "earlier miss" else "off glyph"})")
             player.finishNpcHit(npc, 1, HitType.Typeless, 0, deps.playerHitModifier)
         } else {
             chain.attempted = true
             val landed = deps.accuracy.rollMeleeAccuracy(npc, player, MeleeAttackType.Slash, deps.random)
             val damage = if (landed) deps.random.of(0, CHAIN_MAX_HITS[index]) else 0
             val hit = player.finishNpcHit(npc, 1, HitType.Typeless, damage, deps.playerHitModifier)
-            debug(player, "chain hit ${index + 1}: ${if (landed) "landed" else "missed"} rolled=$damage dealt=${hit.damage}")
             if (landed) {
                 addCondition(fight, moon.chainCurse(index, hit.damage))
                 if (!chain.messaged) {
@@ -249,7 +304,6 @@ constructor(
         val player = fight.player
         tracker(fight.moon)?.heal(player, amount)
         player.soundSynth(BLOOD_HEAL_SYNTH)
-        debug(player, "blood heal +$amount")
         player.projAnimSpecific(healProjectile(player, npc, BLOOD_HEAL_SPOTANIM, 60, 350, 60, 135, 0))
         if (scream) {
             player.projAnimSpecific(healProjectile(player, npc, BLOOD_SCREAM_SPOTANIM, 12, 12, 40, 0, 50))
@@ -301,16 +355,13 @@ constructor(
             fight.burn = MoonsFight.BURN_START
             return
         }
-        if (deps.mapClock.cycle <= fight.chainUntil) {
-            debug(player, "burn: suppressed (attack chain in progress)")
+        if (fight.chainActive) {
             return
         }
         if (deps.mapClock.cycle - focusChangedAt(moon) <= BURN_GRACE) {
-            debug(player, "burn: grace after glyph moved")
             return
         }
         val hit = player.queueHit(npc, 1, HitType.Typeless, fight.burn, deps.playerHitModifier)
-        debug(player, "burn: hit ${hit.damage} (stage ${fight.burn}), off glyph")
         fight.burn = (fight.burn * 2).coerceAtMost(MoonsFight.BURN_MAX)
         addCondition(fight, 1)
         if (moon == Moon.Blood) {
@@ -327,7 +378,6 @@ constructor(
             player
                 .finishNpcHit(npc, 1, HitType.Typeless, deps.random.of(0, maxHit), deps.playerHitModifier)
                 .damage
-        debug(player, "blood strike: dealt $dealt of max $maxHit")
         if (dealt <= 0 || healMultiplier <= 0) return
         deps.worldQueues.add(1) {
             if (fights[player] === fight) bloodHeal(fight, npc, dealt * healMultiplier, false)
@@ -464,12 +514,15 @@ constructor(
         player.spotanimMapPrivate(moon.deathSpotanim.asRSCM(RSCMType.SPOTANIM), moon.centre, height = 0)
 
         deps.worldQueues.add(LEAVE_SOUND_DELAY) {
-            if (fights[player] === fight) player.soundSynth(PORTAL_SYNTH)
+            if (fights[player] !== fight) return@add
+            player.soundSynth(PORTAL_SYNTH)
+            portalOpen(player, Moon.LEAVE_PORTAL_MODEL, Moon.LEAVE_PORTAL_COLOUR)
         }
         deps.worldQueues.add(LEAVE_DELAY) {
             if (fights[player] !== fight) return@add
             end(player)
             PathingEntityCommon.telejump(player, deps.collision, camp)
+            portalClose(player)
             sendFarewell(player, moon)
         }
     }
@@ -498,11 +551,17 @@ constructor(
 
     companion object {
         const val HUD = "interface.pmoon_hud"
+        const val MUSIC = "dbrow.music_perilous_moons"
+        const val PORTAL_OVERLAY = "interface.gotr_overlay"
+        const val PORTAL_SCRIPT = "clientscript.[clientscript,script5984]"
+        const val PORTAL_REMOVE_SCRIPT = "clientscript.[clientscript,script5985]"
         const val HUD_TARGET = "component.toplevel_osrs_stretch:overlay_hud"
         const val PORTAL_SYNTH = "synth.varlamore_pm_passageway_teleport_08"
         const val CONDITION = "varbit.pmoon_boss_condition"
         const val CURRENT_FOCUS = "varbit.pmoon_boss_current_focus"
         const val JAGUAR_NPC = "npc.pmoon_boss_jaguar"
+        val ICICLE_NPCS =
+            listOf("npc.pmoon_boss_icicle_1", "npc.pmoon_boss_icicle_2", "npc.pmoon_boss_icicle_3")
         const val AD_HP = "varbit.pmoon_boss_ad_hp"
         const val NO_BLOOD_MESSAGE = "This jaguar doesn't possess any of your blood!"
         const val SAP_MAX_HIT = 15

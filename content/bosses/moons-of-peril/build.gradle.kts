@@ -21,6 +21,7 @@ dependencies {
     implementation(projects.api.registry)
     implementation(projects.api.config)
     implementation(projects.api.combat.combatCommons)
+    implementation(projects.engine.annotations)
     implementation(projects.engine.game)
     implementation(projects.api.combat.combatManager)
     implementation(projects.api.combat.combatWeapon)

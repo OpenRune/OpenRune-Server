@@ -29,6 +29,7 @@ internal object EclipseRays {
     private const val WALK_STEPS = 37
     private const val RAY_COUNT = 13
     private const val RAY_PERIOD = 3
+    private const val UNFACE_TICK = 43
     private const val VULNERABLE_TICK = 49
     private const val SINK_TICK = 50
     private const val BLOCKER_REMOVE_TICK = 52
@@ -44,7 +45,7 @@ internal object EclipseRays {
     private const val SOUND_RADIUS = 15
     private val SHIELD_START = spawnTile(5, -2)
     private val BLOCKER_TILE = spawnTile(-2, -2)
-    private val THROW_DEST = 5 to -3
+    private val THROW_DEST = Moon.ECLIPSE_RAYS_LANDING
 
     private fun ray(): Effect =
         sequence(
@@ -72,7 +73,9 @@ internal object EclipseRays {
                 wait(THROW_TICK),
                 external(MoonsExternals.THROW_TO, params = THROW_DEST),
                 spawnLoc(BLOCKER_LOC, BLOCKER_TILE),
-                wait(VULNERABLE_TICK - THROW_TICK),
+                wait(UNFACE_TICK - THROW_TICK),
+                external(MoonsExternals.SHIELD_UNFACE),
+                wait(VULNERABLE_TICK - UNFACE_TICK),
                 external(MoonsExternals.OPS_SHOW),
                 vulnerable(),
                 summon(

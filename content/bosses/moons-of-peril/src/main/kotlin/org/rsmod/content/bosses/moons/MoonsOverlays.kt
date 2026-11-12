@@ -13,7 +13,7 @@ class MoonsOverlays @Inject constructor(private val deps: BossDeps) {
     fun show(moon: Moon) {
         val placed =
             OVERLAY_LOCS.mapIndexed { focus, loc ->
-                val (dx, dz) = OVERLAY_OFFSETS[focus]
+                val (dx, dz) = Moon.JAGUAR_OFFSETS[focus]
                 val info =
                     deps.locRepo.add(
                         moon.southWest.translate(dx, dz),
@@ -39,9 +39,6 @@ class MoonsOverlays @Inject constructor(private val deps: BossDeps) {
         const val SPAWN_SEQ = "seq.vfx_djinn_ueyatlalli_protection_spawn_01"
         const val IDLE_SEQ = "seq.vfx_djinn_ueyatlalli_protection_idle_01"
         const val DESPAWN_SEQ = "seq.vfx_djinn_ueyatlalli_protection_despawn_01"
-
-        /** Indexed by focus: each glyph's offset pushed two tiles out from the arena. */
-        val OVERLAY_OFFSETS = listOf(3 to -4, 0 to -4, -4 to 0, -4 to 3, 0 to 7, 3 to 7, 7 to 3, 7 to 0)
 
         val OVERLAY_LOCS =
             listOf(
