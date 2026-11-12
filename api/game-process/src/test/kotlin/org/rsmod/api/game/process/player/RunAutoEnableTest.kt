@@ -10,6 +10,7 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.player.vars.autoEnableRunOnMove
 import org.rsmod.api.player.vars.setActiveMoveSpeed
 import org.rsmod.api.player.vars.varMoveSpeed
@@ -20,7 +21,10 @@ import org.rsmod.game.movement.MoveSpeed
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class RunAutoEnableTest {
-    private val processor = PlayerRunUpdateProcessor()
+    private val processor =
+        PlayerRunUpdateProcessor(
+            ServerConfig(name = "test", gamePort = 0, revision = 242, environment = "test", world = 1)
+        )
 
     @Test
     fun `energy climbing past the threshold while standing leaves run off`() {

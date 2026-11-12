@@ -16,6 +16,7 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.death.PlayerDeath
+import org.rsmod.api.death.PlayerRespawnPoint
 import org.rsmod.api.death.PlayerDeathDrops
 import org.rsmod.api.death.PlayerDeathHandlingResolver
 import org.rsmod.api.game.process.player.PlayerRegionProcessor
@@ -64,7 +65,8 @@ class FoundryLifecycleTest {
         val drops = PlayerDeathDrops(MapClock(), repo, prices, GroundItemDropResolver(emptySet()), emptySet(), config)
         val death = PlayerDeath(
             MapClock(), drops, PlayerDeathHandlingResolver(emptySet()),
-            setOf(FoundryDeathPreDropHook(f.events)), emptySet(), emptySet(), emptySet(), emptySet(),
+            setOf(FoundryDeathPreDropHook(f.events)), emptySet(), emptySet(),
+            PlayerRespawnPoint(emptySet()), emptySet(),
             mockk<AreaChecker>(relaxed = true),
         )
         // Exercise the actual mutation pipeline, not the preview or a manually ordered hook.
