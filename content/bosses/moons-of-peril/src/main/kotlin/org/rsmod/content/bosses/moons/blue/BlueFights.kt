@@ -76,6 +76,8 @@ constructor(
         freezeStartedAt = deps.mapClock.cycle
     }
 
+    fun icicleLocked(): Boolean = deps.mapClock.cycle - freezeStartedAt in 0..ICICLE_LOCK_LAST_TICK
+
     fun joined(player: Player) {
         val offset = deps.mapClock.cycle - freezeStartedAt
         if (freezeStartedAt == NEVER || offset !in 0 until FREEZE_TICKS || offset >= EXPLODE_TICK) return
@@ -329,6 +331,7 @@ constructor(
         private const val HIDE_TICK = 8
         private const val EXPLODE_TICK = 51
         private const val DISARM_DELAY = 4
+        private const val ICICLE_LOCK_LAST_TICK = 4
         private const val DISARM_RETRY_LIMIT = 47
         private const val BLOCK_HITPOINTS = 72
         private const val FORCED_MAX_HIT_STYLES = 7
