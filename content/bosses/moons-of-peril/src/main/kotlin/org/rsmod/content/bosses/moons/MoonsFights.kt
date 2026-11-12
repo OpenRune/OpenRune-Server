@@ -35,6 +35,7 @@ class MoonsFight(val player: Player, val moon: Moon) {
     var condition: Int = 0
     var burn: Int = BURN_START
     var subdued: Boolean = false
+    var chainUntil: Int = -1
 
     companion object {
         const val BURN_START = 1
@@ -51,6 +52,7 @@ class MoonsFight(val player: Player, val moon: Moon) {
 class MoonsFights @Inject constructor(private val deps: BossDeps, private val eventBus: EventBus) {
     private val npcs = EnumMap<Moon, Npc>(Moon::class.java)
     private val focus = EnumMap<Moon, Int>(Moon::class.java)
+    private val debugging = java.util.Collections.newSetFromMap(IdentityHashMap<Player, Boolean>())
     private val focusSince = EnumMap<Moon, Int>(Moon::class.java)
     private val fights = IdentityHashMap<Player, MoonsFight>()
 
@@ -77,6 +79,7 @@ class MoonsFights @Inject constructor(private val deps: BossDeps, private val ev
         val npc = npcs[moon] ?: return
         val tracker = tracker(moon) ?: return
         fights[player] = MoonsFight(player, moon)
+        debugging.add(player)
         tracker.add(player)
 
         val current = focus(moon)
@@ -96,6 +99,7 @@ class MoonsFights @Inject constructor(private val deps: BossDeps, private val ev
     /** [quiet] skips everything sent to the client, for a player who is logging out. */
     fun end(player: Player, quiet: Boolean = false) {
         val fight = fights.remove(player) ?: return
+        debugging.remove(player)
         val moon = fight.moon
         tracker(moon)?.remove(player)
         if (!quiet) {
@@ -124,24 +128,62 @@ class MoonsFights @Inject constructor(private val deps: BossDeps, private val ev
         fight.player.set("varbit.pmoon_boss_condition", fight.condition)
     }
 
-    /** The Moon's three-hit chain against [player]: once a hit misses, the rest of the chain does. */
+    /**
+     * Starts the Moon's three-hit chain for [player]. Each hit is resolved on its own tick against
+     * where the player stands then, so stepping onto the glyph mid-chain takes the remaining hits;
+     * once a hit misses, the rest of the chain does.
+     */
     fun standardAttack(npc: Npc, player: Player) {
         val fight = fights[player]
         if (fight == null || fight.subdued) return
-        val moon = fight.moon
-        val tracker = tracker(moon) ?: return
-        var landed = true
-        for ((index, maxHit) in CHAIN_MAX_HITS.withIndex()) {
-            landed = landed && deps.accuracy.rollMeleeAccuracy(npc, player, MeleeAttackType.Slash, deps.random)
-            val damage = if (landed) deps.random.of(0, maxHit) else 0
-            val hit = player.finishNpcHit(npc, index + 1, HitType.Typeless, damage, deps.playerHitModifier)
-            if (!landed) continue
-            addCondition(fight, CHAIN_CONDITION[index])
-            if (moon != Moon.Blood) continue
-            val dealt = hit.damage
-            val heal = if (index == CHAIN_MAX_HITS.lastIndex) deps.random.of(BLOOD_FINAL_HEAL.first, BLOOD_FINAL_HEAL.last) else dealt * (index + 1)
-            deps.worldQueues.add(index + 1) { if (fights[player] === fight) bloodHeal(fight, npc, heal, index == CHAIN_MAX_HITS.lastIndex) }
+        fight.chainUntil = deps.mapClock.cycle + CHAIN_MAX_HITS.size - 1
+        val chain = HitChain()
+        debug(player, "attack started: chain hits at +0,+1,+2")
+        chainHit(fight, npc, 0, chain)
+        for (index in 1 until CHAIN_MAX_HITS.size) {
+            deps.worldQueues.add(index) { chainHit(fight, npc, index, chain) }
         }
+    }
+
+    fun toggleDebug(player: Player): Boolean = if (debugging.add(player)) true else !debugging.remove(player)
+
+    private fun debug(player: Player, text: String) {
+        if (player in debugging) player.spam("[moon t=${deps.mapClock.cycle}] $text")
+    }
+
+    private class HitChain(var missed: Boolean = false, var attempted: Boolean = false)
+
+    private fun chainHit(fight: MoonsFight, npc: Npc, index: Int, chain: HitChain) {
+        val player = fight.player
+        val moon = fight.moon
+        if (fights[player] !== fight || fight.subdued) return
+        val last = index == CHAIN_MAX_HITS.lastIndex
+        val onGlyph = moon.onGlyph(focus(moon), player.coords)
+        if (!onGlyph || chain.missed) {
+            debug(player, "chain hit ${index + 1}: skipped (${if (onGlyph) "earlier miss" else "off glyph"})")
+        }
+        if (moon.onGlyph(focus(moon), player.coords) && !chain.missed) {
+            chain.attempted = true
+            val landed = deps.accuracy.rollMeleeAccuracy(npc, player, MeleeAttackType.Slash, deps.random)
+            val damage = if (landed) deps.random.of(0, CHAIN_MAX_HITS[index]) else 0
+            val hit = player.finishNpcHit(npc, 1, HitType.Typeless, damage, deps.playerHitModifier)
+            debug(player, "chain hit ${index + 1}: ${if (landed) "landed" else "missed"} rolled=$damage dealt=${hit.damage}")
+            if (landed) {
+                addCondition(fight, CHAIN_CONDITION[index])
+                if (moon == Moon.Blood) {
+                    val heal =
+                        if (last) deps.random.of(BLOOD_FINAL_HEAL.first, BLOOD_FINAL_HEAL.last)
+                        else hit.damage * (index + 1)
+                    deps.worldQueues.add(1) {
+                        if (fights[player] === fight) bloodHeal(fight, npc, heal, last)
+                    }
+                }
+            } else {
+                chain.missed = true
+            }
+        }
+        if (!last || !chain.attempted) return
+        val tracker = tracker(moon) ?: return
         val hitpoints = tracker.of(player)?.hitpoints ?: return
         tracker.set(player, (hitpoints - (hitpoints / SELF_DAMAGE_DIVISOR).coerceAtLeast(1)).coerceAtLeast(1))
     }
@@ -151,6 +193,7 @@ class MoonsFights @Inject constructor(private val deps: BossDeps, private val ev
         val player = fight.player
         tracker(fight.moon)?.heal(player, amount)
         player.soundSynth(BLOOD_HEAL_SYNTH)
+        debug(player, "blood heal +$amount")
         player.projAnimSpecific(healProjectile(player, npc, BLOOD_HEAL_SPOTANIM, 15, 87, 60, 135, 0))
         if (scream) {
             player.projAnimSpecific(healProjectile(player, npc, BLOOD_SCREAM_SPOTANIM, 3, 3, 40, 0, 50))
@@ -202,8 +245,16 @@ class MoonsFights @Inject constructor(private val deps: BossDeps, private val ev
             fight.burn = MoonsFight.BURN_START
             return
         }
-        if (deps.mapClock.cycle - focusChangedAt(moon) <= BURN_GRACE) return
+        if (deps.mapClock.cycle <= fight.chainUntil) {
+            debug(player, "burn: suppressed (attack chain in progress)")
+            return
+        }
+        if (deps.mapClock.cycle - focusChangedAt(moon) <= BURN_GRACE) {
+            debug(player, "burn: grace after glyph moved")
+            return
+        }
         val hit = player.queueHit(npc, 1, HitType.Typeless, fight.burn, deps.playerHitModifier)
+        debug(player, "burn: hit ${hit.damage} (stage ${fight.burn}), off glyph")
         fight.burn = (fight.burn * 2).coerceAtMost(MoonsFight.BURN_MAX)
         addCondition(fight, 1)
         if (moon == Moon.Blood) {
