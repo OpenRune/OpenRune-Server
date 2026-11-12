@@ -19,7 +19,6 @@ import org.rsmod.api.script.onNpcHit
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
-import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.plugin.scripts.ScriptContext
 
 object BossCombat {
@@ -85,14 +84,16 @@ object BossCombat {
         val hitRules = IdentityHashMap<BossSpec, HitRules>()
         for (spec in specs) hitRules[spec] = HitRules(spec, deps)
         val hasReactions = hitRules.values.any { it.hasReactions }
+        val hasPersonalHp = specs.any { it.personalHp != null }
 
         with(ctx) {
             for (npcType in npcTypes) {
                 // Only one script may own a npc type's hit event, so bosses that handle it
                 // themselves must not declare hit reactions or pass onHit.
-                if (hasReactions || onHit != null) {
+                if (hasReactions || hasPersonalHp || onHit != null) {
                     onNpcHit(npcType) {
                         val encounter = deps.encounterRegistry.of(npc)
+                        applyPersonalDamage(this, encounter, deps)
                         hitRules.getValue(encounter.spec).react(this, encounter)
                         onHit?.invoke(this)
                     }
@@ -106,7 +107,6 @@ object BossCombat {
                         else (hit.damage * encounter.damageScale).toInt()
                     hitRules.getValue(encounter.spec).applyIncoming(this, encounter)
                     onModifyHit?.invoke(this)
-                    applyPersonalDamage(this, encounter, deps)
                     if (
                         onLethal != null &&
                             !encounter.lethalHandled &&
@@ -138,13 +138,13 @@ object BossCombat {
     }
 
     private fun applyPersonalDamage(
-        event: NpcHitEvents.Modify,
+        event: NpcHitEvents.Impact,
         encounter: BossEncounter,
         deps: BossDeps,
     ) {
         val tracker = encounter.personalHp ?: return
         if (!event.hit.isFromPlayer) return
-        val attacker = event.hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) } ?: return
+        val attacker = event.hit.resolvePlayerSource(deps.playerList) ?: return
         if (!tracker.damage(attacker, event.hit.damage)) return
         val onDeath = encounter.spec.personalHp?.onDeath ?: return
         deps.runAbility(event.npc, attacker, onDeath)
