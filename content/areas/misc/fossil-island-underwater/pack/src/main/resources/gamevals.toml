@@ -1,0 +1,30 @@
+[gamevals.dbtable]
+fossil_underwater_rewards = 63048
+fossil_underwater_currents = 63049
+
+[gamevals.dbrow]
+shop_currency_mermaid_tears = 63504
+fossil_underwater_rewards = 63505
+fossil_underwater_currents = 63506
+
+[gamevals.varp]
+fossil_underwater_state = 63190
+
+[gamevals.varbit]
+fossil_underwater_found = 63190
+fossil_underwater_found_window = 63191
+fossil_underwater_window = 63192
+fossil_underwater_drowning = 63193
+fossil_underwater_in_current = 63194
+
+[gamevals.queue]
+fossil_underwater_search = 63060
+fossil_underwater_search_outcome = 63061
+fossil_underwater_search_recover = 63062
+fossil_underwater_drown = 63063
+
+[gamevals.enum]
+fossil_underwater_open_locs = 63130
+
+[gamevals.currency]
+mermaid_tears = 65530
