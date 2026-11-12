@@ -2,6 +2,16 @@ package org.rsmod.content.skills.agility.pack
 
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
+import org.rsmod.content.skills.agility.pack.course.gnomeStrongholdObstacles
+import org.rsmod.content.skills.agility.pack.rooftop.alKharidObstacles
+import org.rsmod.content.skills.agility.pack.rooftop.ardougneObstacles
+import org.rsmod.content.skills.agility.pack.rooftop.canifisObstacles
+import org.rsmod.content.skills.agility.pack.rooftop.draynorObstacles
+import org.rsmod.content.skills.agility.pack.rooftop.faladorObstacles
+import org.rsmod.content.skills.agility.pack.rooftop.pollnivneachObstacles
+import org.rsmod.content.skills.agility.pack.rooftop.rellekkaObstacles
+import org.rsmod.content.skills.agility.pack.rooftop.seersObstacles
+import org.rsmod.content.skills.agility.pack.rooftop.varrockObstacles
 
 /**
  * Every course obstacle in lap order. A lane is one way across: the player is put on its start
@@ -118,6 +128,16 @@ object AgilityObstaclesTable {
             column("level_refusal", LEVEL_REFUSAL, VarType.STRING)
             column("level_refusal_obj", LEVEL_REFUSAL_OBJ, VarType.OBJ)
 
+            gnomeStrongholdObstacles()
+            draynorObstacles()
+            alKharidObstacles()
+            varrockObstacles()
+            canifisObstacles()
+            faladorObstacles()
+            seersObstacles()
+            pollnivneachObstacles()
+            rellekkaObstacles()
+            ardougneObstacles()
         }
 
     const val RECOVERY_STEP = -1
