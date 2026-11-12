@@ -33,58 +33,57 @@ farming_patch_34 = 64416
 farming_patch_35 = 64417
 farming_clock = 65439
 farming_growth_offset = 64498
+farming_sapling_clock = 64499
 
 [gamevals.timer]
 farming_transmit = 4445
+farming_saplings = 4446
 
 [gamevals.dbtable]
 farming_crop = 65478
 farming_patch = 65479
 farming_compost = 65480
+farming_saplings = 64410
 
 # Crop declaration order is append-only; crop_index is persisted in the patch varp.
 [gamevals.dbrow]
-farming_potato = 63846
-farming_onion = 63847
-farming_cabbage = 63848
-farming_tomato = 63849
-farming_sweetcorn = 63850
-farming_strawberry = 63851
-farming_watermelon = 63852
-farming_marigold = 63853
-farming_rosemary = 63854
-farming_nasturtium = 63855
-farming_woad = 63856
-farming_limpwurt = 63857
-farming_guam = 63858
-farming_marrentill = 63859
-farming_tarromin = 63860
-farming_harralander = 63861
-farming_ranarr = 63862
-farming_toadflax = 63863
-farming_irit = 63864
-farming_avantoe = 63865
-farming_kwuarm = 63866
-farming_snapdragon = 63867
-farming_cadantine = 63868
-farming_lantadyme = 63869
-farming_dwarf_weed = 63870
-farming_torstol = 63871
-farming_snape_grass = 63872
-farming_huasca = 63840
-farming_white_lily = 63841
-farming_patch_allotment = 63873
-farming_patch_flower = 63874
-farming_patch_herb = 63875
-farming_compost_none = 63842
-farming_compost_normal = 63843
-farming_compost_super = 63844
-farming_compost_ultra = 63845
-
-[gamevals.synth]
-farming_compost = 2427
-farming_seed_dibbing = 2432
-farming_plant_cure = 2438
+farming_potato = 63791
+farming_onion = 63622
+farming_cabbage = 63623
+farming_tomato = 63624
+farming_sweetcorn = 63625
+farming_strawberry = 63626
+farming_watermelon = 63627
+farming_marigold = 63628
+farming_rosemary = 63629
+farming_nasturtium = 63630
+farming_woad = 63631
+farming_limpwurt = 63632
+farming_guam = 63633
+farming_marrentill = 63634
+farming_tarromin = 63635
+farming_harralander = 63636
+farming_ranarr = 63637
+farming_toadflax = 63638
+farming_irit = 63639
+farming_avantoe = 63640
+farming_kwuarm = 63641
+farming_snapdragon = 63642
+farming_cadantine = 63643
+farming_lantadyme = 63644
+farming_dwarf_weed = 63645
+farming_torstol = 63646
+farming_snape_grass = 63647
+farming_huasca = 63648
+farming_white_lily = 63649
+farming_patch_allotment = 63655
+farming_patch_flower = 63656
+farming_patch_herb = 63657
+farming_compost_none = 63688
+farming_compost_normal = 63689
+farming_compost_super = 63693
+farming_compost_ultra = 63694
+farming_saplings = 63790
 
 [gamevals.enum]
 farming_produce_containers = 64410
@@ -97,3 +96,4 @@ farming_produce_orange = 64416
 farming_produce_banana = 64417
 farming_produce_tomato = 64418
 farming_produce_apple = 64419
+

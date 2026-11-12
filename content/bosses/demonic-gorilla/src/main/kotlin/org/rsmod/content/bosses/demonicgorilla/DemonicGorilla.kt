@@ -274,7 +274,7 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
         private const val BOULDER_SEQ = "seq.demonic_gorilla_smash_chest"
         private const val BOULDER_TELEGRAPH_SPOT = "spotanim.myarm_rock_roc_travel"
         private const val BOULDER_IMPACT_SPOT = "spotanim.castlewars_catapult_splash"
-        private const val BOULDER_IMPACT_SOUND = "synth.mm2_gorilla_boulder_impact"
+        private const val BOULDER_IMPACT_SOUND = "synth.castlewars_exploding_vial"
         private const val BOULDER_SOUND_RADIUS = 10
         private const val BOULDER_IMPACT_HEIGHT = 10
         private const val BOULDER_PROJ_START_HEIGHT = 600

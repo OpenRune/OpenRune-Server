@@ -6,13 +6,13 @@ import org.rsmod.content.slayer.core.MortimerAssignment
 import org.rsmod.content.slayer.core.MortimerModifiers
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.dialogue.GemContactDialogue.contact
+import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.chatMaster
 import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openContact
 import org.rsmod.content.slayer.dialogue.masters.KonarDialogue.gemContact
 import org.rsmod.content.slayer.dialogue.masters.KonarDialogue.npcContactMenu
 import org.rsmod.content.slayer.dialogue.masters.KrystiliaDialogue.npcContactMenu as krystiliaNpcContactMenu
 import org.rsmod.content.slayer.dialogue.masters.MortimerDialogue.npcContactMenu as mortimerNpcContactMenu
-import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.game.entity.Player
 import org.rsmod.map.zone.ZoneKey
 

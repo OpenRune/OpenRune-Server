@@ -10,6 +10,7 @@ dependencies {
     implementation(projects.api.registry)
     implementation(projects.api.script)
     implementation(projects.content.generic.genericLocs)
+    implementation(projects.content.interfaces.bank)
     implementation(projects.content.quest)
     testImplementation(projects.api.invStorage)
     testImplementation(libs.mockk)

@@ -1,0 +1,23 @@
+[gamevals.enum]
+fairyring_visited_varbits = 64950
+
+[gamevals.dbtable]
+fairyring_requirements = 64954
+
+[gamevals.dbrow]
+fairyring_requirement_ajq = 59130
+fairyring_requirement_bjr = 59131
+fairyring_requirement_bjs = 59132
+fairyring_requirement_blq = 59133
+fairyring_requirement_cip = 59134
+fairyring_requirement_clr = 59135
+fairyring_requirement_dls = 59136
+fairyring_requirement_akp = 59137
+fairyring_requirement_akr = 59138
+fairyring_requirement_cir = 59139
+fairyring_requirement_cis = 59140
+fairyring_requirement_djr = 59141
+fairyring_requirement_ais = 59142
+fairyring_requirement_ajp = 59143
+fairyring_requirement_ckq = 59144
+fairyring_requirement_dlp = 59145

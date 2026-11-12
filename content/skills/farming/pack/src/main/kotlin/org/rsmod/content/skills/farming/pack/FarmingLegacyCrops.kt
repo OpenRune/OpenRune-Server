@@ -19,7 +19,7 @@ private const val INHERITED_FLOWER_DEATH = FLOWER_MINUTES
 
 /** `seedling`, `1`..`stages-1`, `fullygrown` under one loc prefix. */
 internal fun growArt(seed: String, prefix: String, stages: Int): List<String> =
-    listOf(seed) + (1 until stages).map { "${prefix}_$it" } + "${prefix}_fullygrown"
+    listOf(seed) + (1 until stages).map { "loc.${prefix}_$it" } + "loc.${prefix}_fullygrown"
 
 /** `prefix_<stage><suffix>` for stages 1..stages-1, with no art at stage 0 or maturity. */
 internal fun damagedArt(stages: Int, symbol: (Int) -> String): List<String?> =
@@ -36,7 +36,7 @@ private fun allotment(
     stages: Int,
     saveLow: Int,
     protection: String? = null,
-    prefix: String = "loc.$key",
+    prefix: String = key,
     saveHigh: Int = ALLOTMENT_SAVE_HIGH,
 ) = CropSpec(
     key = key,
@@ -51,12 +51,12 @@ private fun allotment(
     harvestXp = harvestXp,
     stages = stages,
     cycleMinutes = ALLOTMENT_MINUTES,
-    healthy = growArt("${prefix}_seed", prefix, stages),
+    healthy = growArt("loc.${prefix}_seed", prefix, stages),
     watered =
-        listOf("${prefix}_seed_watered") + (1 until stages).map { "${prefix}_${it}_watered" } +
+        listOf("loc.${prefix}_seed_watered") + (1 until stages).map { "loc.${prefix}_${it}_watered" } +
             null,
-    diseased = damagedArt(stages) { "${prefix}_${it}_diseased" },
-    dead = damagedArt(stages) { "${prefix}_${it}_dead" },
+    diseased = damagedArt(stages) { "loc.${prefix}_${it}_diseased" },
+    dead = damagedArt(stages) { "loc.${prefix}_${it}_dead" },
     saveLow = saveLow,
     saveHigh = saveHigh,
     protection = protection,
@@ -88,12 +88,12 @@ private fun flower(
     harvestXp = harvestXp,
     stages = FLOWER_STAGES,
     cycleMinutes = FLOWER_MINUTES,
-    healthy = growArt("${prefix}_seed", prefix, FLOWER_STAGES),
+    healthy = growArt("loc.${prefix}_seed", prefix, FLOWER_STAGES),
     watered =
-        listOf("${prefix}_seed_watered") +
-            (1 until FLOWER_STAGES).map { "${prefix}_${it}_watered" } + null,
-    diseased = damagedArt(FLOWER_STAGES) { "${prefix}_${it}_diseased" },
-    dead = damagedArt(FLOWER_STAGES) { "${prefix}_${it}_dead" },
+        listOf("loc.${prefix}_seed_watered") +
+            (1 until FLOWER_STAGES).map { "loc.${prefix}_${it}_watered" } + null,
+    diseased = damagedArt(FLOWER_STAGES) { "loc.${prefix}_${it}_diseased" },
+    dead = damagedArt(FLOWER_STAGES) { "loc.${prefix}_${it}_dead" },
     harvestAmount = harvestAmount,
     harvestLevelDivisor = harvestLevelDivisor,
     harvest = "BATCH",
@@ -125,8 +125,8 @@ private fun herb(
     harvestXp = harvestXp,
     stages = HERB_STAGES,
     cycleMinutes = HERB_MINUTES,
-    healthy = growArt("${prefix}_seed", prefix, HERB_STAGES),
-    diseased = damagedArt(HERB_STAGES) { "${diseasedPrefix}_$it" },
+    healthy = growArt("loc.${prefix}_seed", prefix, HERB_STAGES),
+    diseased = damagedArt(HERB_STAGES) { "loc.${diseasedPrefix}_$it" },
     dead = damagedArt(HERB_STAGES) { "loc.herb_${it}_dead" },
     saveLow = saveLow,
     saveHigh = HERB_SAVE_HIGH,
@@ -146,25 +146,25 @@ internal val LEGACY_CROPS: List<CropSpec> =
         allotment("sweetcorn", 5, "sweetcorn", "obj.sweetcorn", 20, 17.0, 19.0, 6, 88),
         allotment("strawberry", 6, "strawberry", "obj.strawberry", 31, 26.0, 29.0, 6, 103),
         allotment("watermelon", 7, "watermelon", "obj.watermelon", 47, 48.5, 54.5, 8, 126, "dbrow.farming_nasturtium"),
-        flower("marigold", 8, "marigold", "obj.marigold_seed", "obj.marigold", 2, 8.5, 47.0, "loc.marigold"),
-        flower("rosemary", 9, "rosemary", "obj.rosemary_seed", "obj.rosemary", 11, 12.0, 66.5, "loc.rosemary"),
-        flower("nasturtium", 10, "nasturtium", "obj.nasturtium_seed", "obj.nasturtium", 24, 19.5, 111.0, "loc.nasturtium"),
-        flower("woad", 11, "woad", "obj.woad_seed", "obj.woadleaf", 25, 20.5, 115.5, "loc.woad", harvestAmount = 3),
-        flower("limpwurt", 12, "limpwurt", "obj.limpwurt_seed", "obj.limpwurt_root", 26, 21.5, 120.0, "loc.limpwurt", harvestAmount = 3, harvestLevelDivisor = 10),
-        herb("guam", 13, "guam", "obj.unidentified_guam", 9, 11.0, 12.5, "loc.herb_guam_leaf", 25),
-        herb("marrentill", 14, "marrentill", "obj.unidentified_marentill", 14, 13.5, 15.0, "loc.herb_marrentill", 28, diseasedPrefix = "loc.herb_marentill_diseased"),
-        herb("tarromin", 15, "tarromin", "obj.unidentified_tarromin", 19, 16.0, 18.0, "loc.herb_tarromin", 31),
-        herb("harralander", 16, "harralander", "obj.unidentified_harralander", 26, 21.5, 24.0, "loc.herb_harralander", 36),
-        herb("ranarr", 17, "ranarr", "obj.unidentified_ranarr", 32, 26.5, 30.5, "loc.herb_ranarr_weed", 39),
-        herb("toadflax", 18, "toadflax", "obj.unidentified_toadflax", 38, 34.0, 38.5, "loc.herb_toadflax", 43),
-        herb("irit", 19, "irit", "obj.unidentified_irit", 44, 43.0, 48.5, "loc.herb_irit_leaf", 46),
-        herb("avantoe", 20, "avantoe", "obj.unidentified_avantoe", 50, 54.5, 61.5, "loc.herb_avantoe", 50),
-        herb("kwuarm", 21, "kwuarm", "obj.unidentified_kwuarm", 56, 69.0, 78.0, "loc.herb_kwuarm", 54),
-        herb("snapdragon", 22, "snapdragon", "obj.unidentified_snapdragon", 62, 87.5, 98.5, "loc.herb_snapdragon", 57),
-        herb("cadantine", 23, "cadantine", "obj.unidentified_cadantine", 67, 106.5, 120.0, "loc.herb_cadantine", 60),
-        herb("lantadyme", 24, "lantadyme", "obj.unidentified_lantadyme", 73, 134.5, 151.5, "loc.herb_lantadyme", 64),
-        herb("dwarf_weed", 25, "dwarf weed", "obj.unidentified_dwarf_weed", 79, 170.5, 192.0, "loc.herb_dwarf_weed", 67),
-        herb("torstol", 26, "torstol", "obj.unidentified_torstol", 85, 199.5, 224.5, "loc.herb_torstol", 71),
+        flower("marigold", 8, "marigold", "obj.marigold_seed", "obj.marigold", 2, 8.5, 47.0, "marigold"),
+        flower("rosemary", 9, "rosemary", "obj.rosemary_seed", "obj.rosemary", 11, 12.0, 66.5, "rosemary"),
+        flower("nasturtium", 10, "nasturtium", "obj.nasturtium_seed", "obj.nasturtium", 24, 19.5, 111.0, "nasturtium"),
+        flower("woad", 11, "woad", "obj.woad_seed", "obj.woadleaf", 25, 20.5, 115.5, "woad", harvestAmount = 3),
+        flower("limpwurt", 12, "limpwurt", "obj.limpwurt_seed", "obj.limpwurt_root", 26, 21.5, 120.0, "limpwurt", harvestAmount = 3, harvestLevelDivisor = 10),
+        herb("guam", 13, "guam", "obj.unidentified_guam", 9, 11.0, 12.5, "herb_guam_leaf", 25),
+        herb("marrentill", 14, "marrentill", "obj.unidentified_marentill", 14, 13.5, 15.0, "herb_marrentill", 28, diseasedPrefix = "herb_marentill_diseased"),
+        herb("tarromin", 15, "tarromin", "obj.unidentified_tarromin", 19, 16.0, 18.0, "herb_tarromin", 31),
+        herb("harralander", 16, "harralander", "obj.unidentified_harralander", 26, 21.5, 24.0, "herb_harralander", 36),
+        herb("ranarr", 17, "ranarr", "obj.unidentified_ranarr", 32, 26.5, 30.5, "herb_ranarr_weed", 39),
+        herb("toadflax", 18, "toadflax", "obj.unidentified_toadflax", 38, 34.0, 38.5, "herb_toadflax", 43),
+        herb("irit", 19, "irit", "obj.unidentified_irit", 44, 43.0, 48.5, "herb_irit_leaf", 46),
+        herb("avantoe", 20, "avantoe", "obj.unidentified_avantoe", 50, 54.5, 61.5, "herb_avantoe", 50),
+        herb("kwuarm", 21, "kwuarm", "obj.unidentified_kwuarm", 56, 69.0, 78.0, "herb_kwuarm", 54),
+        herb("snapdragon", 22, "snapdragon", "obj.unidentified_snapdragon", 62, 87.5, 98.5, "herb_snapdragon", 57),
+        herb("cadantine", 23, "cadantine", "obj.unidentified_cadantine", 67, 106.5, 120.0, "herb_cadantine", 60),
+        herb("lantadyme", 24, "lantadyme", "obj.unidentified_lantadyme", 73, 134.5, 151.5, "herb_lantadyme", 64),
+        herb("dwarf_weed", 25, "dwarf weed", "obj.unidentified_dwarf_weed", 79, 170.5, 192.0, "herb_dwarf_weed", 67),
+        herb("torstol", 26, "torstol", "obj.unidentified_torstol", 85, 199.5, 224.5, "herb_torstol", 71),
         CropSpec(
             key = "snape_grass",
             index = 27,
@@ -190,6 +190,6 @@ internal val LEGACY_CROPS: List<CropSpec> =
             deathMinutes = INHERITED_ALLOTMENT_DEATH,
         ),
         // UNVERIFIED: Huasca save threshold 58; another estimate gives 59 (guess)
-        herb("huasca", 28, "huasca", "obj.unidentified_huasca", 65, 86.5, 110.0, "loc.herb_huasca", 58),
-        flower("white_lily", 29, "white lily", "obj.white_lily_seed", "obj.whitelilly", 58, 42.0, 250.0, "loc.lily"),
+        herb("huasca", 28, "huasca", "obj.unidentified_huasca", 65, 86.5, 110.0, "herb_huasca", 58),
+        flower("white_lily", 29, "white lily", "obj.white_lily_seed", "obj.whitelilly", 58, 42.0, 250.0, "lily"),
     )

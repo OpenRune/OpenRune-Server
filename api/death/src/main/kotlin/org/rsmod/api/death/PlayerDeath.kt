@@ -32,7 +32,8 @@ constructor(
     private val preDropHooks: Set<PlayerDeathPreDropHook>,
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
     private val storageHooks: Set<PlayerDeathStorageHook>,
-    private val respawnHooks: Set<PlayerRespawnHook>,
+    private val respawnPoint: PlayerRespawnPoint,
+    private val deathOverrideHooks: Set<PlayerDeathOverrideHook>,
     private val areaChecker: AreaChecker,
 ) {
     private var Player.specialAttackType by intVarp("varp.sa_attack")
@@ -41,12 +42,15 @@ constructor(
     private var Player.insideWilderness by boolVarBit("varbit.inside_wilderness")
 
     public suspend fun death(access: ProtectedAccess) {
+        for (hook in deathOverrideHooks) {
+            if (with(hook) { access.override() }) return
+        }
         access.deathSequence()
     }
 
     private suspend fun ProtectedAccess.deathSequence() {
-        val hooked = respawnHooks.firstNotNullOfOrNull { it.respawnCoords(player) }
-        val respawn = hooked ?: CoordGrid(0, 50, 50, 21, 18)
+        val hooked = respawnPoint.hooked(player)
+        val respawn = hooked ?: PlayerRespawnPoint.DEFAULT
         val randomRespawn =
             if (hooked != null) null else mapFindSquareLineOfWalk(respawn, minRadius = 0, maxRadius = 2)
 
@@ -62,8 +66,8 @@ constructor(
         handleDeathDrops(player, deathCoords)
 
         mes("Oh dear, you are dead!")
-        midiSong("midi.stop_music")
-        midiJingle("jingle.air_guitar_jingle")
+        midiSong("midi.silence")
+        midiJingle("jingle.death")
         telejump(randomRespawn ?: respawn, TeleportType.Exempt)
         resetAnim()
         resetPlayerState()

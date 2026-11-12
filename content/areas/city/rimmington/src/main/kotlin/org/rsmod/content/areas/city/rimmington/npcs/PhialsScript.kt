@@ -96,7 +96,7 @@ class PhialsScript : PluginScript() {
         val item = ocUncert(noteType)
         invDel(inv, noteType.internalName, amount, slot = invSlot)
         invAdd(inv, item.internalName, amount)
-        soundSynth("synth.phials_exchange")
+        soundSynth("synth.turn_book_page")
         return item.internalName
     }
 

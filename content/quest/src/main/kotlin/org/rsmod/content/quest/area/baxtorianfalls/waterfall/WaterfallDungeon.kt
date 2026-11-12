@@ -292,7 +292,7 @@ constructor(
         const val DOOR_SOUND = "synth.door_open"
         const val LOCKED_SOUND = "synth.irondoor_locked"
         const val PLACE_SOUND = "synth.smokepuff"
-        const val RUMBLE_SOUND = "synth.leviathan_rockfall_rumble"
+        const val RUMBLE_SOUND = "synth.rumbling"
 
         fun CoordGrid.inRaisedCopy(): Boolean = x >= COPY_MIN_X
 

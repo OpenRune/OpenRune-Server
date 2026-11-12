@@ -389,7 +389,7 @@ constructor(
     }
 
     companion object {
-        private const val ORE_OBTAINED_SOUND = 3600
+        private const val ORE_OBTAINED_SOUND = "synth.mine_ore"
         private const val PROSPECT_DELAY = 4
         private const val INFERNAL_SMITHING_REQ = 85
         private const val SONG_OF_THE_ELVES = "quest_songoftheelves"

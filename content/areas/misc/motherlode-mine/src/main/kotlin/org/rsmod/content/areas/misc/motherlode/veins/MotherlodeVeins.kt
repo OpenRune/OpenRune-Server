@@ -94,7 +94,9 @@ constructor(private val locRepo: LocRepository, private val mapClock: MapClock) 
 
         val LOWER_LIFESPAN = 38..45
         val UPPER_LIFESPAN = 60..67
-        val LOWER_RESPAWN = 168..176
-        val UPPER_RESPAWN = 98..101
+
+        // Lower-inner ring veins use 150 ticks in OSRS; the map does not distinguish them yet.
+        val LOWER_RESPAWN = 100..100
+        val UPPER_RESPAWN = 100..100
     }
 }

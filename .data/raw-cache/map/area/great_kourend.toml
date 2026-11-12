@@ -1,0 +1,12 @@
+[[area]]
+name = "Great Kourend"
+area_id = "area.great_kourend"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1152, 3392],
+    [1919, 3392],
+    [1919, 4095],
+    [1152, 4095],
+]

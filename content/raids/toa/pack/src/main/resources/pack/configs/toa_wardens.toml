@@ -1,0 +1,386 @@
+[[npc]]
+id = "npc.toa_osmumten_wardens_vis"
+inherit = "npc.toa_osmumten_wardens_vis"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_wardens_p1_obelisk_npc_inactive"
+inherit = "npc.toa_wardens_p1_obelisk_npc_inactive"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+"param.hitpoints_locked" = true
+
+[[npc]]
+id = "npc.toa_wardens_p1_obelisk_npc"
+inherit = "npc.toa_wardens_p1_obelisk_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+"param.boss_hp_bar_mode" = 2
+
+[[npc]]
+id = "npc.toa_wardens_p2_obelisk_npc"
+inherit = "npc.toa_wardens_p2_obelisk_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase1_inactive"
+inherit = "npc.toa_warden_elidinis_phase1_inactive"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+maxRange = 40
+attackRange = 10
+[npc.params]
+"param.hitpoints_locked" = true
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase1"
+inherit = "npc.toa_warden_elidinis_phase1"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase1_inactive"
+inherit = "npc.toa_warden_tumeken_phase1_inactive"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+maxRange = 40
+attackRange = 10
+[npc.params]
+"param.hitpoints_locked" = true
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase1"
+inherit = "npc.toa_warden_tumeken_phase1"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_wardens_energy"
+inherit = "npc.toa_wardens_energy"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase2_mage"
+inherit = "npc.toa_warden_elidinis_phase2_mage"
+defaultMode = "None"
+regenRate = 0
+giveChase = true
+maxRange = 40
+attackRange = 10
+[npc.params]
+"param.headbar_inverted" = true
+"param.headbar" = "headbar.charge_140"
+"param.hitmark_lit" = "hitmark.poise_damage_lit"
+"param.hitmark_tint" = "hitmark.poise_damage_tint"
+"param.hitmark_max" = "hitmark.poise_damage_max"
+"param.boss_hp_bar_colour_back" = 2631680
+"param.boss_hp_bar_colour_sliding" = 10524672
+"param.boss_hp_bar_colour_remaining" = 14209024
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase2_range"
+inherit = "npc.toa_warden_elidinis_phase2_range"
+defaultMode = "None"
+regenRate = 0
+giveChase = true
+maxRange = 40
+attackRange = 10
+[npc.params]
+"param.headbar_inverted" = true
+"param.headbar" = "headbar.charge_140"
+"param.hitmark_lit" = "hitmark.poise_damage_lit"
+"param.hitmark_tint" = "hitmark.poise_damage_tint"
+"param.hitmark_max" = "hitmark.poise_damage_max"
+"param.boss_hp_bar_colour_back" = 2631680
+"param.boss_hp_bar_colour_sliding" = 10524672
+"param.boss_hp_bar_colour_remaining" = 14209024
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase2_exposed"
+inherit = "npc.toa_warden_elidinis_phase2_exposed"
+defaultMode = "None"
+regenRate = 0
+giveChase = true
+maxRange = 40
+attackRange = 10
+[npc.params]
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_max"
+"param.hitmark_tint" = "hitmark.regular_damage_max"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase2_mage"
+inherit = "npc.toa_warden_tumeken_phase2_mage"
+defaultMode = "None"
+regenRate = 0
+giveChase = true
+maxRange = 40
+attackRange = 10
+[npc.params]
+"param.headbar_inverted" = true
+"param.headbar" = "headbar.charge_140"
+"param.hitmark_lit" = "hitmark.poise_damage_lit"
+"param.hitmark_tint" = "hitmark.poise_damage_tint"
+"param.hitmark_max" = "hitmark.poise_damage_max"
+"param.boss_hp_bar_colour_back" = 2631680
+"param.boss_hp_bar_colour_sliding" = 10524672
+"param.boss_hp_bar_colour_remaining" = 14209024
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase2_range"
+inherit = "npc.toa_warden_tumeken_phase2_range"
+defaultMode = "None"
+regenRate = 0
+giveChase = true
+maxRange = 40
+attackRange = 10
+[npc.params]
+"param.headbar_inverted" = true
+"param.headbar" = "headbar.charge_140"
+"param.hitmark_lit" = "hitmark.poise_damage_lit"
+"param.hitmark_tint" = "hitmark.poise_damage_tint"
+"param.hitmark_max" = "hitmark.poise_damage_max"
+"param.boss_hp_bar_colour_back" = 2631680
+"param.boss_hp_bar_colour_sliding" = 10524672
+"param.boss_hp_bar_colour_remaining" = 14209024
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase2_exposed"
+inherit = "npc.toa_warden_tumeken_phase2_exposed"
+defaultMode = "None"
+regenRate = 0
+giveChase = true
+maxRange = 40
+attackRange = 10
+[npc.params]
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_max"
+"param.hitmark_tint" = "hitmark.regular_damage_max"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_warden_elidinis_core"
+inherit = "npc.toa_warden_elidinis_core"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.headbar_hidden" = true
+"param.hitpoints_locked" = true
+"param.hitmark_lit" = "hitmark.regular_damage_max"
+"param.hitmark_tint" = "hitmark.regular_damage_max"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_warden_tumeken_core"
+inherit = "npc.toa_warden_tumeken_core"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.headbar_hidden" = true
+"param.hitpoints_locked" = true
+"param.hitmark_lit" = "hitmark.regular_damage_max"
+"param.hitmark_tint" = "hitmark.regular_damage_max"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase3_inactive"
+inherit = "npc.toa_warden_elidinis_phase3_inactive"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.headbar" = "headbar.health_140"
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase3_inactive"
+inherit = "npc.toa_warden_tumeken_phase3_inactive"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.headbar" = "headbar.health_140"
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase3"
+inherit = "npc.toa_warden_elidinis_phase3"
+defaultMode = "None"
+moveRestrict = "NoMove"
+attackRange = 20
+regenRate = 0
+[npc.params]
+"param.dropped_remains" = -1
+"param.boss_hp_bar_mode" = 2
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_lit"
+"param.hitmark_tint" = "hitmark.regular_damage_tint"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase3"
+inherit = "npc.toa_warden_tumeken_phase3"
+defaultMode = "None"
+moveRestrict = "NoMove"
+attackRange = 20
+regenRate = 0
+[npc.params]
+"param.dropped_remains" = -1
+"param.boss_hp_bar_mode" = 2
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_lit"
+"param.hitmark_tint" = "hitmark.regular_damage_tint"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_amascut_p3"
+inherit = "npc.toa_amascut_p3"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase3_charging"
+inherit = "npc.toa_warden_elidinis_phase3_charging"
+defaultMode = "None"
+moveRestrict = "NoMove"
+attackRange = 20
+regenRate = 0
+[npc.params]
+"param.dropped_remains" = -1
+"param.boss_hp_bar_mode" = 2
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_lit"
+"param.hitmark_tint" = "hitmark.regular_damage_tint"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase3_charging"
+inherit = "npc.toa_warden_tumeken_phase3_charging"
+defaultMode = "None"
+moveRestrict = "NoMove"
+attackRange = 20
+regenRate = 0
+[npc.params]
+"param.dropped_remains" = -1
+"param.boss_hp_bar_mode" = 2
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_lit"
+"param.hitmark_tint" = "hitmark.regular_damage_tint"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.wardens_p3_orb_blue"
+inherit = "npc.wardens_p3_orb_blue"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.attackable_on_cooldown" = true
+"param.headbar_hidden" = true
+"param.hitpoints_locked" = true
+
+[[npc]]
+id = "npc.wardens_p3_orb_red"
+inherit = "npc.wardens_p3_orb_red"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.attackable_on_cooldown" = true
+"param.headbar_hidden" = true
+"param.hitpoints_locked" = true
+
+[[npc]]
+id = "npc.toa_wardens_zebak"
+inherit = "npc.toa_wardens_zebak"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_wardens_baba"
+inherit = "npc.toa_wardens_baba"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_wardens_kephri"
+inherit = "npc.toa_wardens_kephri"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_wardens_akkha"
+inherit = "npc.toa_wardens_akkha"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_p3_death_elidinis"
+inherit = "npc.toa_warden_p3_death_elidinis"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_p3_death_tumeken"
+inherit = "npc.toa_warden_p3_death_tumeken"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_wardens_flight"
+startHeight = 400
+endHeight = 100
+delay = 0
+angle = 12
+lengthAdjustment = 90
+progress = 128
+stepMultiplier = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_wardens_divine"
+startHeight = 100
+endHeight = 25
+delay = 0
+angle = 12
+lengthAdjustment = 120
+progress = 64
+stepMultiplier = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_wardens_entomb"
+startHeight = 400
+endHeight = 40
+delay = 0
+angle = 12
+lengthAdjustment = 120
+progress = 64
+stepMultiplier = 0

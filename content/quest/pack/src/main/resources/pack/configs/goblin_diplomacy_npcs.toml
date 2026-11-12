@@ -1,0 +1,94 @@
+[[npc]]
+id = "npc.goblin_red_soldier_2"
+inherit = "npc.goblin_red_soldier_2"
+timer = 8
+
+[[npc]]
+id = "npc.goblin_red_soldier_3"
+inherit = "npc.goblin_red_soldier_3"
+timer = 8
+
+[[npc]]
+id = "npc.goblin_red_soldier_4"
+inherit = "npc.goblin_red_soldier_4"
+timer = 8
+[npc.params]
+"param.attack_sound" = "synth.goblin_warhammer_attack"
+"param.defend_sound" = "synth.goblin_hit_shield"
+
+[[npc]]
+id = "npc.goblin_red_soldier_5"
+inherit = "npc.goblin_red_soldier_5"
+timer = 8
+
+[[npc]]
+id = "npc.goblin_red_soldier_6"
+inherit = "npc.goblin_red_soldier_6"
+timer = 8
+[npc.params]
+"param.attack_sound" = "synth.goblin_axe_attack"
+"param.defend_sound" = "synth.goblin_hit"
+
+[[npc]]
+id = "npc.goblin_red_soldier_7"
+inherit = "npc.goblin_red_soldier_7"
+timer = 8
+
+[[npc]]
+id = "npc.goblin_red_soldier_8"
+inherit = "npc.goblin_red_soldier_8"
+timer = 8
+
+[[npc]]
+id = "npc.goblin_green_soldier_2"
+inherit = "npc.goblin_green_soldier_2"
+timer = 8
+[npc.params]
+"param.attack_sound" = "synth.goblin_axe_attack"
+"param.defend_sound" = "synth.goblin_hit_shield"
+
+[[npc]]
+id = "npc.goblin_green_soldier_3"
+inherit = "npc.goblin_green_soldier_3"
+timer = 8
+[npc.params]
+"param.attack_sound" = "synth.goblin_staff_attack"
+"param.defend_sound" = "synth.goblin_hit"
+
+[[npc]]
+id = "npc.goblin_green_soldier_4"
+inherit = "npc.goblin_green_soldier_4"
+timer = 8
+[npc.params]
+"param.attack_sound" = "synth.goblin_warhammer_attack"
+"param.defend_sound" = "synth.goblin_hit_shield"
+
+[[npc]]
+id = "npc.goblin_green_soldier_5"
+inherit = "npc.goblin_green_soldier_5"
+timer = 8
+
+[[npc]]
+id = "npc.goblin_green_soldier_6"
+inherit = "npc.goblin_green_soldier_6"
+timer = 8
+
+[[npc]]
+id = "npc.goblin_green_soldier_7"
+inherit = "npc.goblin_green_soldier_7"
+timer = 8
+
+[[npc]]
+id = "npc.goblin_green_soldier_8"
+inherit = "npc.goblin_green_soldier_8"
+timer = 8
+
+[[npc]]
+id = "npc.general_wartface_green"
+inherit = "npc.general_wartface_green"
+wanderRange = 2
+
+[[npc]]
+id = "npc.general_bentnoze_red"
+inherit = "npc.general_bentnoze_red"
+wanderRange = 2

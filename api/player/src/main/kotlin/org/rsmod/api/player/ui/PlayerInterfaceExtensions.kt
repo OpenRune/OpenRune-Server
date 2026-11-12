@@ -13,6 +13,7 @@ import net.rsprot.protocol.game.outgoing.interfaces.IfCloseSub
 import net.rsprot.protocol.game.outgoing.interfaces.IfMoveSub
 import net.rsprot.protocol.game.outgoing.interfaces.IfOpenSub
 import net.rsprot.protocol.game.outgoing.interfaces.IfOpenTop
+import net.rsprot.protocol.game.outgoing.interfaces.IfResyncV2
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetAnim
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetColour
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetEventsV2
@@ -27,6 +28,7 @@ import net.rsprot.protocol.game.outgoing.misc.player.TriggerOnDialogAbort
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.input.ResumePCountDialogInput
+import org.rsmod.api.player.input.ResumePLongDialogInput
 import org.rsmod.api.player.input.ResumePNameDialogInput
 import org.rsmod.api.player.input.ResumePObjDialogInput
 import org.rsmod.api.player.input.ResumePStringDialogInput
@@ -192,6 +194,7 @@ private fun GameCoroutine.requiresPauseDialogAbort(): Boolean =
 private fun GameCoroutine.requiresInputDialogAbort(): Boolean {
     return isAwaitingAny(
         ResumePCountDialogInput::class,
+        ResumePLongDialogInput::class,
         ResumePNameDialogInput::class,
         ResumePStringDialogInput::class,
         ResumePObjDialogInput::class,
@@ -212,6 +215,24 @@ public fun Player.ifCloseModals(eventBus: EventBus) {
     check(ui.modals.isEmpty()) {
         "Could not close all modals for player `$this`. (modals=${ui.modals})"
     }
+}
+
+/**
+ * Resends the server's current interface layout and event masks to this client.
+ *
+ * The caller supplies a snapshot of the tracked UI state. This sends a packet and leaves
+ * the server's modal, overlay, and event registrations intact.
+ *
+ * @param topLevelInterface ID of the top-level interface currently open.
+ * @param subInterfaces Open interfaces and their client-side attachment component IDs.
+ * @param events V2 event masks for client-side components and slot ranges.
+ */
+public fun Player.ifResync(
+    topLevelInterface: Int,
+    subInterfaces: List<IfResyncV2.SubInterfaceMessage>,
+    events: List<IfResyncV2.InterfaceEventsMessage>,
+) {
+    client.write(IfResyncV2(topLevelInterface, subInterfaces.toList(), events.toList()))
 }
 
 public fun Player.ifSetEvents(internal: String, range: IntRange, vararg event: IfEvent) {

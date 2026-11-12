@@ -37,7 +37,7 @@ constructor(private val locRepo: LocRepository, private val objRepo: ObjReposito
 
         locRepo.change(loc, "loc.log_withoutaxe", 50)
         invAddOrDrop(objRepo, "obj.bronze_axe")
-        soundSynth("synth.take_axe")
+        soundSynth("synth.remove_axe")
         objbox("obj.bronze_axe", 400, "You take a bronze axe from the logs.")
     }
 }

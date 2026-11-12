@@ -112,7 +112,7 @@ class GodSwordScript : PluginScript() {
 
         delay(3)
         anim("seq.human_smithing")
-        soundSynth(3771)
+        soundSynth("synth.anvil02")
         delay(4)
 
         if (toConsume.all { invDel(inv, it, 1).success }) {

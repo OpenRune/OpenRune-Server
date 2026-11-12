@@ -148,6 +148,8 @@ constructor(
     private fun Player.cleanUpPendingUpdates() {
         pendingSay = null
         pendingTinting = null
+        pendingTransparency = null
+        pendingAnimationFreeze = null
         pendingStepCount = 0
         pendingTeleport = false
         pendingTelejump = false
