@@ -3,9 +3,9 @@ package org.rsmod.api.shops.operation
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.InventoryServerType
 import dev.openrune.types.InvScope
 import dev.openrune.types.InvStackType
+import dev.openrune.types.InventoryServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import org.junit.jupiter.api.Test
 import org.rsmod.api.config.Constants
