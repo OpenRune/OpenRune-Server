@@ -115,6 +115,7 @@ constructor(
 
     fun spawnStandIn(player: Player, fade: Boolean) {
         removeStandIn(player)
+        if (fights.of(player)?.subdued != false) return
         val npc = Npc(STAND_IN_NPC, moon.southWest)
         deps.npcRepo.add(npc, STAND_IN_LIFESPAN)
         npc.ignoreCombatInteractions = true
