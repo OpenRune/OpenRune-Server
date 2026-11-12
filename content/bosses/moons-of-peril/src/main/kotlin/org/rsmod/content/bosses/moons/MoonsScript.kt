@@ -125,7 +125,7 @@ constructor(
             onModifyNpcHit(type) {
                 val uid = hit.sourceUid
                 val attacker = if (hit.isFromPlayer && uid != null) PlayerUid(uid).resolve(deps.playerList) else null
-                hit.damage = if (attacker == null) 0 else blue.punch(npc, attacker)
+                hit.damage = if (attacker == null) 0 else blue.punch(npc, attacker, hit.damage)
                 hit.forceMaxHitmark = hit.damage > 0
             }
         }
