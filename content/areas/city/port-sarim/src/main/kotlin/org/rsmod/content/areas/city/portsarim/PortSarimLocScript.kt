@@ -18,7 +18,6 @@ class PortSarimLocScript @Inject constructor(private val locRepo: LocRepository)
         onOpLoc1("loc.vc_manhole_open") { climbDownManhole() }
         onOpLoc1("loc.vc_ladder") { climbUpFromSewer() }
         onOpLoc1("loc.jewellersdoor") { walkThroughDoor(it.loc) }
-        onOpLoc1("loc.cavewall_shortcut_wyvern_west") { wyvernTunnel() }
         onOpLoc1("loc.draynor_diary_under_wall_w") { underwallTunnel(UNDERWALL_EAST_EXIT) }
         onOpLoc1("loc.draynor_diary_under_wall_e") { underwallTunnel(UNDERWALL_WEST_EXIT) }
         onOpLoc1("loc.farming_style") { climbStile(it.loc) }
@@ -54,20 +53,6 @@ class PortSarimLocScript @Inject constructor(private val locRepo: LocRepository)
         locRepo.add(openCoords, OPEN_DOOR, DOOR_OPEN_TICKS, door.turnAngle(rotations = 1), door.shape)
         soundSynth("synth.door_open")
         playerMove(dest)
-    }
-
-    private suspend fun ProtectedAccess.wyvernTunnel() {
-        arriveDelay()
-        if (player.agilityLvl < WYVERN_TUNNEL_LEVEL) {
-            objbox(
-                "obj.agility_contortion",
-                zoom = 400,
-                "The tunnel is very dark and dangerous. You'll need an Agility level of " +
-                    "$WYVERN_TUNNEL_LEVEL to try this.",
-            )
-            return
-        }
-        mes("Nothing interesting happens.")
     }
 
     private suspend fun ProtectedAccess.underwallTunnel(exit: CoordGrid) {
@@ -107,7 +92,6 @@ class PortSarimLocScript @Inject constructor(private val locRepo: LocRepository)
         const val UNDERGROUND_OFFSET = 6400
         const val OPEN_DOOR = "loc.inactiveposhdoor"
         const val DOOR_OPEN_TICKS = 3
-        const val WYVERN_TUNNEL_LEVEL = 82
         const val UNDERWALL_TUNNEL_LEVEL = 42
         const val STILE_START_CYCLES = 30
         const val STILE_END_CYCLES = 94
