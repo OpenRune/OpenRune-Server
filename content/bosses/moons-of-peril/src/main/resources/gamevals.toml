@@ -11,3 +11,6 @@ pmoon_trap_first_rock = 64501
 blood_120 = 63
 ice_120 = 64
 heat_120 = 65
+
+[gamevals.inv]
+pmoon_frozen_weapon = 64500

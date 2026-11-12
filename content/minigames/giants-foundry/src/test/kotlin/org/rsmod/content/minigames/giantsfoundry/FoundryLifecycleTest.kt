@@ -121,7 +121,7 @@ class FoundryLifecycleTest {
             val f = Fixture()
             f.player.inv[0] = InvObj(replacement, 1)
             for (slot in 1 until 28) f.player.inv[slot] = InvObj("obj.black_bead", 1)
-            val result = HeldEquipOp(f.events).equip(f.player, 0, f.player.inv)
+            val result = HeldEquipOp(f.events, emptySet()).equip(f.player, 0, f.player.inv)
             assertTrue(result is HeldEquipResult.Success, "$replacement: $result")
             f.assertStored()
             assertEquals(27, f.player.inv.count("obj.black_bead"))
@@ -136,7 +136,7 @@ class FoundryLifecycleTest {
         f.player.inv[0] = InvObj("obj.bronze_2h_sword", 1)
         for (slot in 1 until 28) f.player.inv[slot] = InvObj("obj.black_bead", 1)
         val before = f.player.inv.objs.toList()
-        assertTrue(HeldEquipOp(f.events).equip(f.player, 0, f.player.inv) is HeldEquipResult.Fail.NotEnoughInvSpace)
+        assertTrue(HeldEquipOp(f.events, emptySet()).equip(f.player, 0, f.player.inv) is HeldEquipResult.Fail.NotEnoughInvSpace)
         f.assertCarried()
         assertEquals(before, f.player.inv.objs.toList())
         assertEquals("obj.wooden_shield".asRSCM(), f.player.worn[Wearpos.LeftHand.slot]?.id)
@@ -147,7 +147,7 @@ class FoundryLifecycleTest {
         val f = Fixture()
         f.player.worn.fillNulls()
         f.player.inv[0] = InvObj("obj.bronze_sword", 1)
-        HeldEquipOp(f.events).equip(f.player, 0, f.player.inv)
+        HeldEquipOp(f.events, emptySet()).equip(f.player, 0, f.player.inv)
         f.player.coords = FOUNDRY_OUTSIDE
         f.player.pendingTelejump = true
         PlayerRegionProcessor(mockk(relaxed = true), f.events).process(f.player)

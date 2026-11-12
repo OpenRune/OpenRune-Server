@@ -25,6 +25,8 @@ import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.bosses.moons.MoonsFights.Companion.isSubdued
 import org.rsmod.content.bosses.moons.MoonsFights.Companion.set
+import org.rsmod.content.bosses.moons.blue.BlueFights
+import org.rsmod.content.bosses.moons.blue.BlueStorms
 import org.rsmod.content.bosses.moons.eclipse.EclipseFights
 import org.rsmod.content.bosses.moons.eclipse.Side
 import org.rsmod.game.cheat.Cheat
@@ -61,6 +63,27 @@ object MoonsExternals {
     const val CLONE_SPAWN = "moons.clone_spawn"
     const val CLONE_STRIKE = "moons.clone_strike"
     const val CLONE_LEAVE = "moons.clone_leave"
+    const val COLD_DECAY = "moons.cold_decay"
+    const val FREEZE_START = "moons.freeze_start"
+    const val FREEZE_ARM = "moons.freeze_arm"
+    const val STAND_IN = "moons.stand_in"
+    const val STAND_IN_FADE = "moons.stand_in_fade"
+    const val STAND_IN_REMOVE = "moons.stand_in_remove"
+    const val DISARM = "moons.disarm"
+    const val ICE_FLOOR = "moons.ice_floor"
+    const val FREEZE_SELF_DAMAGE = "moons.freeze_self_damage"
+    const val ICICLES_EXPLODE = "moons.icicles_explode"
+    const val FREEZE_EXPLODE = "moons.freeze_explode"
+    const val FREEZE_END = "moons.freeze_end"
+    const val PLAYER_FOCUS = "moons.player_focus"
+    const val MOON_HIDE_BLUE = "moons.moon_hide_blue"
+    const val ICICLE_SPAWN = "moons.icicle_spawn"
+    const val FIRE_ON = "moons.fire_on"
+    const val FIRE_OFF = "moons.fire_off"
+    const val STORM_SPAWN = "moons.storm_spawn"
+    const val STORM_STEP = "moons.storm_step"
+    const val STORM_CAST = "moons.storm_cast"
+    const val STORM_HEAL = "moons.storm_heal"
 }
 
 class MoonsScript
@@ -69,6 +92,8 @@ constructor(
     private val deps: BossDeps,
     private val fights: MoonsFights,
     private val eclipse: EclipseFights,
+    private val blue: BlueFights,
+    private val storms: BlueStorms,
     private val overlays: MoonsOverlays,
     private val protectedAccess: ProtectedAccessLauncher,
     private val hooks: Set<@JvmSuppressWildcards NeypotzliHook>,
@@ -90,6 +115,18 @@ constructor(
                 val uid = hit.sourceUid
                 val attacker = if (hit.isFromPlayer && uid != null) PlayerUid(uid).resolve(deps.playerList) else null
                 hit.damage = if (attacker == null) 0 else fights.jaguarHit(npc, attacker, hit.damage)
+            }
+        }
+
+        fights.blueHooks = blue
+
+        for (icicle in ICICLE_NPCS) {
+            val type = ServerCacheManager.getNpc(icicle.asRSCM(RSCMType.NPC)) ?: continue
+            onModifyNpcHit(type) {
+                val uid = hit.sourceUid
+                val attacker = if (hit.isFromPlayer && uid != null) PlayerUid(uid).resolve(deps.playerList) else null
+                hit.damage = if (attacker == null) 0 else blue.punch(npc, attacker)
+                hit.forceMaxHitmark = hit.damage > 0
             }
         }
 
@@ -129,6 +166,27 @@ constructor(
             register(MoonsExternals.CLONE_SPAWN) { ctx -> eclipse.cloneSpawned(ctx.npc, ctx.params as Side) }
             register(MoonsExternals.CLONE_STRIKE) { ctx -> eclipse.cloneStrike(ctx.params as Side) }
             register(MoonsExternals.CLONE_LEAVE) { ctx -> eclipse.cloneLeave(ctx.params as Side) }
+            register(MoonsExternals.COLD_DECAY) { _, _, target, _ -> blue.coldDecay(target) }
+            register(MoonsExternals.FREEZE_START) { blue.freezeStart() }
+            register(MoonsExternals.FREEZE_ARM) { _, _, target, _ -> blue.freezeArm(target) }
+            register(MoonsExternals.STAND_IN) { _, _, target, _ -> blue.spawnStandIn(target, fade = false) }
+            register(MoonsExternals.STAND_IN_FADE) { _, _, target, _ -> blue.spawnStandIn(target, fade = true) }
+            register(MoonsExternals.STAND_IN_REMOVE) { _, _, target, _ -> blue.removeStandIn(target) }
+            register(MoonsExternals.DISARM) { _, _, target, _ -> blue.disarm(target) }
+            register(MoonsExternals.ICE_FLOOR) { ctx -> blue.iceFloor(ctx.params as Int) }
+            register(MoonsExternals.FREEZE_SELF_DAMAGE) { _, _, target, _ -> blue.freezeSelfDamage(target) }
+            register(MoonsExternals.ICICLES_EXPLODE) { blue.iciclesExplode() }
+            register(MoonsExternals.FREEZE_EXPLODE) { _, _, target, _ -> blue.freezeExplode(target) }
+            register(MoonsExternals.FREEZE_END) { _, _, target, _ -> blue.freezeEnd(target) }
+            register(MoonsExternals.PLAYER_FOCUS) { _, _, target, params -> fights.setPlayerFocus(target, params as Int) }
+            register(MoonsExternals.MOON_HIDE_BLUE) { ctx -> blue.hideMoon(ctx.npc) }
+            register(MoonsExternals.ICICLE_SPAWN) { ctx -> blue.icicleSpawned(ctx.npc, ctx.params as Int) }
+            register(MoonsExternals.FIRE_ON) { storms.fireOn() }
+            register(MoonsExternals.FIRE_OFF) { storms.fireOff() }
+            register(MoonsExternals.STORM_SPAWN) { storms.spawn() }
+            register(MoonsExternals.STORM_STEP) { ctx -> storms.step(ctx.params as Boolean) }
+            register(MoonsExternals.STORM_CAST) { storms.cast() }
+            register(MoonsExternals.STORM_HEAL) { _, _, target, _ -> storms.heal(target) }
         }
 
         for (moon in Moon.entries) {
@@ -139,16 +197,20 @@ constructor(
                 if (!privateCopy && !player.isSubdued(moon)) {
                     fights.begin(player, moon)
                     if (moon == Moon.Eclipse) eclipse.joined(player)
+                    if (moon == Moon.Blue) blue.joined(player)
                 }
             }
             onAreaExit(moon.area) { fights.end(player) }
         }
+        onOpLoc1("loc.pmoon_boss_brazier_left") { storms.light(player, BlueStorms.LEFT) }
+        onOpLoc1("loc.pmoon_boss_brazier_right") { storms.light(player, BlueStorms.RIGHT) }
         for (stairs in EXIT_STAIRS) {
             onOpLoc1(stairs) { escape() }
             onOpLoc2(stairs) { escape() }
         }
 
         onPlayerLogin {
+            blue.loginNet(player)
             if (player.vars["varp.pmoon_inside"] == 0) return@onPlayerLogin
             player.set("varp.pmoon_inside", 0)
             PathingEntityCommon.telejump(player, deps.collision, Moon.ANTECHAMBER)
@@ -283,12 +345,14 @@ constructor(
 
     private companion object {
         private const val CLONE_NPC = "npc.pmoon_boss_eclipse_clone"
+        private val ICICLE_NPCS =
+            listOf("npc.pmoon_boss_icicle_1", "npc.pmoon_boss_icicle_2", "npc.pmoon_boss_icicle_3")
         private const val QUEST_FIGHT_STAGE = 28
         private const val QUEST_COMPLETE = 36
         private const val ATTACK_RANGE = 15
         private const val ENTRY_DELAY = 2
         private const val BIND_TEST_TICKS = 30
-        private val ACTIVE_MOONS = setOf(Moon.Blood, Moon.Eclipse)
+        private val ACTIVE_MOONS = setOf(Moon.Blood, Moon.Blue, Moon.Eclipse)
         private val EXIT_STAIRS = listOf("loc.pmoon_boss_exit_stairs", "loc.pmoon_boss_exit_stairs_2")
         private val STATUE_APPROACH =
             mapOf(

@@ -7,3 +7,10 @@ transmit = "Never"
 id = "varp.pmoon_trap_first_rock"
 scope = "Temp"
 transmit = "Never"
+
+[[inventory]]
+id = "inv.pmoon_frozen_weapon"
+size = 1
+scope = "Perm"
+stack = "Normal"
+protect = false

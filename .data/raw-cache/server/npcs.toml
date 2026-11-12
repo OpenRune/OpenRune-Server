@@ -15143,6 +15143,7 @@ moveRestrict = "NoMove"
 wanderRange = 0
 [npc.params]
 "param.hitpoints_locked"=true
+"param.headbar_hidden"=true
 "param.boss_hp_bar_colour_back"=1581088
 "param.boss_hp_bar_colour_sliding"=5798024
 "param.boss_hp_bar_colour_remaining"=10543352
