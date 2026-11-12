@@ -9,5 +9,6 @@ class AgilityModule : PluginModule() {
         addSetBinding<AgilityCourseHook>(PrifddinasPortals::class.java)
         addSetBinding<AgilityCourseHook>(WildernessLaps::class.java)
         addSetBinding<AgilityCourseHook>(WerewolfStickThrow::class.java)
+        addSetBinding<AgilityCourseHook>(DorgeshKaanCourse::class.java)
     }
 }
