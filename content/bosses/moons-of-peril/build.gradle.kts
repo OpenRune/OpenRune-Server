@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation(projects.api.bosses)
+    implementation(projects.api.bossHpBarPlugin)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.combat.combatFormulas)
     implementation(projects.api.npc)

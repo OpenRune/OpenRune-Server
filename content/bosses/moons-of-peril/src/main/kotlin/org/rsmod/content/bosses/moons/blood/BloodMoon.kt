@@ -7,6 +7,7 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.content.bosses.moons.Moon
+import org.rsmod.content.bosses.moons.MoonsFights
 import org.rsmod.content.bosses.moons.MoonsExternals
 
 class BloodMoon @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
@@ -17,18 +18,24 @@ class BloodMoon @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             stats(attackRate = STANDARD_ATTACK_RATE)
 
             val subdued = ability("subdued", external(MoonsExternals.SUBDUED))
-            personalHp(Moon.MAX_HITPOINTS, hpVarbit = "varbit.pmoon_boss_hp", onDeath = subdued)
+            personalHp(Moon.MAX_HITPOINTS, hpVarbit = "varbit.hpbar_hud_hp", onDeath = subdued)
 
             val burn = onEach(playersIn(ARENA), external(MoonsExternals.BURN))
-            every(CONDITION_DECAY_TICKS, onEach(playersIn(ARENA), external(MoonsExternals.DECAY)))
+            every(
+                CONDITION_DECAY_TICKS,
+                onEach(playersIn(ARENA), addPlayerVar(MoonsFights.CONDITION, -CONDITION_DECAY)),
+            )
 
             fun focusPhase(focus: Int, next: String) {
                 val (dx, dz) = Moon.GLYPH_OFFSETS[focus]
                 val standard =
-                    ability("standard_attack_$focus") {
-                        anim("seq.npc_djinn_01_combo")
-                        include(onEach(playersIn(ARENA), external(MoonsExternals.STANDARD_ATTACK)))
-                    }
+                    ability(
+                        "standard_attack_$focus",
+                        sequence(
+                            anim("seq.npc_djinn_01_combo"),
+                            onEach(playersIn(ARENA), external(MoonsExternals.STANDARD_ATTACK)),
+                        ),
+                    )
                 val entry =
                     ability(
                         "enter_focus_$focus",
@@ -52,15 +59,8 @@ class BloodMoon @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                 }
             }
 
-            val jaguars =
-                ability(
-                    "jaguars",
-                    sequence(
-                        external(MoonsExternals.FOCUS, params = Moon.NEW_MOON),
-                        external(MoonsExternals.OVERLAYS),
-                    ),
-                )
-            val rain = ability("rain", external(MoonsExternals.FOCUS, params = Moon.FULL_MOON))
+            val jaguars = ability("jaguars", BloodJaguars.timeline)
+            val rain = ability("rain", BloodRain.timeline)
 
             phase("jaguars", lockMovement = true, exitAfter = JAGUARS_TICKS, nextPhase = "focus_1") {
                 entry = jaguars.name
@@ -81,6 +81,7 @@ class BloodMoon @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private const val FIRST_ATTACK_OFFSET = 3
         private const val FOCUS_TICKS = 12
         private const val CONDITION_DECAY_TICKS = 5
+        private const val CONDITION_DECAY = 2
         private const val JAGUARS_TICKS = 53
         private const val RAIN_TICKS = 31
         private val ARENA = area(spawnTile(-12, -14), spawnTile(18, 15))
