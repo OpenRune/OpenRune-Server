@@ -13,12 +13,13 @@ import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.npc.stat.statDrain
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
-import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onModifyNpcHit
 import org.rsmod.api.script.onNpcHit
 import org.rsmod.api.script.onOpLoc1
@@ -32,9 +33,11 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.player.PlayerUid
+import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.BoundLocInfo
+import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
@@ -51,6 +54,7 @@ constructor(
     private val playerList: PlayerList,
     private val launcher: ProtectedAccessLauncher,
     private val aiPlayerInteractions: AiPlayerInteractions,
+    private val worldQueues: WorldQueueList,
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -62,7 +66,7 @@ constructor(
 
         val count = ServerCacheManager.getNpc(COUNT_DRAYNOR.asRSCM(RSCMType.NPC))!!
         onModifyNpcHit(count) { onCountHit(npc, hit) }
-        onNpcHit(count) { finishRegeneration(npc) }
+        onNpcHit(count) { onCountImpact(npc, hit) }
     }
 
     private suspend fun ProtectedAccess.openCupboard(cupboard: BoundLocInfo) {
@@ -100,15 +104,31 @@ constructor(
         if (countFor(player) != null) {
             return
         }
-        anim(OPEN_SEQ)
-        locRepo.change(coffin, COFFIN_OPEN, COFFIN_OPEN_DURATION)
-        delay(COFFIN_OPEN_TICKS)
+        vars[BUSY] = 1
+        delay(1)
+        val animated =
+            locRepo.add(
+                coffin.coords,
+                COFFIN_ANIMATED,
+                COFFIN_ANIMATED_TICKS + COUNT_ARISE_TICKS,
+                coffin.angle,
+                coffin.shape,
+            )
+        delay(COFFIN_ANIMATED_TICKS)
+        locRepo.del(animated, Int.MAX_VALUE)
+        locRepo.del(coffin, COUNT_ARISE_TICKS + COFFIN_OPEN_TICKS)
         val rising = Npc(COUNT_IN_COFFIN, coffin.coords)
-        npcRepo.add(rising, COUNT_ARISE_TICKS)
+        npcRepo.add(rising, COUNT_ARISE_TICKS + 1)
         rising.anim(COUNT_ARISE_SEQ)
         delay(COUNT_ARISE_TICKS)
+        vars[BUSY] = 0
+        if (rising.isSlotAssigned) npcRepo.del(rising, Int.MAX_VALUE)
         val count = Npc(COUNT_DRAYNOR, COUNT_SPAWN)
         npcRepo.add(count, COUNT_LIFESPAN)
+        count.faceSquare(COUNT_SPAWN_FACING)
+        count.anim(COUNT_STEP_OUT_SEQ)
+        locRepo.add(coffin.coords, COFFIN_OPEN, COFFIN_OPEN_TICKS, coffin.angle, coffin.shape)
+        delay(1)
         count.opPlayer2(player, aiPlayerInteractions)
     }
 
@@ -124,26 +144,35 @@ constructor(
             hit.damage += GARLIC_DAMAGE_BONUS
             weakenWithGarlic(count, attacker, hit)
         }
-        if (hit.damage < count.hitpoints) {
-            return
-        }
-        val onQuest = quest.stage(attacker) in STAGE_STARTED until STAGE_COMPLETE
-        val hasStake = attacker.inv.count(STAKE) > 0
-        val hasHammer = attacker.inv.count(HAMMER) > 0
-        if (onQuest && hasStake && hasHammer && stakeTheCount(attacker)) {
-            return
-        }
-        hit.damage = count.hitpoints - 1
-        if (hasStake && !hasHammer) {
-            attacker.mes(NO_HAMMER_MESSAGE)
-        }
-        attacker.mes(REGENERATE_MESSAGE)
-        regenerating += count
     }
 
-    private fun finishRegeneration(count: Npc) {
-        if (regenerating.remove(count)) {
-            count.heal(count.baseHitpointsLvl, showHitsplat = true)
+    /**
+     * The lethal hit lands and empties the Count's health bar. A tick later he is either staked,
+     * dying two ticks after that, or he regenerates [REGENERATE_AMOUNT] hitpoints.
+     */
+    private fun onCountImpact(count: Npc, hit: Hit) {
+        if (count.hitpoints > 0) {
+            return
+        }
+        count.clearQueue(DEATH_QUEUE)
+        if (!finishing.add(count)) {
+            return
+        }
+        val attacker = if (hit.isFromPlayer) hit.resolvePlayerSource(playerList) else null
+        val onQuest =
+            attacker != null && quest.stage(attacker) in STAGE_STARTED until STAGE_COMPLETE
+        val hasStake = attacker != null && attacker.inv.count(STAKE) > 0
+        val hasHammer = attacker != null && attacker.inv.count(HAMMER) > 0
+        val canStake = attacker != null && onQuest && hasStake && hasHammer
+        if (canStake && stakeTheCount(checkNotNull(attacker), count)) {
+            return
+        }
+        worldQueues.add(1) {
+            finishing.remove(count)
+            if (!count.isSlotAssigned) return@add
+            if (attacker != null && hasStake && !hasHammer) attacker.mes(NO_HAMMER_MESSAGE)
+            attacker?.mes(REGENERATE_MESSAGE)
+            count.heal(REGENERATE_AMOUNT, showHitsplat = true)
         }
     }
 
@@ -171,10 +200,19 @@ constructor(
         }
     }
 
-    private fun stakeTheCount(player: Player): Boolean =
+    private fun stakeTheCount(player: Player, count: Npc): Boolean =
         launcher.launch(player) {
+            delay(1)
+            mes(STAKE_MESSAGE)
+            anim(STAKE_SEQ)
+            count.anim(COUNT_DEATH_SEQ)
+            soundSynth(COUNT_DEATH_SYNTH)
+            delay(COUNT_DEATH_TICKS)
+            finishing.remove(count)
+            if (count.isSlotAssigned) npcRepo.del(count, Int.MAX_VALUE)
+            stopAction()
+            combatClearQueue()
             if (takeStake(player)) {
-                mes(STAKE_MESSAGE)
                 with(quest) { completeBySlaying() }
             }
         }
@@ -189,7 +227,7 @@ constructor(
             }
         }.success
 
-    private val regenerating: MutableSet<Npc> = Collections.newSetFromMap(IdentityHashMap())
+    private val finishing: MutableSet<Npc> = Collections.newSetFromMap(IdentityHashMap())
 
     private var Player.searchedCupboard by intVarBit("varbit.vampyre_slayer_cupboard_searched")
     private val Player.autocasting by intVarBit("varbit.autocast_set")
@@ -204,16 +242,26 @@ constructor(
         const val OPEN_SEQ = "seq.human_openchest"
 
         const val COFFIN = "loc.vampcoffin"
-        const val COFFIN_OPEN = "loc.vampcoffin_animated"
-        const val COFFIN_OPEN_DURATION = 100
-        const val COFFIN_OPEN_TICKS = 3
+        const val COFFIN_ANIMATED = "loc.vampcoffin_animated"
+        const val COFFIN_ANIMATED_TICKS = 4
+        const val COFFIN_OPEN = "loc.vampcoffinopen"
+        const val COFFIN_OPEN_TICKS = 4
+        const val BUSY = "varbit.busy"
 
         const val COUNT_DRAYNOR = "npc.count_draynor"
         const val COUNT_IN_COFFIN = "npc.count_draynor_coffin"
         const val COUNT_ARISE_SEQ = "seq.vampireslayer_arise"
-        const val COUNT_ARISE_TICKS = 6
+        const val COUNT_ARISE_TICKS = 5
+        const val COUNT_STEP_OUT_SEQ = "seq.vampireslayer_travel"
+        const val COUNT_DEATH_SEQ = "seq.human_death"
+        const val COUNT_DEATH_SYNTH = "synth.vampire_death"
+        const val COUNT_DEATH_TICKS = 2
         const val COUNT_LIFESPAN = 500
-        val COUNT_SPAWN = CoordGrid(3079, 9775, 0)
+        const val DEATH_QUEUE = "queue.death"
+        const val STAKE_SEQ = "seq.human_stake"
+        const val REGENERATE_AMOUNT = 20
+        val COUNT_SPAWN = CoordGrid(3078, 9774, 0)
+        val COUNT_SPAWN_FACING = CoordGrid(3078, 9772, 0)
 
         const val GARLIC_DAMAGE_BONUS = 1
         const val GARLIC_FULL_HEALTH_DAMAGE = 10
@@ -221,10 +269,9 @@ constructor(
         const val GARLIC_STRENGTH_DRAIN = 10
         const val GARLIC_DEFENCE_DRAIN = 40
 
-        const val GARLIC_MESSAGE = "The vampyre seems to be weakened by the garlic you're carrying."
-        const val REGENERATE_MESSAGE = "<col=ef1020>The vampyre seems to regenerate!</col>"
-        const val NO_HAMMER_MESSAGE =
-            "<col=ef1020>You're unable to push the stake far enough in!</col>"
-        const val STAKE_MESSAGE = "<col=ef1020>You hammer the stake into the vampyre's chest!</col>"
+        const val GARLIC_MESSAGE = "The vampyre seems to weaken."
+        const val REGENERATE_MESSAGE = "<col=ff3045>The vampyre seems to regenerate!"
+        const val NO_HAMMER_MESSAGE = "<col=ff3045>You're unable to push the stake far enough in!"
+        const val STAKE_MESSAGE = "<col=ff3045>You hammer the stake into the vampyre's chest!"
     }
 }
