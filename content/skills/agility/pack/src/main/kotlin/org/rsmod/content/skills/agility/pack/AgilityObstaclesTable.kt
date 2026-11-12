@@ -2,7 +2,17 @@ package org.rsmod.content.skills.agility.pack
 
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
+import org.rsmod.content.skills.agility.pack.course.apeAtollObstacles
+import org.rsmod.content.skills.agility.pack.course.barbarianObstacles
+import org.rsmod.content.skills.agility.pack.course.dorgeshKaanObstacles
 import org.rsmod.content.skills.agility.pack.course.gnomeStrongholdObstacles
+import org.rsmod.content.skills.agility.pack.course.penguinObstacles
+import org.rsmod.content.skills.agility.pack.course.prifddinasObstacles
+import org.rsmod.content.skills.agility.pack.course.pyramidObstacles
+import org.rsmod.content.skills.agility.pack.course.shayzienObstacles
+import org.rsmod.content.skills.agility.pack.course.werewolfObstacles
+import org.rsmod.content.skills.agility.pack.course.wildernessObstacles
+import org.rsmod.content.skills.agility.pack.course.wyrmObstacles
 import org.rsmod.content.skills.agility.pack.rooftop.alKharidObstacles
 import org.rsmod.content.skills.agility.pack.rooftop.ardougneObstacles
 import org.rsmod.content.skills.agility.pack.rooftop.canifisObstacles
@@ -140,6 +150,16 @@ object AgilityObstaclesTable {
             pollnivneachObstacles()
             rellekkaObstacles()
             ardougneObstacles()
+            barbarianObstacles()
+            wildernessObstacles()
+            prifddinasObstacles()
+            apeAtollObstacles()
+            werewolfObstacles()
+            shayzienObstacles()
+            wyrmObstacles()
+            penguinObstacles()
+            pyramidObstacles()
+            dorgeshKaanObstacles()
             shortcutObstacles()
             fossilUnderwaterObstacles()
         }

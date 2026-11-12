@@ -1,0 +1,27 @@
+[[npc]]
+id = "npc.peng_agility_crushcourse_crushblock01_npc"
+inherit = "npc.peng_agility_crushcourse_crushblock01_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+timer = 1
+
+[[npc]]
+id = "npc.peng_agility_crushcourse_crushblock02_npc"
+inherit = "npc.peng_agility_crushcourse_crushblock02_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+timer = 1
+
+[[npc]]
+id = "npc.peng_agility_crushcourse_crushblock03_npc"
+inherit = "npc.peng_agility_crushcourse_crushblock03_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+timer = 1
+
+[[npc]]
+id = "npc.peng_agility_crushcourse_crushblock04_npc"
+inherit = "npc.peng_agility_crushcourse_crushblock04_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+timer = 1

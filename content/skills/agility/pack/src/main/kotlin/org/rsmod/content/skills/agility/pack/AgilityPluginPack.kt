@@ -9,5 +9,6 @@ class AgilityPluginPack : PluginPack() {
             AgilityCoursesTable.courses(),
             AgilityObstaclesTable.obstacles(),
             AgilityLapListTable.lapList(),
-        ) + agilityTransformTables()
+            AgilitySkullballTable.skullball(),
+        ) + agilityRewardTables() + agilityTransformTables()
 }
