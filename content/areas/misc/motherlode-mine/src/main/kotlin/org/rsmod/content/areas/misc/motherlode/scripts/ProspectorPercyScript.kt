@@ -1,5 +1,12 @@
 package org.rsmod.content.areas.misc.motherlode.scripts
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.InvScope
+import dev.openrune.types.InvStackType
+import dev.openrune.types.InventoryServerType
+import dev.openrune.types.util.UncheckedType
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -15,12 +22,53 @@ import org.rsmod.content.areas.misc.motherlode.hasUpperLevel
 import org.rsmod.content.areas.misc.motherlode.syncMotherlodeVars
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
+import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class ProspectorPercyScript
 @Inject
 constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : PluginScript() {
+    private val rewards = createRewardsInventory()
+
+    @OptIn(UncheckedType::class)
+    private fun createRewardsInventory(): Inventory {
+        val stock =
+            checkNotNull(
+                ServerCacheManager.getInventory(SHOP_STOCK.asRSCM(RSCMType.INV))
+            ) {
+                "Missing Motherlode shop stock: $SHOP_STOCK"
+            }
+        val template =
+            checkNotNull(
+                ServerCacheManager.getInventory(SHOP_TEMPLATE.asRSCM(RSCMType.INV))
+            ) {
+                "Missing shop display template: $SHOP_TEMPLATE"
+            }
+        require(stock.stock.size <= template.size) {
+            "$SHOP_TEMPLATE only holds ${template.size} items."
+        }
+        val type =
+            template.copy(
+                scope = InvScope.Shared,
+                stack = InvStackType.Always,
+                stock = stock.stock,
+                flags =
+                    InventoryServerType.pack(
+                        protect = false,
+                        allStock = false,
+                        restock = true,
+                        runWeight = false,
+                        dummyInv = false,
+                        placeholders = false,
+                    ),
+            )
+        val objs = arrayOfNulls<InvObj>(type.size)
+        stock.stock.forEachIndexed { slot, item -> objs[slot] = InvObj(item.obj, item.count) }
+        return Inventory(type, objs)
+    }
+
     override fun ScriptContext.startup() {
         shopOps.costOf(CURRENCY) { it.cost.coerceAtLeast(1) }
         onOpNpc1(PERCY) { talk(it.npc) }
@@ -92,11 +140,14 @@ constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : P
         shops.open(
             player = this,
             title = "Prospector Percy's Nugget Shop",
-            shopInv = SHOP_INV,
+            shopInv = rewards,
+            sideInv = inv,
             buyPercentage = 80.0,
             sellPercentage = 100.0,
             changePercentage = 0.0,
             currency = CURRENCY,
+            refundable = SHOP_REFUNDABLE,
+            refusalMessages = SHOP_REFUSAL_MESSAGES,
         )
     }
 
@@ -128,11 +179,35 @@ constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : P
 
     private companion object {
         const val PERCY = "npc.motherlode_percy"
-        const val SHOP_INV = "inv.motherlode_nugget_shop"
+        const val SHOP_STOCK = "inv.motherlode_nugget_shop"
+        const val SHOP_TEMPLATE = "inv.gemshop"
         const val CURRENCY = "currency.golden_nugget"
 
         const val UPPER_LEVEL_COST = 100
         const val UPPER_HOPPER_COST = 50
         const val LARGER_SACK_COST = 200
+
+        val SHOP_REFUNDABLE =
+            setOf(
+                "obj.motherlode_reward_hat",
+                "obj.motherlode_reward_top",
+                "obj.motherlode_reward_legs",
+                "obj.motherlode_reward_boots",
+                "obj.coal_bag",
+                "obj.gem_bag",
+                "obj.pack_softclay",
+                "obj.reward_gem_bag",
+            )
+
+        val SHOP_REFUSAL_MESSAGES =
+            mapOf(
+                "obj.fossil_motherlode_reward_hat" to REFUND_REFUSED,
+                "obj.fossil_motherlode_reward_top" to REFUND_REFUSED,
+                "obj.fossil_motherlode_reward_legs" to REFUND_REFUSED,
+                "obj.fossil_motherlode_reward_boots" to REFUND_REFUSED,
+            )
+
+        private const val REFUND_REFUSED =
+            "You can't sell this item back to Percy as you did not buy it from this shop"
     }
 }

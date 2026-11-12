@@ -17,7 +17,7 @@ public class GemstoneCrabCaveScript @Inject constructor(private val crab: Gemsto
 
         faceLoc(cave)
         anim("seq.human_longcrawl_priority")
-        soundSynth("synth.raft_climb", loops = 3, delay = 4)
+        soundSynth("synth.climbing_loop", loops = 3, delay = 4)
         fadeOverlay(
             startColour = 0,
             startTransparency = 255,

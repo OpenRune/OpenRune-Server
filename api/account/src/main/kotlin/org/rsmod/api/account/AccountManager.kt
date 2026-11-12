@@ -1,6 +1,9 @@
 package org.rsmod.api.account
 
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
+import org.rsmod.api.account.character.CharacterDataStage
+import org.rsmod.api.account.character.main.CharacterAccountRepository
 import org.rsmod.api.account.loader.AccountLoaderService
 import org.rsmod.api.account.loader.request.AccountLoadAuth
 import org.rsmod.api.account.loader.request.AccountLoadCallback
@@ -11,18 +14,37 @@ import org.rsmod.api.account.saver.request.AccountSaveRequest
 import org.rsmod.game.entity.Player
 import org.rsmod.game.world.WorldType
 
+@Singleton
 public class AccountManager
 @Inject
-constructor(private val loader: AccountLoaderService, private val saver: AccountSavingService) {
+constructor(
+    private val loader: AccountLoaderService,
+    private val saver: AccountSavingService,
+    private val repository: CharacterAccountRepository,
+    private val pipelines: Set<CharacterDataStage.Pipeline>,
+) {
+    private val pendingSaves = ArrayList<Pair<Player, AccountSaveCallback>>()
+
     public fun save(player: Player, callback: AccountSaveCallback) {
-        val request =
-            AccountSaveRequest(
-                accountId = player.accountId,
-                characterId = player.characterId,
-                player = player,
-                callback = callback,
-            )
-        saver.queue(request)
+        pendingSaves += player to callback
+    }
+
+    /** Called on the game thread after gameplay mutations have finished for this tick. */
+    public fun capturePendingSaves() {
+        for ((player, callback) in pendingSaves) {
+            val request =
+                AccountSaveRequest(
+                    accountId = player.accountId,
+                    characterId = player.characterId,
+                    player = player,
+                    worldType = player.worldType,
+                    account = repository.capture(player),
+                    segments = pipelines.map { it.capture(player) },
+                    callback = callback,
+                )
+            saver.queue(request)
+        }
+        pendingSaves.clear()
     }
 
     public fun load(

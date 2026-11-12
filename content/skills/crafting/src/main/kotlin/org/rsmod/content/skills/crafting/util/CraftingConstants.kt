@@ -50,8 +50,6 @@ object CraftingConstants {
 
     const val YAK_CURER = "npc.fris_r_engineer"
 
-    const val CRAFTING_TUTOR = "npc.aide_tutor_crafting"
-
     const val ANIM_SPINNING = "seq.human_spinningwheel_90"
 
     const val LOC_ANIM_SPINNING = "seq.spinningwheel"
@@ -61,7 +59,7 @@ object CraftingConstants {
     const val SOUND_WEAVING = "synth.loom_weave"
 
     const val ANIM_POTTERY_WHEEL = "seq.human_potterywheel"
-    const val SOUND_POTTERY_WHEEL = "synth.crafting_pottery_wheel_craft"
+    const val SOUND_POTTERY_WHEEL = "synth.pottery"
     const val ANIM_POTTERY_OVEN = "seq.potteryoven_quick"
 
     const val ANIM_LEATHER_CRAFT = "seq.human_leather_crafting"

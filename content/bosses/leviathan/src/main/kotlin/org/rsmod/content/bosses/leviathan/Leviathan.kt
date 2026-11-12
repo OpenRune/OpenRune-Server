@@ -201,7 +201,7 @@ internal constructor(
     private companion object {
         private const val FIGHT_PHASE = "fight"
         private const val ENRAGED_PHASE = "enraged"
-        private const val HIT_SYNTH = "synth.leviathan_hit"
+        private const val HIT_SYNTH = "synth.dt2_levboss_hit_impact_01"
         private const val HIT_SYNTH_RADIUS = 15
         private const val BITE_MAX_HIT = 50
         private const val BITE_RANGE = 5
@@ -219,7 +219,7 @@ internal constructor(
         private const val SPECIAL_DAMAGE_PERCENT = 67
         private const val INSIDE_AURA_DAMAGE_PERCENT = 150
         private const val ENRAGE_MESSAGE = "<col=ff289d>The Leviathan focuses on you intensely...</col>"
-        private const val PATHFINDER_SPAWN_SYNTH = "synth.leviathan_pathfinder_spawn"
+        private const val PATHFINDER_SPAWN_SYNTH = "synth.dt2_levboss_ranged_impact_sound_01"
         private const val PATHFINDER_SPAWN_DELAY = LeviathanFights.PATHFINDER_SPAWN_DELAY
 
         private val SHADOW_SPELLS =
@@ -557,7 +557,7 @@ constructor(
 
         private val RISE_FACE = CoordGrid(2064, 6369, 0)
         private const val RISE_SEQ = "seq.npc_leviathan_01_spawn"
-        private const val RISE_SYNTH = "synth.leviathan_rise"
+        private const val RISE_SYNTH = "synth.dt2_levboss_spawn_03"
         private const val FIRST_VOLLEY_DELAY = 4
         private const val ABANDON_TICKS = 5
 
@@ -566,7 +566,7 @@ constructor(
 
         private val CARDINALS = listOf(0 to 1, 1 to 0, 0 to -1, -1 to 0)
 
-        private const val LIGHTNING_SHOT_SYNTH = "synth.leviathan_lightning_shot"
+        private const val LIGHTNING_SHOT_SYNTH = "synth.dt2_levboss_lightning_attack_01"
         private const val BEAM_GROUND_SPOTANIM = "spotanim.vfx_leviathan_360_ground"
         private const val BEAM_GROUND_BASE_DELAY = 2
         private const val BEAM_GROUND_STEP_DELAY = 2
@@ -594,7 +594,7 @@ constructor(
         const val PATHFINDER_SPAWN_DELAY = 3
         private const val PATHFINDER_WALK_DELAY = 3
 
-        private const val DEATH_SYNTH = "synth.leviathan_death"
+        private const val DEATH_SYNTH = "synth.dt2_levboss_death_02"
         private const val DEATH_SYNTH_DELAY = 9
     }
 }

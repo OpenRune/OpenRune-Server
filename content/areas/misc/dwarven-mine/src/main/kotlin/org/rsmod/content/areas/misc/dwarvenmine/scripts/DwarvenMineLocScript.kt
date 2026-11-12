@@ -145,8 +145,8 @@ constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepo
         val CREVICE_EAST = CoordGrid(3034, 9806, 0)
         val CREVICE_WEST = CoordGrid(3029, 9806, 0)
         const val CREVICE_AGILITY = 42
-        const val CREVICE_ENTER_SOUND = 2489
-        const val CREVICE_LEAVE_SOUND = 2490
+        const val CREVICE_ENTER_SOUND = "synth.squeeze_in"
+        const val CREVICE_LEAVE_SOUND = "synth.squeeze_out"
         const val STEP_CLIENT_CYCLES = 30
         const val FACE_WEST = 512
         const val FACE_EAST = 1536
@@ -156,7 +156,7 @@ constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepo
         const val PANEL_CYCLES = 3
         const val INVISIBLE_WALL = "loc.inviswall"
 
-        const val CHEST_OPEN_SOUND = 52
+        const val CHEST_OPEN_SOUND = "synth.chest_open"
         const val CHEST_OPEN_CYCLES = 500
     }
 }

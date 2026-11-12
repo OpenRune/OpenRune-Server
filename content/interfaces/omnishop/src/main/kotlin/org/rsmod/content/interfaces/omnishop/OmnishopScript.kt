@@ -5,7 +5,6 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
-import jakarta.inject.Inject
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invTransaction
@@ -19,7 +18,7 @@ import org.rsmod.api.script.onIfScriptTrigger
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class OmnishopScript @Inject constructor() : PluginScript() {
+class OmnishopScript : PluginScript() {
     override fun ScriptContext.startup() {
         onIfClose("interface.omnishop_main") { player.omnishopLastShop = -1 }
         onIfScriptTrigger<InfoArgs>("component.omnishop_main:trigger_request_info") {

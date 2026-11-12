@@ -616,19 +616,18 @@ constructor(
     private fun ProtectedAccess.planTakeAll(): List<Pair<Int, Int>> {
         val office = player.deathOffice
         var free = inv.freeSpace()
-        val stacked = mutableSetOf<String>()
+        val stacked = mutableMapOf<Int, Int>()
         val plan = mutableListOf<Pair<Int, Int>>()
         for (slot in office.indices) {
             val obj = office[slot] ?: continue
             val type = getInvObj(obj)
-            if (type.isStackable) {
-                val name = type.internalName
-                if (name !in stacked && inv.count(name) == 0) {
-                    if (free == 0) continue
-                    free--
-                }
-                stacked += name
-                plan += slot to obj.count
+            if (type.isStackable && obj.vars == 0) {
+                val held = stacked.getOrPut(obj.id) { inv.count(type.internalName) }
+                val taking = minOf(obj.count, Int.MAX_VALUE - held)
+                if (taking <= 0 || held == 0 && free == 0) continue
+                if (held == 0) free--
+                stacked[obj.id] = held + taking
+                plan += slot to taking
                 continue
             }
             val taking = obj.count.coerceAtMost(free)
@@ -665,8 +664,9 @@ constructor(
     private fun ProtectedAccess.spaceFor(slot: Int, count: Int): Int {
         val obj = player.deathOffice[slot] ?: return 0
         val type = getInvObj(obj)
-        if (type.isStackable) {
-            return if (inv.count(type.internalName) > 0 || inv.freeSpace() > 0) count else 0
+        if (type.isStackable && obj.vars == 0) {
+            val held = inv.count(type.internalName)
+            return if (held > 0 || inv.freeSpace() > 0) minOf(count, Int.MAX_VALUE - held) else 0
         }
         return inv.freeSpace().coerceAtMost(count)
     }
@@ -733,7 +733,7 @@ constructor(
         // The office portal's model and colour have no gameval names.
         const val PORTAL_MODEL = 39504
         const val PORTAL_COLOUR = 4128927
-        const val PORTAL_SYNTH = "synth.deaths_domain_portal"
+        const val PORTAL_SYNTH = "synth.tob_transition_card"
         const val ENTER_ANIM = "seq.human_pickupfloor"
         const val ENTER_ANIM_DELAY = 20
         const val DESK_RANGE = 3
@@ -747,7 +747,7 @@ constructor(
         const val CAMERA_RATE2 = 100
 
         // Death's payment sound, with no gameval name.
-        const val PAYMENT_SYNTH = 2115
+        const val PAYMENT_SYNTH = "synth.coins"
         const val PAYMENT_SYNTH_DELAY = 10
         const val DESK_WALK_TICKS = 6
         const val INTERFACE = "interface.death_office"

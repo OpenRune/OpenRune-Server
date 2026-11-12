@@ -4,8 +4,10 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.generated)
     implementation(projects.api.player)
     implementation(projects.api.pluginCommons)
+    implementation(projects.api.script)
     implementation(projects.api.registry)
     implementation(projects.content.interfaces.bank)
     implementation(projects.api.instances)

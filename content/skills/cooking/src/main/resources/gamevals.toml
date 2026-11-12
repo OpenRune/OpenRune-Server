@@ -1,3 +1,6 @@
+[gamevals.varp]
+cooking_skillmulti_quantity = 64480
+
 [gamevals.dbtable]
 cooking_foods =65531
 cooking_ales =65530

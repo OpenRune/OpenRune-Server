@@ -4,11 +4,11 @@ coords = "0_46_54_11_54"
 
 [[spawn]]
 npc = "npc.general_bentnoze_red"
-coords = "0_46_54_14_55"
+coords = "0_46_54_13_56"
 
 [[spawn]]
 npc = "npc.general_wartface_green"
-coords = "0_46_54_13_55"
+coords = "0_46_54_12_56"
 
 [[spawn]]
 npc = "npc.goblin_green_soldier_2"

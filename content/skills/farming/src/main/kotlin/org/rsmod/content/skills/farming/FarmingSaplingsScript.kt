@@ -13,8 +13,9 @@ class FarmingSaplingsScript : PluginScript() {
         for (chain in FarmingSaplings.chains) {
             onOpHeldU(chain.seed.internalName, "obj.plantpot_compost") {
                 when {
-                    !inv.contains("obj.gardening_trowel") -> mes("You need a gardening trowel to plant a seed in a pot.")
-                    player.farmingLvl < chain.level -> mes("You need a Farming level of ${chain.level} to plant this seed.")
+                    player.farmingLvl < chain.level ->
+                        objbox(chain.seed.internalName, "You need to be a level ${chain.level} Farmer to do that.")
+                    !inv.contains("obj.gardening_trowel") -> mes("You need a gardening trowel to do that.")
                     else -> FarmingSaplings.sow(player, chain, it.firstSlot, it.secondSlot)
                 }
             }

@@ -34,7 +34,7 @@ class MagicTabFilterScript : PluginScript() {
         }
         hideFilterButton = !hideFilterButton
         ClientScripts.toplevelSidebuttonSwitch(this, 6)
-        soundSynth("synth.interface_select")
+        soundSynth("synth.interface_select1")
     }
 
     private fun Player.toggleFilter(comsub: Int) {

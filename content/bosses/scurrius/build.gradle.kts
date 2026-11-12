@@ -10,4 +10,5 @@ dependencies {
     implementation(projects.api.route)
     implementation(projects.api.npc)
     implementation(projects.api.combat.combatFormulas)
+    implementation(projects.content.other.specialWeapons)
 }

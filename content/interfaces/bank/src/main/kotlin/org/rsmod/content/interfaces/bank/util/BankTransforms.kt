@@ -11,10 +11,15 @@ object BankTransforms {
     fun transform(player: Player, bank: Inventory, slot: Int, result: ItemServerType): Boolean {
         val source = bank[slot] ?: return false
         if (source.id == result.id) return false
-        val target = bank.indexOfFirst {
-            it?.id == result.id || result.placeholderLink > 0 && it?.id == result.placeholderLink
-        }
-        if (target >= 0) {
+        val target =
+            bank.objs.indices.firstOrNull {
+                val obj = bank[it]
+                it != slot &&
+                    obj != null &&
+                    (obj.id == result.id ||
+                        (result.placeholderLink > 0 && obj.id == result.placeholderLink))
+            }
+        if (target != null) {
             val existing = checkNotNull(bank[target])
             val count = source.count.toLong() + if (existing.id == result.id) existing.count else 0
             if (count > Int.MAX_VALUE) return false
@@ -41,7 +46,8 @@ object BankTransforms {
             if (size == 1) {
                 for (next in tab.index until BankTab.tabs.lastIndex) {
                     VarPlayerIntMapSetter.set(
-                        player, BankTab.tabs[next].sizeVarBit,
+                        player,
+                        BankTab.tabs[next].sizeVarBit,
                         player.vars[BankTab.tabs[next + 1].sizeVarBit],
                     )
                 }
@@ -49,7 +55,8 @@ object BankTransforms {
                 val selected = player.vars["varbit.bank_currenttab"]
                 if (selected >= tab.varValue) {
                     VarPlayerIntMapSetter.set(
-                        player, "varbit.bank_currenttab",
+                        player,
+                        "varbit.bank_currenttab",
                         if (selected == tab.varValue) 0 else selected - 1,
                     )
                 }

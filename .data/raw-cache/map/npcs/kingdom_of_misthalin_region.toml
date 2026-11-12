@@ -27,14 +27,6 @@ npc = "npc.0_50_49_saltfish"
 coords = "0_50_49_46_19"
 
 [[spawn]]
-npc = "npc.aide_tutor_fishing"
-coords = "0_50_49_45_21"
-
-[[spawn]]
-npc = "npc.aide_tutor_mining"
-coords = "0_50_49_27_10"
-
-[[spawn]]
 npc = "npc.archeradventurerpg"
 coords = "0_49_50_13_5"
 

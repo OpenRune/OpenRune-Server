@@ -56,7 +56,10 @@ class GuardTailTest {
 
     private fun varrockSight(): (CoordGrid, CoordGrid) -> Boolean {
         val validator = LineValidator(collision)
-        return { from, to -> validator.hasLineOfSight(from.level, from.x, from.z, to.x, to.z) }
+        return { at, player ->
+            validator.hasLineOfSight(at.level, at.x, at.z, player.x, player.z) &&
+                validator.hasLineOfSight(player.level, player.x, player.z, at.x, at.z)
+        }
     }
 
     private fun simulate(
@@ -71,19 +74,22 @@ class GuardTailTest {
         error("Tail never finished")
     }
 
-    private fun hiddenPlan(tail: GuardTail): CoordGrid {
-        val passed = lookouts.count { it < tail.index }
-        return HideSpots[passed.coerceAtMost(HideSpots.lastIndex)]
+    private fun hiddenSpot(index: Int): CoordGrid {
+        var spot = 0
+        while (spot < lookouts.lastIndex && index >= lookouts[spot + 1] - 8) spot++
+        return HideSpots[spot]
     }
 
+    private fun hiddenPlan(tail: GuardTail): CoordGrid = hiddenSpot(tail.index)
+
     @Test fun `the route is made of single steps from the start to the building`() {
-        assertEquals(CoordGrid(3225, 3427), route.first())
-        assertEquals(CoordGrid(3258, 3400), route.last())
+        assertEquals(CoordGrid(3228, 3430), route.first())
+        assertEquals(CoordGrid(3259, 3400), route.last())
         for ((from, to) in route.zipWithNext()) {
             assertEquals(1, maxOf(abs(to.x - from.x), abs(to.z - from.z)))
         }
         assertEquals(CotsRoute.Lookouts.size, lookouts.size)
-        assertTrue(lookouts.all { it in 1 until route.lastIndex })
+        assertTrue(lookouts.all { it in 1..route.lastIndex })
     }
 
     @Test fun `the guard walks one tile per tick and stops at every lookout`() {
@@ -152,6 +158,19 @@ class GuardTailTest {
         assertTrue(tail.isLooking)
     }
 
+    @Test fun `a player ahead of the guard is not spotted when he turns around`() {
+        var sighted = false
+        val tail = GuardTail(route, CotsRoute.LookoutIndices) { _, _ -> sighted }
+        val ahead = CoordGrid(3243, 3410)
+        while (tail.index < lookouts[1]) {
+            assertEquals(TailResult.Continue, tail.tick(hiddenPlan(tail)))
+        }
+        sighted = true
+        repeat(GuardTail.StopTicks + GuardTail.TurnTicks + GuardTail.LookTicks + 2) {
+            assertEquals(TailResult.Continue, tail.tick(ahead))
+        }
+    }
+
     @Test fun `a player who cannot be seen follows the guard to the building`() {
         val (result, _) = simulate(blind) { it.guard.translateX(-2) }
         assertEquals(TailResult.Arrived, result)
@@ -193,6 +212,11 @@ class GuardTailTest {
         }
     }
 
+    @Test fun `the second lookout cannot see around the corner at 3240 3417`() {
+        val sight = varrockSight()
+        assertFalse(sight(CotsRoute.Lookouts[1], CoordGrid(3240, 3417)))
+    }
+
     @Test fun `standing in the open at a lookout gets the player spotted`() {
         val sight = varrockSight()
         for ((index, lookout) in CotsRoute.Lookouts.withIndex()) {
@@ -209,18 +233,26 @@ class GuardTailTest {
     @Test fun `skipping a hiding place gets the player spotted at that lookout`() {
         for (skipped in CotsRoute.Lookouts.indices) {
             val plan = { tail: GuardTail ->
-                val passed = lookouts.count { it < tail.index }
-                if (passed == skipped) ExposedSpots[skipped] else hiddenPlan(tail)
+                if (tail.index == lookouts[skipped]) ExposedSpots[skipped] else hiddenPlan(tail)
             }
             val (result, _) = simulate(varrockSight(), plan)
             assertEquals(TailResult.Spotted, result, "lookout ${skipped + 1}")
         }
     }
 
-    @Test fun `the guard ends beside the door of the bandits' building`() {
-        val last = route.last()
-        assertEquals(1, abs(last.x - CotsRoute.Door.x))
-        assertEquals(0, last.z - CotsRoute.Door.z)
+    @Test fun `the bag guard can walk south from the palace door`() {
+        val steps = StepValidator(collision)
+        for (z in 3442 downTo 3438) {
+            assertFalse(isBlocked(3212, z), "3212,$z is blocked")
+            assertTrue(
+                steps.canTravel(0, 3212, z, 0, -1),
+                "cannot step 3212,$z -> 3212,${z - 1}",
+            )
+        }
+    }
+
+    @Test fun `the guard ends at the door of the bandits' building`() {
+        assertEquals(CotsRoute.Door, route.last())
     }
 
     @Test fun `every tile the quest places an actor on is walkable`() {
@@ -232,10 +264,16 @@ class GuardTailTest {
             DelegationStart.forEachIndexed { i, c -> places["delegateStart$i"] = c }
             DelegationStop.forEachIndexed { i, c -> places["delegateStop$i"] = c }
             KnightsStart.forEachIndexed { i, c -> places["knightStart$i"] = c }
+            KnightsMid.forEachIndexed { i, c -> places["knightMid$i"] = c }
             KnightsStop.forEachIndexed { i, c -> places["knightStop$i"] = c }
             places["tobynScene"] = TobynScene
             places["bagGuardStart"] = BagGuardStart
+            places["bagGuardMid"] = BagGuardMid
             places["bagGuardStop"] = BagGuardStop
+            places["secondGuardStart"] = SecondGuardStart
+            places["secondGuardMid"] = SecondGuardMid
+            places["secondGuardStop"] = SecondGuardStop
+            places["delegationVantage"] = DelegationVantage
             places["eavesdropStart"] = EavesdropStart
             places["eavesdropWindow"] = EavesdropWindow
             places["roofArrival"] = RoofArrival
@@ -376,6 +414,17 @@ class GuardTailTest {
         rt.tails.stop(rt.player)
     }
 
+    @Test fun `the guard faces east and walks the tick after he spawns`() {
+        val rt = Runtime()
+        rt.tails.start(rt.access)
+        val npc = checkNotNull(rt.tails.guardNpc(rt.player))
+        assertEquals(route.first().translateX(1), npc.pendingFaceSquare)
+        assertEquals(route[1], npc.routeDestination.lastOrNull())
+        rt.tick()
+        assertEquals(route[1], npc.coords)
+        rt.tails.stop(rt.player)
+    }
+
     @Test fun `the runtime waits for the guard npc before moving the tail on`() {
         val rt = Runtime()
         rt.tails.start(rt.access)
@@ -405,8 +454,7 @@ class GuardTailTest {
         var result: TailResult
         do {
             val index = route.indexOf(checkNotNull(rt.tails.guardTile(rt.player)))
-            val passed = lookouts.count { it < index }
-            rt.player.coords = HideSpots[passed.coerceAtMost(HideSpots.lastIndex)]
+            rt.player.coords = hiddenSpot(index)
             result = rt.tick()
         } while (result == TailResult.Continue)
         assertEquals(TailResult.Arrived, result)
@@ -438,7 +486,7 @@ class GuardTailTest {
         val HideSpots =
             listOf(
                 CoordGrid(3233, 3427),
-                CoordGrid(3240, 3417),
+                CoordGrid(3238, 3423),
                 CoordGrid(3241, 3403),
                 CoordGrid(3236, 3392),
                 CoordGrid(3247, 3397),
@@ -446,11 +494,11 @@ class GuardTailTest {
 
         val ExposedSpots =
             listOf(
-                CoordGrid(3232, 3429),
-                CoordGrid(3242, 3412),
-                CoordGrid(3236, 3396),
-                CoordGrid(3240, 3390),
-                CoordGrid(3250, 3396),
+                CoordGrid(3238, 3429),
+                CoordGrid(3243, 3413),
+                CoordGrid(3240, 3401),
+                CoordGrid(3242, 3389),
+                CoordGrid(3252, 3397),
             )
 
         lateinit var collision: CollisionFlagMap

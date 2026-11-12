@@ -26,13 +26,12 @@ internal data class SaplingChain(
 
 object FarmingSaplings {
     private const val CLOCK = "varp.farming_sapling_clock"
-    internal val chains by lazy {
+    internal val chains =
         FarmingSaplingsRow.getRow("dbrow.farming_saplings").chains.map {
             SaplingChain(it.t0, it.t1, it.t2, it.t3, it.t4)
         }
-    }
-    private val dry by lazy { chains.associateBy { it.dry.id } }
-    private val wet by lazy { chains.associateBy { it.wet.id } }
+    private val dry = chains.associateBy { it.dry.id }
+    private val wet = chains.associateBy { it.wet.id }
 
     internal fun dry(obj: Int): SaplingChain? = dry[obj]
 
@@ -45,6 +44,7 @@ object FarmingSaplings {
             add(inv, chain.dry.id, 1, slot = potSlot)
         }.success
     }
+
     internal fun water(
         player: Player,
         seedlingSlot: Int,
@@ -86,7 +86,6 @@ object FarmingSaplings {
         if (result.err != null) return
         WateringCans.refill(player, "obj.zeah_wateringcan")
     }
-
     fun grow(player: Player, millis: Long = System.currentTimeMillis()) {
         val cycle = FarmingClock.cycle(player, 5, millis).toInt()
         val previous = player.vars[CLOCK]

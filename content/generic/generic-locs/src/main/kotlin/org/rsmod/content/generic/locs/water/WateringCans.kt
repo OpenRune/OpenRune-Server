@@ -5,6 +5,7 @@ import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.entity.Player
 
@@ -12,16 +13,25 @@ object WateringCans {
     private const val GRICOLLER = "obj.zeah_wateringcan"
     private const val CHARGES = "varbit.zeah_wateringcan_charges"
     private const val TANK_CAPACITY = 1000
-    private const val PREFIX = "obj.watering_can_"
-    val CANS = (0..8).map { "$PREFIX$it" } + GRICOLLER
+    val CANS =
+        listOf(
+            "obj.watering_can_0",
+            "obj.watering_can_1",
+            "obj.watering_can_2",
+            "obj.watering_can_3",
+            "obj.watering_can_4",
+            "obj.watering_can_5",
+            "obj.watering_can_6",
+            "obj.watering_can_7",
+            "obj.watering_can_8",
+            GRICOLLER,
+        )
+    private const val FULL_CAN = "obj.watering_can_8"
     val WATER_VESSELS = setOf("obj.bucket_water", "obj.bowl_water", "obj.jug_water")
 
     fun isCan(obj: String): Boolean = obj == GRICOLLER || doses(obj) != null
 
-    fun doses(can: String): Int? =
-        if (can.length == PREFIX.length + 1 && can.startsWith(PREFIX)) {
-            can.last().digitToIntOrNull()?.takeIf { it in 0..8 }
-        } else null
+    fun doses(can: String): Int? = CANS.indexOf(can).takeIf { it in 0..8 }
 
     fun consume(player: Player, can: String, canSlot: Int): Boolean = use(player, can, canSlot)
 
@@ -32,7 +42,7 @@ object WateringCans {
         canSlot: Int,
         dry: Int,
         wet: Int,
-    ): Boolean = use(player, can, canSlot, seedlingSlot, dry, wet)
+    ): Boolean = seedlingSlot in player.inv.indices && use(player, can, canSlot, seedlingSlot, dry, wet)
 
     private fun use(
         player: Player,
@@ -51,7 +61,10 @@ object WateringCans {
                 VarPlayerIntMapSetter.set(player, CHARGES, player.vars[CHARGES] - 1)
                 return true
             }
-        } else if (doses == null || doses == 0) return false
+        } else if (doses == 0) {
+            if (seedlingSlot >= 0) player.mes("You need to fill the watering can first.")
+            return false
+        }
         val result = player.invTransaction(player.inv) {
             val inv = select(player.inv)
             if (can != GRICOLLER) {
@@ -92,9 +105,10 @@ object WateringCans {
         return player.invTransaction(player.inv) {
             val inv = select(player.inv)
             delete(inv, can.asRSCM(), 1, slot)
-            add(inv, CANS[8].asRSCM(), 1, slot = slot)
+            add(inv, FULL_CAN.asRSCM(), 1, slot = slot)
         }.success
     }
+
 
     fun refillFrom(
         player: Player,
@@ -110,7 +124,7 @@ object WateringCans {
             val inv = select(player.inv)
             delete(inv, can.asRSCM(), 1, canSlot)
             delete(inv, water.asRSCM(), 1, waterSlot)
-            add(inv, CANS[8].asRSCM(), 1, slot = canSlot)
+            add(inv, FULL_CAN.asRSCM(), 1, slot = canSlot)
             add(inv, empty.asRSCM(), 1, slot = waterSlot)
         }.success
     }

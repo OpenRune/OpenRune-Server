@@ -1,0 +1,12 @@
+[[area]]
+name = "Path of Apmeken Multiway"
+area_id = "area.multiway"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [3796, 5266],
+    [3821, 5266],
+    [3821, 5295],
+    [3796, 5295],
+]

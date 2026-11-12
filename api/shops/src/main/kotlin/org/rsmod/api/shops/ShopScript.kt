@@ -1,13 +1,11 @@
 package org.rsmod.api.shops
 
 import com.github.michaelbull.logging.InlineLogger
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.market.MarketPrices
-import org.rsmod.api.player.output.runClientScript
+import org.rsmod.api.player.output.UpdateInventory
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -55,35 +53,15 @@ constructor(
     }
 
     private fun ProtectedAccess.selectQuantity(mode: Int, op: IfButtonOp, sub: Int) {
-        val shop = player.openedShop ?: return
-        if (op != IfButtonOp.Op1 || sub != -1) {
+        val shop = player.openedShop
+        if (shop == null || op != IfButtonOp.Op1 || sub != -1) {
             return
         }
         VarPlayerIntMapSetter.set(player, "varbit.shop_quantity", mode)
-        player.runClientScript(
-            "clientscript.[clientscript,shop_main_update]".asRSCM(RSCMType.CLIENTSCRIPT),
-            "component.shopmain:items".asRSCM(RSCMType.COMPONENT),
-            shop.inv.size,
-            shop.inv.type.id,
-            -1,
-            0,
-            1,
-        )
+        // The client relabels the shop items' ops from the varbit on an inv transmit.
+        UpdateInventory.updateInvPartial(player, shop.inv)
+        UpdateInventory.updateInvFull(player, player.inv)
         player.initShopSideInv(player.inv)
-    }
-
-    private fun Player.selectedOperation(op: IfButtonOp): IfButtonOp? {
-        if (op != IfButtonOp.Op1) {
-            return op
-        }
-        return when (vars["varbit.shop_quantity"]) {
-            0 -> IfButtonOp.Op1
-            1 -> IfButtonOp.Op2
-            2 -> IfButtonOp.Op3
-            3 -> IfButtonOp.Op4
-            4 -> IfButtonOp.Op5
-            else -> null
-        }
     }
 
     private fun ProtectedAccess.shopInvButton(
@@ -134,4 +112,18 @@ constructor(
 
     private fun isClientObjInvalid(invObj: InvObj, clientObj: ItemServerType?): Boolean =
         clientObj == null || !clientObj.isAssociatedWith(invObj)
+}
+
+internal fun Player.selectedOperation(op: IfButtonOp): IfButtonOp? {
+    if (op != IfButtonOp.Op1) {
+        return op
+    }
+    return when (vars["varbit.shop_quantity"]) {
+        0 -> IfButtonOp.Op1
+        1 -> IfButtonOp.Op2
+        2 -> IfButtonOp.Op3
+        3 -> IfButtonOp.Op4
+        4 -> IfButtonOp.Op5
+        else -> null
+    }
 }

@@ -1,10 +1,9 @@
 package org.rsmod.api.combat.scripts
 
 import jakarta.inject.Inject
-import org.rsmod.api.death.NpcAttackValidateHook
-import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.combat.ACTIVE_COMBAT_DELAY
 import org.rsmod.api.combat.PvNCombat
+import org.rsmod.api.combat.WildernessPjTimer
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.manager.MagicRuneManager
@@ -16,6 +15,8 @@ import org.rsmod.api.combat.player.resolveAutocastSpell
 import org.rsmod.api.combat.player.resolveCombatAttack
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
+import org.rsmod.api.death.NpcAttackValidateHook
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
 import org.rsmod.api.script.advanced.onDefaultApNpc2
@@ -38,6 +39,7 @@ constructor(
     private val runes: MagicRuneManager,
     private val autocast: AutocastWeapons,
     private val attackValidateHooks: Set<NpcAttackValidateHook>,
+    private val pjTimer: WildernessPjTimer,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onDefaultApNpc2 { attemptCombatAp(it.npc) }
@@ -51,17 +53,20 @@ constructor(
         val type = types.get(player)
         val style = styles.get(player)
         val attackRange = attackRange(style)
-        val canAttack = canAttack(target)
+        val check = checkAttack(target)
 
         // Weapons such as salamanders have an attack range of `1` but can attack with both ranged
         // and magic. These attacks should be treated as ap range, not op.
         val isMeleeAttackType = type == null || type.isMelee
         if (attackRange == 1 && isMeleeAttackType) {
+            if (check == AttackCheck.DeniedStopApproach) {
+                return
+            }
             apRange(-1)
             return
         }
 
-        if (!canAttack) {
+        if (check != AttackCheck.Allowed) {
             return
         }
 
@@ -103,13 +108,17 @@ constructor(
         combat.attack(this, target, attack)
     }
 
-    private fun ProtectedAccess.canAttack(npc: Npc): Boolean {
+    private fun ProtectedAccess.canAttack(npc: Npc): Boolean =
+        checkAttack(npc) == AttackCheck.Allowed
+
+    private fun ProtectedAccess.checkAttack(npc: Npc): AttackCheck {
         var bypassSingleWayPvn = false
         for (hook in attackValidateHooks) {
             when (val result = hook.validate(player, npc)) {
                 is NpcAttackValidateResult.Deny -> {
                     mes(result.message)
-                    return false
+                    return if (hook.stopsApproach) AttackCheck.DeniedStopApproach
+                    else AttackCheck.Denied
                 }
                 NpcAttackValidateResult.BypassSingleWayPvnRestriction -> bypassSingleWayPvn = true
                 NpcAttackValidateResult.Pass -> Unit
@@ -125,7 +134,7 @@ constructor(
             if (attackStyle == AttackStyle.AggressiveMelee) {
                 mes("Your bulwark gets in the way.")
                 clearPendingAction()
-                return false
+                return AttackCheck.Denied
             }
         }
 
@@ -134,21 +143,30 @@ constructor(
         // re-interact with a target, you will _not_ move into op range.
         if ("queue.dinhs_combat_delay" in player.queueList) {
             clearPendingAction()
-            return false
+            return AttackCheck.Denied
         }
 
-        // TODO(combat): Add singles plus support.
+        if (npc.pvpInterruptionUntil > mapClock) {
+            mes("You can't attack that monster right now.")
+            return AttackCheck.DeniedStopApproach
+        }
+
+        if (!bypassSingleWayPvn && pjTimer.blocksAttack(player)) {
+            spam("I'm already under attack.")
+            return AttackCheck.Denied
+        }
+
         val singleCombat = !mapMultiway()
         if (singleCombat && !bypassSingleWayPvn) {
             if (isInPvpCombat()) {
                 spam("I'm already under attack.")
-                return false
+                return AttackCheck.Denied
             }
 
             if (isInPvnCombat()) {
                 if (aggressiveNpc != null && aggressiveNpc != npc.uid) {
                     spam("I'm already under attack.")
-                    return false
+                    return AttackCheck.Denied
                 }
             }
 
@@ -156,11 +174,17 @@ constructor(
             if (npc.lastCombat + ACTIVE_COMBAT_DELAY > mapClock) {
                 if (npc.aggressivePlayer != null && npc.aggressivePlayer != player.uid) {
                     mes("Someone else is fighting that.")
-                    return false
+                    return AttackCheck.Denied
                 }
             }
         }
 
-        return true
+        return AttackCheck.Allowed
+    }
+
+    private enum class AttackCheck {
+        Allowed,
+        Denied,
+        DeniedStopApproach,
     }
 }

@@ -66,20 +66,29 @@ class FarmingSaplingsTest {
     }
 
     @Test
-    fun `selected standard can consumes its exact dose and empty can does not borrow another`() {
-        for (doses in 0..8) {
+    fun `selected standard can waters with its exact dose and empty can does not borrow another`() {
+        val standard = WateringCans.CANS.take(9)
+        for ((doses, can) in standard.withIndex()) {
             val player = player()
-            player.inv[0] = InvObj("obj.watering_can_$doses")
-            player.inv[1] = InvObj("obj.watering_can_8")
-            assertEquals(doses > 0, WateringCans.consume(player, "obj.watering_can_$doses", 0))
-            assertEquals("obj.watering_can_${maxOf(0, doses - 1)}".asRSCM(), player.inv[0]?.id)
-            assertEquals("obj.watering_can_8".asRSCM(), player.inv[1]?.id)
+            player.inv[0] = InvObj(can)
+            player.inv[1] = InvObj(standard[8])
+            player.inv[2] = InvObj(chain.dry)
+            assertEquals(doses > 0, water(player, 2, can, 0))
+            assertEquals((if (doses > 0) chain.wet else chain.dry).id, player.inv[2]?.id)
+            assertEquals(standard[maxOf(0, doses - 1)].asRSCM(), player.inv[0]?.id)
+            assertEquals(standard[8].asRSCM(), player.inv[1]?.id)
         }
-        assertFalse(WateringCans.consume(player(), "obj.cert_watering_can_0", 0))
+        val noted = player()
+        noted.inv[0] = InvObj(chain.dry)
+        assertFalse(water(noted, 0, "obj.cert_watering_can_0", 0))
+        assertEquals(chain.dry.id, noted.inv[0]?.id)
         val bad = player()
         bad.inv[0] = InvObj("obj.watering_can_8")
-        for (slot in listOf(-1, 1, 9999)) assertFalse(WateringCans.consume(bad, "obj.watering_can_8", slot))
+        bad.inv[2] = InvObj(chain.dry)
+        for (slot in listOf(-1, 1, 9999)) assertFalse(water(bad, 2, "obj.watering_can_8", slot))
+        for (slot in listOf(-1, 1, 9999)) assertFalse(water(bad, slot, "obj.watering_can_8", 0))
         assertEquals("obj.watering_can_8".asRSCM(), bad.inv[0]?.id)
+        assertEquals(chain.dry.id, bad.inv[2]?.id)
     }
 
     @Test
@@ -87,32 +96,73 @@ class FarmingSaplingsTest {
         val player = player()
         player.inv[0] = InvObj("obj.zeah_wateringcan")
         player.inv[1] = InvObj("obj.zeah_wateringcan")
+        player.inv[2] = InvObj(chain.dry)
         val otherBits = (1 shl 20) or 1
         set(player, "varp.prayguild", otherBits or (1 shl 1))
-        assertTrue(WateringCans.consume(player, "obj.zeah_wateringcan", 0))
-        assertFalse(WateringCans.consume(player, "obj.zeah_wateringcan", 1))
+        set(player, "varbit.zeah_wateringcan_charges", 1)
+        assertTrue(water(player, 2, "obj.zeah_wateringcan", 0))
+        assertEquals(chain.wet.id, player.inv[2]?.id)
+        player.inv[2] = InvObj(chain.dry)
+        assertFalse(water(player, 2, "obj.zeah_wateringcan", 1))
+        assertEquals(chain.dry.id, player.inv[2]?.id)
         player.inv[0] = null
         set(player, "varbit.zeah_wateringcan_charges", 5)
-        assertFalse(WateringCans.consume(player, "obj.zeah_wateringcan", 0))
+        assertFalse(water(player, 2, "obj.zeah_wateringcan", 0))
         assertEquals(5, player.vars["varbit.zeah_wateringcan_charges"])
         set(player, "varbit.zeah_wateringcan_charges", 0)
         player.inv[0] = InvObj("obj.zeah_wateringcan")
         assertEquals(otherBits, player.vars["varp.prayguild"])
-        assertTrue(WateringCans.refill(player, "obj.zeah_wateringcan"))
+        assertTrue(WateringCans.refill(player, "obj.zeah_wateringcan", 0))
         assertEquals(1000, player.vars["varbit.zeah_wateringcan_charges"])
         assertEquals(otherBits, player.vars["varp.prayguild"] and (1023 shl 1).inv())
-        assertFalse(WateringCans.refill(player, "obj.zeah_wateringcan"))
-        val chain = FarmingSaplings.chains.first()
-        player.inv[2] = InvObj(chain.dry)
+        assertFalse(WateringCans.refill(player, "obj.zeah_wateringcan", 0))
         set(player, "varbit.zeah_wateringcan_charges", 1)
         assertTrue(FarmingSaplings.water(player, 2, "obj.zeah_wateringcan", 1, NOW))
         assertEquals(chain.wet.id, player.inv[2]?.id)
         assertEquals(0, player.vars["varbit.zeah_wateringcan_charges"])
         assertFalse(FarmingSaplings.water(player, 2, "obj.zeah_wateringcan", 1, NOW))
-        FarmingSaplings.humidify(player)
-        assertEquals(1000, player.vars["varbit.zeah_wateringcan_charges"])
-        assertEquals(otherBits, player.vars["varp.prayguild"] and (1023 shl 1).inv())
     }
+
+    @Test
+    fun `patch watering consumes only the selected can without a seedling`() {
+        val standard = WateringCans.CANS.take(9)
+        for ((doses, can) in standard.withIndex()) {
+            val player = player()
+            player.inv[0] = InvObj(can)
+            player.inv[1] = InvObj(standard[8])
+            assertEquals(doses > 0, WateringCans.consume(player, can, 0))
+            assertEquals(standard[maxOf(0, doses - 1)].asRSCM(), player.inv[0]?.id)
+            assertEquals(standard[8].asRSCM(), player.inv[1]?.id)
+        }
+        val player = player()
+        player.inv[0] = InvObj("obj.zeah_wateringcan")
+        player.inv[1] = InvObj("obj.zeah_wateringcan")
+        set(player, "varbit.zeah_wateringcan_charges", 1)
+        assertTrue(WateringCans.consume(player, "obj.zeah_wateringcan", 0))
+        assertFalse(WateringCans.consume(player, "obj.zeah_wateringcan", 1))
+        assertEquals(0, player.vars["varbit.zeah_wateringcan_charges"])
+        assertEquals("obj.zeah_wateringcan".asRSCM(), player.inv[0]?.id)
+        assertEquals("obj.zeah_wateringcan".asRSCM(), player.inv[1]?.id)
+    }
+
+    @Test
+    fun `bank maturation merges into a sapling stack on either side of the wet pot`() {
+        for (saplingSlot in 0..1) {
+            val player = player()
+            val bank = player.invMap.getOrPut("inv.bank")
+            bank[saplingSlot] = InvObj(chain.sapling, 2)
+            bank[1 - saplingSlot] = InvObj(chain.wet)
+            set(player, "varp.farming_sapling_clock", 1999)
+            FarmingSaplings.grow(player, NOW)
+            assertEquals(3, bank.physicalCount(chain.sapling.internalName))
+            assertEquals(0, bank.physicalCount(chain.wet.internalName))
+        }
+    }
+
+    private val chain get() = FarmingSaplings.chains.first()
+
+    private fun water(player: Player, seedlingSlot: Int, can: String, canSlot: Int) =
+        WateringCans.water(player, seedlingSlot, can, canSlot, chain.dry.id, chain.wet.id)
 
     @Test
     fun `watered pot matures at next aligned boundary not the missed previous one`() {

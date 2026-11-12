@@ -33,9 +33,9 @@ constructor(
 
     private fun ProtectedAccess.readTombstone() {
         ifOpenMainModal(SCROLL)
-        for (line in 1..SCROLL_LINES) {
-            val text = TOMBSTONE_TEXT.getOrElse(line - TOMBSTONE_FIRST_LINE) { "" }
-            ifSetText("$SCROLL_LINE$line", text)
+        SCROLL_LINES.forEachIndexed { index, component ->
+            val text = TOMBSTONE_TEXT.getOrElse(index + 1 - TOMBSTONE_FIRST_LINE) { "" }
+            ifSetText(component, text)
         }
     }
 
@@ -109,8 +109,21 @@ constructor(
         const val COFFIN = "loc.glarials_tomb_waterfall_quest"
 
         const val SCROLL = "interface.messagescroll2"
-        const val SCROLL_LINE = "component.messagescroll2:ms"
-        const val SCROLL_LINES = 12
+        val SCROLL_LINES =
+            listOf(
+                "component.messagescroll2:ms1",
+                "component.messagescroll2:ms2",
+                "component.messagescroll2:ms3",
+                "component.messagescroll2:ms4",
+                "component.messagescroll2:ms5",
+                "component.messagescroll2:ms6",
+                "component.messagescroll2:ms7",
+                "component.messagescroll2:ms8",
+                "component.messagescroll2:ms9",
+                "component.messagescroll2:ms10",
+                "component.messagescroll2:ms11",
+                "component.messagescroll2:ms12",
+            )
         const val TOMBSTONE_FIRST_LINE = 5
         val TOMBSTONE_TEXT =
             listOf(

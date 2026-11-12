@@ -1,7 +1,6 @@
 plugins {
     id("base-conventions")
     id("game-cache-test-conventions")
-
 }
 
 kotlin {
@@ -21,7 +20,6 @@ dependencies {
     implementation(projects.api.player)
     implementation(projects.api.playerOutput)
     implementation(projects.api.script)
-
 
     implementation(projects.api.utils.utilsFormat)
     implementation(projects.engine.events)

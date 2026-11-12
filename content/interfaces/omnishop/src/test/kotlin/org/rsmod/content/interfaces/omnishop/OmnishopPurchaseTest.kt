@@ -35,6 +35,36 @@ import org.rsmod.plugin.scripts.ScriptContext
 @ResourceLock("ServerCacheManager")
 class OmnishopPurchaseTest {
     @Test
+    fun `repeated purchases only spend what is owned across every currency`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj("obj.forestry_currency", 40)
+        f.player.inv[1] = InvObj("obj.cert_oak_logs", 20)
+        f.player.inv[2] = InvObj("obj.cert_willow_logs", 10)
+        f.buy(BLADE, 4)
+        assertEquals(2, f.count("obj.forestry_secateurs_blade"))
+        assertEquals(0, f.count("obj.forestry_currency"))
+        assertEquals(0, f.count("obj.cert_oak_logs"))
+        assertEquals(0, f.count("obj.cert_willow_logs"))
+        f.buy(BLADE, 4)
+        assertEquals(2, f.count("obj.forestry_secateurs_blade"))
+    }
+
+    @Test
+    fun `full inventory keeps every item and partial space buys only what fits`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj("obj.forestry_currency", 10000)
+        f.fill(28)
+        val before = f.player.inv.objs.toList()
+        f.buy(CAPE_POUCH, 3)
+        assertEquals(before, f.player.inv.objs.toList())
+        f.player.inv[26] = null
+        f.player.inv[27] = null
+        f.buy(CAPE_POUCH, 3)
+        assertEquals(2, f.count("obj.forestry_cape_pouch"))
+        assertEquals(5000, f.count("obj.forestry_currency"))
+    }
+
+    @Test
     fun `native Tithe stock debits points per transaction and repeated purchases cannot overspend`() {
         val f = Fixture(16)
         f.buy(6, 2)
@@ -204,9 +234,93 @@ class OmnishopPurchaseTest {
     }
 
     @Test
-    fun `object currency sell rolls back without output space and can use its freed source slot`() {
-        val f = Fixture(0)
-        f.player.omnishopLastShop = "dbrow.forestry_shop".asRSCM(RSCMType.DBROW)
+    fun `noted output merges into a full inventory without replacing other items`() {
+        val f = Fixture()
+        val coins = f.type("obj.coins")
+        val logs = f.type("obj.oak_logs")
+        f.player.inv[0] = InvObj(checkNotNull(ServerCacheManager.getItem(logs.certlink)), 4)
+        f.player.inv[1] = InvObj(coins, 30)
+        f.fill(28)
+        assertEquals(3, f.purchase(listOf(OmnishopPayment(listOf(coins), null, 10)), logs, requested = 3, cert = true))
+        assertEquals(7, f.player.inv[0]?.count)
+        assertEquals(logs.certlink, f.player.inv[0]?.id)
+        assertEquals(0, f.count("obj.oak_logs"))
+        assertEquals(26, f.count("obj.spade"))
+    }
+
+    @Test
+    fun `wrong shop closed shop invalid index and unavailable option cannot spend anything`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj("obj.forestry_currency", 300)
+        f.player.inv[1] = InvObj("obj.cert_oak_logs", 300)
+        f.player.inv[2] = InvObj("obj.cert_willow_logs", 300)
+        val before = f.player.inv.objs.toList()
+        f.buy(-1, 1)
+        f.buy(100, 1)
+        f.buy(BLADE, 0)
+        f.buy(BLADE, 5)
+        f.buy(BLADE, Int.MAX_VALUE)
+        f.buy(PHEASANT_FEATHERS, 1)
+        f.buy(BLADE, 1, shop = -1)
+        f.player.omnishopLastShop = -1
+        f.buy(BLADE, 1)
+        assertEquals(before, f.player.inv.objs.toList())
+    }
+
+    @Test
+    fun `inventory currency payment frees a slot and a failed payment rolls back every deletion`() {
+        val f = Fixture()
+        val coins = f.type("obj.coins")
+        val spade = f.type("obj.spade")
+        val payments = listOf(OmnishopPayment(listOf(coins), null, 25))
+        f.player.inv[0] = InvObj(coins, 100)
+        f.fill(28)
+        val before = f.player.inv.objs.toList()
+        assertEquals(0, f.purchase(payments, spade))
+        assertEquals(before, f.player.inv.objs.toList())
+        f.player.inv[0] = InvObj(coins, 25)
+        assertEquals(1, f.purchase(payments, spade))
+        assertEquals(0, f.count("obj.coins"))
+        assertEquals(28, f.count("obj.spade"))
+    }
+
+    @Test
+    fun `unaffordable second payment leaves the first currency untouched`() {
+        val f = Fixture()
+        val coins = f.type("obj.coins")
+        f.player.inv[0] = InvObj(coins, 100)
+        val payments = listOf(
+            OmnishopPayment(listOf(coins), null, 25),
+            OmnishopPayment(listOf(f.type("obj.oak_logs")), null, 1),
+        )
+        assertEquals(0, f.purchase(payments, f.type("obj.spade")))
+        assertEquals(100, f.count("obj.coins"))
+        assertEquals(0, f.count("obj.spade"))
+    }
+
+    @Test
+    fun `stack overflow and oversized prices cannot spend or wrap the output count`() {
+        val f = Fixture()
+        val coins = f.type("obj.coins")
+        val logs = f.type("obj.oak_logs")
+        f.player.inv[0] = InvObj(coins, Int.MAX_VALUE - 2)
+        f.player.inv[1] = InvObj(logs, 5)
+        assertEquals(0, f.purchase(listOf(OmnishopPayment(listOf(logs), null, 1)), coins, multiplier = 3))
+        assertEquals(Int.MAX_VALUE - 2, f.count("obj.coins"))
+        assertEquals(5, f.count("obj.oak_logs"))
+        assertEquals(0, f.purchase(listOf(OmnishopPayment(listOf(logs), null, Int.MAX_VALUE.toLong() + 1)), coins))
+        assertEquals(5, f.count("obj.oak_logs"))
+        f.player.inv[0] = InvObj(coins, Int.MAX_VALUE - 3)
+        assertEquals(1, f.purchase(listOf(OmnishopPayment(listOf(logs), null, 1)), coins, multiplier = 3, requested = 50))
+        assertEquals(Int.MAX_VALUE, f.count("obj.coins"))
+        assertEquals(4, f.count("obj.oak_logs"))
+        assertEquals(0, f.purchase(listOf(OmnishopPayment(listOf(logs), null, 1)), coins, multiplier = Int.MAX_VALUE))
+        assertEquals(4, f.count("obj.oak_logs"))
+    }
+
+    @Test
+    fun `sale rolls back without output space and can use its freed source slot`() {
+        val f = Fixture()
         f.player.inv[0] = InvObj("obj.forestry_pheasant_feathers", 2)
         f.fill(28)
         f.sell("obj.forestry_pheasant_feathers", 1)
@@ -219,11 +333,27 @@ class OmnishopPurchaseTest {
         assertEquals(27, f.count("obj.spade"))
     }
 
-    private class Fixture(points: Int) {
+    @Test
+    fun `sale cannot overflow the currency stack or sell an item the shop does not take`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj("obj.forestry_currency", Int.MAX_VALUE - 4)
+        f.player.inv[1] = InvObj("obj.forestry_pheasant_feathers", 3)
+        f.player.inv[2] = InvObj("obj.forestry_kit")
+        f.sell("obj.forestry_pheasant_feathers", 3)
+        assertEquals(Int.MAX_VALUE - 4, f.count("obj.forestry_currency"))
+        assertEquals(3, f.count("obj.forestry_pheasant_feathers"))
+        f.sell("obj.forestry_kit", 1)
+        assertEquals(1, f.count("obj.forestry_kit"))
+        f.sell("obj.forestry_pheasant_feathers", 0)
+        assertEquals(3, f.count("obj.forestry_pheasant_feathers"))
+    }
+
+    private class Fixture(points: Int? = null) {
         val events = EventBus()
         private val coroutine = GameCoroutine("omnishop-test")
         private val script = OmnishopScript()
-        private val shop = "dbrow.tithe_shop_data".asRSCM(RSCMType.DBROW)
+        private val shop =
+            (if (points == null) "dbrow.forestry_shop" else "dbrow.tithe_shop_data").asRSCM(RSCMType.DBROW)
 
         @OptIn(InternalApi::class)
         val player = Player().apply {
@@ -242,8 +372,7 @@ class OmnishopPurchaseTest {
             get() = player.vars[POINTS]
             set(value) { VarPlayerIntMapSetter.set(player, POINTS, value) }
 
-        init { this.points = points }
-
+        init { this.points = points ?: 0 }
         fun buy(index: Int, option: Int, shop: Int = this.shop) {
             with(script) { access.buy(shop, index, option) }
         }
@@ -257,7 +386,8 @@ class OmnishopPurchaseTest {
         }
         fun payment(price: Long) = OmnishopPayment(emptyList(), VarBitShopCurrency(POINTS, "Tithe point"), price)
         fun purchase(payments: List<OmnishopPayment>, output: ItemServerType?, multiplier: Int = 1,
-            requested: Int = 1) = buyOmnishopStock(player, payments, output, multiplier, requested)
+            requested: Int = 1, cert: Boolean = false) =
+            buyOmnishopStock(player, payments, output, multiplier, requested, cert = cert)
     }
 
     private class SilentClient : Client<Any, Any> {
@@ -271,6 +401,9 @@ class OmnishopPurchaseTest {
 
     companion object {
         private const val POINTS = "varbit.hosidius_tithe_rewardpoints"
+        private const val BLADE = 1
+        private const val CAPE_POUCH = 6
+        private const val PHEASANT_FEATHERS = 3
         private val RESTORED = mutableListOf<() -> Unit>()
 
         @OptIn(InternalApi::class)

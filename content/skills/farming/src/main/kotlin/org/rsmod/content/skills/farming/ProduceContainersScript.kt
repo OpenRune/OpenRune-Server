@@ -16,7 +16,9 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class ProduceContainersScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpHeld1("obj.sack_empty") { fillEmpty(it.slot) }
+        for (choices in FarmingProduceContainers.fillChoices.values) {
+            onOpHeld1(choices.first().obj) { fillEmpty(it.slot, choices) }
+        }
         for (form in FarmingProduceContainers.forms) {
             if (form.count > 0) {
                 onOpHeld1(form.obj) { fill(it.slot, form) }
@@ -25,16 +27,17 @@ class ProduceContainersScript : PluginScript() {
             }
             if (form.count < FarmingProduceContainers.capacity(form.produce.id)) {
                 onOpHeldU(form.obj, form.produce) {
-                    transform(it.firstSlot, form, taken = 1, takenSlot = it.secondSlot)
-                    // UNVERIFIED: the same text for a partly filled basket (guess)
-                    fruit(form)?.let { name -> player.spam("You put ${article(name)} $name in the fruit basket.") }
+                    if (transform(it.firstSlot, form, taken = 1, takenSlot = it.secondSlot)) {
+                        // UNVERIFIED: the same text for a partly filled basket (guess)
+                        fruit(form)?.let { name -> player.spam("You put ${article(name)} $name in the fruit basket.") }
+                    }
                 }
             }
         }
     }
 
-    private fun ProtectedAccess.fillEmpty(slot: Int) {
-        val form = FarmingProduceContainers.sackFillChoices.firstOrNull { count(it.produce) > 0 } ?: return
+    private fun ProtectedAccess.fillEmpty(slot: Int, choices: List<ContainerForm>) {
+        val form = choices.firstOrNull { count(it.produce) > 0 } ?: return
         fill(slot, form)
     }
 
@@ -54,15 +57,15 @@ class ProduceContainersScript : PluginScript() {
             mes("You don't have enough inventory space.")
             return
         }
-        transform(slot, form, given = amount)
-        if (requested == 1) {
+        if (transform(slot, form, given = amount) && requested == 1) {
             fruit(form)?.let { player.spam("You take ${article(it)} $it out of the $it basket.") }
         }
     }
 
     private fun fruit(form: ContainerForm): String? {
-        val full = FarmingProduceContainers.fullContainer(form.produce.internalName) ?: return null
-        return full.removePrefix("obj.basket_").takeIf { it != full }?.substringBeforeLast('_')
+        val empty = FarmingProduceContainers.form(form.produce.id, 0) ?: return null
+        if (empty.obj.internalName != "obj.basket_empty") return null
+        return form.produce.name.removePrefix("Cooking ").lowercase()
     }
 
     private fun article(word: String): String = if (word.first() in "aeiou") "an" else "a"
@@ -76,14 +79,16 @@ class ProduceContainersScript : PluginScript() {
         taken: Int = 0,
         takenSlot: Int? = null,
         given: Int = 0,
-    ) {
+    ): Boolean {
         val next = FarmingProduceContainers.form(form.produce.id, form.count + taken - given)
-        player.invTransaction(inv) {
-            val target = select(inv)
-            delete(target, form.obj.id, 1, slot)
-            add(target, checkNotNull(next).obj.id, 1, slot = slot)
-            if (taken > 0) delete(target, form.produce.id, taken, takenSlot)
-            if (given > 0) add(target, form.produce.id, given)
-        }
+        return player
+            .invTransaction(inv) {
+                val target = select(inv)
+                delete(target, form.obj.id, 1, slot)
+                add(target, checkNotNull(next).obj.id, 1, slot = slot)
+                if (taken > 0) delete(target, form.produce.id, taken, takenSlot)
+                if (given > 0) add(target, form.produce.id, given)
+            }
+            .success
     }
 }

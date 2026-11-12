@@ -57,7 +57,12 @@ public data class GameplayConfig(
     val idleLogout: Boolean = true,
     @JsonProperty("home-teleport-cooldown")
     val homeTeleportCooldown: Int = 30,
+    @JsonProperty("random-events")
+    val randomEvents: Boolean = true,
     val gravestones: GravestonesYaml = GravestonesYaml(),
+    @JsonProperty("bots-enabled")
+    val botsEnabled: Boolean = true,
+    @JsonProperty("run-energy") val runEnergy: RunEnergyYaml = RunEnergyYaml(),
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -68,6 +73,12 @@ public data class GravestonesYaml(
 @JsonIgnoreProperties(ignoreUnknown = true)
 public data class DropRatesYaml(
     val multiplier: Double = 1.0,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public data class RunEnergyYaml(
+    @JsonProperty("drain-denominator") val drainDenominator: Int = 1,
+    val infinite: Boolean = false,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

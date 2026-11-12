@@ -703,7 +703,7 @@ targets = ["npc.barrows_ahrim", "npc.barrows_dharok", "npc.barrows_guthan", "npc
 [[slayer_target_monster]]
 targetId = 98
 bossId = 18
-targets = ["npc.slayer_kraken_boss"]
+targets = ["npc.slayer_kraken_boss", "npc.slayer_kraken_boss_whirlpool"]
 
 [[slayer_target_monster]]
 targetId = 98

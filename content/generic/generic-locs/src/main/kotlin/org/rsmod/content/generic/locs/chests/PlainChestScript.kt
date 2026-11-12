@@ -38,6 +38,6 @@ class PlainChestScript @Inject constructor(private val locRepo: LocRepository) :
                 "loc.chestclosed" to "loc.chestopen",
                 "loc.kr_camelot_chestclosed" to "loc.kr_camelot_chestopen",
             )
-        const val OPEN_SOUND = 52
+        const val OPEN_SOUND = "synth.chest_open"
     }
 }

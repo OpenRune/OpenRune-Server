@@ -70,7 +70,7 @@ constructor(
             magicXp(spell)
             anim("seq.lunar_human_magic_geomancy")
             spotanim("spotanim.quest_lunar_spellbook_geomancy", delay = 30)
-            soundArea(worldRepo, coords, "synth.farming_geomancy", delay = 15, radius = 3)
+            soundArea(worldRepo, coords, "synth.lunar_fertilize", delay = 15, radius = 3)
             delay(4)
             geomancy.open(this)
         }

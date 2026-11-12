@@ -44,6 +44,8 @@ internal class HitRules(private val spec: BossSpec, private val deps: BossDeps) 
             when (action) {
                 is IncomingAction.Cap -> hit.damage = min(hit.damage, action.max)
                 is IncomingAction.ScalePercent -> hit.damage = hit.damage * action.percent / 100
+                is IncomingAction.DivideMinOne ->
+                    if (hit.damage > 0) hit.damage = max(1, hit.damage / action.divisor)
                 is IncomingAction.FloorPercentOfMaxHit -> {
                     val maxHit = playerMaxHit(attacker, event.npc, action.style)
                     val floor = (maxHit * action.percent + 99) / 100

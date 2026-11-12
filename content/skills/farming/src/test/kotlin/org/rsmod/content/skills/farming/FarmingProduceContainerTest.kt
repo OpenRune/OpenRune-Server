@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
+import net.rsprot.protocol.game.outgoing.misc.player.MessageGame
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -22,6 +23,7 @@ import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.events.SuspendEvent
 import org.rsmod.game.cheat.CheatCommandMap
+import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
@@ -52,6 +54,25 @@ class FarmingProduceContainerTest {
         assertEquals("obj.sack_cabbage_4", f.at(second))
         assertEquals(0, f.count("obj.cabbage"))
         assertEquals(2, f.count("obj.onion"))
+    }
+
+    @Test
+    fun `empty baskets fill strawberries then oranges bananas tomatoes and apples`() {
+        val f = Fixture()
+        val produce = listOf(
+            "obj.strawberry" to "obj.basket_strawberry_1",
+            "obj.orange" to "obj.basket_orange_1",
+            "obj.banana" to "obj.basket_banana_1",
+            "obj.tomato" to "obj.basket_tomato_1",
+            "obj.cooking_apple" to "obj.basket_apple_1",
+        )
+        for ((obj, _) in produce) f.give(obj)
+        for ((obj, expected) in produce) {
+            val basket = f.give("obj.basket_empty")
+            f.op1(basket)
+            assertEquals(expected, f.at(basket))
+            assertEquals(0, f.count(obj))
+        }
     }
 
     @Test
@@ -132,6 +153,7 @@ class FarmingProduceContainerTest {
         assertEquals("obj.spade", f.at(selected))
         assertEquals("obj.strawberry", f.at(other))
         assertEquals(1, f.count("obj.strawberry"))
+        assertTrue(f.messages().isEmpty())
     }
 
     @Test
@@ -183,10 +205,18 @@ class FarmingProduceContainerTest {
         private val coroutine = GameCoroutine("produce-container-test")
         private val events = EventBus()
         private val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { events })
+        private val writes = mutableListOf<Any>()
 
         @OptIn(InternalApi::class)
         val player = Player().apply {
-            client = SilentClient()
+            client = object : Client<Any, Any> {
+                override fun write(message: Any) { writes += message }
+                override fun close() {}
+                override fun read(player: Player) {}
+                override fun flush() {}
+                override fun flushHighPriority() {}
+                override fun unregister(service: Any, player: Player) {}
+            }
             uuid = 799L
             slotId = 1
             assignUid()
@@ -203,6 +233,7 @@ class FarmingProduceContainerTest {
         fun held(slot: Int) = checkNotNull(player.inv[slot])
         fun at(slot: Int): String? = player.inv[slot]?.let { type(it).internalName }
         fun count(obj: String): Int = player.inv.physicalCount(obj)
+        fun messages(): List<String> = writes.filterIsInstance<MessageGame>().map { it.message }
         fun fill() { for (slot in 0 until 28) if (player.inv[slot] == null) player.inv[slot] = InvObj("obj.spade") }
 
         fun give(obj: String, count: Int = 1): Int {

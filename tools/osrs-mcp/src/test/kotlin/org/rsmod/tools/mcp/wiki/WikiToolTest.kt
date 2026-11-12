@@ -15,7 +15,6 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
 
-
 class WikiToolTest {
     private val mapper = jacksonObjectMapper()
 
@@ -191,7 +190,7 @@ class WikiToolTest {
         writeDat(
             binaryDir.resolve("gamevals.dat"),
             mapOf(
-                "npc" to listOf("kraken=1234", "cave_kraken=5678", "kraken_boss=7777"),
+                "npc" to listOf("testbeast=1234", "cave_testbeast=5678", "testbeast_boss=7777"),
             ),
         )
         writeDat(binaryDir.resolve("gamevals_columns.dat"), mapOf("dbcolumn" to emptyList()))
@@ -203,10 +202,10 @@ class WikiToolTest {
                     gameValToolProvider = { GameValTool.load(root.toString()) },
                 )
 
-            val output = service.gamevalSearch(query = "kraken", table = "npc", id = null, limit = 2)
+            val output = service.gamevalSearch(query = "testbeast", table = "npc", id = null, limit = 2)
 
             assertContains(output, "Found 3 gameval matches; showing 2")
-            assertContains(output, "npc.kraken = 1234")
+            assertContains(output, "npc.testbeast = 1234")
             assertContains(output, "Results truncated. Increase 'limit' to see more.")
             assertContains(output, "rerun with an exact key")
         }
@@ -231,5 +230,3 @@ class WikiToolTest {
         output.write(bytes)
     }
 }
-
-

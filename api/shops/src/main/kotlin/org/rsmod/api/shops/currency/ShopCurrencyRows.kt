@@ -13,12 +13,12 @@ public object ShopCurrencyRows {
     public fun all(): List<ShopCurrencyRow> =
         DbHelper.table(TABLE).map { row ->
             ShopCurrencyRow(
-                key = row.string("$COL_PREFIX:key"),
-                singularName = row.string("$COL_PREFIX:singular_name"),
-                pluralName = row.string("$COL_PREFIX:plural_name"),
-                obj = row.objOptional("$COL_PREFIX:obj"),
-                varbitId = row.intOptional("$COL_PREFIX:varbit"),
-                omnishopCurrency = row.intOptional("$COL_PREFIX:omnishop_currency"),
+                key = row.string("dbcol.shop_currency:key"),
+                singularName = row.string("dbcol.shop_currency:singular_name"),
+                pluralName = row.string("dbcol.shop_currency:plural_name"),
+                obj = row.objOptional("dbcol.shop_currency:obj"),
+                varbitId = row.intOptional("dbcol.shop_currency:varbit"),
+                omnishopCurrency = row.intOptional("dbcol.shop_currency:omnishop_currency"),
             )
         }
 
@@ -49,7 +49,6 @@ public object ShopCurrencyRows {
     }
 
     private const val TABLE = "dbtable.shop_currency"
-    private const val COL_PREFIX = "dbcol.shop_currency"
 }
 
 public data class ShopCurrencyRow(

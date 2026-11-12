@@ -7,6 +7,7 @@ import org.rsmod.api.player.hook.PlayerStepValidateHook
 import org.rsmod.api.player.output.MapFlag.setMapFlag
 import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.vars.varMoveSpeed
+import org.rsmod.api.player.vars.walkOnly
 import org.rsmod.api.route.RouteFactory
 import org.rsmod.api.route.StepFactory
 import org.rsmod.events.EventBus
@@ -63,6 +64,9 @@ constructor(
         }
         processWalkTrigger()
 
+        if (moveSpeed == MoveSpeed.Run && walkOnly) {
+            moveSpeed = MoveSpeed.Walk
+        }
         val completeCrawlStep = moveSpeed == MoveSpeed.Crawl && !hasMovedPreviousCycle
         val steps = if (completeCrawlStep) 1 else moveSpeed.steps
         move(steps)

@@ -2,7 +2,6 @@ package org.rsmod.api.registry.zone
 
 import net.rsprot.protocol.ServerProtCategory
 import net.rsprot.protocol.game.outgoing.util.OpFlags
-import net.rsprot.protocol.game.outgoing.zone.payload.LocAddChangeV2
 import net.rsprot.protocol.game.outgoing.zone.payload.LocAnim
 import net.rsprot.protocol.game.outgoing.zone.payload.LocDel
 import net.rsprot.protocol.game.outgoing.zone.payload.MapAnim
@@ -12,6 +11,7 @@ import net.rsprot.protocol.game.outgoing.zone.payload.ObjCount
 import net.rsprot.protocol.game.outgoing.zone.payload.ObjDel
 import net.rsprot.protocol.game.outgoing.zone.payload.SoundArea
 import net.rsprot.protocol.message.ZoneProt
+import org.rsmod.api.player.output.locAddChangePacket
 import org.rsmod.api.registry.loc.LocRegistry
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.obj.Obj
@@ -22,33 +22,11 @@ import org.rsmod.map.zone.ZoneGrid
 public object ZoneUpdateTransformer {
     public fun collectEnclosedProtList(updates: ZoneUpdateList): List<ZoneProt> = updates.protList
 
-    public fun toPersistentLocChange(loc: LocInfo): ZoneProt {
-        val zoneGrid = ZoneGrid.from(loc.coords)
-        return if (loc.id == LocRegistry.DELETED_LOC_ID) {
-            LocDel(zoneGrid.x, zoneGrid.z, loc.shapeId, loc.angleId)
-        } else {
-            LocAddChangeV2(
-                loc.id,
-                zoneGrid.x,
-                zoneGrid.z,
-                loc.shapeId,
-                loc.angleId,
-                OpFlags.ALL_SHOWN,
-            )
-        }
-    }
+    public fun toPersistentLocChange(loc: LocInfo): ZoneProt =
+        if (loc.id == LocRegistry.DELETED_LOC_ID) toLocDelProt(loc) else toLocAddChangeProt(loc)
 
-    public fun toLocAddChangeProt(loc: LocInfo): ZoneProt {
-        val zoneGrid = ZoneGrid.from(loc.coords)
-        return LocAddChangeV2(
-            loc.id,
-            zoneGrid.x,
-            zoneGrid.z,
-            loc.shapeId,
-            loc.angleId,
-            OpFlags.ALL_SHOWN,
-        )
-    }
+    public fun toLocAddChangeProt(loc: LocInfo): ZoneProt =
+        locAddChangePacket(loc.coords, loc.id, loc.shapeId, loc.angleId)
 
     public fun toLocDelProt(loc: LocInfo): ZoneProt {
         val zoneGrid = ZoneGrid.from(loc.coords)

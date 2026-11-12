@@ -1,29 +1,40 @@
-name: CI
+name: Nightly Server Build
 
 permissions:
   contents: read
 
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - "**/*.kt"
-      - "**/*.kts"
-      - ".github/workflows/ci.yml"
+  workflow_call:
+    inputs:
+      ref:
+        description: "Exact revision-sync commit to verify"
+        required: true
+        type: string
+      release_bundle:
+        description: "Package the server for release if boot succeeds"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "17 2 * * *"
+      timezone: Europe/London
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: nightly-server-${{ inputs.ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
     name: build & boot
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: ${{ inputs.release_bundle && 60 || 30 }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+          persist-credentials: false
 
       - name: Set up JDK 21
         uses: actions/setup-java@v6
@@ -71,16 +82,29 @@ jobs:
       - name: Compile and run tests
         run: ./gradlew assemble test integration
 
+      - name: Prepare release bundle
+        if: inputs.release_bundle
+        run: |
+          ./gradlew :server:app:shadowJar
+          bash tools/scripts/package_server_release.sh
+
       # Config errors in a data-driven server surface at boot (unmapped
       # gamevals throw by design), so start the server and require the
       # "Server ready" line within the timeout.
       - name: Boot server to ready
+        env:
+          RELEASE_BUNDLE: ${{ inputs.release_bundle }}
         run: |
-          ./gradlew run -q > boot.log 2>&1 &
-          GRADLE_PID=$!
+          if [[ "$RELEASE_BUNDLE" == true ]]; then
+            (cd release-bundle && exec java -Xmx4g -jar server.jar) > boot.log 2>&1 &
+          else
+            ./gradlew run -q > boot.log 2>&1 &
+          fi
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           for i in $(seq 1 300); do
             grep -q "Server ready in" boot.log && break
-            kill -0 $GRADLE_PID 2>/dev/null || break
+            kill -0 "$SERVER_PID" 2>/dev/null || break
             sleep 1
           done
           if grep -q "Server ready in" boot.log; then
@@ -90,7 +114,14 @@ jobs:
           else
             echo "Server did not reach ready state"; tail -40 boot.log; exit 1
           fi
-          kill $GRADLE_PID 2>/dev/null || true
+      - name: Upload verified server bundle
+        if: inputs.release_bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: openrune-server-release
+          path: openrune-server-release.zip
+          if-no-files-found: error
+          overwrite: true
 
       - name: Upload boot log
         if: failure()

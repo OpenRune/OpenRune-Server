@@ -33,12 +33,12 @@ class BrutusScoreboard @Inject constructor(private val worldStats: BrutusWorldSt
         val worldBest =
             worldStats.bestTicks.let { if (it == 0) NO_TIME else formatInstanceKillTime(it, precise) }
         ifOpenMainModal(INTERFACE)
-        ifSetText("$INTERFACE_COM:pkc_content", number(vars[KILLS].toLong()))
-        ifSetText("$INTERFACE_COM:pd_content", number(vars[DEATHS].toLong()))
-        ifSetText("$INTERFACE_COM:pbt_content", personalBest)
-        ifSetText("$INTERFACE_COM:gkc_content", number(worldStats.kills))
-        ifSetText("$INTERFACE_COM:gd_content", number(worldStats.deaths))
-        ifSetText("$INTERFACE_COM:gbt_content", worldBest)
+        ifSetText("component.cowboss_scoreboard:pkc_content", number(vars[KILLS].toLong()))
+        ifSetText("component.cowboss_scoreboard:pd_content", number(vars[DEATHS].toLong()))
+        ifSetText("component.cowboss_scoreboard:pbt_content", personalBest)
+        ifSetText("component.cowboss_scoreboard:gkc_content", number(worldStats.kills))
+        ifSetText("component.cowboss_scoreboard:gd_content", number(worldStats.deaths))
+        ifSetText("component.cowboss_scoreboard:gbt_content", worldBest)
     }
 
     private fun number(value: Long): String = NumberFormat.getIntegerInstance(Locale.UK).format(value)
@@ -50,7 +50,6 @@ class BrutusScoreboard @Inject constructor(private val worldStats: BrutusWorldSt
         const val DEATHS = "varp.brutus_deaths"
         const val BEST_TIME = "varp.brutus_best_time"
         private const val INTERFACE = "interface.cowboss_scoreboard"
-        private const val INTERFACE_COM = "component.cowboss_scoreboard"
         private const val NO_TIME = "0:00.00"
     }
 }

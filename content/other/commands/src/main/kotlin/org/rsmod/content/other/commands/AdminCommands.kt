@@ -554,8 +554,13 @@ constructor(
             }
             val id = arg.toIntOrNull()
             if (id != null) {
-                player.soundSynth(id)
-                player.mes("Synth: $id")
+                val name = RSCM.getReverseMapping(RSCMType.SYNTH, id)
+                if (RSCM.getRSCMOrNull("synth.$name", RSCMType.SYNTH) != id) {
+                    player.mes("There is no synth mapped to id: $id")
+                    return
+                }
+                player.soundSynth("synth.$name")
+                player.mes("Synth: '$name' ($id)")
                 return
             }
             val typeName = arg.removePrefix("synth.")

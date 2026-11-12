@@ -2,6 +2,14 @@ package org.rsmod.game.entity.player
 
 import dev.openrune.types.BasType
 import dev.openrune.types.NpcServerType
+import dev.openrune.util.Wearpos
+
+public data class WornObjCustomisation(
+    public val objId: Int,
+    public val recolours: Map<Int, Int>,
+    public val retextures: Map<Int, Int>,
+    public val colour: Int?,
+)
 
 public class Appearance {
     /**
@@ -79,6 +87,7 @@ public class Appearance {
 
     private val colours: ByteArray = ByteArray(5)
     private val identKit: ShortArray = ShortArray(7) { -1 }
+    private val wornObjCustomisations: MutableMap<Wearpos, WornObjCustomisation> = mutableMapOf()
 
     // TODO: Move default colours/identkit assignment to a relevant plugin and
     //  delete this init block.
@@ -97,6 +106,46 @@ public class Appearance {
         require(identKit in 0..65535) { "identKit must be in range [0..65535]. ($identKit)" }
         this.identKit[index] = identKit.toShort()
         this.rebuild = true
+    }
+
+    /**
+     * Replaces the visual override for [objId] in a visible equipment slot.
+     * [recolours] and [retextures] map cache-defined indices to replacement values.
+     * [colour] applies to the whole model when supplied. The override is discarded
+     * when the next appearance update observes a different item in [wearpos].
+     */
+    public fun setWornObjCustomisation(
+        wearpos: Wearpos,
+        objId: Int,
+        recolours: Map<Int, Int> = emptyMap(),
+        retextures: Map<Int, Int> = emptyMap(),
+        colour: Int? = null,
+    ) {
+        require(wearpos in Wearpos.visibleWearpos)
+        require(recolours.size <= 255 && retextures.size <= 255)
+        require(recolours.all { (index, value) -> index in 0..255 && value in 0..65535 })
+        require(retextures.all { (index, value) -> index in 0..255 && value in -1..65535 })
+        require(colour == null || colour in 0..65534)
+        wornObjCustomisations[wearpos] =
+            WornObjCustomisation(objId, recolours.toMap(), retextures.toMap(), colour)
+        rebuild = true
+    }
+
+    /** Removes the override for [wearpos] and schedules an appearance update if it changed. */
+    public fun clearWornObjCustomisation(wearpos: Wearpos) {
+        if (wornObjCustomisations.remove(wearpos) != null) {
+            rebuild = true
+        }
+    }
+
+    /** Returns the override for the current item, discarding it if the item id changed. */
+    public fun wornObjCustomisation(wearpos: Wearpos, wornObjId: Int?): WornObjCustomisation? {
+        val customisation = wornObjCustomisations[wearpos] ?: return null
+        if (customisation.objId != wornObjId) {
+            wornObjCustomisations.remove(wearpos)
+            return null
+        }
+        return customisation
     }
 
     public fun coloursSnapshot(): List<Byte> = colours.toList()

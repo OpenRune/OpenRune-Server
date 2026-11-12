@@ -53,7 +53,7 @@ constructor(private val cutting: TreeCutting, private val stumps: FarmingTreeStu
                             depleted = true
                             stumps.deplete(player, patch, state)
                             resetAnim()
-                            soundSynth("synth.tree_fall_sound")
+                            soundSynth("synth.tree_fall")
                         },
                     )
                 }

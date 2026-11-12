@@ -29,8 +29,10 @@ import org.rsmod.game.damage.DamageContributions
 import org.rsmod.game.entity.player.Appearance
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.player.PublicMessage
+import org.rsmod.game.entity.util.EntityAnimationFreeze
 import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.entity.util.EntityTinting
+import org.rsmod.game.entity.util.EntityTransparency
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hero.HeroPoints
@@ -223,6 +225,8 @@ public class Player(
     public var publicMessage: PublicMessage? = null
     public var pendingSay: String? = null
     public var pendingTinting: EntityTinting? = null
+    public var pendingTransparency: EntityTransparency? = null
+    public var pendingAnimationFreeze: EntityAnimationFreeze? = null
     public var pendingRunWeight: Boolean = false
     public val pendingStatUpdates: BitSet = BitSet()
     public val activeHitmarks: LongArrayList = LongArrayList()
@@ -518,7 +522,11 @@ public class Player(
     }
 
     override fun spotanim(spot: String, delay: Int, height: Int, slot: Int) {
-        PathingEntityCommon.spotanim(this, spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot)
+        spotanim(spot, delay, height, slot, loop = false)
+    }
+
+    override fun spotanim(spot: String, delay: Int, height: Int, slot: Int, loop: Boolean) {
+        PathingEntityCommon.spotanim(this, spot.asRSCM(RSCMType.SPOTANIM), delay, height, slot, loop)
     }
 
     public fun resetSpotanim(height: Int = 0, slot: Int = 0) {

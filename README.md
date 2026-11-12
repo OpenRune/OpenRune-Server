@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/OpenRune/OpenRune-Server/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/OpenRune/OpenRune-Server?style=for-the-badge&color=6f42c1"/></a>
-  <a href="https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here"><img alt="Revision 241" src="https://img.shields.io/badge/Revision-241-blueviolet?style=for-the-badge"/></a>
+  <a href="https://oldschool.runescape.wiki/w/Update:Leagues_V:_Raging_Echos_Rewards_Are_Here"><img alt="Revision 242" src="https://img.shields.io/badge/Revision-242-blueviolet?style=for-the-badge"/></a>
   <a href="https://trello.com/b/A0LefFDs/later"><img alt="Roadmap" src="https://img.shields.io/badge/Trello-Roadmap-026AA7?style=for-the-badge&logo=trello&logoColor=white"/></a>
   <a href="https://github.com/Mark7625/OpenRune-Server/"><img alt="Lines of Code" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fghloc.vercel.app%2Fapi%2FOpenRune%2FOpenRune-Server%2Fbadge%3Fformat%3Dhuman&style=for-the-badge&color=teal"/></a>
   <a href="https://discord.gg/v2qcXzBCwf">
@@ -35,7 +35,7 @@ OpenRune Server adheres to OSRS protocols, giving you the freedom to connect any
 
 ## 📊 Content progress
 
-Skills **20/23** · Bosses **25/179** · Raids **0/4** · Minigames **2/46**
+Skills **20/23** · Bosses **27/179** · Raids **0/4** · Minigames **2/46**
 
 Full breakdown in **[PROGRESS.md](PROGRESS.md)**, including every content module and
 the bosses that already have drop tables and only need the encounter writing.
@@ -92,9 +92,9 @@ For Windows:
 config:
   - id: 1
     name: OpenRune Server
-    jav_config_url: https://client.blurite.io/jav_local_241.ws
+    jav_config_url: https://client.blurite.io/jav_local_242.ws
     varp_count: 15000
-    revision: 241
+    revision: 242
     modulus: YOUR_MODULUS_KEY_HERE
 ```
 
@@ -119,7 +119,7 @@ See [.github/docs/RELEASE_CI.md](.github/docs/RELEASE_CI.md) for what the workfl
 
 ## 💬 Bug Reports & Support
 - Open an issue on [GitHub](https://github.com/OpenRune/OpenRune-Server/issues) with reproduction details.
-- Reach the team directly in the [Discord server](https://discord.gg/HAwN6N8F).
+- Reach the team directly in the [Discord server](https://discord.gg/v2qcXzBCwf).
 
 ## 🙏 Acknowledgments
 - Cache management powered by [OpenRune-FileStore](https://github.com/OpenRune/OpenRune-FileStore).

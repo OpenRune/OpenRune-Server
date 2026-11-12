@@ -152,6 +152,7 @@ public sealed class InstanceArea {
 
 public data class InstanceSettings(
     val fee: Int = 0,
+    val feeFromBank: Boolean = false,
     val maxPlayers: Int = 1,
     val reclaimTicks: Int = DEFAULT_EMPTY_INSTANCE_RECLAIM_TICKS,
     val graceTicks: Int = DEFAULT_INSTANCE_GRACE_TICKS,
@@ -174,6 +175,7 @@ public data class InstanceSettings(
     public fun withArea(area: InstanceArea, settingsRowId: Int): InstanceSpec =
         InstanceSpec(
             fee = fee,
+            feeFromBank = feeFromBank,
             maxPlayers = maxPlayers,
             reclaimTicks = reclaimTicks,
             graceTicks = graceTicks,
@@ -193,6 +195,7 @@ public data class InstanceSettings(
 
 public data class InstanceSpec(
     val fee: Int,
+    val feeFromBank: Boolean = false,
     val maxPlayers: Int,
     val reclaimTicks: Int,
     val graceTicks: Int,

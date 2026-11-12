@@ -140,7 +140,7 @@ constructor(
     companion object {
         const val BRUTUS_FIELD = "cowboss"
 
-        const val RING_SYNTH = "synth.cowbell_amulet_ring"
+        const val RING_SYNTH = "synth.bell"
         const val RING_SOUNDS = 3
         const val RING_SOUND_GAP = 8
 
@@ -148,9 +148,9 @@ constructor(
         const val BELL_RUNG = "varn.brutus_bell_rung"
 
         const val TELEPORT_SPOTANIM = "spotanim.vfx_human_cowboss_teleport01"
-        const val TELEPORT_SYNTH = "synth.cowbell_amulet_teleport"
+        const val TELEPORT_SYNTH = "synth.pool_plop"
         const val TELEPORT_SYNTH_DELAY = 50
-        const val ARRIVE_SYNTH = "synth.cowbell_amulet_arrive"
+        const val ARRIVE_SYNTH = "synth.cb_teleport_jump_splash_spawn_01"
         const val ARRIVE_SYNTH_DELAY = 57
         const val TELEPORT_DELAY = 3
         const val ARRIVE_DELAY = 2
