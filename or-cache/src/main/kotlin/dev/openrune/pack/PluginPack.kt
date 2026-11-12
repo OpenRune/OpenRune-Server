@@ -29,6 +29,8 @@ abstract class PluginPack {
 
     open fun dbTables(): List<DBTable> = emptyList()
 
+    open fun dbTableSchemas(): List<DBTable> = dbTables()
+
     open fun interfaces(): List<InterfaceType> = emptyList()
 
     open fun extraTasks(): List<CacheTask> = emptyList()
