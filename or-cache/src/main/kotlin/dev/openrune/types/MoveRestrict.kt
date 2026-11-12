@@ -15,4 +15,6 @@ public enum class MoveRestrict(public val id: Int) {
     NoMove(5),
     /** Can walk through players or NPCs that'd normally block NPCs. */
     PassThru(6),
+    /** Walks through everything: scenery, walls, players and NPCs. */
+    NoClip(7),
 }
