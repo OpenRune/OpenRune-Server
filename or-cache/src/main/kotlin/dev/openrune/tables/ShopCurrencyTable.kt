@@ -45,5 +45,12 @@ object ShopCurrencyTable {
             column(PLURAL_NAME, "unidentified minerals")
             columnRSCM(OBJ, "obj.mguild_minerals")
         }
+
+        row("dbrow.shop_currency_marks_of_grace") {
+            column(KEY, "currency.marks_of_grace")
+            column(SINGULAR_NAME, "mark of grace")
+            column(PLURAL_NAME, "marks of grace")
+            columnRSCM(OBJ, "obj.grace")
+        }
     }
 }
