@@ -77,7 +77,7 @@ class FrozenWeaponsTest {
         f.holding[0] = InvObj(dart, Int.MAX_VALUE)
         f.player.inv[0] = InvObj(dart, 5)
         val before = f.total(dart)
-        val result = f.frozen.releaseAtLogin(f.player)
+        val result = f.frozen.reclaim(f.player)
         assertEquals(before, f.total(dart))
         if (result == ReleaseResult.Kept) {
             assertEquals(InvObj(dart, Int.MAX_VALUE), f.holding[0])
@@ -99,7 +99,7 @@ class FrozenWeaponsTest {
     fun `login with free inventory returns the weapon to the inventory`() {
         val f = BlueFixture()
         f.holding[0] = InvObj(scimitar, 1)
-        assertEquals(ReleaseResult.ToInventory, f.frozen.releaseAtLogin(f.player))
+        assertEquals(ReleaseResult.ToInventory, f.frozen.reclaim(f.player))
         assertEquals(1L, f.total(scimitar))
         assertNull(f.holding[0])
     }
@@ -111,7 +111,7 @@ class FrozenWeaponsTest {
         f.fillInv()
         f.bank[0] = InvObj("obj.bronze_sword", 1)
         f.player.bankMainSize = 1
-        assertEquals(ReleaseResult.ToBank, f.frozen.releaseAtLogin(f.player))
+        assertEquals(ReleaseResult.ToBank, f.frozen.reclaim(f.player))
         assertEquals(InvObj(scimitar, 1), f.bank[1])
         assertEquals(2, f.player.bankMainSize)
         assertEquals(1L, f.total(scimitar))
@@ -124,7 +124,7 @@ class FrozenWeaponsTest {
         f.holding[0] = InvObj(scimitar, 1)
         f.fillInv()
         f.player.bankCapacityVar = 0
-        assertEquals(ReleaseResult.Kept, f.frozen.releaseAtLogin(f.player))
+        assertEquals(ReleaseResult.Kept, f.frozen.reclaim(f.player))
         assertEquals(InvObj(scimitar, 1), f.holding[0])
         assertEquals(1L, f.total(scimitar))
     }

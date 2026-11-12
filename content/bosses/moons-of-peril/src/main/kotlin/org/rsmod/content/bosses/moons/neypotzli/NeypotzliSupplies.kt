@@ -28,7 +28,6 @@ constructor(private val hooks: Set<@JvmSuppressWildcards NeypotzliHook>) : Plugi
         onOpLoc3(CRATES) { takeKit(HUNTING_KIT) }
         onOpLoc4(CRATES) { takeKit(HERBLORE_KIT) }
         onOpLoc1("loc.pmoon_grub_sapling") { collectGrub() }
-        onOpHeldU("obj.pestle_and_mortar", GRUB) { crushGrub() }
         onOpHeldU("obj.knife", "obj.bream_fish_raw") {
             cutRitualPart("obj.bream_fish_raw", "obj.pmoon_fish_scales", "You cut some scales off the bream.")
         }
@@ -92,14 +91,6 @@ constructor(private val hooks: Set<@JvmSuppressWildcards NeypotzliHook>) : Plugi
         if (extra) mes("Your hunting knowledge allows you to find an extra grub.")
     }
 
-    private fun ProtectedAccess.crushGrub() {
-        val extra = inv.count(GRUB) > 1 && statRandom("stat.herblore", EXTRA_LOW, EXTRA_HIGH, 0)
-        if (invReplace(inv, GRUB, if (extra) 2 else 1, "obj.moonlight_grub_paste").failure) return
-        anim("seq.human_herbing_grind_restart")
-        soundSynth("synth.grind", delay = GRIND_SOUND_DELAY)
-        if (extra) mes("Your herblore knowledge allows you to crush an extra grub.")
-    }
-
     private fun ProtectedAccess.cutRitualPart(raw: String, part: String, message: String) {
         if (vars["varbit.pmoon_quest"] !in RITUAL_GATHERING) {
             mes("Nothing interesting happens.")
@@ -121,7 +112,6 @@ constructor(private val hooks: Set<@JvmSuppressWildcards NeypotzliHook>) : Plugi
         private const val CRATES = "loc.pmoon_supply_crate"
         private const val GRUB = "obj.moonlight_grub"
         private const val GRUB_DELAY = 2
-        private const val GRIND_SOUND_DELAY = 25
 
         // UNVERIFIED: the odds of an extra grub; only the fact that it scales with level is known.
         private const val EXTRA_LOW = 26

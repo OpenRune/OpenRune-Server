@@ -205,6 +205,16 @@ object Herblore {
                     category("Potions")
                 }
             }
+            row("dbrow.herblore_moonlight_potion") {
+                production {
+                    input("obj.moonlight_grub_paste")
+                    input("obj.vial_water")
+                    statReq("stat.herblore", 38)
+                    xp(0)
+                    output("obj.2dosemoonlightpotion")
+                    category("Potions")
+                }
+            }
             row("dbrow.herblore_compost_potion") {
                 production {
                     input("obj.harralandervial")
@@ -1316,6 +1326,15 @@ object Herblore {
                     statReq("stat.herblore", 1)
                     xp(0)
                     output("obj.crushed_dragon_bones")
+                    category("Crushing")
+                }
+            }
+            row("dbrow.herblore_crush_moonlight_grub") {
+                production {
+                    input("obj.moonlight_grub")
+                    statReq("stat.herblore", 1)
+                    xp(0)
+                    output("obj.moonlight_grub_paste")
                     category("Crushing")
                 }
             }

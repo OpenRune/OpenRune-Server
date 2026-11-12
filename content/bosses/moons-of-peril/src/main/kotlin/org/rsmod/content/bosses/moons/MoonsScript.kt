@@ -200,7 +200,7 @@ constructor(
                     if (moon == Moon.Blue) blue.joined(player)
                 }
             }
-            onAreaExit(moon.area) { fights.end(player) }
+            onAreaExit(moon.area) { fights.end(player, quiet = player.pendingLogout) }
         }
         onOpLoc1("loc.pmoon_boss_brazier_left") { storms.light(player, BlueStorms.LEFT) }
         onOpLoc1("loc.pmoon_boss_brazier_right") { storms.light(player, BlueStorms.RIGHT) }

@@ -39,7 +39,7 @@ import org.rsmod.map.CoordGrid
 interface BlueHooks {
     fun onColdGain(fight: MoonsFight, before: Int, after: Int)
 
-    fun left(player: Player)
+    fun left(player: Player, loggedOut: Boolean = false)
 }
 
 class MoonsFight(val player: Player, val moon: Moon) {
@@ -124,7 +124,7 @@ constructor(
     /** [quiet] skips everything sent to the client, for a player who is logging out. */
     fun end(player: Player, quiet: Boolean = false) {
         val fight = fights.remove(player) ?: return
-        if (fight.moon == Moon.Blue) blueHooks?.left(player)
+        if (fight.moon == Moon.Blue) blueHooks?.left(player, loggedOut = quiet)
         debugging.remove(player)
         player.bound = false
         fight.parryUntil = -1
