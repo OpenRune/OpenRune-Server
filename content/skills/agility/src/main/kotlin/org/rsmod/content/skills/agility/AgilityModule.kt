@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.agility
 
+import org.rsmod.content.skills.agility.werewolf.WerewolfStickThrow
 import org.rsmod.plugin.module.PluginModule
 
 class AgilityModule : PluginModule() {
@@ -7,5 +8,6 @@ class AgilityModule : PluginModule() {
         addSetBinding<AgilityCourseHook>(WyrmTermites::class.java)
         addSetBinding<AgilityCourseHook>(PrifddinasPortals::class.java)
         addSetBinding<AgilityCourseHook>(WildernessLaps::class.java)
+        addSetBinding<AgilityCourseHook>(WerewolfStickThrow::class.java)
     }
 }
