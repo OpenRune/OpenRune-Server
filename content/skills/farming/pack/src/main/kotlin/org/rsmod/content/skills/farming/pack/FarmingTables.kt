@@ -157,7 +157,7 @@ object FarmingTables {
         get() = LEGACY_CROPS
 
     /** `crop_index` is persisted in seven bits of the patch varp: never renumber a crop. */
-    fun crops() =
+    fun crops(includeRows: Boolean = true) =
         productionTable(
             "dbtable.farming_crop",
             serverOnly = true,
@@ -182,6 +182,7 @@ object FarmingTables {
                 column("death_minutes", COL_DEATH_MINUTES, VarType.INT)
             },
         ) {
+            if (!includeRows) return@productionTable
             val transforms = patchTransforms()
             val specs = CROPS.sortedBy(CropSpec::index)
             val indices = specs.map(CropSpec::index)
@@ -277,7 +278,7 @@ object FarmingTables {
         }
 
     /** One row per patch kind; each patch is a (loc, varp, site, coord) record. */
-    fun patches() =
+    fun patches(includeRows: Boolean = true) =
         dbTable("dbtable.farming_patch", serverOnly = true) {
             column("kind", PATCH_KIND, VarType.STRING)
             column("patches", PATCH_PATCHES, VarType.LOC, VarType.VARP, VarType.STRING, VarType.COORDGRID)
@@ -285,6 +286,7 @@ object FarmingTables {
             column("xp_bonus", PATCH_XP_BONUS, VarType.STRING, VarType.STRING, VarType.INT)
             column("yield_bonus", PATCH_YIELD_BONUS, VarType.STRING, VarType.STRING, VarType.INT)
             column("access", PATCH_ACCESS, VarType.STRING, VarType.STRING, VarType.STRING, VarType.INT, VarType.STRING)
+            if (!includeRows) return@dbTable
 
             fun DBRowBuilder.rules(col: Int, rules: List<SiteRule>) {
                 if (rules.isEmpty()) return
