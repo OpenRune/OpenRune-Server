@@ -254,6 +254,7 @@ object SpecValidator {
                     varExpr(expr.a, scope)
                     varExpr(expr.b, scope)
                 }
+                is VarExpr.PlayerVar -> requireTarget(scope, "playerVar")
                 is VarExpr.BearingTo -> {
                     target(expr.to, scope, "bearingTo")
                     target(expr.from, scope, "bearingTo")
@@ -445,6 +446,10 @@ object SpecValidator {
                     varn(effect.varn, scope)
                     varExpr(effect.value, scope)
                 }
+                is Effect.SetPlayerVar -> {
+                    requireTarget(scope, name)
+                    varExpr(effect.value, scope)
+                }
                 is Effect.Switch -> {
                     varn(effect.varn, scope)
                     if (effect.cases.isEmpty()) error("${scope.prefix}Switch on '${effect.varn}' has no cases.")
@@ -455,7 +460,10 @@ object SpecValidator {
                 is Effect.SpawnLoc -> {
                     target(effect.at, scope, name)
                     if (effect.angle !in 0..3) error("${scope.prefix}SpawnLoc angle '${effect.angle}' must be 0..3.")
+                    effect.onStand?.let { effect(it, scope.copy(deferred = true, targetless = false)) }
                 }
+                is Effect.RemoveLoc -> target(effect.at, scope, name)
+                is Effect.LocAnim -> target(effect.at, scope, name)
                 is Effect.Message -> target(effect.target, scope, name)
                 is Effect.SoundTo -> target(effect.target, scope, name)
                 is Effect.Sound -> effect.at?.let { target(it, scope, name) }

@@ -33,6 +33,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.statDrain
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.EntityExactMove
@@ -246,6 +247,8 @@ class EffectInterpreter internal constructor(
             }
 
             is Effect.SetVarn -> npc.vars[effect.varn] = evaluateVar(effect.value)
+            is Effect.SetPlayerVar ->
+                VarPlayerIntMapSetter.set(target, effect.varbit, evaluateVar(effect.value))
             is Effect.Switch -> {
                 val next = effect.cases[npc.vars[effect.varn]] ?: effect.otherwise
                 run(access, next, onComplete)
@@ -287,8 +290,22 @@ class EffectInterpreter internal constructor(
                 }
             }
             is Effect.SpawnLoc -> {
-                deps.spawnOwnedLoc(npc, resolveTile(effect.at), effect.loc, effect.angle, effect.blockPlayersOnly)
+                val onStand =
+                    effect.onStand?.let { stand ->
+                        { player: Player -> EffectInterpreter(npc, player, spec, encounter, deps).run(null, stand) }
+                    }
+                deps.spawnOwnedLoc(
+                    npc,
+                    resolveTile(effect.at),
+                    effect.loc,
+                    effect.angle,
+                    effect.blockPlayersOnly,
+                    onStand,
+                )
             }
+            is Effect.RemoveLoc -> deps.removeOwnedLoc(npc, resolveTile(effect.at))
+            is Effect.LocAnim ->
+                encounter.ownedLocAt(resolveTile(effect.at))?.let { deps.worldRepo.locAnim(it.info, effect.anim) }
             is Effect.Knockback -> knockback(effect)
         }
         onComplete()
@@ -302,6 +319,7 @@ class EffectInterpreter internal constructor(
             is VarExpr.Plus -> evaluateVar(expr.a) + evaluateVar(expr.b)
             is VarExpr.Min -> minOf(evaluateVar(expr.a), evaluateVar(expr.b))
             is VarExpr.Max -> maxOf(evaluateVar(expr.a), evaluateVar(expr.b))
+            is VarExpr.PlayerVar -> target.vars[expr.varbit]
             is VarExpr.BearingTo -> Angles.bearing(resolveTile(expr.from), resolveTile(expr.to))
         }
 

@@ -55,6 +55,11 @@ enum class Moon(
         return southWest.translate(dx, dz)
     }
 
+    fun inArena(coords: CoordGrid): Boolean =
+        coords.level == southWest.level &&
+            coords.x - southWest.x in ARENA_WEST..ARENA_EAST &&
+            coords.z - southWest.z in ARENA_SOUTH..ARENA_NORTH
+
     fun onGlyph(focus: Int, coords: CoordGrid): Boolean {
         val sw = glyph(focus)
         return coords.level == sw.level &&
@@ -68,6 +73,18 @@ enum class Moon(
         const val GLYPH_SIZE = 2
         const val NEW_MOON = 0
         const val FULL_MOON = 4
+        const val ARENA_WEST = -12
+        const val ARENA_SOUTH = -14
+        const val ARENA_EAST = 18
+        const val ARENA_NORTH = 15
+
+        val SAFE_GLYPHS = listOf(1, 2, 3, 5, 6, 7)
+
+        /** One jaguar per glyph, standing on the arena side of it, facing the Moon. */
+        val JAGUAR_OFFSETS =
+            listOf(3 to -4, 0 to -4, -4 to 0, -4 to 3, 0 to 7, 3 to 7, 7 to 3, 7 to 0)
+        val JAGUAR_FACING =
+            listOf(0 to 1, 0 to 1, 1 to 0, 1 to 0, 0 to -1, 0 to -1, -1 to 0, -1 to 0)
 
         /** South-west tile of each 2x2 glyph, relative to the Moon's south-west tile. */
         val GLYPH_OFFSETS =

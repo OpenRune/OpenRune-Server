@@ -1,5 +1,6 @@
 package org.rsmod.content.bosses.moons
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -13,6 +14,8 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.script.onArea
+import org.rsmod.api.script.onModifyNpcHit
+import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.api.script.onAreaExit
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onEvent
@@ -34,10 +37,14 @@ object MoonsExternals {
     const val FOCUS = "moons.focus"
     const val STANDARD_ATTACK = "moons.standard_attack"
     const val BURN = "moons.burn"
-    const val DECAY = "moons.decay"
     const val SUBDUED = "moons.subdued"
     const val OVERLAYS = "moons.overlays"
     const val CIRCLE_SPAWN = "moons.circle_spawn"
+    const val JAGUAR_SPAWN = "moons.jaguar_spawn"
+    const val JAGUAR_ATTACK = "moons.jaguar_attack"
+    const val SAP = "moons.sap"
+    const val POOL_HIT = "moons.pool_hit"
+    const val RAIN_THROW = "moons.rain_throw"
 }
 
 class MoonsScript
@@ -54,18 +61,30 @@ constructor(
         val moonsByNpc = Moon.entries.associateBy { it.npc.asRSCM(RSCMType.NPC) }
         onEvent<NpcStateEvents.Create> { moonsByNpc[npc.type.id]?.let { init(npc, it) } }
 
+        ServerCacheManager.getNpc(MoonsFights.JAGUAR_NPC.asRSCM(RSCMType.NPC))?.let { jaguarType ->
+            onModifyNpcHit(jaguarType) {
+                val uid = hit.sourceUid
+                val attacker = if (hit.isFromPlayer && uid != null) PlayerUid(uid).resolve(deps.playerList) else null
+                hit.damage = if (attacker == null) 0 else fights.jaguarHit(npc, attacker, hit.damage)
+            }
+        }
+
         with(deps.extensionRegistry) {
             register(MoonsExternals.FOCUS) { ctx ->
                 fights.moonOf(ctx.npc)?.let { fights.setFocus(it, ctx.params as Int) }
             }
             register(MoonsExternals.STANDARD_ATTACK) { _, npc, target, _ -> fights.standardAttack(npc, target) }
             register(MoonsExternals.BURN) { _, npc, target, _ -> fights.burnOffGlyph(npc, target) }
-            register(MoonsExternals.DECAY) { _, _, target, _ -> fights.decayCondition(target) }
             register(MoonsExternals.SUBDUED) { _, _, target, _ -> fights.subdue(target) }
             register(MoonsExternals.OVERLAYS) { ctx -> fights.moonOf(ctx.npc)?.let(overlays::show) }
             register(MoonsExternals.CIRCLE_SPAWN) { ctx ->
                 ctx.npc.anim("seq.vfx_djinn_ueyatlalli_protection_spawn_02")
             }
+            register(MoonsExternals.JAGUAR_SPAWN) { ctx -> fights.jaguarSpawned(ctx.params as Moon, ctx.npc) }
+            register(MoonsExternals.JAGUAR_ATTACK) { ctx -> fights.jaguarAttack(ctx.npc) }
+            register(MoonsExternals.SAP) { ctx -> fights.sap(ctx.npc) }
+            register(MoonsExternals.POOL_HIT) { ctx -> fights.poolHit(ctx.npc, ctx.target, ctx.params as Int) }
+            register(MoonsExternals.RAIN_THROW) { ctx -> fights.rainThrow(ctx.npc) }
         }
 
         for (moon in Moon.entries) {

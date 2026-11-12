@@ -15223,6 +15223,7 @@ inherit = "npc.pmoon_boss_blue_moon_vis"
 id = "npc.pmoon_boss_jaguar"
 inherit = "npc.pmoon_boss_jaguar"
 [npc.params]
+"param.hitpoints_locked"=true
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=15
 

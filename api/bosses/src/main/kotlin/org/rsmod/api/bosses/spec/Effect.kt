@@ -280,6 +280,9 @@ sealed interface Effect {
 
     data class SetVarn(val varn: String, val value: VarExpr) : Effect
 
+    /** Writes [value] to the current target's [varbit]; needs a target. */
+    data class SetPlayerVar(val varbit: String, val value: VarExpr) : Effect
+
     /** Runs the case matching [varn]'s current value, or [otherwise] if none does. */
     data class Switch(val varn: String, val cases: Map<Int, Effect>, val otherwise: Effect = NoOp) : Effect
 
@@ -310,13 +313,22 @@ sealed interface Effect {
      * Spawns [loc] at [at], owned by the encounter: the tile stops counting as free for
      * [TileSet]s and the loc is removed when the encounter ends. Skipped if the encounter already
      * owns a loc there. [blockPlayersOnly] swaps the loc's collision for a player-only block.
+     * [onStand] runs every tick against each player standing on the loc, from the tick after it
+     * was placed.
      */
     data class SpawnLoc(
         val loc: String,
         val at: TargetExpr.Single,
         val angle: Int = 0,
         val blockPlayersOnly: Boolean = false,
+        val onStand: Effect? = null,
     ) : Effect
+
+    /** Removes the encounter-owned loc at [at], if there is one. */
+    data class RemoveLoc(val at: TargetExpr.Single) : Effect
+
+    /** Plays [anim] on the encounter-owned loc at [at], if there is one. */
+    data class LocAnim(val at: TargetExpr.Single, val anim: String) : Effect
 
     /** Shoves the target one tile to a random free neighbour inside [within], playing [anim]. */
     data class Knockback(val anim: String, val within: Area) : Effect

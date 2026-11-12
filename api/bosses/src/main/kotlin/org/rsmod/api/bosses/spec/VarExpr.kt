@@ -12,6 +12,9 @@ sealed interface VarExpr {
     data class Min(val a: VarExpr, val b: VarExpr) : VarExpr
     data class Max(val a: VarExpr, val b: VarExpr) : VarExpr
 
+    /** The current target's [varbit]; needs a target. */
+    data class PlayerVar(val varbit: String) : VarExpr
+
     /** Jagex bearing (0..2047) from [from] to [to]. */
     data class BearingTo(val to: TargetExpr.Single, val from: TargetExpr.Single = TargetExpr.Centre) : VarExpr
 }
