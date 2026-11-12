@@ -1,0 +1,58 @@
+[gamevals.dbtable]
+agility_termites = 63007
+agility_portals = 63008
+agility_dispenser_loot = 63009
+agility_lap_list = 63044
+agility_skullball = 63022
+
+[gamevals.dbrow]
+agility_termites_balance = 63437
+agility_termites_multijump = 63438
+agility_termites_basic_balance = 63439
+agility_termites_basic_monkeybars = 63440
+agility_termites_basic_jump = 63441
+agility_termites_advanced_jump = 63442
+agility_termites_advanced_balance = 63443
+agility_termites_advanced_monkeybars = 63444
+agility_portal_prifddinas_1 = 63445
+agility_portal_prifddinas_2 = 63446
+agility_portal_prifddinas_3 = 63447
+agility_portal_prifddinas_4 = 63448
+agility_portal_prifddinas_5 = 63449
+agility_portal_prifddinas_6 = 63450
+agility_dispenser_laps_1 = 63451
+agility_dispenser_laps_16 = 63452
+agility_dispenser_laps_31 = 63453
+agility_dispenser_laps_61 = 63454
+shop_currency_marks_of_grace = 63455
+agility_lap_list_rooftops = 63407
+agility_lap_list_misc = 63408
+agility_skullball = 63382
+
+[gamevals.varp]
+agility_lap_start = 63028
+agility_best_lap_wyrm_basic = 63029
+agility_best_lap_wyrm_advanced = 63030
+agility_best_lap_prifddinas = 63031
+agility_extras = 63032
+agility_settings = 63170
+agility_laps_skullball = 63171
+agility_skullball = 63080
+agility_skullball_start = 63081
+
+[gamevals.varbit]
+agility_lap_portal = 63023
+agility_lap_counter_off = 63170
+agility_skullball_goals = 63070
+agility_skullball_heading = 63071
+agility_skullball_steps = 63072
+
+[gamevals.enum]
+agility_ticket_xp = 63940
+agility_dispenser_supplies = 63941
+agility_werewolf_stick_shouts = 63020
+agility_werewolf_obstacle_shouts = 63021
+agility_werewolf_slide_shouts = 63022
+
+[gamevals.currency]
+marks_of_grace = 65532
