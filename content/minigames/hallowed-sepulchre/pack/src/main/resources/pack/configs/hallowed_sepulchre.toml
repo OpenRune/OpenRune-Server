@@ -1,0 +1,224 @@
+[[varp]]
+id = "varp.hallowed_floor1_completions"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.hallowed_floor2_completions"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.hallowed_floor3_completions"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.hallowed_floor4_completions"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.hallowed_floor5_completions"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.hallowed_progress"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.hallowed_checkpoint"
+varp = "varp.hallowed_progress"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.hallowed_start"
+varp = "varp.hallowed_progress"
+startBit = 5
+endBit = 6
+
+[[varbit]]
+id = "varbit.hallowed_telepad_immunity"
+varp = "varp.hallowed_progress"
+startBit = 7
+endBit = 8
+
+[[enum]]
+isServerOnly = true
+id = "enum.hallowed_time_warnings"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+252 = "2:30"
+102 = "1:00"
+52 = "0:30"
+20 = "0:10"
+
+# UNVERIFIED: only the steel nails' 150 xp is captured; the rest are the wiki's.
+[[enum]]
+isServerOnly = true
+id = "enum.hallowed_bridge_nails"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.nails_rune" = 7000
+"obj.nails_adamant" = 4500
+"obj.nails_mithril" = 3000
+"obj.nails" = 1500
+
+# UNVERIFIED: no god alignment is in the cache; 1 is Saradomin, 2 another god. The list is the
+# common god-aligned gear, with the hallowed tools as Saradomin's, not every item live counts.
+[[enum]]
+isServerOnly = true
+id = "enum.hallowed_obelisk_gods"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.trail_saradomin_vambraces" = 1
+"obj.trail_saradomin_chest" = 1
+"obj.trail_saradomin_chaps" = 1
+"obj.trail_saradomin_coif" = 1
+"obj.blessed_boots_saradomin" = 1
+"obj.blessed_dhide_shield_saradomin" = 1
+"obj.trail_saradomin_staff" = 1
+"obj.trail_saradomin_cloak" = 1
+"obj.trail_saradomin_mitre" = 1
+"obj.trail_saradomin_robe_t" = 1
+"obj.trail_saradomin_robe_l" = 1
+"obj.trail_saradomin_scarf" = 1
+"obj.rune_platebody_saradomin" = 1
+"obj.rune_platelegs_saradomin" = 1
+"obj.rune_plateskirt_saradomin" = 1
+"obj.rune_full_helm_saradomin" = 1
+"obj.rune_kiteshield_saradomin" = 1
+"obj.saradomin_cape" = 1
+"obj.ma2_saradomin_cape" = 1
+"obj.castlewars_saradomin_halo" = 1
+"obj.saradominbook_complete" = 1
+"obj.saradomin_sword" = 1
+"obj.blessed_saradomin_sword_degraded" = 1
+"obj.sgs" = 1
+"obj.hallowed_grapple" = 1
+"obj.hallowed_focus" = 1
+"obj.hallowed_symbol" = 1
+"obj.hallowed_hammer" = 1
+"obj.hallowed_ring" = 1
+"obj.trail_zamorak_vambraces" = 2
+"obj.trail_zamorak_chest" = 2
+"obj.trail_zamorak_chaps" = 2
+"obj.trail_zamorak_coif" = 2
+"obj.blessed_boots_zamorak" = 2
+"obj.blessed_dhide_shield_zamorak" = 2
+"obj.trail_zamorak_staff" = 2
+"obj.trail_zamorak_cloak" = 2
+"obj.trail_zamorak_mitre" = 2
+"obj.trail_zamorak_robe_t" = 2
+"obj.trail_zamorak_robe_l" = 2
+"obj.trail_zamorak_scarf" = 2
+"obj.rune_platebody_zamorak" = 2
+"obj.rune_platelegs_zamorak" = 2
+"obj.rune_plateskirt_zamorak" = 2
+"obj.rune_full_helm_zamorak" = 2
+"obj.rune_kiteshield_zamorak" = 2
+"obj.trail_guthix_vambraces" = 2
+"obj.trail_guthix_chest" = 2
+"obj.trail_guthix_chaps" = 2
+"obj.trail_guthix_coif" = 2
+"obj.blessed_boots_guthix" = 2
+"obj.blessed_dhide_shield_guthix" = 2
+"obj.trail_guthix_staff" = 2
+"obj.trail_guthix_cloak" = 2
+"obj.trail_guthix_mitre" = 2
+"obj.trail_guthix_robe_t" = 2
+"obj.trail_guthix_robe_l" = 2
+"obj.trail_guthix_scarf" = 2
+"obj.rune_platebody_guthix" = 2
+"obj.rune_platelegs_guthix" = 2
+"obj.rune_plateskirt_guthix" = 2
+"obj.rune_full_helm_guthix" = 2
+"obj.rune_kiteshield_guthix" = 2
+"obj.trail_armadyl_vambraces" = 2
+"obj.trail_armadyl_chest" = 2
+"obj.trail_armadyl_chaps" = 2
+"obj.trail_armadyl_coif" = 2
+"obj.blessed_boots_armadyl" = 2
+"obj.blessed_dhide_shield_armadyl" = 2
+"obj.trail_armadyl_staff" = 2
+"obj.trail_armadyl_cloak" = 2
+"obj.trail_armadyl_mitre" = 2
+"obj.trail_armadyl_robe_t" = 2
+"obj.trail_armadyl_robe_l" = 2
+"obj.trail_armadyl_scarf" = 2
+"obj.rune_platebody_armadyl" = 2
+"obj.rune_platelegs_armadyl" = 2
+"obj.rune_plateskirt_armadyl" = 2
+"obj.rune_full_helm_armadyl" = 2
+"obj.rune_kiteshield_armadyl" = 2
+"obj.trail_bandos_vambraces" = 2
+"obj.trail_bandos_chest" = 2
+"obj.trail_bandos_chaps" = 2
+"obj.trail_bandos_coif" = 2
+"obj.blessed_boots_bandos" = 2
+"obj.blessed_dhide_shield_bandos" = 2
+"obj.trail_bandos_staff" = 2
+"obj.trail_bandos_cloak" = 2
+"obj.trail_bandos_mitre" = 2
+"obj.trail_bandos_robe_t" = 2
+"obj.trail_bandos_robe_l" = 2
+"obj.trail_bandos_scarf" = 2
+"obj.rune_platebody_bandos" = 2
+"obj.rune_platelegs_bandos" = 2
+"obj.rune_plateskirt_bandos" = 2
+"obj.rune_full_helm_bandos" = 2
+"obj.rune_kiteshield_bandos" = 2
+"obj.trail_ancient_vambraces" = 2
+"obj.trail_ancient_chest" = 2
+"obj.trail_ancient_chaps" = 2
+"obj.trail_ancient_coif" = 2
+"obj.blessed_boots_ancient" = 2
+"obj.blessed_dhide_shield_ancient" = 2
+"obj.trail_ancient_staff" = 2
+"obj.trail_ancient_cloak" = 2
+"obj.trail_ancient_mitre" = 2
+"obj.trail_ancient_robe_t" = 2
+"obj.trail_ancient_robe_l" = 2
+"obj.trail_ancient_scarf" = 2
+"obj.rune_platebody_ancient" = 2
+"obj.rune_platelegs_ancient" = 2
+"obj.rune_plateskirt_ancient" = 2
+"obj.rune_full_helm_ancient" = 2
+"obj.rune_kiteshield_ancient" = 2
+"obj.zamorak_cape" = 2
+"obj.guthix_cape" = 2
+"obj.ma2_zamorak_cape" = 2
+"obj.ma2_guthix_cape" = 2
+"obj.castlewars_zamorak_halo" = 2
+"obj.castlewars_guthix_halo" = 2
+"obj.armadyl_halo" = 2
+"obj.bandos_halo" = 2
+"obj.zaros_halo" = 2
+"obj.zamorakbook_complete" = 2
+"obj.guthixbook_complete" = 2
+"obj.bandosbook_complete" = 2
+"obj.armadylbook_complete" = 2
+"obj.zarosbook_complete" = 2
+"obj.acb" = 2
+"obj.ags" = 2
+"obj.bgs" = 2
+"obj.zgs" = 2
+"obj.ancient_godsword" = 2
+"obj.sotd" = 2
+"obj.zamorak_spear" = 2
+"obj.zamorak_hasta" = 2
+"obj.armadyl_helmet" = 2
+"obj.armadyl_chestplate" = 2
+"obj.armadyl_skirt" = 2
+"obj.bandos_chestplate" = 2
+"obj.bandos_skirt" = 2
+"obj.bandos_boots" = 2

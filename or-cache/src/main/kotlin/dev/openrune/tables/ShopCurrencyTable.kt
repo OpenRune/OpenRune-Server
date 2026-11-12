@@ -52,5 +52,12 @@ object ShopCurrencyTable {
             column(PLURAL_NAME, "marks of grace")
             columnRSCM(OBJ, "obj.grace")
         }
+
+        row("dbrow.shop_currency_hallowed_marks") {
+            column(KEY, "currency.hallowed_marks")
+            column(SINGULAR_NAME, "Hallowed mark")
+            column(PLURAL_NAME, "Hallowed marks")
+            columnRSCM(OBJ, "obj.hallowed_mark")
+        }
     }
 }
