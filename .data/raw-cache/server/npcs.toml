@@ -1909,6 +1909,8 @@ inherit = "npc.ds2_brut_black_dragon"
 id = "npc.earth_nagua"
 inherit = "npc.earth_nagua"
 [npc.params]
+"param.attack_anim"="seq.npc_djinn_earth01_attack01"
+"param.death_anim"="seq.npc_djinn_earth01_death01"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=15
 "param.killcount_varp"="varp.kc_earthen_nagua"
@@ -1918,6 +1920,8 @@ inherit = "npc.earth_nagua"
 id = "npc.earth_nagua_reinforced"
 inherit = "npc.earth_nagua_reinforced"
 [npc.params]
+"param.attack_anim"="seq.npc_djinn_earth01_attack02"
+"param.death_anim"="seq.npc_djinn_earth01_death01"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=15
 "param.killcount_varp"="varp.kc_earthen_nagua"
@@ -1945,6 +1949,8 @@ inherit = "npc.fossil_zygomite"
 id = "npc.frost_nagua"
 inherit = "npc.frost_nagua"
 [npc.params]
+"param.attack_anim"="seq.frost_nagua_slayer_basic"
+"param.death_anim"="seq.frost_nagua_slayer_death"
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_frost_nagua"
@@ -1954,6 +1960,8 @@ inherit = "npc.frost_nagua"
 id = "npc.frost_nagua_cutscene"
 inherit = "npc.frost_nagua_cutscene"
 [npc.params]
+"param.attack_anim"="seq.frost_nagua_slayer_basic"
+"param.death_anim"="seq.frost_nagua_slayer_death"
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_frost_nagua"
@@ -2862,6 +2870,8 @@ inherit = "npc.olaf2_brine_rats"
 id = "npc.pmoon_sulphur_nagua"
 inherit = "npc.pmoon_sulphur_nagua"
 [npc.params]
+"param.attack_anim"="seq.npc_djinn_04_melee"
+"param.death_anim"="seq.npc_djinn_04_slayer_death"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=15
 "param.killcount_varp"="varp.kc_sulphur_nagua"
@@ -4093,6 +4103,8 @@ inherit = "npc.varlamore_wyrm_light01"
 id = "npc.vmq3_ruins_frost_nagua"
 inherit = "npc.vmq3_ruins_frost_nagua"
 [npc.params]
+"param.attack_anim"="seq.frost_nagua_slayer_basic"
+"param.death_anim"="seq.frost_nagua_slayer_death"
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_frost_nagua"

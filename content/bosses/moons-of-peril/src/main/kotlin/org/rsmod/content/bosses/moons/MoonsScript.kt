@@ -4,10 +4,13 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.runtime.BossDeps
+import org.rsmod.api.player.hook.NeypotzliHook
+import org.rsmod.api.player.hook.NeypotzliMoon
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
+import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.script.onArea
 import org.rsmod.api.script.onAreaExit
 import org.rsmod.api.script.onCommand
@@ -39,6 +42,7 @@ constructor(
     private val deps: BossDeps,
     private val fights: MoonsFights,
     private val protectedAccess: ProtectedAccessLauncher,
+    private val hooks: Set<@JvmSuppressWildcards NeypotzliHook>,
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -57,7 +61,10 @@ constructor(
         for (moon in Moon.entries) {
             onOpLoc1(moon.statue) { enter(moon) }
             if (moon !in ACTIVE_MOONS) continue
-            onArea(moon.area) { if (!player.isSubdued(moon)) fights.begin(player, moon) }
+            onArea(moon.area) {
+                val privateCopy = RegionRegistry.inWorkingArea(player.coords)
+                if (!privateCopy && !player.isSubdued(moon)) fights.begin(player, moon)
+            }
             onAreaExit(moon.area) { fights.end(player) }
         }
         for (stairs in EXIT_STAIRS) {
@@ -101,6 +108,9 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.enter(moon: Moon) {
+        for (hook in hooks) {
+            if (!with(hook) { mayFight(moon.hookKey) }) return
+        }
         if (moon !in ACTIVE_MOONS || vars["varbit.pmoon_quest"] < QUEST_FIGHT_STAGE) {
             mes("The statue does not respond.")
             return
@@ -126,6 +136,9 @@ constructor(
                 )
             if (answer == WarningAnswer.Stay) return
             if (answer == WarningAnswer.EnterAndRemember) player.set("varbit.pmoon_drop_item_warning", 1)
+        }
+        for (hook in hooks) {
+            with(hook) { beforeFight(moon.hookKey) }
         }
         soundSynth(MoonsFights.PORTAL_SYNTH)
         delay(ENTRY_DELAY)
@@ -154,6 +167,14 @@ constructor(
         val npc = fights.npc(fight.moon) ?: return
         deps.encounterRegistry.of(npc).personalHp?.set(player, amount.coerceAtLeast(1))
     }
+
+    private val Moon.hookKey: NeypotzliMoon
+        get() =
+            when (this) {
+                Moon.Blood -> NeypotzliMoon.Blood
+                Moon.Blue -> NeypotzliMoon.Blue
+                Moon.Eclipse -> NeypotzliMoon.Eclipse
+            }
 
     private enum class WarningAnswer {
         Enter,

@@ -1,0 +1,149 @@
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_attala_gates"
+inherit = "npc.pmoon_attala_gates"
+respawnDir = "East"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_zuma_gates"
+inherit = "npc.pmoon_zuma_gates"
+respawnDir = "West"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_digsite_workers_plank"
+inherit = "npc.pmoon_digsite_workers_plank"
+respawnDir = "North"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_attala_camtorum"
+inherit = "npc.pmoon_attala_camtorum"
+respawnDir = "East"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_zuma_camtorum"
+inherit = "npc.pmoon_zuma_camtorum"
+respawnDir = "North"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_jessica_camtorum"
+inherit = "npc.pmoon_jessica_camtorum"
+respawnDir = "West"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_attala_dungeon"
+inherit = "npc.pmoon_attala_dungeon"
+respawnDir = "North"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_zuma_dungeon"
+inherit = "npc.pmoon_zuma_dungeon"
+respawnDir = "North"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_jessica_dungeon"
+inherit = "npc.pmoon_jessica_dungeon"
+respawnDir = "North"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_digsite_workers_noplank"
+inherit = "npc.pmoon_digsite_workers_noplank"
+respawnDir = "East"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_eyatlalli"
+inherit = "npc.pmoon_eyatlalli"
+respawnDir = "South"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_eyatlalli_discovered"
+inherit = "npc.pmoon_eyatlalli_discovered"
+respawnDir = "South"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_quest_guard"
+inherit = "npc.pmoon_quest_guard"
+respawnDir = "North"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.pmoon_zuma_cutscene"
+inherit = "npc.pmoon_zuma_cutscene"
+respawnDir = "East"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.cam_torum_shop_blacksmith_cutscene"
+inherit = "npc.cam_torum_shop_blacksmith_cutscene"
+respawnDir = "South"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.cam_torum_shop_blacksmith"
+inherit = "npc.cam_torum_shop_blacksmith"
+respawnDir = "South"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.cam_torum_shop_magic"
+inherit = "npc.cam_torum_shop_magic"
+wanderRange = 2
