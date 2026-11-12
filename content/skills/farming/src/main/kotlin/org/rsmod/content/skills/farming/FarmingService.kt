@@ -39,13 +39,12 @@ constructor(
 ) {
     private class Part(val patch: PatchDef, val varbit: String, val coord: CoordGrid)
 
-    private val parts: Map<String, List<Part>> by lazy {
+    private val parts: Map<String, List<Part>> =
         FarmingPatches.all.flatMap { patch ->
             patch.locs.indices.mapNotNull { i ->
                 transmitVarbit(patch.locs[i])?.let { Part(patch, it, patch.coords[i]) }
             }
         }.groupBy(Part::varbit)
-    }
 
     fun refresh(player: Player, millis: Long = System.currentTimeMillis()) {
         grow(player, millis)

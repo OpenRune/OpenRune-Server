@@ -117,7 +117,7 @@ private fun FarmingCropRow.toCrop(indices: Map<Int, Int>): Crop =
     )
 
 object FarmingCrops {
-    val all: List<Crop> by lazy {
+    val all: List<Crop> = run {
         val rows = FarmingCropRow.all().sortedBy(FarmingCropRow::cropIndex)
         val indices = rows.associate { it.rowId to it.cropIndex }
         rows.map { it.toCrop(indices) }.also { crops ->
@@ -125,9 +125,9 @@ object FarmingCrops {
         }
     }
 
-    private val bySeed: Map<String, Crop> by lazy { all.associateBy(Crop::seed) }
+    private val bySeed: Map<String, Crop> = all.associateBy(Crop::seed)
 
-    private val byIndex: Map<Int, Crop> by lazy { all.associateBy(Crop::index) }
+    private val byIndex: Map<Int, Crop> = all.associateBy(Crop::index)
 
     fun bySeed(seed: String): Crop? = bySeed[seed]
 
@@ -158,7 +158,7 @@ data class CompostDef(
 )
 
 object FarmingComposts {
-    private val definitions: Map<Compost, CompostDef> by lazy {
+    private val definitions: Map<Compost, CompostDef> =
         FarmingCompostRow.all().associate { row ->
             val kind = Compost.valueOf(row.kind)
             kind to
@@ -171,7 +171,6 @@ object FarmingComposts {
                     diseaseDivisor = row.diseaseDivisor,
                 )
         }
-    }
 
     fun get(kind: Compost): CompostDef = definitions.getValue(kind)
 
