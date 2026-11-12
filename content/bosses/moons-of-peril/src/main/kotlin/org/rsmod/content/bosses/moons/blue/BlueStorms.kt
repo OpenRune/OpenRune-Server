@@ -2,7 +2,6 @@ package org.rsmod.content.bosses.moons.blue
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.MoveRestrict
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.util.Collections
@@ -34,7 +33,6 @@ constructor(private val deps: BossDeps, private val fights: MoonsFights) {
     private val moon = Moon.Blue
 
     private class Storm(val npc: Npc, val path: List<CoordGrid>) {
-        var step = 0
         var removeAt = -1
         val struck: MutableSet<Player> = Collections.newSetFromMap(IdentityHashMap())
     }
@@ -100,11 +98,11 @@ constructor(private val deps: BossDeps, private val fights: MoonsFights) {
         val npc = Npc(STORM_NPC, path.first())
         deps.npcRepo.add(npc, STORM_LIFESPAN)
         npc.noneMode()
-        npc.moveRestrict = MoveRestrict.PassThru
         npc.ignoreCombatInteractions = true
         npc.faceSquare(path.last())
         npc.anim(STORM_SPAWN_SEQ)
         deps.worldRepo.soundArea(path.first(), STORM_SPAWN_SYNTH, radius = STORM_SOUND_RADIUS)
+        npc.walk(path.last())
         storms += Storm(npc, path)
     }
 
@@ -128,20 +126,17 @@ constructor(private val deps: BossDeps, private val fights: MoonsFights) {
                 continue
             }
             if (storm.removeAt >= 0) continue
-            if (storm.step < storm.path.lastIndex) {
-                storm.step++
-                storm.npc.walk(storm.path[storm.step])
-                strike(storm)
-            }
-            if (storm.step == storm.path.lastIndex) {
-                storm.npc.anim(STORM_DESPAWN_SEQ)
+            val npc = storm.npc
+            strike(storm)
+            if (npc.coords == storm.path.last()) {
+                npc.anim(STORM_DESPAWN_SEQ)
                 storm.removeAt = now + 1
             }
         }
     }
 
     private fun strike(storm: Storm) {
-        val at = storm.path[storm.step]
+        val at = storm.npc.coords
         val boss = fights.npc(moon) ?: return
         for (player in fights.playersIn(moon)) {
             val fight = fights.of(player) ?: continue

@@ -17278,3 +17278,9 @@ wanderRange = 0
 id = "npc.poh_sawmill_opp"
 inherit = "npc.poh_sawmill_opp"
 wanderRange = 0
+
+[[npc]]
+id = "npc.pmoon_boss_winter_storm"
+inherit = "npc.pmoon_boss_winter_storm"
+moveRestrict = "NoClip"
+defaultMode = "None"
