@@ -1,6 +1,7 @@
 package org.rsmod.content.bosses.moons
 
 import org.rsmod.api.death.NpcAttackValidateHook
+import org.rsmod.api.death.PlayerDeathHook
 import org.rsmod.api.death.PlayerDeathPreDropHook
 import org.rsmod.api.player.hook.HeldEquipValidateHook
 import org.rsmod.api.player.hook.NeypotzliHook
@@ -23,6 +24,7 @@ class MoonsModule : PluginModule() {
         addSetBinding<HerbloreHook>(MoonsHerbloreHook::class.java)
         addSetBinding<HeldEquipValidateHook>(BlueWearPreventHook::class.java)
         addSetBinding<NpcAttackValidateHook>(IcicleAttackHook::class.java)
+        addSetBinding<PlayerDeathHook>(MoonsDeathHook::class.java)
         addSetBinding<PlayerDeathPreDropHook>(FrozenWeaponDeathHook::class.java)
     }
 }

@@ -6,7 +6,6 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.player.hook.NeypotzliHook
-import org.rsmod.api.player.hook.NeypotzliMoon
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.spam
@@ -23,6 +22,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
+import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.content.bosses.moons.MoonsFights.Companion.isSubdued
 import org.rsmod.content.bosses.moons.MoonsFights.Companion.set
 import org.rsmod.content.bosses.moons.blue.BlueFights
@@ -53,6 +53,7 @@ object MoonsExternals {
     const val SHIELD_SPAWN = "moons.shield_spawn"
     const val SHIELD_STEP = "moons.shield_step"
     const val SHIELD_SINK = "moons.shield_sink"
+    const val SHIELD_UNFACE = "moons.shield_unface"
     const val RAY_FIRE = "moons.ray_fire"
     const val BIND = "moons.bind"
     const val UNBIND = "moons.unbind"
@@ -120,7 +121,7 @@ constructor(
 
         fights.blueHooks = blue
 
-        for (icicle in ICICLE_NPCS) {
+        for (icicle in MoonsFights.ICICLE_NPCS) {
             val type = ServerCacheManager.getNpc(icicle.asRSCM(RSCMType.NPC)) ?: continue
             onModifyNpcHit(type) {
                 val uid = hit.sourceUid
@@ -156,6 +157,7 @@ constructor(
             register(MoonsExternals.SHIELD_SPAWN) { ctx -> eclipse.shieldSpawned(ctx.npc) }
             register(MoonsExternals.SHIELD_STEP) { eclipse.shieldStep() }
             register(MoonsExternals.SHIELD_SINK) { eclipse.shieldSink() }
+            register(MoonsExternals.SHIELD_UNFACE) { eclipse.shieldUnface() }
             register(MoonsExternals.RAY_FIRE) { ctx -> eclipse.rayFire(ctx.target) }
             register(MoonsExternals.BIND) { eclipse.bindAll() }
             register(MoonsExternals.UNBIND) { eclipse.unbindAll() }
@@ -216,6 +218,9 @@ constructor(
             PathingEntityCommon.telejump(player, deps.collision, Moon.ANTECHAMBER)
         }
         onPlayerLogout { fights.end(player, quiet = true) }
+        for (timer in listOf(MoonsFight.CHAIN_TIMER, MoonsFight.PARRY_TIMER)) {
+            onPlayerSoftTimer(timer) { player.clearSoftTimer(timer) }
+        }
 
         onCommand("moon") {
             desc = "Teleport outside a Moon's statue"
@@ -230,15 +235,6 @@ constructor(
             desc = "Set your pool of the Moon you are fighting"
             invalidArgs = "Use as ::moonhp amount"
             cheat { setPool() }
-        }
-        onCommand("moondebug") {
-            desc = "Toggle Moon hit debug messages"
-            cheat { player.spam("Moon debug: ${if (fights.toggleDebug(player)) "on" else "off"}") }
-        }
-        onCommand("bindtest") {
-            desc = "Bind yourself in place; walk clicks only turn you"
-            invalidArgs = "Use as ::bindtest [ticks]"
-            cheat { bindTest() }
         }
         onCommand("moonreset") {
             desc = "Clear your subdued Moons"
@@ -256,7 +252,7 @@ constructor(
 
     private suspend fun ProtectedAccess.enter(moon: Moon) {
         for (hook in hooks) {
-            if (!with(hook) { mayFight(moon.hookKey) }) return
+            if (!with(hook) { mayFight(moon.hook) }) return
         }
         if (moon !in ACTIVE_MOONS || vars["varbit.pmoon_quest"] < QUEST_FIGHT_STAGE) {
             mes("The statue does not respond.")
@@ -285,17 +281,21 @@ constructor(
             if (answer == WarningAnswer.EnterAndRemember) player.set("varbit.pmoon_drop_item_warning", 1)
         }
         for (hook in hooks) {
-            with(hook) { beforeFight(moon.hookKey) }
+            with(hook) { beforeFight(moon.hook) }
         }
         soundSynth(MoonsFights.PORTAL_SYNTH)
+        fights.portalOpen(player, moon.portalModel, moon.portalColour)
         delay(ENTRY_DELAY)
         telejump(fights.arrival(moon), TeleportType.Exempt)
+        fights.portalClose(player)
     }
 
     private suspend fun ProtectedAccess.escape() {
         soundSynth(MoonsFights.PORTAL_SYNTH)
+        fights.portalOpen(player, Moon.LEAVE_PORTAL_MODEL, Moon.LEAVE_PORTAL_COLOUR)
         delay(ENTRY_DELAY)
         telejump(Moon.ANTECHAMBER, TeleportType.Exempt)
+        fights.portalClose(player)
     }
 
     private fun Cheat.teleToStatue() {
@@ -311,31 +311,8 @@ constructor(
     private fun Cheat.setPool() {
         val amount = args.firstOrNull()?.toIntOrNull() ?: return
         val fight = fights.of(player) ?: return player.mes("You are not fighting a Moon.")
-        val npc = fights.npc(fight.moon) ?: return
-        deps.encounterRegistry.of(npc).personalHp?.set(player, amount.coerceAtLeast(1))
+        fights.tracker(fight.moon)?.set(player, amount.coerceAtLeast(1))
     }
-
-    private fun Cheat.bindTest() {
-        val ticks = args.firstOrNull()?.toIntOrNull() ?: BIND_TEST_TICKS
-        val anchor = player.coords
-        player.abortRoute()
-        player.bound = true
-        player.spam("Bound at ${anchor.x},${anchor.z} for $ticks ticks.")
-        deps.worldQueues.add(ticks) {
-            if (!player.isSlotAssigned) return@add
-            player.bound = false
-            val moved = if (player.coords == anchor) "never moved" else "MOVED to ${player.coords.x},${player.coords.z}"
-            player.spam("Released; $moved.")
-        }
-    }
-
-    private val Moon.hookKey: NeypotzliMoon
-        get() =
-            when (this) {
-                Moon.Blood -> NeypotzliMoon.Blood
-                Moon.Blue -> NeypotzliMoon.Blue
-                Moon.Eclipse -> NeypotzliMoon.Eclipse
-            }
 
     private enum class WarningAnswer {
         Enter,
@@ -345,13 +322,10 @@ constructor(
 
     private companion object {
         private const val CLONE_NPC = "npc.pmoon_boss_eclipse_clone"
-        private val ICICLE_NPCS =
-            listOf("npc.pmoon_boss_icicle_1", "npc.pmoon_boss_icicle_2", "npc.pmoon_boss_icicle_3")
         private const val QUEST_FIGHT_STAGE = 28
         private const val QUEST_COMPLETE = 36
         private const val ATTACK_RANGE = 15
         private const val ENTRY_DELAY = 2
-        private const val BIND_TEST_TICKS = 30
         private val ACTIVE_MOONS = setOf(Moon.Blood, Moon.Blue, Moon.Eclipse)
         private val EXIT_STAIRS = listOf("loc.pmoon_boss_exit_stairs", "loc.pmoon_boss_exit_stairs_2")
         private val STATUE_APPROACH =

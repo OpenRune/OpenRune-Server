@@ -54,11 +54,18 @@ restless_ghost_coffin_ghost = 123
 restless_skeleton_attack = 124
 
 [gamevals.dbtable]
+pmoon_ruins_parts = 64801
+pmoon_ruins_spawns = 64802
 daddys_home_furniture = 65472
 daddys_home_crate = 65473
 glarial_restrictions = 65495
 
 [gamevals.dbrow]
+pmoon_ruins_antechamber = 62810
+pmoon_ruins_ancient_prison = 62811
+pmoon_ruins_earthbound_cavern = 62812
+pmoon_ruins_streambound_cavern = 62813
+pmoon_ruins_vault = 62814
 daddys_home_furniture_kitchen_stool = 63420
 daddys_home_furniture_bedroom_stool = 63421
 daddys_home_furniture_chair = 63422
@@ -89,3 +96,10 @@ poh_furniture_creation_entry_old = 7988
 
 [gamevals.category]
 goblin_armour = 528
+
+[gamevals.area]
+pmoon_ruins_antechamber = 32448
+pmoon_ruins_ancient_prison = 32449
+pmoon_ruins_earthbound_cavern = 32450
+pmoon_ruins_streambound_cavern = 32451
+pmoon_ruins_vault = 32452

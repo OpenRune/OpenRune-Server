@@ -1,0 +1,64 @@
+[[area]]
+name = "Ruins of Neypotzli Antechamber"
+area_id = "area.pmoon_ruins_antechamber"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1408, 9600],
+    [1471, 9600],
+    [1471, 9663],
+    [1408, 9663],
+]
+
+[[area]]
+name = "Ruins of Neypotzli Ancient Prison"
+area_id = "area.pmoon_ruins_ancient_prison"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1344, 9536],
+    [1407, 9536],
+    [1407, 9599],
+    [1344, 9599],
+]
+
+[[area]]
+name = "Ruins of Neypotzli Earthbound Cavern"
+area_id = "area.pmoon_ruins_earthbound_cavern"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1344, 9664],
+    [1407, 9664],
+    [1407, 9791],
+    [1344, 9791],
+]
+
+[[area]]
+name = "Ruins of Neypotzli Streambound Cavern"
+area_id = "area.pmoon_ruins_streambound_cavern"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1472, 9664],
+    [1535, 9664],
+    [1535, 9727],
+    [1472, 9727],
+]
+
+[[area]]
+name = "Ruins of Neypotzli Vault"
+area_id = "area.pmoon_ruins_vault"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [1472, 9536],
+    [1535, 9536],
+    [1535, 9599],
+    [1472, 9599],
+]

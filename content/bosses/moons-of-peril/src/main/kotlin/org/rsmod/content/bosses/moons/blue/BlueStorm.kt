@@ -28,7 +28,7 @@ internal object BlueStorm {
     private const val FIRE_OFF_TICK = 65
     private const val START_SYNTH = "synth.varl_pm_boss_blue_spike_wall_spawn_01"
     private const val SHROUD_SYNTH = "synth.varl_pm_boss_blue_magic_extinguish_01"
-    private val LANDING = 2 to -1
+    private val LANDING = Moon.BLUE_STORM_LANDING
 
     private fun build(): Effect {
         val fighters = playersIn(Moon.Blue.arena())

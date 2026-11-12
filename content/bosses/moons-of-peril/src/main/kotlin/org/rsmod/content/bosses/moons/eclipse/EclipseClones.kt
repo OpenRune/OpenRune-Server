@@ -31,6 +31,7 @@ internal object EclipseClones {
     private const val STRIKE_AFTER = 3
     private const val LEAVE_AFTER = 5
     private const val RELEASE_TICK = 54
+    private const val RETURN_TICK = 55
     private const val CLONE_NPC = "npc.pmoon_boss_eclipse_clone"
     private const val CIRCLE_LOC = "loc.pmoon_boss_small_threat_circle"
     private val CIRCLE_TILE = spawnTile(Moon.BOSS_SIZE / 2, Moon.BOSS_SIZE / 2)
@@ -76,8 +77,9 @@ internal object EclipseClones {
                 external(MoonsExternals.MOON_HIDE),
                 wait(RELEASE_TICK - HIDE_TICK),
                 removeLoc(CIRCLE_TILE),
-                external(MoonsExternals.MOON_SHOW),
                 external(MoonsExternals.UNBIND),
+                wait(RETURN_TICK - RELEASE_TICK),
+                external(MoonsExternals.MOON_SHOW),
                 anim("seq.npc_djinn_02_teleport_idle_appear"),
                 external(MoonsExternals.OPS_SHOW),
                 vulnerable(),

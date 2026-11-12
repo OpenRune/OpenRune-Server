@@ -7,6 +7,7 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.content.bosses.moons.Moon
+import org.rsmod.content.bosses.moons.arena
 import org.rsmod.content.bosses.moons.focusPhase
 import org.rsmod.content.bosses.moons.MoonsFights
 import org.rsmod.content.bosses.moons.MoonsExternals
@@ -26,10 +27,10 @@ class BloodMoon @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                 headbar = "headbar.blood_120",
             )
 
-            val burn = onEach(playersIn(ARENA), external(MoonsExternals.BURN))
+            val burn = onEach(playersIn(Moon.Blood.arena()), external(MoonsExternals.BURN))
             every(
                 CONDITION_DECAY_TICKS,
-                onEach(playersIn(ARENA), addPlayerVar(MoonsFights.CONDITION, -CONDITION_DECAY)),
+                onEach(playersIn(Moon.Blood.arena()), addPlayerVar(MoonsFights.CONDITION, -CONDITION_DECAY)),
             )
 
             val jaguars = ability("jaguars", BloodJaguars.timeline)
@@ -55,6 +56,5 @@ class BloodMoon @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private const val CONDITION_DECAY = 2
         private const val JAGUARS_TICKS = 53
         private const val RAIN_TICKS = 31
-        private val ARENA = area(spawnTile(-12, -14), spawnTile(18, 15))
     }
 }

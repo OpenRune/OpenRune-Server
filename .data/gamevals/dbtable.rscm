@@ -17,3 +17,6 @@ skillcape_teleport_destinations=64951
 spirit_tree_destinations=64952
 teleport_jewellery_pieces=64953
 fairyring_requirements=64954
+pmoon_moons=64800
+pmoon_ruins_parts=64801
+pmoon_ruins_spawns=64802
