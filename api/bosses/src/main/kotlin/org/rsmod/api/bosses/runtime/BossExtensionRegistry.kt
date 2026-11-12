@@ -14,15 +14,22 @@ fun interface BossExtensionHandler {
 /**
  * What a context handler receives. [access] is null outside the npc's AI turn; [tile] is the
  * `external(at = …)` tile, resolved where the effect runs (so `CurrentTile`/`ImpactTile` work),
- * or null when the effect has none.
+ * or null when the effect has none. [targetOrNull] is null when an ambient spec runs the external
+ * outside an `onEach`; [target] then throws.
  */
 class BossExtensionContext(
+    val name: String,
     val access: StandardNpcAccess?,
     val npc: Npc,
-    val target: Player,
+    val targetOrNull: Player?,
     val params: Any?,
     val tile: CoordGrid?,
-)
+) {
+    val target: Player
+        get() =
+            targetOrNull
+                ?: error("External '$name' needs a target but ran without one; wrap it in onEach(...).")
+}
 
 @Singleton
 class BossExtensionRegistry {
@@ -40,12 +47,12 @@ class BossExtensionRegistry {
         name: String,
         access: StandardNpcAccess?,
         npc: Npc,
-        target: Player,
+        target: Player?,
         params: Any?,
         tile: CoordGrid? = null,
     ) {
         val handler = handlers[name] ?: error("No boss extension registered: $name")
-        handler(BossExtensionContext(access, npc, target, params, tile))
+        handler(BossExtensionContext(name, access, npc, target, params, tile))
     }
 
     fun contains(name: String): Boolean = name in handlers

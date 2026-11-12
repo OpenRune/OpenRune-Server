@@ -41,24 +41,25 @@ interface TileScope {
  */
 internal fun Npc.resolveTile(
     expr: TargetExpr.Single,
-    target: Player,
+    target: Player?,
     bindings: TileBindings = TileBindings.NONE,
     random: GameRandom? = null,
     randomWalkable: ((center: CoordGrid, radius: Int) -> CoordGrid?)? = null,
 ): CoordGrid {
     fun resolve(inner: TargetExpr.Single) =
         resolveTile(inner, target, bindings, random, randomWalkable)
+    fun requireTarget(): Player = checkNotNull(target) { "$expr resolved without a target." }
     return when (expr) {
         is TargetExpr.CurrentTarget,
         is TargetExpr.CurrentTargetTile,
         is TargetExpr.HighestDamageDealer,
         is TargetExpr.LowestPrayer,
-        is TargetExpr.RandomNearby -> target.coords
+        is TargetExpr.RandomNearby -> requireTarget().coords
         is TargetExpr.Self -> coords
         is TargetExpr.Centre -> centreTile
         is TargetExpr.SpawnTile -> spawnCoords.translate(expr.dx, expr.dz)
         is TargetExpr.Offset -> resolve(expr.of).translate(expr.dx, expr.dz)
-        is TargetExpr.Custom -> expr.tile(this, target)
+        is TargetExpr.Custom -> expr.tile(this, requireTarget())
         is TargetExpr.Toward -> {
             val from = resolve(expr.from)
             Angles.step(from, Angles.bearing(from, resolve(expr.to)), expr.distance)

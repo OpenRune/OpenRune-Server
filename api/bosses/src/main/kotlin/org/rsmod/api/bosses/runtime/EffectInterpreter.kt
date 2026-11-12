@@ -47,9 +47,14 @@ import org.rsmod.map.util.Bounds
 /** The [BossEncounter.epoch] one ability run belongs to, shared with the interpreters it spawns. */
 class AbilityRun internal constructor(internal var epoch: Int)
 
+/**
+ * Runs effects for [npc] against [targetOrNull]. An ambient spec runs its abilities, timers and
+ * phase entries with no target; only `onEach` children get one, and [target] throws when an
+ * effect that needs one runs without it (validation rejects those in ambient specs).
+ */
 class EffectInterpreter internal constructor(
     private val npc: Npc,
-    private val target: Player,
+    private val targetOrNull: Player?,
     private val spec: BossSpec,
     private val encounter: BossEncounter,
     private val deps: BossDeps,
@@ -58,18 +63,21 @@ class EffectInterpreter internal constructor(
 ) {
     constructor(
         npc: Npc,
-        target: Player,
+        target: Player?,
         spec: BossSpec,
         encounter: BossEncounter,
         deps: BossDeps,
     ) : this(npc, target, spec, encounter, deps, AbilityRun(encounter.epoch), TileBindings.NONE)
 
+    private val target: Player
+        get() = targetOrNull ?: error("Boss effect for npc ${npc.type.id} needs a target but has none.")
+
     private fun child(
-        target: Player = this.target,
+        target: Player? = this.targetOrNull,
         bindings: TileBindings = this.bindings,
     ): EffectInterpreter = EffectInterpreter(npc, target, spec, encounter, deps, abilityRun, bindings)
 
-    private fun tileScope(target: Player): TileScope =
+    private fun tileScope(target: Player?): TileScope =
         object : TileScope {
             override fun tile(expr: TargetExpr.Single): CoordGrid =
                 npc.resolveTile(expr, target, bindings, deps.random, ::randomWalkableTile)
@@ -172,7 +180,8 @@ class EffectInterpreter internal constructor(
             is Effect.FaceTarget -> {
                 if (npc.isValidTarget()) {
                     npc.resetFaceEntity()
-                    if (target.isValidTarget()) npc.facePlayer(target)
+                    val t = target
+                    if (t.isValidTarget()) npc.facePlayer(t)
                 }
             }
             is Effect.FaceTile -> {
@@ -192,7 +201,7 @@ class EffectInterpreter internal constructor(
             }
             is Effect.External -> {
                 val tile = effect.at?.let(::resolveTile)
-                deps.extensionRegistry.invoke(effect.handler, access, npc, target, effect.params, tile)
+                deps.extensionRegistry.invoke(effect.handler, access, npc, targetOrNull, effect.params, tile)
             }
 
             is Effect.Sequence -> {
@@ -204,7 +213,7 @@ class EffectInterpreter internal constructor(
                 return
             }
             is Effect.Choose -> {
-                val abilityName = encounter.pick(effect.selector, deps.mapClock.cycle, target)
+                val abilityName = encounter.pick(effect.selector, deps.mapClock.cycle, targetOrNull)
                 val branch = abilityName?.let { effect.branches[it] }
                 if (branch != null) run(access, branch, onComplete) else onComplete()
                 return
@@ -214,7 +223,8 @@ class EffectInterpreter internal constructor(
                 return
             }
             is Effect.Whenever -> {
-                val holds = encounter.evaluate(effect.condition, target, tileScope(target), random = deps.random)
+                val holds =
+                    encounter.evaluate(effect.condition, targetOrNull, tileScope(targetOrNull), random = deps.random)
                 val next = if (holds) effect.then else effect.otherwise
                 run(access, next, onComplete)
                 return
@@ -743,7 +753,7 @@ class EffectInterpreter internal constructor(
             deps.npcRepo.add(spawned, summon.duration)
             if (summon.owned) encounter.addOwnedNpc(spawned)
             summon.onSummon?.let { handler ->
-                deps.extensionRegistry.invoke(handler, access, spawned, target, summon.onSummonParams)
+                deps.extensionRegistry.invoke(handler, access, spawned, targetOrNull, summon.onSummonParams)
             }
         }
     }
@@ -901,7 +911,7 @@ class EffectInterpreter internal constructor(
     }
 
     private fun resolveTile(expr: TargetExpr.Single): CoordGrid =
-        npc.resolveTile(expr, target, bindings, deps.random, ::randomWalkableTile)
+        npc.resolveTile(expr, targetOrNull, bindings, deps.random, ::randomWalkableTile)
 
     private fun randomWalkableTile(center: CoordGrid, radius: Int): CoordGrid? {
         val candidates = mutableListOf<CoordGrid>()

@@ -30,9 +30,20 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
     private val incomingRules = mutableListOf<IncomingRule>()
     private val timers = mutableListOf<TimerSpec>()
     private var personalHp: PersonalHpSpec? = null
+    private var ambient = false
 
     fun stats(attackRate: Int = 4) {
         stats = BossStats(attackRate)
+    }
+
+    /**
+     * Runs the spec every tick from the npc's spawn instead of from its AI turn, with no player
+     * target: phases, timers and attacks advance whether or not anyone is near. The npc never
+     * targets or retaliates. Abilities, timers and phase entries run without a current target,
+     * so anything aimed at one must sit inside an `onEach(...)`; validation rejects the rest.
+     */
+    fun ambient() {
+        ambient = true
     }
 
     /** See [PersonalHpSpec]. */
@@ -122,6 +133,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
                 abilityAttackDelays,
                 timers,
                 personalHp,
+                ambient,
             )
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {

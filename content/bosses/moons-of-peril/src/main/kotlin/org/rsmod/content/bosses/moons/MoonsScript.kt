@@ -33,7 +33,10 @@ object MoonsExternals {
     const val FOCUS = "moons.focus"
     const val STANDARD_ATTACK = "moons.standard_attack"
     const val BURN = "moons.burn"
+    const val DECAY = "moons.decay"
     const val SUBDUED = "moons.subdued"
+    const val OVERLAYS = "moons.overlays"
+    const val CIRCLE_SPAWN = "moons.circle_spawn"
 }
 
 class MoonsScript
@@ -41,6 +44,7 @@ class MoonsScript
 constructor(
     private val deps: BossDeps,
     private val fights: MoonsFights,
+    private val overlays: MoonsOverlays,
     private val protectedAccess: ProtectedAccessLauncher,
     private val hooks: Set<@JvmSuppressWildcards NeypotzliHook>,
 ) : PluginScript() {
@@ -50,12 +54,17 @@ constructor(
         onEvent<NpcStateEvents.Create> { moonsByNpc[npc.type.id]?.let { init(npc, it) } }
 
         with(deps.extensionRegistry) {
-            register(MoonsExternals.FOCUS) { _, npc, _, params ->
-                fights.moonOf(npc)?.let { fights.setFocus(it, params as Int) }
+            register(MoonsExternals.FOCUS) { ctx ->
+                fights.moonOf(ctx.npc)?.let { fights.setFocus(it, ctx.params as Int) }
             }
             register(MoonsExternals.STANDARD_ATTACK) { _, npc, target, _ -> fights.standardAttack(npc, target) }
             register(MoonsExternals.BURN) { _, npc, target, _ -> fights.burnOffGlyph(npc, target) }
+            register(MoonsExternals.DECAY) { _, _, target, _ -> fights.decayCondition(target) }
             register(MoonsExternals.SUBDUED) { _, _, target, _ -> fights.subdue(target) }
+            register(MoonsExternals.OVERLAYS) { ctx -> fights.moonOf(ctx.npc)?.let(overlays::show) }
+            register(MoonsExternals.CIRCLE_SPAWN) { ctx ->
+                ctx.npc.anim("seq.vfx_djinn_ueyatlalli_protection_spawn_02")
+            }
         }
 
         for (moon in Moon.entries) {
