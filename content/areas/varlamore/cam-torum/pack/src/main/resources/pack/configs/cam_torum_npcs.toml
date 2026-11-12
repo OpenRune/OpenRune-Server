@@ -1,0 +1,54 @@
+[[npc]]
+id = "npc.cam_torum_shop_general"
+inherit = "npc.cam_torum_shop_general"
+
+[npc.params]
+"param.shop_sell_percentage" = 1300
+"param.shop_buy_percentage" = 400
+"param.shop_change_percentage" = 30
+"param.shop_inventory" = "inv.cam_torum_shop_general"
+"param.shop_name" = "Cam Torum General Store"
+
+[[npc]]
+id = "npc.cam_torum_shop_jewellery"
+inherit = "npc.cam_torum_shop_jewellery"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 700
+"param.shop_change_percentage" = 20
+"param.shop_inventory" = "inv.cam_torum_shop_jewellery"
+"param.shop_name" = "Conara's Jewels"
+
+[[npc]]
+id = "npc.cam_torum_shop_herbalist"
+inherit = "npc.cam_torum_shop_herbalist"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 700
+"param.shop_change_percentage" = 30
+"param.shop_inventory" = "inv.cam_torum_shop_herbalist"
+"param.shop_name" = "Huito's Herbal Supplies"
+
+[[npc]]
+id = "npc.cam_torum_shop_mining"
+inherit = "npc.cam_torum_shop_mining"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 600
+"param.shop_change_percentage" = 20
+"param.shop_inventory" = "inv.cam_torum_shop_mining"
+"param.shop_name" = "Tizoro's Pickaxes"
+
+[[npc]]
+id = "npc.cam_torum_shop_baker"
+inherit = "npc.cam_torum_shop_baker"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 550
+"param.shop_change_percentage" = 10
+"param.shop_inventory" = "inv.cam_torum_shop_baker"
+"param.shop_name" = "Yarnio's Baked Goods"
