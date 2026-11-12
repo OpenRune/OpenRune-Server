@@ -25,6 +25,8 @@ import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.bosses.moons.MoonsFights.Companion.isSubdued
 import org.rsmod.content.bosses.moons.MoonsFights.Companion.set
+import org.rsmod.content.bosses.moons.eclipse.EclipseFights
+import org.rsmod.content.bosses.moons.eclipse.Side
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcStateEvents
@@ -45,6 +47,20 @@ object MoonsExternals {
     const val SAP = "moons.sap"
     const val POOL_HIT = "moons.pool_hit"
     const val RAIN_THROW = "moons.rain_throw"
+    const val THROW_TO = "moons.throw_to"
+    const val SHIELD_SPAWN = "moons.shield_spawn"
+    const val SHIELD_STEP = "moons.shield_step"
+    const val SHIELD_SINK = "moons.shield_sink"
+    const val RAY_FIRE = "moons.ray_fire"
+    const val BIND = "moons.bind"
+    const val UNBIND = "moons.unbind"
+    const val MOON_HIDE = "moons.moon_hide"
+    const val MOON_SHOW = "moons.moon_show"
+    const val OPS_HIDE = "moons.ops_hide"
+    const val OPS_SHOW = "moons.ops_show"
+    const val CLONE_SPAWN = "moons.clone_spawn"
+    const val CLONE_STRIKE = "moons.clone_strike"
+    const val CLONE_LEAVE = "moons.clone_leave"
 }
 
 class MoonsScript
@@ -52,6 +68,7 @@ class MoonsScript
 constructor(
     private val deps: BossDeps,
     private val fights: MoonsFights,
+    private val eclipse: EclipseFights,
     private val overlays: MoonsOverlays,
     private val protectedAccess: ProtectedAccessLauncher,
     private val hooks: Set<@JvmSuppressWildcards NeypotzliHook>,
@@ -61,6 +78,13 @@ constructor(
         val moonsByNpc = Moon.entries.associateBy { it.npc.asRSCM(RSCMType.NPC) }
         onEvent<NpcStateEvents.Create> { moonsByNpc[npc.type.id]?.let { init(npc, it) } }
 
+        ServerCacheManager.getNpc(CLONE_NPC.asRSCM(RSCMType.NPC))?.let { cloneType ->
+            onModifyNpcHit(cloneType) {
+                val uid = hit.sourceUid
+                val attacker = if (hit.isFromPlayer && uid != null) PlayerUid(uid).resolve(deps.playerList) else null
+                hit.damage = if (attacker == null) 0 else eclipse.cloneHit(attacker, hit.damage)
+            }
+        }
         ServerCacheManager.getNpc(MoonsFights.JAGUAR_NPC.asRSCM(RSCMType.NPC))?.let { jaguarType ->
             onModifyNpcHit(jaguarType) {
                 val uid = hit.sourceUid
@@ -75,7 +99,10 @@ constructor(
             }
             register(MoonsExternals.STANDARD_ATTACK) { _, npc, target, _ -> fights.standardAttack(npc, target) }
             register(MoonsExternals.BURN) { _, npc, target, _ -> fights.burnOffGlyph(npc, target) }
-            register(MoonsExternals.SUBDUED) { _, _, target, _ -> fights.subdue(target) }
+            register(MoonsExternals.SUBDUED) { _, _, target, _ ->
+                fights.subdue(target)
+                eclipse.subdued(target)
+            }
             register(MoonsExternals.OVERLAYS) { ctx -> fights.moonOf(ctx.npc)?.let(overlays::show) }
             register(MoonsExternals.CIRCLE_SPAWN) { ctx ->
                 ctx.npc.anim("seq.vfx_djinn_ueyatlalli_protection_spawn_02")
@@ -85,6 +112,23 @@ constructor(
             register(MoonsExternals.SAP) { ctx -> fights.sap(ctx.npc) }
             register(MoonsExternals.POOL_HIT) { ctx -> fights.poolHit(ctx.npc, ctx.target, ctx.params as Int) }
             register(MoonsExternals.RAIN_THROW) { ctx -> fights.rainThrow(ctx.npc) }
+            register(MoonsExternals.THROW_TO) { ctx ->
+                @Suppress("UNCHECKED_CAST")
+                fights.moonOf(ctx.npc)?.let { fights.throwToOffset(it, ctx.params as Pair<Int, Int>) }
+            }
+            register(MoonsExternals.SHIELD_SPAWN) { ctx -> eclipse.shieldSpawned(ctx.npc) }
+            register(MoonsExternals.SHIELD_STEP) { eclipse.shieldStep() }
+            register(MoonsExternals.SHIELD_SINK) { eclipse.shieldSink() }
+            register(MoonsExternals.RAY_FIRE) { ctx -> eclipse.rayFire(ctx.target) }
+            register(MoonsExternals.BIND) { eclipse.bindAll() }
+            register(MoonsExternals.UNBIND) { eclipse.unbindAll() }
+            register(MoonsExternals.MOON_HIDE) { ctx -> eclipse.hideMoon(ctx.npc) }
+            register(MoonsExternals.MOON_SHOW) { ctx -> ctx.npc.resetTransmog() }
+            register(MoonsExternals.OPS_HIDE) { ctx -> eclipse.setMoonOps(ctx.npc, false) }
+            register(MoonsExternals.OPS_SHOW) { ctx -> eclipse.setMoonOps(ctx.npc, true) }
+            register(MoonsExternals.CLONE_SPAWN) { ctx -> eclipse.cloneSpawned(ctx.npc, ctx.params as Side) }
+            register(MoonsExternals.CLONE_STRIKE) { ctx -> eclipse.cloneStrike(ctx.params as Side) }
+            register(MoonsExternals.CLONE_LEAVE) { ctx -> eclipse.cloneLeave(ctx.params as Side) }
         }
 
         for (moon in Moon.entries) {
@@ -92,7 +136,10 @@ constructor(
             if (moon !in ACTIVE_MOONS) continue
             onArea(moon.area) {
                 val privateCopy = RegionRegistry.inWorkingArea(player.coords)
-                if (!privateCopy && !player.isSubdued(moon)) fights.begin(player, moon)
+                if (!privateCopy && !player.isSubdued(moon)) {
+                    fights.begin(player, moon)
+                    if (moon == Moon.Eclipse) eclipse.joined(player)
+                }
             }
             onAreaExit(moon.area) { fights.end(player) }
         }
@@ -125,6 +172,11 @@ constructor(
         onCommand("moondebug") {
             desc = "Toggle Moon hit debug messages"
             cheat { player.spam("Moon debug: ${if (fights.toggleDebug(player)) "on" else "off"}") }
+        }
+        onCommand("bindtest") {
+            desc = "Bind yourself in place; walk clicks only turn you"
+            invalidArgs = "Use as ::bindtest [ticks]"
+            cheat { bindTest() }
         }
         onCommand("moonreset") {
             desc = "Clear your subdued Moons"
@@ -175,7 +227,7 @@ constructor(
         }
         soundSynth(MoonsFights.PORTAL_SYNTH)
         delay(ENTRY_DELAY)
-        telejump(moon.glyph(fights.focus(moon)), TeleportType.Exempt)
+        telejump(fights.arrival(moon), TeleportType.Exempt)
     }
 
     private suspend fun ProtectedAccess.escape() {
@@ -201,6 +253,20 @@ constructor(
         deps.encounterRegistry.of(npc).personalHp?.set(player, amount.coerceAtLeast(1))
     }
 
+    private fun Cheat.bindTest() {
+        val ticks = args.firstOrNull()?.toIntOrNull() ?: BIND_TEST_TICKS
+        val anchor = player.coords
+        player.abortRoute()
+        player.bound = true
+        player.spam("Bound at ${anchor.x},${anchor.z} for $ticks ticks.")
+        deps.worldQueues.add(ticks) {
+            if (!player.isSlotAssigned) return@add
+            player.bound = false
+            val moved = if (player.coords == anchor) "never moved" else "MOVED to ${player.coords.x},${player.coords.z}"
+            player.spam("Released; $moved.")
+        }
+    }
+
     private val Moon.hookKey: NeypotzliMoon
         get() =
             when (this) {
@@ -216,11 +282,13 @@ constructor(
     }
 
     private companion object {
+        private const val CLONE_NPC = "npc.pmoon_boss_eclipse_clone"
         private const val QUEST_FIGHT_STAGE = 28
         private const val QUEST_COMPLETE = 36
         private const val ATTACK_RANGE = 15
         private const val ENTRY_DELAY = 2
-        private val ACTIVE_MOONS = setOf(Moon.Blood)
+        private const val BIND_TEST_TICKS = 30
+        private val ACTIVE_MOONS = setOf(Moon.Blood, Moon.Eclipse)
         private val EXIT_STAIRS = listOf("loc.pmoon_boss_exit_stairs", "loc.pmoon_boss_exit_stairs_2")
         private val STATUE_APPROACH =
             mapOf(

@@ -40,6 +40,7 @@ class MoonsFight(val player: Player, val moon: Moon) {
     var burn: Int = BURN_START
     var subdued: Boolean = false
     var chainUntil: Int = -1
+    var parryUntil: Int = -1
 
     companion object {
         const val BURN_START = 1
@@ -82,7 +83,7 @@ constructor(
 
     fun playersIn(moon: Moon): List<Player> = fights.values.filter { it.moon == moon }.map { it.player }
 
-    private fun tracker(moon: Moon): PersonalHpTracker? = npcs[moon]?.let { deps.encounter(it).personalHp }
+    fun tracker(moon: Moon): PersonalHpTracker? = npcs[moon]?.let { deps.encounter(it).personalHp }
 
     fun begin(player: Player, moon: Moon) {
         if (fights[player]?.moon == moon) return
@@ -112,6 +113,8 @@ constructor(
     fun end(player: Player, quiet: Boolean = false) {
         val fight = fights.remove(player) ?: return
         debugging.remove(player)
+        player.bound = false
+        fight.parryUntil = -1
         val moon = fight.moon
         tracker(moon)?.remove(player)
         if (!quiet) {
@@ -163,7 +166,11 @@ constructor(
         if (player in debugging) player.spam("[moon t=${deps.mapClock.cycle}] $text")
     }
 
-    private class HitChain(var missed: Boolean = false, var attempted: Boolean = false)
+    private class HitChain(
+        var missed: Boolean = false,
+        var attempted: Boolean = false,
+        var messaged: Boolean = false,
+    )
 
     private fun chainHit(fight: MoonsFight, npc: Npc, index: Int, chain: HitChain) {
         val player = fight.player
@@ -181,7 +188,11 @@ constructor(
             val hit = player.finishNpcHit(npc, 1, HitType.Typeless, damage, deps.playerHitModifier)
             debug(player, "chain hit ${index + 1}: ${if (landed) "landed" else "missed"} rolled=$damage dealt=${hit.damage}")
             if (landed) {
-                addCondition(fight, CHAIN_CONDITION[index])
+                addCondition(fight, moon.chainCurse(index, hit.damage))
+                if (!chain.messaged) {
+                    chain.messaged = true
+                    moon.attackMessage?.let { player.mes(it) }
+                }
                 if (moon == Moon.Blood) {
                     val heal =
                         if (last) deps.random.of(BLOOD_FINAL_HEAL.first, BLOOD_FINAL_HEAL.last)
@@ -194,9 +205,13 @@ constructor(
                 chain.missed = true
             }
         }
-        if (!last || !chain.attempted) return
         val tracker = tracker(moon) ?: return
         val hitpoints = tracker.of(player)?.hitpoints ?: return
+        if (moon.selfDamagePerSwing) {
+            if (onGlyph) tracker.set(player, (hitpoints - 1).coerceAtLeast(1))
+            return
+        }
+        if (!last || !chain.attempted) return
         tracker.set(player, (hitpoints - (hitpoints / SELF_DAMAGE_DIVISOR).coerceAtLeast(1)).coerceAtLeast(1))
     }
 
@@ -365,22 +380,42 @@ constructor(
                     }
                     .firstOrNull { it != from && moon.inArena(it) && !deps.collision.isWalkBlocked(it) }
                     ?: continue
-            player.anim(THROW_SEQ)
-            player.spotanim(THROW_SPOTANIM, height = THROW_SPOTANIM_HEIGHT)
-            player.soundSynth(THROW_SYNTH)
-            PathingEntityCommon.teleport(player, deps.collision, dest)
-            player.pendingExactMove =
-                EntityExactMove(
-                    deltaX1 = from.x - dest.x,
-                    deltaZ1 = from.z - dest.z,
-                    deltaX2 = 0,
-                    deltaZ2 = 0,
-                    clientDelay1 = 0,
-                    clientDelay2 = THROW_CLIENT_CYCLES,
-                    direction = Angles.bearing(dest, from),
-                )
+            throwTo(player, dest)
         }
     }
+
+    fun throwTo(player: Player, dest: CoordGrid) {
+        val from = player.coords
+        player.anim(THROW_SEQ)
+        player.spotanim(THROW_SPOTANIM, height = THROW_SPOTANIM_HEIGHT)
+        player.soundSynth(THROW_SYNTH)
+        PathingEntityCommon.teleport(player, deps.collision, dest)
+        player.pendingExactMove =
+            EntityExactMove(
+                deltaX1 = from.x - dest.x,
+                deltaZ1 = from.z - dest.z,
+                deltaX2 = 0,
+                deltaZ2 = 0,
+                clientDelay1 = 0,
+                clientDelay2 = THROW_CLIENT_CYCLES,
+                direction = Angles.bearing(dest, from),
+            )
+    }
+
+    fun throwToOffset(moon: Moon, offset: Pair<Int, Int>) {
+        val dest = moon.southWest.translate(offset.first, offset.second)
+        for (fight in fights.values.filter { it.moon == moon && !it.subdued }) {
+            throwTo(fight.player, dest)
+        }
+    }
+
+    fun arrival(moon: Moon): CoordGrid = moon.landing(focus(moon))
+
+    fun damagePool(player: Player, damage: Int) {
+        val fight = fights[player] ?: return
+        if (damage > 0 && !fight.subdued && tracker(fight.moon)?.damage(player, damage) == true) subdue(player)
+    }
+
 
     /** Runs once for the player whose pool reached 0; the shared npc itself never dies. */
     fun subdue(player: Player) {

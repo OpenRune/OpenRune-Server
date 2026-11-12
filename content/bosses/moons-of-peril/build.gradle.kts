@@ -12,4 +12,10 @@ dependencies {
     implementation(projects.api.repo)
     implementation(projects.api.random)
     implementation(projects.api.registry)
+    implementation(projects.api.config)
+    implementation(projects.api.combat.combatCommons)
+    implementation(projects.engine.game)
+    implementation(projects.api.combat.combatManager)
+    implementation(projects.api.combat.combatWeapon)
+    implementation(projects.api.weapons)
 }
