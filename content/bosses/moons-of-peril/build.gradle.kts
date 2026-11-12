@@ -4,7 +4,13 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.areaChecker)
+    implementation(projects.content.other.consumables)
     implementation(projects.api.bosses)
+    implementation(projects.content.interfaces.collectionLog)
+    implementation(projects.api.dropTable)
+    implementation(projects.api.dropTablePlugin)
+    implementation(projects.content.skills.herblore)
     implementation(projects.api.bossHpBarPlugin)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.combat.combatFormulas)

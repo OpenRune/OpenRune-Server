@@ -22,11 +22,10 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /**
- * Bream fishing in the Streambound Cavern. Fish swim down both rivers all the time, whether or not
- * anyone is there. Every other tick one sets off from a random source towards a random lane at the
- * bend, and three ticks later it turns for the lane it ends in at the fishing spot. That last lane
- * is the same in both rivers and is settled as the fish sets off: the tick after, everyone whose
- * net is turned to it nets the fish, well before it is seen to arrive.
+ * Bream fishing in the Streambound Cavern. While anyone is fishing a river, a fish is released from
+ * a random source every other tick: a first leg to a random lane at the bend, then, three ticks
+ * later when the first has finished, a second leg to a random lane at the net. Everyone whose net
+ * is turned to the lane the fish ends in nets it when it arrives.
  */
 class RiverFishing
 @Inject
@@ -39,7 +38,7 @@ constructor(
 ) : PluginScript() {
     private val sessions = IdentityHashMap<Player, Session>()
     private var cycle = 0
-    private var releasedLane = NO_LANE
+
 
     override fun ScriptContext.startup() {
         onOpLoc1("loc.river_fishing_spot") { castOrAlign(it.loc.coords) }
@@ -102,39 +101,36 @@ constructor(
             val idle = cycle - session.lastClick >= IDLE_TICKS
             if (player.coords != session.stand || idle) stop(player)
         }
-        if (cycle % RELEASE_INTERVAL == 0) {
-            release()
-        } else {
-            turnAtBend()
-            net()
+        if (cycle % ANIM_INTERVAL == 0) {
+            for (player in sessions.keys) player.anim("seq.human_largenet_looping")
+        }
+        for (river in RIVERS) {
+            val watched = sessions.values.any { it.river === river }
+            if (watched && cycle % RELEASE_INTERVAL == 0) release(river)
+            arrive(river)
         }
         worldQueues.add(1, ::tick)
     }
 
-    private fun release() {
-        val mouth = randomLane()
-        releasedLane = mouth
-        for (river in RIVERS) {
-            val bend = randomLane()
-            river.upstream.addLast(Fish(bend, mouth))
-            val source = river.sources[random.of(0, river.sources.lastIndex)]
-            swim(source, river.bend[bend], UPPER_LEG)
-        }
+    private fun release(river: River) {
+        val source = river.source[random.of(0, river.source.lastIndex)]
+        val bend = river.bend[randomLane()]
+        val lane = randomLane()
+        swim(source, bend, UPPER_LEG)
+        worldQueues.add(LEG_GAP_TICKS) { swim(bend, river.mouth[lane], LOWER_LEG) }
+        river.swimming += Swimmer(lane, cycle + ARRIVE_TICKS)
     }
 
-    private fun turnAtBend() {
-        for (river in RIVERS) {
-            if (river.upstream.size <= 1) continue
-            val fish = river.upstream.removeFirst()
-            swim(river.bend[fish.bend], river.mouth[fish.mouth], LOWER_LEG)
-        }
-    }
-
-    private fun net() {
-        if (releasedLane == NO_LANE) return
-        for (player in sessions.keys.toList()) {
-            player.anim("seq.human_largenet_looping")
-            if (player.vars["varbit.river_fishing_dir"] == releasedLane) land(player)
+    private fun arrive(river: River) {
+        val iterator = river.swimming.iterator()
+        while (iterator.hasNext()) {
+            val fish = iterator.next()
+            if (fish.arrives > cycle) continue
+            iterator.remove()
+            for ((player, session) in sessions.entries.toList()) {
+                if (session.river !== river) continue
+                if (player.vars["varbit.river_fishing_dir"] == fish.lane) land(player)
+            }
         }
     }
 
@@ -184,7 +180,7 @@ constructor(
 
     private fun randomLane(): Int = random.of(0, LANES - 1)
 
-    private class Fish(val bend: Int, val mouth: Int)
+    private class Swimmer(val lane: Int, val arrives: Int)
 
     private class Session(val river: River, val stand: CoordGrid, started: Int) {
         var lastClick = started
@@ -193,13 +189,13 @@ constructor(
     /** [bend] and [mouth] hold one tile per lane, in the order `river_fishing_dir` counts them. */
     private class River(
         val spot: CoordGrid,
-        val sources: List<CoordGrid>,
+        val source: List<CoordGrid>,
         val bend: List<CoordGrid>,
         val mouth: List<CoordGrid>,
         val netZone: List<CoordGrid>,
         val laneAlongX: Boolean,
     ) {
-        val upstream = ArrayDeque<Fish>()
+        val swimming = ArrayList<Swimmer>()
 
         fun isSpot(coords: CoordGrid): Boolean = coords.x == spot.x && coords.z == spot.z
 
@@ -212,7 +208,9 @@ constructor(
     private companion object {
         private const val LANES = 3
         private const val MIDDLE_LANE = 1
-        private const val NO_LANE = -1
+        private const val ANIM_INTERVAL = 5
+        private const val LEG_GAP_TICKS = 3
+        private const val ARRIVE_TICKS = 6
         private const val FISHING_LEVEL = 20
         private const val MAX_LEVEL = 99
         private const val RELEASE_INTERVAL = 2
@@ -240,7 +238,7 @@ constructor(
             listOf(
                 River(
                     spot = CoordGrid(1501, 9698),
-                    sources = (1504..1506).map { CoordGrid(it, 9689) },
+                    source = (1504..1506).map { CoordGrid(it, 9689) },
                     bend = (1501..1503).map { CoordGrid(it, 9693) },
                     mouth = (1500..1502).map { CoordGrid(it, 9698) },
                     netZone = (1500..1502).flatMap { x -> (9694..9698).map { CoordGrid(x, it) } },
@@ -248,7 +246,7 @@ constructor(
                 ),
                 River(
                     spot = CoordGrid(1521, 9689),
-                    sources = (9688..9690).map { CoordGrid(1528, it) },
+                    source = (9688..9690).map { CoordGrid(1528, it) },
                     bend = (9688..9690).map { CoordGrid(1524, it) },
                     mouth = (9688..9690).map { CoordGrid(1521, it) },
                     netZone = (1521..1526).flatMap { x -> (9688..9690).map { CoordGrid(x, it) } },

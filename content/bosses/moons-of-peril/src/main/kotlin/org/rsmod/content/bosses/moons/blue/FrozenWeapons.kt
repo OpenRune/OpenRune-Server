@@ -59,7 +59,7 @@ class FrozenWeapons @Inject constructor(private val eventBus: EventBus) {
         return stash(player, holding, type)
     }
 
-    fun releaseAtLogin(player: Player): ReleaseResult {
+    fun reclaim(player: Player): ReleaseResult {
         val holding = holding(player)
         val obj = holding[0] ?: return ReleaseResult.Nothing
         return stash(player, holding, getInvObj(obj))

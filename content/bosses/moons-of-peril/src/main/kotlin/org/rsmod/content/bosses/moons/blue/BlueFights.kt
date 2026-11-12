@@ -300,9 +300,11 @@ constructor(
         }
     }
 
-    override fun left(player: Player) {
-        frozenWeapons.release(player).let { result ->
-            if (result != ReleaseResult.Kept) player.set(WEAR_PREVENT, 0) else player.set(WEAR_PREVENT, 1)
+    override fun left(player: Player, loggedOut: Boolean) {
+        if (!loggedOut) {
+            frozenWeapons.release(player).let { result ->
+                if (result != ReleaseResult.Kept) player.set(WEAR_PREVENT, 0) else player.set(WEAR_PREVENT, 1)
+            }
         }
         player.set(ICICLE_STATE, 0)
         player.set(AD_HP, 0)
@@ -314,17 +316,7 @@ constructor(
     }
 
     fun loginNet(player: Player) {
-        if (frozenWeapons.held(player) != null) {
-            val message =
-                when (frozenWeapons.releaseAtLogin(player)) {
-                    ReleaseResult.ToInventory -> LOGIN_INVENTORY_MESSAGE
-                    ReleaseResult.ToBank -> LOGIN_BANK_MESSAGE
-                    ReleaseResult.Kept -> LOGIN_KEPT_MESSAGE
-                    else -> null
-                }
-            message?.let(player::mes)
-        }
-        player.set(WEAR_PREVENT, 0)
+        if (frozenWeapons.held(player) == null) player.set(WEAR_PREVENT, 0)
     }
 
     fun onDeathRelease(player: Player) {
@@ -362,13 +354,6 @@ constructor(
         private const val DISARM_MESSAGE =
             "<col=00e6e6>Your weapon freezes over. You're forced to let go!</col>"
         private const val RETRIEVE_MESSAGE = "You retrieve your weapon from within the cracked ice."
-        private const val LOGIN_INVENTORY_MESSAGE =
-            "Eyatlalli returns the weapon you left frozen in the Blue Moon's arena."
-        private const val LOGIN_BANK_MESSAGE =
-            "Eyatlalli has sent the weapon you left frozen in the Blue Moon's arena to your bank."
-        private const val LOGIN_KEPT_MESSAGE =
-            "Eyatlalli is still holding the weapon you left frozen in the Blue Moon's arena. " +
-                "Make room in your inventory or bank and log in again."
         private const val STAND_IN_NPC = "npc.pmoon_boss_tracking_npc"
         private const val STAND_IN_LIFESPAN = 20
         private const val FAKE_MAGIC = "spotanim.pmoon_boss_fake_blue_magic"

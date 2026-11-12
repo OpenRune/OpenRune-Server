@@ -53,3 +53,7 @@ coords = "1_22_150_24_36"
 [[spawn]]
 npc = "npc.pmoon_eyatlalli"
 coords = "1_22_150_35_33"
+
+[[spawn]]
+npc = "npc.pmoon_eyatlalli_postquest"
+coords = "0_23_149_51_42"
