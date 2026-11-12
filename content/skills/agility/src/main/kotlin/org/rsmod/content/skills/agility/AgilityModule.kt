@@ -6,5 +6,6 @@ class AgilityModule : PluginModule() {
     override fun bind() {
         addSetBinding<AgilityCourseHook>(WyrmTermites::class.java)
         addSetBinding<AgilityCourseHook>(PrifddinasPortals::class.java)
+        addSetBinding<AgilityCourseHook>(WildernessLaps::class.java)
     }
 }
