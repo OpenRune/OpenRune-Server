@@ -2,6 +2,7 @@ package org.rsmod.content.skills.agility.pack
 
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
+import org.rsmod.content.skills.agility.pack.arena.brimhavenArenaObstacles
 import org.rsmod.content.skills.agility.pack.course.apeAtollObstacles
 import org.rsmod.content.skills.agility.pack.course.barbarianObstacles
 import org.rsmod.content.skills.agility.pack.course.dorgeshKaanObstacles
@@ -158,6 +159,7 @@ object AgilityObstaclesTable {
             shayzienObstacles()
             wyrmObstacles()
             penguinObstacles()
+            brimhavenArenaObstacles()
             pyramidObstacles()
             dorgeshKaanObstacles()
             shortcutObstacles()
