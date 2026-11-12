@@ -47,8 +47,13 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
     }
 
     /** See [PersonalHpSpec]. */
-    fun personalHp(maxHitpoints: Int, hpVarbit: String? = null, onDeath: AbilityRef? = null) {
-        personalHp = PersonalHpSpec(maxHitpoints, hpVarbit, onDeath?.name)
+    fun personalHp(
+        maxHitpoints: Int,
+        hpVarbit: String? = null,
+        onDeath: AbilityRef? = null,
+        headbar: String? = null,
+    ) {
+        personalHp = PersonalHpSpec(maxHitpoints, hpVarbit, onDeath?.name, headbar)
     }
 
     fun ability(name: String, block: AbilityBuilder.() -> Unit): AbilityRef {

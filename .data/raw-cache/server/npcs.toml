@@ -15122,6 +15122,10 @@ moveRestrict = "NoMove"
 wanderRange = 0
 [npc.params]
 "param.hitpoints_locked"=true
+"param.headbar_hidden"=true
+"param.boss_hp_bar_colour_back"=1048576
+"param.boss_hp_bar_colour_sliding"=4194304
+"param.boss_hp_bar_colour_remaining"=7866376
 "param.attack_range"=15
 "param.poison_immunity"=1
 "param.venom_immunity"=2
@@ -15139,6 +15143,9 @@ moveRestrict = "NoMove"
 wanderRange = 0
 [npc.params]
 "param.hitpoints_locked"=true
+"param.boss_hp_bar_colour_back"=1581088
+"param.boss_hp_bar_colour_sliding"=5798024
+"param.boss_hp_bar_colour_remaining"=10543352
 "param.attack_range"=15
 "param.poison_immunity"=1
 "param.venom_immunity"=2
@@ -15156,6 +15163,10 @@ moveRestrict = "NoMove"
 wanderRange = 0
 [npc.params]
 "param.hitpoints_locked"=true
+"param.headbar_hidden"=true
+"param.boss_hp_bar_colour_back"=2101248
+"param.boss_hp_bar_colour_sliding"=8407048
+"param.boss_hp_bar_colour_remaining"=15239184
 "param.attack_range"=15
 "param.poison_immunity"=1
 "param.venom_immunity"=2

@@ -125,6 +125,8 @@ public sealed class PathingEntity {
 
     public var pendingFaceAngle: EntityFaceAngle = EntityFaceAngle.NULL
 
+    public var pendingFaceInstant: Boolean = false
+
     public var pendingFaceSquare: CoordGrid = CoordGrid.NULL
     public var pendingFaceWidth: Int = 1
     public var pendingFaceLength: Int = 1

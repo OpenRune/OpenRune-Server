@@ -6,3 +6,8 @@ pmoon_eclipse_arena = 32447
 [gamevals.varp]
 pmoon_inside = 64500
 pmoon_trap_first_rock = 64501
+
+[gamevals.headbar]
+blood_120 = 63
+ice_120 = 64
+heat_120 = 65

@@ -12,6 +12,11 @@ enum class Moon(
     val deathSpotanim: String,
     val southWest: CoordGrid,
     val flatArmour: Int,
+    val attackAnim: String,
+    val attackSounds: List<Pair<String, Int>> = emptyList(),
+    val attackMessage: String? = null,
+    val hitSynth: String? = null,
+    val selfDamagePerSwing: Boolean = false,
 ) {
     Blood(
         label = "Blood Moon",
@@ -23,6 +28,7 @@ enum class Moon(
         deathSpotanim = "spotanim.pmoon_boss_fake_blood_death",
         southWest = CoordGrid(1390, 9630),
         flatArmour = -2,
+        attackAnim = "seq.npc_djinn_01_combo",
     ),
     Blue(
         label = "Blue Moon",
@@ -34,6 +40,7 @@ enum class Moon(
         deathSpotanim = "spotanim.pmoon_boss_fake_blue_death",
         southWest = CoordGrid(1438, 9678),
         flatArmour = -5,
+        attackAnim = "seq.npc_djinn_03_combo",
     ),
     Eclipse(
         label = "Eclipse Moon",
@@ -45,10 +52,35 @@ enum class Moon(
         deathSpotanim = "spotanim.pmoon_boss_fake_eclipse_death",
         southWest = CoordGrid(1486, 9630),
         flatArmour = 6,
+        attackAnim = "seq.npc_djinn_02_combo",
+        attackSounds =
+            listOf(
+                "synth.varl_pm_eclipse_melee_combo_swipe_04" to 48,
+                "synth.varl_pm_eclipse_melee_combo_swipe_02" to 80,
+                "synth.varl_pm_eclipse_melee_combo_swipe_03" to 103,
+            ),
+        attackMessage = "The Eclipse Moon's light pierces your defence and blinds you!",
+        hitSynth = "synth.varl_pm_eclipse_damage_impact_01",
+        selfDamagePerSwing = true,
     );
 
     val centre: CoordGrid
         get() = southWest.translate(BOSS_SIZE / 2, BOSS_SIZE / 2)
+
+    fun chainCurse(index: Int, dealt: Int): Int =
+        if (this == Eclipse) dealt * ECLIPSE_CURSE_MULTIPLIER[index] else CHAIN_CURSE[index]
+
+    /** Where a player lands when joining during the New Moon / Full Moon special. */
+    fun landing(focus: Int): CoordGrid {
+        val special =
+            when {
+                this != Eclipse -> null
+                focus == NEW_MOON -> 5 to -3
+                focus == FULL_MOON -> 2 to 2
+                else -> null
+            }
+        return special?.let { (dx, dz) -> southWest.translate(dx, dz) } ?: glyph(focus)
+    }
 
     fun glyph(focus: Int): CoordGrid {
         val (dx, dz) = GLYPH_OFFSETS[focus]
@@ -77,6 +109,9 @@ enum class Moon(
         const val ARENA_SOUTH = -14
         const val ARENA_EAST = 18
         const val ARENA_NORTH = 15
+
+        private val CHAIN_CURSE = listOf(2, 4, 10)
+        private val ECLIPSE_CURSE_MULTIPLIER = listOf(1, 2, 5)
 
         val SAFE_GLYPHS = listOf(1, 2, 3, 5, 6, 7)
 

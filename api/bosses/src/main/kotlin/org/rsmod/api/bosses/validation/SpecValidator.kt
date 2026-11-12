@@ -85,6 +85,7 @@ object SpecValidator {
                     error("${scope.prefix}maxHitpoints '${personal.maxHitpoints}' must be greater than 0.")
                 }
                 personal.onDeath?.let { requireAbility(it, scope, "onDeath ability") }
+                personal.headbar?.let { headbarRef(it, scope) }
             }
 
             for ((ability, delay) in spec.abilityAttackDelays) {

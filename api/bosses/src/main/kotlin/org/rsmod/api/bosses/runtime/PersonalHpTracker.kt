@@ -10,6 +10,7 @@ class PersonalHpState(val player: Player, var hitpoints: Int, var dead: Boolean 
 /** The per-player pools of a [PersonalHpSpec] boss; see there. */
 class PersonalHpTracker(
     private val spec: PersonalHpSpec,
+    private val showHeadbar: (Player, Int) -> Unit = { _, _ -> },
     private val writeVarbit: (Player, String, Int) -> Unit = VarPlayerIntMapSetter::set,
 ) {
     private val states = IdentityHashMap<Player, PersonalHpState>()
@@ -27,7 +28,7 @@ class PersonalHpTracker(
     fun remove(player: Player) {
         val state = states.remove(player) ?: return
         state.hitpoints = spec.maxHitpoints
-        sync(state)
+        spec.hpVarbit?.let { writeVarbit(player, it, state.hitpoints) }
     }
 
     fun of(player: Player): PersonalHpState? = states[player]
@@ -65,5 +66,6 @@ class PersonalHpTracker(
 
     private fun sync(state: PersonalHpState) {
         spec.hpVarbit?.let { writeVarbit(state.player, it, state.hitpoints) }
+        if (spec.headbar != null) showHeadbar(state.player, state.hitpoints)
     }
 }
