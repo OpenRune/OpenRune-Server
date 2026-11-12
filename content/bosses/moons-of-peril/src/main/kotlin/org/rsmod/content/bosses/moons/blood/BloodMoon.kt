@@ -24,11 +24,10 @@ class BloodMoon @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
             fun focusPhase(focus: Int, next: String) {
                 val (dx, dz) = Moon.GLYPH_OFFSETS[focus]
-                val glyph = area(spawnTile(dx, dz), spawnTile(dx + Moon.GLYPH_SIZE - 1, dz + Moon.GLYPH_SIZE - 1))
                 val standard =
                     ability("standard_attack_$focus") {
                         anim("seq.npc_djinn_01_combo")
-                        include(onEach(playersIn(glyph), external(MoonsExternals.STANDARD_ATTACK)))
+                        include(onEach(playersIn(ARENA), external(MoonsExternals.STANDARD_ATTACK)))
                     }
                 val entry =
                     ability(

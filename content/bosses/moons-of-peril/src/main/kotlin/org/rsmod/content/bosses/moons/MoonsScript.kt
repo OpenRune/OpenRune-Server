@@ -8,6 +8,7 @@ import org.rsmod.api.player.hook.NeypotzliHook
 import org.rsmod.api.player.hook.NeypotzliMoon
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.spam
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.registry.region.RegionRegistry
@@ -101,6 +102,10 @@ constructor(
             desc = "Set your pool of the Moon you are fighting"
             invalidArgs = "Use as ::moonhp amount"
             cheat { setPool() }
+        }
+        onCommand("moondebug") {
+            desc = "Toggle Moon hit debug messages"
+            cheat { player.spam("Moon debug: ${if (fights.toggleDebug(player)) "on" else "off"}") }
         }
         onCommand("moonreset") {
             desc = "Clear your subdued Moons"
