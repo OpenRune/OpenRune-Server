@@ -50,7 +50,8 @@ constructor(private val random: GameRandom, private val dropRegistry: DropTableR
         }
         val defeated = Moon.entries.filter { player.vars[it.deadVarbit] != 0 }
         val claimed = player.vars[CHEST_COUNT_VARP]
-        if (claimed == 0 && defeated.size < Moon.entries.size) {
+        val unlocked = claimed > 0 || Moon.entries.all { player.vars[it.killsVarp] > 0 }
+        if (!unlocked) {
             mes("You need to subdue all three of the Moons before you can claim a reward.")
             return
         }
