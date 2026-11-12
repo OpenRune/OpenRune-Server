@@ -2,7 +2,10 @@ package org.rsmod.api.player.output
 
 import net.rsprot.protocol.game.outgoing.specific.AnimSpecific
 import net.rsprot.protocol.game.outgoing.specific.MapAnimSpecific
+import net.rsprot.protocol.game.outgoing.specific.NpcAnimSpecific
+import net.rsprot.protocol.game.outgoing.specific.NpcSpotAnimSpecific
 import net.rsprot.protocol.game.outgoing.specific.ProjAnimSpecificV4
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
@@ -56,4 +59,18 @@ public fun Player.projAnimSpecific(projectile: ProjAnim) {
             targetIndex = projectile.targetIndex,
         ),
     )
+}
+
+public fun Player.npcAnimSpecific(npc: Npc, sequence: Int, delay: Int = 0) {
+    client.write(NpcAnimSpecific(npc.slotId, sequence, delay))
+}
+
+public fun Player.npcSpotanimSpecific(
+    npc: Npc,
+    spotanim: Int,
+    slot: Int = 0,
+    height: Int = 0,
+    delay: Int = 0,
+) {
+    client.write(NpcSpotAnimSpecific(npc.slotId, spotanim, slot, height, delay))
 }

@@ -16,7 +16,7 @@ enum class Moon(
     val attackSounds: List<Pair<String, Int>> = emptyList(),
     val attackMessage: String? = null,
     val hitSynth: String? = null,
-    val selfDamagePerSwing: Boolean = false,
+    val selfDamage: SelfDamage = SelfDamage.PerAttack,
 ) {
     Blood(
         label = "Blood Moon",
@@ -41,6 +41,15 @@ enum class Moon(
         southWest = CoordGrid(1438, 9678),
         flatArmour = -5,
         attackAnim = "seq.npc_djinn_03_combo",
+        attackSounds =
+            listOf(
+                "synth.varl_pm_boss_blue_melee_swipe_01" to 50,
+                "synth.varl_pm_boss_blue_melee_swipe_02" to 85,
+                "synth.varl_pm_boss_blue_melee_swipe_03" to 115,
+            ),
+        attackMessage = "The Blue Moon pierces your defence and chills your joints!",
+        hitSynth = "synth.varl_pm_boss_blue_hit_01",
+        selfDamage = SelfDamage.PerChainHit,
     ),
     Eclipse(
         label = "Eclipse Moon",
@@ -61,8 +70,14 @@ enum class Moon(
             ),
         attackMessage = "The Eclipse Moon's light pierces your defence and blinds you!",
         hitSynth = "synth.varl_pm_eclipse_damage_impact_01",
-        selfDamagePerSwing = true,
+        selfDamage = SelfDamage.OnePerSwing,
     );
+
+    enum class SelfDamage {
+        PerAttack,
+        OnePerSwing,
+        PerChainHit,
+    }
 
     val centre: CoordGrid
         get() = southWest.translate(BOSS_SIZE / 2, BOSS_SIZE / 2)
@@ -74,6 +89,7 @@ enum class Moon(
     fun landing(focus: Int): CoordGrid {
         val special =
             when {
+                this == Blue && focus == NEW_MOON -> 2 to -1
                 this != Eclipse -> null
                 focus == NEW_MOON -> 5 to -3
                 focus == FULL_MOON -> 2 to 2

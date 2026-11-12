@@ -36,11 +36,20 @@ import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.hit.HitType
 import org.rsmod.map.CoordGrid
 
+interface BlueHooks {
+    fun onColdGain(fight: MoonsFight, before: Int, after: Int)
+
+    fun left(player: Player)
+}
+
 class MoonsFight(val player: Player, val moon: Moon) {
     var burn: Int = BURN_START
     var subdued: Boolean = false
     var chainUntil: Int = -1
     var parryUntil: Int = -1
+    var coldLocked: Boolean = false
+    var relightSide: Int = -1
+    var freezeTarget: Int = -1
 
     companion object {
         const val BURN_START = 1
@@ -85,9 +94,12 @@ constructor(
 
     fun tracker(moon: Moon): PersonalHpTracker? = npcs[moon]?.let { deps.encounter(it).personalHp }
 
+    var blueHooks: BlueHooks? = null
+
     fun begin(player: Player, moon: Moon) {
         if (fights[player]?.moon == moon) return
         end(player)
+        blueHooks?.left(player)
         val npc = npcs[moon] ?: return
         val tracker = tracker(moon) ?: return
         fights[player] = MoonsFight(player, moon)
@@ -112,6 +124,7 @@ constructor(
     /** [quiet] skips everything sent to the client, for a player who is logging out. */
     fun end(player: Player, quiet: Boolean = false) {
         val fight = fights.remove(player) ?: return
+        if (fight.moon == Moon.Blue) blueHooks?.left(player)
         debugging.remove(player)
         player.bound = false
         fight.parryUntil = -1
@@ -127,6 +140,11 @@ constructor(
         }
     }
 
+    fun setPlayerFocus(player: Player, value: Int) {
+        player.set("varbit.pmoon_boss_last_focus", player.vars[CURRENT_FOCUS])
+        player.set(CURRENT_FOCUS, value)
+    }
+
     fun setFocus(moon: Moon, next: Int) {
         val previous = focus(moon)
         focus[moon] = next
@@ -140,7 +158,10 @@ constructor(
 
     fun addCondition(fight: MoonsFight, amount: Int) {
         val player = fight.player
-        player.set(CONDITION, (player.vars[CONDITION] + amount).coerceIn(0, MAX_CONDITION))
+        val before = player.vars[CONDITION]
+        val after = (before + amount).coerceIn(0, MAX_CONDITION)
+        player.set(CONDITION, after)
+        if (fight.moon == Moon.Blue && amount > 0) blueHooks?.onColdGain(fight, before, after)
     }
 
     /**
@@ -207,12 +228,20 @@ constructor(
         }
         val tracker = tracker(moon) ?: return
         val hitpoints = tracker.of(player)?.hitpoints ?: return
-        if (moon.selfDamagePerSwing) {
-            if (onGlyph) tracker.set(player, (hitpoints - 1).coerceAtLeast(1))
-            return
+        when (moon.selfDamage) {
+            Moon.SelfDamage.OnePerSwing ->
+                if (onGlyph) tracker.set(player, (hitpoints - 1).coerceAtLeast(1))
+            Moon.SelfDamage.PerChainHit ->
+                if (onGlyph) {
+                    val cost = Math.round(hitpoints / SELF_DAMAGE_DIVISOR.toDouble()).toInt()
+                    tracker.set(player, (hitpoints - cost.coerceAtLeast(1)).coerceAtLeast(1))
+                }
+            Moon.SelfDamage.PerAttack ->
+                if (last && chain.attempted) {
+                    val cost = (hitpoints / SELF_DAMAGE_DIVISOR).coerceAtLeast(1)
+                    tracker.set(player, (hitpoints - cost).coerceAtLeast(1))
+                }
         }
-        if (!last || !chain.attempted) return
-        tracker.set(player, (hitpoints - (hitpoints / SELF_DAMAGE_DIVISOR).coerceAtLeast(1)).coerceAtLeast(1))
     }
 
     private fun bloodHeal(fight: MoonsFight, npc: Npc, amount: Int, scream: Boolean) {
@@ -225,6 +254,11 @@ constructor(
         if (scream) {
             player.projAnimSpecific(healProjectile(player, npc, BLOOD_SCREAM_SPOTANIM, 12, 12, 40, 0, 50))
         }
+        showHeal(fight, npc, amount)
+    }
+
+    fun showHeal(fight: MoonsFight, npc: Npc, amount: Int) {
+        val player = fight.player
         val hitmark = HEAL_HITMARK.asRSCM(RSCMType.HITMARK)
         deps.worldQueues.add(HEAL_HITSPLAT_DELAY) {
             if (fights[player] !== fight || !npc.isValidTarget()) return@add

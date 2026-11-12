@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
@@ -18,4 +19,12 @@ dependencies {
     implementation(projects.api.combat.combatManager)
     implementation(projects.api.combat.combatWeapon)
     implementation(projects.api.weapons)
+    implementation(projects.api.death)
+    implementation(projects.api.invtx)
+    implementation(projects.api.playerOutput)
+    implementation(projects.content.interfaces.bank)
+    testImplementation(libs.mockk)
+    testImplementation(libs.fastutil)
+    testImplementation(projects.api.invStorage)
+    testImplementation(projects.api.utils.utilsLogging)
 }
