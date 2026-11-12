@@ -20,7 +20,7 @@ class MoonsOverlays @Inject constructor(private val deps: BossDeps) {
                         loc,
                         Int.MAX_VALUE,
                         LocAngle.West,
-                        LocShape.GroundDecor,
+                        LocShape.CentrepieceDiagonal,
                     )
                 deps.worldRepo.locAnim(info, SPAWN_SEQ)
                 info
