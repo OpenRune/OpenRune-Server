@@ -1,0 +1,55 @@
+[[spawn]]
+npc = "npc.pmoon_attala_gates"
+coords = "0_22_48_27_52"
+
+[[spawn]]
+npc = "npc.pmoon_zuma_gates"
+coords = "0_22_48_28_51"
+
+[[spawn]]
+npc = "npc.pmoon_digsite_workers_plank"
+coords = "0_22_48_27_49"
+
+[[spawn]]
+npc = "npc.pmoon_quest_nagua"
+coords = "0_22_48_46_56"
+
+[[spawn]]
+npc = "npc.pmoon_attala_camtorum"
+coords = "1_22_149_30_60"
+
+[[spawn]]
+npc = "npc.pmoon_zuma_camtorum"
+coords = "1_22_149_30_56"
+
+[[spawn]]
+npc = "npc.pmoon_jessica_camtorum"
+coords = "1_22_149_33_60"
+
+[[spawn]]
+npc = "npc.cam_torum_shop_magic"
+coords = "1_22_149_18_32"
+
+[[spawn]]
+npc = "npc.cam_torum_shop_blacksmith"
+coords = "1_22_149_41_46"
+
+[[spawn]]
+npc = "npc.pmoon_attala_dungeon"
+coords = "1_22_150_31_38"
+
+[[spawn]]
+npc = "npc.pmoon_zuma_dungeon"
+coords = "1_22_150_33_38"
+
+[[spawn]]
+npc = "npc.pmoon_jessica_dungeon"
+coords = "1_22_150_32_39"
+
+[[spawn]]
+npc = "npc.pmoon_digsite_workers_noplank"
+coords = "1_22_150_24_36"
+
+[[spawn]]
+npc = "npc.pmoon_eyatlalli"
+coords = "1_22_150_35_33"

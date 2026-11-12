@@ -17,5 +17,7 @@ dependencies {
     implementation(projects.content.generic.genericLocs)
     implementation(projects.api.death)
     implementation(projects.api.serverConfig)
+    implementation(projects.api.registry)
+    implementation(projects.api.shops)
     implementation(libs.rsprot.api)
 }

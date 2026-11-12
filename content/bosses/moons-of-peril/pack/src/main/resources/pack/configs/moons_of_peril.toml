@@ -2,3 +2,8 @@
 id = "varp.pmoon_inside"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+id = "varp.pmoon_trap_first_rock"
+scope = "Temp"
+transmit = "Never"

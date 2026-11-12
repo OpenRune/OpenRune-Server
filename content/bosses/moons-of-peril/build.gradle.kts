@@ -10,4 +10,5 @@ dependencies {
     implementation(projects.api.player)
     implementation(projects.api.repo)
     implementation(projects.api.random)
+    implementation(projects.api.registry)
 }
