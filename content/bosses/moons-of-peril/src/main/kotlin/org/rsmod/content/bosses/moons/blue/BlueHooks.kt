@@ -37,17 +37,23 @@ class BlueWearPreventHook @Inject constructor(private val frozenWeapons: FrozenW
     }
 }
 
-class IcicleAttackHook @Inject constructor(private val fights: MoonsFights) :
+class IcicleAttackHook
+@Inject
+constructor(private val fights: MoonsFights, private val blue: BlueFights) :
     NpcAttackValidateHook {
     override fun validate(player: Player, npc: Npc): NpcAttackValidateResult {
         if (npc.visType.id !in ICICLE_IDS) return NpcAttackValidateResult.Pass
         if (fights.of(player)?.moon != Moon.Blue) return NpcAttackValidateResult.Pass
-        if (player.vars[BlueFights.ICICLE_STATE] == 0) return NpcAttackValidateResult.Pass
+        if (player.vars[BlueFights.ICICLE_STATE] == 0) {
+            val unfrozen = blue.icicleLocked() || player.worn[Wearpos.RightHand.slot] != null
+            return if (unfrozen) NpcAttackValidateResult.Deny(NOT_FROZEN_MESSAGE) else NpcAttackValidateResult.Pass
+        }
         player.soundSynth(PUNCH_SYNTH)
         return NpcAttackValidateResult.Deny(RETRIEVED_MESSAGE)
     }
 
     private companion object {
+        private const val NOT_FROZEN_MESSAGE = "Your weapon hasn't frozen over yet."
         private const val RETRIEVED_MESSAGE = "You've already retrieved your weapon!"
         private const val PUNCH_SYNTH = "synth.varl_pm_boss_blue_weapon_ice_block_cracking_01"
         private val ICICLE_IDS =
