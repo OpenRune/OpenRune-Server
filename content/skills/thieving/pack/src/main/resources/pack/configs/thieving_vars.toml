@@ -1,0 +1,9 @@
+[[varp]]
+id = "varp.gloves_of_silence_failures"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dodgy_necklace_uses"
+scope = "Perm"
+transmit = "Never"

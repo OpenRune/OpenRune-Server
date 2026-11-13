@@ -18,6 +18,7 @@ public class RSDropTable<T, R>(
     private val tertiaries: RSTable<T, R> = RSPreRollTable.Empty(),
     private val hooks: TableHooks<T, R> = TableHooks.Default(),
     public val mainRolls: Int = 1,
+    public val pickpockets: List<String> = emptyList(),
 ) : RSTable<T, R>, TableHooks<T, R> by hooks {
 
     private val separateRolls: RSTable<T, R> = mergeInlineSeparateRolls(separateRolls, mainTable)
