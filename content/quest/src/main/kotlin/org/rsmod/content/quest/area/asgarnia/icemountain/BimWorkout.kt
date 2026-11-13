@@ -89,7 +89,6 @@ constructor(
             access.anim("seq.emote_starjump_5")
             cinematicDelay(access, 8)
             access.ifCloseChat()
-            access.anim("seq.human_running")
             rat.walk(opening[CoordGrid(3251, 3394)])
             cinematicDelay(access, 1)
 
@@ -333,7 +332,6 @@ constructor(
             access.camLookAt(45, 54, 280, SNAP, SNAP)
             access.camMoveAt(45, 43, 600, SNAP, SNAP)
             access.fadeFromBlackNow(50)
-            access.anim("seq.human_running")
             cinematicDelay(access, 1)
 
             for (x in 3072 downTo 3040 step 2) {
@@ -484,7 +482,6 @@ constructor(
             access.camLookAt(55, 52, 280, SNAP, SNAP)
             access.camMoveAt(78, 52, 300, 3, 3)
             access.camLookAt(88, 52, 280, 3, 0)
-            access.anim("seq.human_running")
             var sprintMan: Npc? = null
             var sprintBaraek: Npc? = null
             var guardF: Npc? = null
