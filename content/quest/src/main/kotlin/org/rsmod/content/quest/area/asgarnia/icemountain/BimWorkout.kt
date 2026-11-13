@@ -612,7 +612,7 @@ constructor(
             cinematicDelay(access, 2)
             access.faceAngle(663)
             access.startDialogue {
-                chatNpcSpecificNp(
+                chatNpcSpecific(
                     "Atlas",
                     ATLAS_CUTSCENE,
                     happy,
@@ -620,17 +620,15 @@ constructor(
                         "You are a true strongman at heart.",
                 )
             }
-            cinematicDelay(access, 2)
             access.startDialogue {
-                access.chatPlayerNoContinue(
+                access.chatPlayer(
                     neutral,
                     "That was exhausting... I've never worked so hard in my life!",
                 )
             }
-            cinematicDelay(access, 1)
             access.faceAngle(663)
             access.startDialogue {
-                chatNpcSpecificNp(
+                chatNpcSpecific(
                     "Atlas",
                     ATLAS_CUTSCENE,
                     happy,
@@ -638,7 +636,6 @@ constructor(
                         "muscles!",
                 )
             }
-            cinematicDelay(access, 1)
             access.ifCloseChat()
             access.faceAngle(1345)
             access.anim("seq.emote_flex")
@@ -647,20 +644,16 @@ constructor(
             }
             cinematicDelay(access, 6)
             access.player.emoteFlex = 1
-            access.mesboxNp("You have unlocked the <col=ef1020>flex</col> emote!")
-            cinematicDelay(access, 1)
-            access.ifCloseChat()
+            access.mesbox("You have unlocked the <col=ef1020>flex</col> emote!")
             access.faceAngle(663)
             access.startDialogue {
-                chatNpcSpecificNp(
+                chatNpcSpecific(
                     "Atlas",
                     ATLAS_CUTSCENE,
                     neutral,
                     "My work is done. Return to Checkal and show him your new-found muscles.",
                 )
             }
-            cinematicDelay(access, 1)
-            access.ifCloseChat()
         } finally {
             despawn(actors)
             scene.close()
