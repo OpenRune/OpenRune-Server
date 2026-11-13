@@ -80,7 +80,8 @@ constructor(private val objRepo: ObjRepository, private val marketPrices: Market
         tier: TrailTierRow,
         table: RSWeightedTable<Player, DropRollItem>,
     ): List<CasketReward> {
-        val rolls = random.of(tier.rewardRollsMin, tier.rewardRollsMax)
+        val rolls =
+            TrailEvents.casketRolls(player, tier, random.of(tier.rewardRollsMin, tier.rewardRollsMax))
         return (0 until rolls)
             .flatMap {
                 when (val result = table.roll(player, ArgMap()).flatten()) {

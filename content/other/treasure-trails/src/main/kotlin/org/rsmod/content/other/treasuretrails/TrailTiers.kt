@@ -136,7 +136,7 @@ object TrailTiers {
     private const val CHALLENGE_SCROLL_NAME = "Challenge scroll"
 }
 
-class TrailState(private val player: Player, val tier: TrailTierRow) {
+class TrailState(val player: Player, val tier: TrailTierRow) {
     private val lengthVarbit = TrailTiers.varbit(tier.lengthVarbit)
     private val progressVarbit = TrailTiers.varbit(tier.progressVarbit)
 

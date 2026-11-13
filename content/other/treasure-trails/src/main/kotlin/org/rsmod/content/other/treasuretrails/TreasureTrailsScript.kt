@@ -96,6 +96,7 @@ constructor(
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         ClueScrollDrops.resolve = ::resolveDrop
+        TrailEvents.eventBus = eventBus
         val capacity = config.gameplay.clueScrolls.baseCapacity
         require(capacity >= 1) { "gameplay.clue-scrolls.base-capacity must be at least 1, was $capacity" }
         TrailTiers.baseCapacity = capacity
@@ -163,7 +164,7 @@ constructor(
             return null
         }
         if (boxes) return tier.boxObj.symbol()
-        return TrailFlow.freshClue(tier, random).symbol()
+        return TrailFlow.freshClue(player, tier, random).symbol()
     }
 
     private fun article(clue: ClueTier): String = if (clue.name.first() in "AEIOU") "an" else "a"

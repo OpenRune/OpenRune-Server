@@ -85,7 +85,7 @@ object TrailFlow {
             return existing
         }
         start(state, random)
-        return setStep(player, tier, rollStep(tier, random, exclude = null), random)
+        return setStep(player, tier, rollStep(player, tier, random, exclude = null), random)
     }
 
     fun resetTrail(player: Player, tier: TrailTierRow) {
@@ -128,7 +128,7 @@ object TrailFlow {
             mes(ClueTakeHook.BOX_REFUSES)
             return
         }
-        val clue = freshClue(tier, random)
+        val clue = freshClue(player, tier, random)
         if (invReplace(inv, tier.boxObj.symbol(), 1, clue.symbol()).failure) {
             mes("You don't have enough inventory space.")
             return
@@ -154,7 +154,7 @@ object TrailFlow {
             mes(ClueTakeHook.TOO_MANY_BOXES)
             return
         }
-        val reward = if (boxes) tier.boxObj else freshClue(tier, random)
+        val reward = if (boxes) tier.boxObj else freshClue(player, tier, random)
         if (invReplace(inv, vessel.symbol(), 1, reward.symbol()).failure) {
             mes("You don't have enough inventory space.")
             return
@@ -213,10 +213,10 @@ object TrailFlow {
             state.progress = progress
             if (tier.difficulty == TrailTiers.MASTER) MasterVars.setReady(player, false)
             VarPlayerIntMapSetter.set(player, ENCOUNTER_DEFEATED, 0)
-            setStep(player, tier, rollStep(tier, random, exclude = state.step), random)
+            setStep(player, tier, rollStep(player, tier, random, exclude = state.step), random)
             return clue
         }
-        val next = rollClueObj(tier, random, exclude = current.rowId)
+        val next = rollClueObj(player, tier, random, exclude = current.rowId)
         if (!deliver(slot, next)) {
             return null
         }
@@ -266,12 +266,13 @@ object TrailFlow {
         return npc.type.id in ids || npc.visType.id in ids
     }
 
-    fun freshClue(tier: TrailTierRow, random: GameRandom): ItemServerType =
-        tier.clueObj ?: rollClueObj(tier, random, exclude = null)
+    fun freshClue(player: Player, tier: TrailTierRow, random: GameRandom): ItemServerType =
+        tier.clueObj ?: rollClueObj(player, tier, random, exclude = null)
 
     private fun start(state: TrailState, random: GameRandom) {
         if (state.length != 0) return
-        state.length = random.of(state.tier.stepsMin, state.tier.stepsMax)
+        val rolled = random.of(state.tier.stepsMin, state.tier.stepsMax)
+        state.length = TrailEvents.trailLength(state.player, state.tier, rolled)
         state.progress = 0
     }
 
@@ -319,16 +320,36 @@ object TrailFlow {
         return loaded
     }
 
-    private fun rollStep(tier: TrailTierRow, random: GameRandom, exclude: Int?): Int {
+    private fun rollStep(
+        player: Player,
+        tier: TrailTierRow,
+        random: GameRandom,
+        exclude: Int?,
+    ): Int {
         val pool = pools.getOrPut(tier.difficulty) { rollableSteps(tier.difficulty) }
-        return random.pick(pool.filter { it != exclude }.ifEmpty { pool })
+        val candidates = pool.filter { it != exclude }.ifEmpty { pool }
+        return TrailEvents.step(player, tier, candidates, random.pick(candidates))
     }
 
-    private fun rollClueObj(tier: TrailTierRow, random: GameRandom, exclude: Int?): ItemServerType {
+    private fun rollClueObj(
+        player: Player,
+        tier: TrailTierRow,
+        random: GameRandom,
+        exclude: Int?,
+    ): ItemServerType {
         val pool = pools.getOrPut(tier.difficulty) { rollableSteps(tier.difficulty) }.toSet()
         val objs =
             TrailTiers.clueObjs(tier.difficulty).filter { TrailTiers.objStep(it) in pool }
-        return random.pick(objs.filter { TrailTiers.objStep(it) != exclude }.ifEmpty { objs })
+        val candidates = objs.filter { TrailTiers.objStep(it) != exclude }.ifEmpty { objs }
+        val chosen = random.pick(candidates)
+        val step =
+            TrailEvents.step(
+                player,
+                tier,
+                candidates.map { checkNotNull(TrailTiers.objStep(it)) },
+                checkNotNull(TrailTiers.objStep(chosen)),
+            )
+        return candidates.first { TrailTiers.objStep(it) == step }
     }
 
     /**
