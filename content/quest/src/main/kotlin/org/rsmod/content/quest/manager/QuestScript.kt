@@ -5,10 +5,14 @@ import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-enum class JournalState { OVERVIEW, LOG }
+enum class JournalState {
+    OVERVIEW,
+    LOG,
+}
 
 enum class QuestProgressState {
     NOT_STARTED,
@@ -34,14 +38,14 @@ enum class QuestProgressState {
     }
 }
 
-@DslMarker
-annotation class QuestJournalDsl
+@DslMarker annotation class QuestJournalDsl
 
 data class QuestReward(
     val xp: Map<String, Double> = emptyMap(),
     val items: List<Pair<String, Int>> = emptyList(),
     val extraLines: List<String> = emptyList(),
-    val itemLabels: Map<String, String> = emptyMap()
+    val itemLabels: Map<String, String> = emptyMap(),
+    val leadingLines: List<String> = emptyList(),
 )
 
 @QuestJournalDsl
@@ -55,6 +59,7 @@ class QuestRewardBuilder {
     private val _items = mutableListOf<Pair<String, Int>>()
     private val _itemLabels = mutableMapOf<String, String>()
     private val _extraLines = mutableListOf<String>()
+    private val _leadingLines = mutableListOf<String>()
 
     fun xp(skill: String, amount: Double) {
         _xp[skill] = amount
@@ -65,11 +70,11 @@ class QuestRewardBuilder {
         _items.add(id to amount)
     }
 
-    fun extra(text: String) {
-        _extraLines += text
+    fun extra(text: String, beforeRewards: Boolean = false) {
+        if (beforeRewards) _leadingLines += text else _extraLines += text
     }
 
-    fun build(): QuestReward = QuestReward(_xp, _items, _extraLines, _itemLabels)
+    fun build(): QuestReward = QuestReward(_xp, _items, _extraLines, _itemLabels, _leadingLines)
 }
 
 abstract class QuestScript(
@@ -101,6 +106,8 @@ abstract class QuestScript(
 
     abstract fun completedLog(player: ProtectedAccess): String
 
+    protected open fun clientQuestStage(player: Player): Int = quest.getQuestStage(player)
+
     abstract fun ScriptContext.init()
 
     override fun ScriptContext.startup() {
@@ -117,7 +124,7 @@ abstract class QuestScript(
 
         onPlayerLogin {
             quest.migrateLegacyStage(player)
-            VarPlayerIntMapSetter.set(player, questVarbit ?: questVarp, quest.getQuestStage(player))
+            VarPlayerIntMapSetter.set(player, questVarbit ?: questVarp, clientQuestStage(player))
         }
 
         this.init()
@@ -125,11 +132,11 @@ abstract class QuestScript(
 
     protected fun questJournal(
         player: ProtectedAccess,
-        builder: QuestJournalBuilder.() -> Unit
+        builder: QuestJournalBuilder.() -> Unit,
     ): String = buildQuestJournal(player, quest, builder)
 
     protected fun completionJournal(
         player: ProtectedAccess,
-        builder: QuestJournalBuilder.() -> Unit
+        builder: QuestJournalBuilder.() -> Unit,
     ): String = buildCompletionJournal(player, quest, builder)
 }

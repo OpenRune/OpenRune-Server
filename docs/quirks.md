@@ -144,3 +144,27 @@ Failed payment leaves the sword, commission and reward state unchanged. Coins go
 to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
 
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)
+
+### Priest in Peril
+
+The quest uses shortened dialogue and a private guardian encounter. Checked doors
+retain blocking invisible walls and draw the recorded temporary opening leaves;
+only the checked actor crosses. Unlocking the cell consumes the iron key before
+a separate opening/crossing action.
+
+The 17 October and 2 November 2026 scrubbed RSProx captures were compared for
+monk punches, Weaken/Confuse/Curse and hooded Fire Bolt, adjacent projectile
+frames, well filling, the distinct water/player blessings, coffin effects,
+journal history and reward-scroll presentation. The hooded monk's magic damage
+is capped at the wiki's eight rather than the generic spell's twelve. Selection
+weights remain provisional, and the monks still use standard NPC regeneration.
+The supplied samples do not establish exact selection odds or a regeneration
+interval; fast-regeneration parity is not claimed.
+
+Captured journal wording is retained at the observed stages, including the
+post-completion passage instruction and native61 blessing. The uncaptured stage7
+next-step line is authored; unobserved essence counts use the captured wording
+with the remaining quantity. Legacy earned player blessings still migrate on
+login; a new water blessing alone never grants respect-progress passage.
+Optional souvenir monument exchanges and the later Varrock Museum Kudos claim
+are not included in this quest port.
