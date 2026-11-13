@@ -26,6 +26,7 @@ import dev.openrune.types.hunt.HuntVis
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.reflect.KClass
+import net.rsprot.protocol.game.outgoing.camera.CamTargetV4
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.done.BaseHitmarkGroups
@@ -75,7 +76,6 @@ import org.rsmod.api.player.isOutOfCombat
 import org.rsmod.api.player.mapMultiway
 import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
-import net.rsprot.protocol.game.outgoing.camera.CamTargetV4
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.ChatType

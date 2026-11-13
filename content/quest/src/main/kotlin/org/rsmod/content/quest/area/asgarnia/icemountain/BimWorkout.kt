@@ -44,9 +44,9 @@ constructor(
         regionRepo.protect(bimRegion)
         val scene = SceneSession(access, bimRegion, BimScene.Montage)
         val opening = scene.coords(BimScene.Opening)
-        val pushup = scene.coords(BimScene.Pushup)
-        val west = scene.coords(BimScene.West)
-        val palace = scene.coords(BimScene.Palace)
+        val pushup = scene.coords(BimScene.Barbarian, "pushup")
+        val west = scene.coords(BimScene.Barbarian, "west")
+        val palace = scene.coords(BimScene.Palace, "start")
         val actors = mutableListOf<Npc>()
         val firstTraining = access.player.bimCheckal == BimCheckal.TRAINING
         val restoreModalHalt = access.player.ignoreModalMovementHalt
@@ -244,6 +244,7 @@ constructor(
                             )
                                 .also { actors += it }
                     }
+                    33 -> woman?.faceSquare(access.coords)
                     36 -> access.fadeToBlackNow(15)
                 }
                 if (coords == null) {
@@ -256,7 +257,7 @@ constructor(
             despawn(
                 listOfNotNull(tramp, rat, aubury, man, man2, woman, man3, baraek),
             )
-            scene.useWindow(BimScene.Pushup)
+            scene.useWindow(BimScene.Barbarian, "pushup")
             access.telejump(pushup[CoordGrid(3076, 3423)])
 
             // Barbarian Village, first pushup set.
@@ -325,7 +326,7 @@ constructor(
             cinematicDelay(access, 2)
 
             access.telejump(pushup[CoordGrid(3074, 3417)])
-            scene.useWindow(BimScene.Pushup)
+            scene.useWindow(BimScene.Barbarian, "pushup")
             despawn(actors.filter { it.isType(BARBARIAN_FEMALE) || it.isType(ATLAS_CUTSCENE) })
             actors.removeAll { it.isType(BARBARIAN_FEMALE) || it.isType(ATLAS_CUTSCENE) }
             access.camReset()
@@ -364,7 +365,7 @@ constructor(
             }
             cinematicDelay(access, 1)
 
-            scene.useWindow(BimScene.West)
+            scene.useWindow(BimScene.Barbarian, "west")
             access.camMoveAt(9, 59, 400, 1, 1)
             access.step(west[CoordGrid(3038, 3419)])
             access.step(west[CoordGrid(3036, 3421)])
@@ -385,7 +386,7 @@ constructor(
             access.step(west[CoordGrid(3014, 3429)])
 
             // Second pushup set.
-            scene.useWindow(BimScene.Pushup)
+            scene.useWindow(BimScene.Barbarian, "pushup")
             access.telejump(pushup[CoordGrid(3076, 3423)])
             access.faceAngle(1024)
             cinematicDelay(access, 1)
@@ -445,11 +446,7 @@ constructor(
             cinematicDelay(access, 2)
 
             // Varrock palace, final sprint.
-            scene.useWindow(
-                BimScene.Palace,
-                BimScene.PALACE_START_CENTER_X,
-                BimScene.PALACE_START_CENTER_Z,
-            )
+            scene.useWindow(BimScene.Palace, "start")
             val palaceStart = palace[CoordGrid(3212, 3392)]
             collision.allocateIfAbsent(palaceStart.x, palaceStart.z, palaceStart.level)
             access.telejump(palaceStart, collision, TeleportType.Exempt)
@@ -512,11 +509,7 @@ constructor(
                         actors.remove(dog)
                     }
                     11 -> {
-                        scene.useWindow(
-                            BimScene.Palace,
-                            BimScene.PALACE_MID_CENTER_X,
-                            BimScene.PALACE_MID_CENTER_Z,
-                        )
+                        scene.useWindow(BimScene.Palace, "mid")
                         access.camLookAt(103, 51, 280, 1, 0)
                         access.camMoveAt(78, 52, 600, 3, 3)
                         sprintBaraek =
@@ -602,7 +595,7 @@ constructor(
                 access.spawn(BARBARIAN_FEMALE, pushup[CoordGrid(3074, 3420)], Direction.NorthEast)
             actors +=
                 access.spawn(BARBARIAN_FEMALE_2, pushup[CoordGrid(3073, 3420)], Direction.NorthEast)
-            scene.useWindow(BimScene.Pushup)
+            scene.useWindow(BimScene.Barbarian, "pushup")
             access.telejump(pushup[CoordGrid(3076, 3423)])
             access.faceAngle(663)
             cinematicDelay(access, 1)
