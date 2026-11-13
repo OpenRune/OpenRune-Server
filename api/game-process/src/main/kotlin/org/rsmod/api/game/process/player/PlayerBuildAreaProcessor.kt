@@ -12,13 +12,13 @@ public class PlayerBuildAreaProcessor {
     private fun Player.processBuildAreaChange() {
         val rebuildBuildArea =
             regionRebuildPending ||
-                (buildAreaOverride == null && BuildAreaUtils.requiresNewBuildArea(this))
+                (sceneBuildArea == null && BuildAreaUtils.requiresNewBuildArea(this))
         if (rebuildBuildArea) {
             enterBuildArea()
         }
     }
 
     private fun Player.enterBuildArea() {
-        buildArea = buildAreaOverride ?: BuildAreaUtils.calculateBuildArea(ZoneKey.from(coords))
+        buildArea = sceneBuildArea?.base ?: BuildAreaUtils.calculateBuildArea(ZoneKey.from(coords))
     }
 }

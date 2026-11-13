@@ -8,6 +8,7 @@ import net.rsprot.protocol.game.outgoing.camera.CamTargetV4
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.scene.SceneSession
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
@@ -34,45 +35,18 @@ constructor(
 ) {
     suspend fun play(access: ProtectedAccess) {
         allocateWorkoutCollision()
-        val openingRegion =
-            regionRepo.add(BimRegions.VarrockSquare)
+        val bimRegion =
+            regionRepo.add(BimScene.Montage.template)
                 ?: run {
                     failWorkout(access)
                     return
                 }
-        regionRepo.protect(openingRegion)
-        val palaceRegion =
-            regionRepo.add(BimRegions.VarrockPalace)
-                ?: run {
-                    failWorkout(access)
-                    return
-                }
-        regionRepo.protect(palaceRegion)
-        val barbarianRegion =
-            regionRepo.add(BimRegions.BarbarianUnion)
-                ?: run {
-                    failWorkout(access)
-                    return
-                }
-        regionRepo.protect(barbarianRegion)
-        val openingScene = CutsceneScene(openingRegion, 1, CoordGrid(3200, 3344))
-        val palaceScene = CutsceneScene(palaceRegion, 1, CoordGrid(3160, 3344))
-        val pushupScene =
-            CutsceneScene(
-                barbarianRegion,
-                rotation = 0,
-                sourceBase = CoordGrid(3024, 3368),
-                centerCellX = 17,
-                centerCellZ = 12,
-            )
-        val westScene =
-            CutsceneScene(
-                barbarianRegion,
-                rotation = 0,
-                sourceBase = CoordGrid(2984, 3368),
-                centerCellX = 12,
-                centerCellZ = 12,
-            )
+        regionRepo.protect(bimRegion)
+        val scene = SceneSession(access, bimRegion, BimScene.Montage)
+        val opening = scene.coords(BimScene.Opening)
+        val pushup = scene.coords(BimScene.Pushup)
+        val west = scene.coords(BimScene.West)
+        val palace = scene.coords(BimScene.Palace)
         val actors = mutableListOf<Npc>()
         val firstTraining = access.player.bimCheckal == BimCheckal.TRAINING
         val restoreModalHalt = access.player.ignoreModalMovementHalt
@@ -85,21 +59,21 @@ constructor(
             playBarbarianWorkoutMusic(access.player)
 
             // Varrock square, opening shot.
-            access.telejump(openingScene[CoordGrid(3253, 3393)])
-            access.player.regionRebuildPending = true
+            scene.useWindow(BimScene.Opening)
+            access.telejump(opening[CoordGrid(3253, 3393)])
             cinematicDelay(access, 1)
-            val tramp = access.spawn(TRAMP, openingScene[CoordGrid(3255, 3394)], Direction.South)
-            val rat = access.spawn(RAT, openingScene[CoordGrid(3251, 3395)], Direction.South)
-            val aubury = access.spawn(AUBURY, openingScene[CoordGrid(3250, 3391)], Direction.South)
-            val man = access.spawn(MAN, openingScene[CoordGrid(3262, 3385)], Direction.South)
+            val tramp = access.spawn(TRAMP, opening[CoordGrid(3255, 3394)], Direction.South)
+            val rat = access.spawn(RAT, opening[CoordGrid(3251, 3395)], Direction.South)
+            val aubury = access.spawn(AUBURY, opening[CoordGrid(3250, 3391)], Direction.South)
+            val man = access.spawn(MAN, opening[CoordGrid(3262, 3385)], Direction.South)
             actors += listOf(tramp, rat, aubury, man)
             access.camMoveAt(48, 53, 500, SNAP, SNAP)
             access.camLookAt(54, 53, 350, SNAP, SNAP)
             access.faceAngle(512)
             access.fadeFromBlackNow(50)
             cinematicDelay(access, 1)
-            man.faceSquare(openingScene[CoordGrid(3257, 3385)])
-            tramp.faceSquare(openingScene[CoordGrid(3250, 3394)])
+            man.faceSquare(opening[CoordGrid(3257, 3385)])
+            tramp.faceSquare(opening[CoordGrid(3250, 3394)])
             cinematicDelay(access, 1)
             access.startDialogue {
                 chatNpcSpecificNp(
@@ -116,7 +90,7 @@ constructor(
             cinematicDelay(access, 8)
             access.ifCloseChat()
             access.anim("seq.human_running")
-            rat.walk(openingScene[CoordGrid(3251, 3394)])
+            rat.walk(opening[CoordGrid(3251, 3394)])
             cinematicDelay(access, 1)
 
             var woman: Npc? = null
@@ -127,14 +101,14 @@ constructor(
                 when (index) {
                     0 -> {
                         access.camLookAt(56, 55, 280, 1, 1)
-                        rat.walk(openingScene[CoordGrid(3251, 3393)])
+                        rat.walk(opening[CoordGrid(3251, 3393)])
                     }
                     2 -> {
-                        man.faceSquare(openingScene[CoordGrid(3255, 3391)])
+                        man.faceSquare(opening[CoordGrid(3255, 3391)])
                         access.camMoveAt(69, 60, 670, SNAP, SNAP)
                         access.camLookAt(58, 60, 250, SNAP, SNAP)
                     }
-                    5 -> aubury.walk(openingScene[CoordGrid(3251, 3390)])
+                    5 -> aubury.walk(opening[CoordGrid(3251, 3390)])
                     6 ->
                         access.startDialogue {
                             chatNpcSpecificNp(
@@ -144,61 +118,61 @@ constructor(
                                 "It's not all about strength! You need to get some cardio in, too.",
                             )
                         }
-                    9 -> aubury.walk(openingScene[CoordGrid(3250, 3391)])
+                    9 -> aubury.walk(opening[CoordGrid(3250, 3391)])
                     10 -> {
                         access.faceAngle(1536)
-                        rat.walk(openingScene[CoordGrid(3251, 3394)])
+                        rat.walk(opening[CoordGrid(3251, 3394)])
                     }
                     11 -> {
                         man2 =
                             access.spawn(
                                 MAN_2,
-                                openingScene[CoordGrid(3258, 3374)],
+                                opening[CoordGrid(3258, 3374)],
                                 Direction.South,
                             )
                                 .also { actors += it }
-                        rat.walk(openingScene[CoordGrid(3251, 3395)])
-                        man2?.walk(openingScene[CoordGrid(3258, 3375)])
+                        rat.walk(opening[CoordGrid(3251, 3395)])
+                        man2?.walk(opening[CoordGrid(3258, 3375)])
                     }
                     12 -> {
-                        rat.walk(openingScene[CoordGrid(3251, 3396)])
-                        man2?.walk(openingScene[CoordGrid(3258, 3376)])
+                        rat.walk(opening[CoordGrid(3251, 3396)])
+                        man2?.walk(opening[CoordGrid(3258, 3376)])
                     }
                     13 -> {
-                        rat.walk(openingScene[CoordGrid(3251, 3397)])
-                        man2?.walk(openingScene[CoordGrid(3258, 3377)])
+                        rat.walk(opening[CoordGrid(3251, 3397)])
+                        man2?.walk(opening[CoordGrid(3258, 3377)])
                     }
                     14 -> {
-                        man.faceSquare(openingScene[CoordGrid(3260, 3389)])
-                        man2?.walk(openingScene[CoordGrid(3258, 3378)])
-                        aubury.walk(openingScene[CoordGrid(3251, 3392)])
+                        man.faceSquare(opening[CoordGrid(3260, 3389)])
+                        man2?.walk(opening[CoordGrid(3258, 3378)])
+                        aubury.walk(opening[CoordGrid(3251, 3392)])
                     }
-                    15 -> man2?.walk(openingScene[CoordGrid(3258, 3379)])
-                    16 -> man2?.walk(openingScene[CoordGrid(3258, 3380)])
+                    15 -> man2?.walk(opening[CoordGrid(3258, 3379)])
+                    16 -> man2?.walk(opening[CoordGrid(3258, 3380)])
                     17 -> {
-                        man.faceSquare(openingScene[CoordGrid(3260, 3383)])
+                        man.faceSquare(opening[CoordGrid(3260, 3383)])
                         despawn(listOf(rat))
                         access.ifCloseChat()
                         access.camMoveAt(91, 60, 430, 3, 3)
-                        man2?.walk(openingScene[CoordGrid(3258, 3381)])
+                        man2?.walk(opening[CoordGrid(3258, 3381)])
                     }
-                    18 -> man2?.walk(openingScene[CoordGrid(3258, 3382)])
+                    18 -> man2?.walk(opening[CoordGrid(3258, 3382)])
                     19 -> {
                         despawn(listOf(tramp))
-                        man2?.walk(openingScene[CoordGrid(3258, 3383)])
+                        man2?.walk(opening[CoordGrid(3258, 3383)])
                     }
                     20 -> {
                         despawn(listOf(aubury))
                         woman =
                             access.spawn(
                                 WOMAN,
-                                openingScene[CoordGrid(3275, 3360)],
+                                opening[CoordGrid(3275, 3360)],
                                 Direction.South,
                             )
                                 .also { actors += it }
-                        man2?.walk(openingScene[CoordGrid(3258, 3384)])
+                        man2?.walk(opening[CoordGrid(3258, 3384)])
                     }
-                    21 -> man2?.walk(openingScene[CoordGrid(3258, 3385)])
+                    21 -> man2?.walk(opening[CoordGrid(3258, 3385)])
                     23 -> despawn(listOf(man))
                     26 -> {
                         access.camLookAt(85, 60, 400, SNAP, SNAP)
@@ -207,12 +181,12 @@ constructor(
                     27 -> {
                         access.camLookAt(85, 81, 400, 3, 3)
                         access.camMoveAt(85, 74, 430, 3, 3)
-                        woman?.walk(openingScene[CoordGrid(3273, 3360)])
+                        woman?.walk(opening[CoordGrid(3273, 3360)])
                     }
                     30 -> {
                         val thrower = woman
                         if (thrower != null) {
-                            val splash = openingScene[CoordGrid(3266, 3362)]
+                            val splash = opening[CoordGrid(3266, 3362)]
                             thrower.anim("seq.human_throw")
                             thrower.faceSquare(splash)
                             thrower.spotanim(
@@ -258,14 +232,14 @@ constructor(
                         man3 =
                             access.spawn(
                                 MAN,
-                                openingScene[CoordGrid(3284, 3359)],
+                                opening[CoordGrid(3284, 3359)],
                                 Direction.South,
                             )
                                 .also { actors += it }
                         baraek =
                             access.spawn(
                                 BARAEK,
-                                openingScene[CoordGrid(3285, 3354)],
+                                opening[CoordGrid(3285, 3354)],
                                 Direction.East,
                             )
                                 .also { actors += it }
@@ -275,28 +249,28 @@ constructor(
                 if (coords == null) {
                     cinematicDelay(access, 1)
                 } else {
-                    access.step(openingScene[coords])
+                    access.step(opening[coords])
                 }
             }
 
             despawn(
                 listOfNotNull(tramp, rat, aubury, man, man2, woman, man3, baraek),
             )
-            access.telejump(pushupScene[CoordGrid(3076, 3423)])
-            access.player.regionRebuildPending = true
+            scene.useWindow(BimScene.Pushup)
+            access.telejump(pushup[CoordGrid(3076, 3423)])
 
             // Barbarian Village, first pushup set.
             cinematicDelay(access, 1)
             val atlas =
-                access.spawn(ATLAS_CUTSCENE, pushupScene[CoordGrid(3074, 3424)], Direction.SouthEast)
+                access.spawn(ATLAS_CUTSCENE, pushup[CoordGrid(3074, 3424)], Direction.SouthEast)
             actors += atlas
             val firstBarbarian =
-                access.spawn(BARBARIAN_FEMALE, pushupScene[CoordGrid(3074, 3420)], Direction.NorthEast)
+                access.spawn(BARBARIAN_FEMALE, pushup[CoordGrid(3074, 3420)], Direction.NorthEast)
             actors += firstBarbarian
             atlas.faceSquare(access.coords)
             firstBarbarian.faceSquare(access.coords)
-            access.camMoveToV3(pushupScene[CoordGrid(3079, 3425)], 300, SNAP, SNAP)
-            access.camLookAtV3(pushupScene[CoordGrid(3075, 3423)], 280, SNAP, SNAP)
+            access.camMoveToV3(pushup[CoordGrid(3079, 3425)], 300, SNAP, SNAP)
+            access.camLookAtV3(pushup[CoordGrid(3075, 3423)], 280, SNAP, SNAP)
             access.fadeFromBlackNow(50)
             access.anim("seq.bim_pushups")
             cinematicDelay(access, 2)
@@ -313,14 +287,14 @@ constructor(
             cinematicDelay(access, 2)
 
             // Sparring.
-            access.telejump(pushupScene[CoordGrid(3078, 3435)])
+            access.telejump(pushup[CoordGrid(3078, 3435)])
             access.resetAnim()
             access.faceAngle(1536)
-            atlas.telejump(collision, pushupScene[CoordGrid(3079, 3435)])
+            atlas.telejump(collision, pushup[CoordGrid(3079, 3435)])
             atlas.say("")
-            atlas.faceSquare(pushupScene[CoordGrid(3078, 3435)])
-            access.camMoveToV3(pushupScene[CoordGrid(3078, 3431)], 290, SNAP, SNAP)
-            access.camLookAtV3(pushupScene[CoordGrid(3078, 3438)], 280, SNAP, SNAP)
+            atlas.faceSquare(pushup[CoordGrid(3078, 3435)])
+            access.camMoveToV3(pushup[CoordGrid(3078, 3431)], 290, SNAP, SNAP)
+            access.camLookAtV3(pushup[CoordGrid(3078, 3438)], 280, SNAP, SNAP)
             access.fadeFromBlackNow(50)
             access.startDialogue {
                 chatNpcSpecificNp(
@@ -350,9 +324,8 @@ constructor(
             }
             cinematicDelay(access, 2)
 
-            access.telejump(pushupScene[CoordGrid(3074, 3417)])
-            access.player.buildAreaOverride = pushupScene.buildAreaBase()
-            access.player.buildArea = access.player.buildAreaOverride!!
+            access.telejump(pushup[CoordGrid(3074, 3417)])
+            scene.useWindow(BimScene.Pushup)
             despawn(actors.filter { it.isType(BARBARIAN_FEMALE) || it.isType(ATLAS_CUTSCENE) })
             actors.removeAll { it.isType(BARBARIAN_FEMALE) || it.isType(ATLAS_CUTSCENE) }
             access.camReset()
@@ -387,52 +360,49 @@ constructor(
                     access.ifCloseChat()
                     access.camLookAt(15, 49, 0, 1, 0)
                 }
-                access.step(pushupScene[CoordGrid(x, 3417)])
+                access.step(pushup[CoordGrid(x, 3417)])
             }
             cinematicDelay(access, 1)
 
-            access.player.buildAreaOverride = westScene.buildAreaBase()
-            access.player.buildArea = access.player.buildAreaOverride!!
-            access.player.regionRebuildPending = true
+            scene.useWindow(BimScene.West)
             access.camMoveAt(9, 59, 400, 1, 1)
-            access.step(westScene[CoordGrid(3038, 3419)])
-            access.step(westScene[CoordGrid(3036, 3421)])
-            access.step(westScene[CoordGrid(3034, 3423)])
-            access.camMoveToV3(westScene[CoordGrid(3033, 3432)], 600, 3, 3)
-            access.camLookAtV3(westScene[CoordGrid(3013, 3428)], 0, 1, 0)
-            access.step(westScene[CoordGrid(3032, 3425)])
-            access.step(westScene[CoordGrid(3030, 3427)])
-            access.step(westScene[CoordGrid(3028, 3428)])
-            access.camLookAtV3(westScene[CoordGrid(3000, 3432)], 0, 1, 0)
-            access.step(westScene[CoordGrid(3026, 3428)])
-            access.step(westScene[CoordGrid(3024, 3429)])
-            access.step(westScene[CoordGrid(3022, 3429)])
-            access.step(westScene[CoordGrid(3020, 3429)])
-            access.step(westScene[CoordGrid(3018, 3429)])
+            access.step(west[CoordGrid(3038, 3419)])
+            access.step(west[CoordGrid(3036, 3421)])
+            access.step(west[CoordGrid(3034, 3423)])
+            access.camMoveToV3(west[CoordGrid(3033, 3432)], 600, 3, 3)
+            access.camLookAtV3(west[CoordGrid(3013, 3428)], 0, 1, 0)
+            access.step(west[CoordGrid(3032, 3425)])
+            access.step(west[CoordGrid(3030, 3427)])
+            access.step(west[CoordGrid(3028, 3428)])
+            access.camLookAtV3(west[CoordGrid(3000, 3432)], 0, 1, 0)
+            access.step(west[CoordGrid(3026, 3428)])
+            access.step(west[CoordGrid(3024, 3429)])
+            access.step(west[CoordGrid(3022, 3429)])
+            access.step(west[CoordGrid(3020, 3429)])
+            access.step(west[CoordGrid(3018, 3429)])
             access.fadeToBlackNow(50)
-            access.step(westScene[CoordGrid(3016, 3429)])
-            access.step(westScene[CoordGrid(3014, 3429)])
+            access.step(west[CoordGrid(3016, 3429)])
+            access.step(west[CoordGrid(3014, 3429)])
 
             // Second pushup set.
-            access.player.buildAreaOverride = null
-            access.telejump(pushupScene[CoordGrid(3076, 3423)])
+            scene.useWindow(BimScene.Pushup)
+            access.telejump(pushup[CoordGrid(3076, 3423)])
             access.faceAngle(1024)
-            access.player.regionRebuildPending = true
             cinematicDelay(access, 1)
             val secondBarbarianOne =
-                access.spawn(BARBARIAN_MALE, pushupScene[CoordGrid(3073, 3421)], Direction.NorthEast)
+                access.spawn(BARBARIAN_MALE, pushup[CoordGrid(3073, 3421)], Direction.NorthEast)
             actors += secondBarbarianOne
             val secondBarbarianTwo =
-                access.spawn(BARBARIAN_MALE_2, pushupScene[CoordGrid(3073, 3422)], Direction.NorthEast)
+                access.spawn(BARBARIAN_MALE_2, pushup[CoordGrid(3073, 3422)], Direction.NorthEast)
             actors += secondBarbarianTwo
             val secondBarbarianThree =
-                access.spawn(BARBARIAN_FEMALE, pushupScene[CoordGrid(3074, 3420)], Direction.NorthEast)
+                access.spawn(BARBARIAN_FEMALE, pushup[CoordGrid(3074, 3420)], Direction.NorthEast)
             actors += secondBarbarianThree
             val secondBarbarianFour =
-                access.spawn(BARBARIAN_FEMALE_2, pushupScene[CoordGrid(3073, 3420)], Direction.NorthEast)
+                access.spawn(BARBARIAN_FEMALE_2, pushup[CoordGrid(3073, 3420)], Direction.NorthEast)
             actors += secondBarbarianFour
             val finalAtlas =
-                access.spawn(ATLAS_CUTSCENE, pushupScene[CoordGrid(3074, 3424)], Direction.SouthEast)
+                access.spawn(ATLAS_CUTSCENE, pushup[CoordGrid(3074, 3424)], Direction.SouthEast)
             actors += finalAtlas
             for (npc in
                 listOf(
@@ -444,8 +414,8 @@ constructor(
                 )) {
                 npc.faceSquare(access.coords)
             }
-            access.camMoveToV3(pushupScene[CoordGrid(3079, 3425)], 300, SNAP, SNAP)
-            access.camLookAtV3(pushupScene[CoordGrid(3075, 3423)], 280, SNAP, SNAP)
+            access.camMoveToV3(pushup[CoordGrid(3079, 3425)], 300, SNAP, SNAP)
+            access.camLookAtV3(pushup[CoordGrid(3075, 3423)], 280, SNAP, SNAP)
             access.fadeFromBlackNow(50)
             access.startDialogue {
                 chatNpcSpecificNp(
@@ -475,12 +445,15 @@ constructor(
             cinematicDelay(access, 2)
 
             // Varrock palace, final sprint.
-            access.player.buildAreaOverride = null
-            val palaceStart = palaceScene[CoordGrid(3212, 3392)]
+            scene.useWindow(
+                BimScene.Palace,
+                BimScene.PALACE_START_CENTER_X,
+                BimScene.PALACE_START_CENTER_Z,
+            )
+            val palaceStart = palace[CoordGrid(3212, 3392)]
             collision.allocateIfAbsent(palaceStart.x, palaceStart.z, palaceStart.level)
             access.telejump(palaceStart, collision, TeleportType.Exempt)
             access.faceAngle(1536)
-            access.player.regionRebuildPending = true
             despawn(
                 actors.filter {
                     it.isType(BARBARIAN_MALE) ||
@@ -497,9 +470,9 @@ constructor(
                     it.isType(BARBARIAN_FEMALE_2) ||
                     it.isType(ATLAS_CUTSCENE)
             }
-            val dog = access.spawn(STRAY_DOG, palaceScene[CoordGrid(3216, 3386)], Direction.South)
+            val dog = access.spawn(STRAY_DOG, palace[CoordGrid(3216, 3386)], Direction.South)
             actors += dog
-            dog.walk(palaceScene[CoordGrid(3216, 3387)])
+            dog.walk(palace[CoordGrid(3216, 3387)])
             cinematicDelay(access, 1)
             access.fadeFromBlackNow(50)
             access.startDialogue {
@@ -522,15 +495,15 @@ constructor(
             var guard: Npc? = null
             for ((index, coords) in FINAL_SPRINT_ROUTE.withIndex()) {
                 when (index) {
-                    0 -> dog.walk(palaceScene[CoordGrid(3216, 3388)])
-                    1 -> dog.walk(palaceScene[CoordGrid(3216, 3389)])
-                    3 -> dog.walk(palaceScene[CoordGrid(3216, 3390)])
-                    6 -> dog.walk(palaceScene[CoordGrid(3213, 3387)])
-                    7 -> dog.walk(palaceScene[CoordGrid(3213, 3386)])
+                    0 -> dog.walk(palace[CoordGrid(3216, 3388)])
+                    1 -> dog.walk(palace[CoordGrid(3216, 3389)])
+                    3 -> dog.walk(palace[CoordGrid(3216, 3390)])
+                    6 -> dog.walk(palace[CoordGrid(3213, 3387)])
+                    7 -> dog.walk(palace[CoordGrid(3213, 3386)])
                     8 -> {
-                        dog.walk(palaceScene[CoordGrid(3214, 3387)])
+                        dog.walk(palace[CoordGrid(3214, 3387)])
                         sprintMan =
-                            access.spawn(MAN, palaceScene[CoordGrid(3204, 3359)], Direction.South)
+                            access.spawn(MAN, palace[CoordGrid(3204, 3359)], Direction.South)
                                 .also { actors += it }
                     }
                     9 -> access.ifCloseChat()
@@ -539,13 +512,15 @@ constructor(
                         actors.remove(dog)
                     }
                     11 -> {
-                        access.player.buildAreaOverride = palaceScene.buildAreaBase(17, 12)
-                        access.player.buildArea = access.player.buildAreaOverride!!
-                        access.player.regionRebuildPending = true
+                        scene.useWindow(
+                            BimScene.Palace,
+                            BimScene.PALACE_MID_CENTER_X,
+                            BimScene.PALACE_MID_CENTER_Z,
+                        )
                         access.camLookAt(103, 51, 280, 1, 0)
                         access.camMoveAt(78, 52, 600, 3, 3)
                         sprintBaraek =
-                            access.spawn(BARAEK, palaceScene[CoordGrid(3205, 3354)], Direction.East)
+                            access.spawn(BARAEK, palace[CoordGrid(3205, 3354)], Direction.East)
                                 .also { actors += it }
                     }
                     16 -> {
@@ -555,16 +530,16 @@ constructor(
                     18 -> {
                         access.camMoveAt(58, 51, 500, SNAP, SNAP)
                         access.camLookAt(48, 51, 280, SNAP, SNAP)
-                        sprintBaraek?.walk(palaceScene[CoordGrid(3205, 3355)])
+                        sprintBaraek?.walk(palace[CoordGrid(3205, 3355)])
                     }
-                    19 -> sprintBaraek?.walk(palaceScene[CoordGrid(3205, 3356)])
-                    20 -> sprintBaraek?.walk(palaceScene[CoordGrid(3205, 3357)])
-                    21 -> sprintBaraek?.walk(palaceScene[CoordGrid(3204, 3358)])
+                    19 -> sprintBaraek?.walk(palace[CoordGrid(3205, 3356)])
+                    20 -> sprintBaraek?.walk(palace[CoordGrid(3205, 3357)])
+                    21 -> sprintBaraek?.walk(palace[CoordGrid(3204, 3358)])
                     22 -> {
                         guardF =
-                            access.spawn(GUARD_F, palaceScene[CoordGrid(3208, 3331)], Direction.West)
+                            access.spawn(GUARD_F, palace[CoordGrid(3208, 3331)], Direction.West)
                                 .also { actors += it }
-                        guardF?.walk(palaceScene[CoordGrid(3208, 3332)])
+                        guardF?.walk(palace[CoordGrid(3208, 3332)])
                     }
                     23 -> {
                         access.camMoveAt(63, 51, 500, 2, 2)
@@ -576,70 +551,69 @@ constructor(
                         guardVariant =
                             access.spawn(
                                 GUARD_VARIANT,
-                                palaceScene[CoordGrid(3216, 3327)],
+                                palace[CoordGrid(3216, 3327)],
                                 Direction.South,
                             )
                                 .also { actors += it }
-                        guardVariant?.walk(palaceScene[CoordGrid(3215, 3327)])
+                        guardVariant?.walk(palace[CoordGrid(3215, 3327)])
                     }
                     25 -> {
                         guard =
-                            access.spawn(GUARD, palaceScene[CoordGrid(3218, 3326)], Direction.North)
+                            access.spawn(GUARD, palace[CoordGrid(3218, 3326)], Direction.North)
                                 .also { actors += it }
                     }
-                    27 -> guard?.walk(palaceScene[CoordGrid(3217, 3327)])
+                    27 -> guard?.walk(palace[CoordGrid(3217, 3327)])
                     28 -> {
                         access.camMoveAt(77, 46, 700, 3, 3)
                         access.camLookAt(80, 51, 650, 3, 3)
-                        guard?.walk(palaceScene[CoordGrid(3217, 3328)])
+                        guard?.walk(palace[CoordGrid(3217, 3328)])
                     }
-                    29 -> guard?.walk(palaceScene[CoordGrid(3217, 3327)])
-                    30 -> guard?.walk(palaceScene[CoordGrid(3216, 3327)])
+                    29 -> guard?.walk(palace[CoordGrid(3217, 3327)])
+                    30 -> guard?.walk(palace[CoordGrid(3216, 3327)])
                     34 -> access.faceAngle(512)
                     37 -> access.anim("seq.emote_cheer", delay = 2)
-                    38 -> guardVariant?.walk(palaceScene[CoordGrid(3215, 3326)])
+                    38 -> guardVariant?.walk(palace[CoordGrid(3215, 3326)])
                     39 -> {
-                        guardVariant?.walk(palaceScene[CoordGrid(3215, 3325)])
-                        guard?.walk(palaceScene[CoordGrid(3216, 3326)])
+                        guardVariant?.walk(palace[CoordGrid(3215, 3325)])
+                        guard?.walk(palace[CoordGrid(3216, 3326)])
                     }
                     40 -> {
-                        guardVariant?.walk(palaceScene[CoordGrid(3215, 3324)])
-                        guard?.walk(palaceScene[CoordGrid(3216, 3325)])
+                        guardVariant?.walk(palace[CoordGrid(3215, 3324)])
+                        guard?.walk(palace[CoordGrid(3216, 3325)])
                     }
                     41 -> {
                         access.fadeToWhiteNow(50)
-                        guardVariant?.walk(palaceScene[CoordGrid(3215, 3323)])
-                        guard?.walk(palaceScene[CoordGrid(3215, 3325)])
+                        guardVariant?.walk(palace[CoordGrid(3215, 3323)])
+                        guard?.walk(palace[CoordGrid(3215, 3325)])
                     }
                 }
                 if (coords == null) {
                     cinematicDelay(access, 1)
                 } else {
-                    access.step(palaceScene[coords])
+                    access.step(palace[coords])
                 }
             }
 
             actors +=
-                access.spawn(BARBARIAN_MALE, pushupScene[CoordGrid(3073, 3421)], Direction.NorthEast)
+                access.spawn(BARBARIAN_MALE, pushup[CoordGrid(3073, 3421)], Direction.NorthEast)
             actors +=
-                access.spawn(BARBARIAN_MALE_2, pushupScene[CoordGrid(3073, 3422)], Direction.NorthEast)
+                access.spawn(BARBARIAN_MALE_2, pushup[CoordGrid(3073, 3422)], Direction.NorthEast)
             actors +=
-                access.spawn(BARBARIAN_FEMALE, pushupScene[CoordGrid(3074, 3420)], Direction.NorthEast)
+                access.spawn(BARBARIAN_FEMALE, pushup[CoordGrid(3074, 3420)], Direction.NorthEast)
             actors +=
-                access.spawn(BARBARIAN_FEMALE_2, pushupScene[CoordGrid(3073, 3420)], Direction.NorthEast)
-            access.player.buildAreaOverride = null
-            access.telejump(pushupScene[CoordGrid(3076, 3423)])
+                access.spawn(BARBARIAN_FEMALE_2, pushup[CoordGrid(3073, 3420)], Direction.NorthEast)
+            scene.useWindow(BimScene.Pushup)
+            access.telejump(pushup[CoordGrid(3076, 3423)])
             access.faceAngle(663)
-            access.player.regionRebuildPending = true
             cinematicDelay(access, 1)
 
             // Final dialogue at Barbarian Village.
             val lastAtlas =
-                access.spawn(ATLAS_CUTSCENE, pushupScene[CoordGrid(3074, 3424)], Direction.SouthEast)
+                access.spawn(ATLAS_CUTSCENE, pushup[CoordGrid(3074, 3424)], Direction.SouthEast)
             actors += lastAtlas
             lastAtlas.faceSquare(access.coords)
-            access.camMoveToV3(pushupScene[CoordGrid(3079, 3425)], 300, SNAP, SNAP)
-            access.camLookAtV3(pushupScene[CoordGrid(3075, 3423)], 280, SNAP, SNAP)
+            access.camMoveToV3(pushup[CoordGrid(3079, 3425)], 300, SNAP, SNAP)
+            access.camLookAtV3(pushup[CoordGrid(3075, 3423)], 280, SNAP, SNAP)
             access.fadeFromWhiteNow(50)
             cinematicDelay(access, 2)
             access.faceAngle(663)
@@ -695,10 +669,8 @@ constructor(
             access.ifCloseChat()
         } finally {
             despawn(actors)
-            regionRepo.unprotect(openingRegion)
-            regionRepo.unprotect(palaceRegion)
-            regionRepo.unprotect(barbarianRegion)
-            access.player.buildAreaOverride = null
+            scene.close()
+            regionRepo.unprotect(bimRegion)
             access.player.ignoreModalMovementHalt = restoreModalHalt
             access.player.npcViewDistance = restoreNpcViewDistance
             access.fadeToBlack(50)

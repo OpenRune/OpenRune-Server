@@ -43,6 +43,7 @@ import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.game.queue.EngineQueueList
 import org.rsmod.game.queue.EngineQueueType
 import org.rsmod.game.queue.PlayerQueueList
+import org.rsmod.game.scene.SceneBuildArea
 import org.rsmod.game.queue.QueueCategory
 import org.rsmod.game.seq.EntitySeq
 import org.rsmod.game.shop.Shop
@@ -204,7 +205,7 @@ public class Player(
     public var createdAt: LocalDateTime? = null
     public var followCoord: CoordGrid = CoordGrid.NULL
     public var buildArea: CoordGrid = CoordGrid.NULL
-    public var buildAreaOverride: CoordGrid? = null
+    public var sceneBuildArea: SceneBuildArea? = null
     public var ignoreModalMovementHalt: Boolean = false
     public val visibleZoneKeys: IntList = IntArrayList()
     public var regionRebuildPending: Boolean = false

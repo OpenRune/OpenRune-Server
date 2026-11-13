@@ -16,19 +16,18 @@ import org.rsmod.game.region.util.NormalRegionZoneMap.NormalZone
  * For example, a minigame home base may copy the same zone for both a red team and a blue team, but
  * in separate map sections. Flags allow distinguishing between them.
  *
- * The total number of available flags is limited by [RegionZoneCopy.UNIQUE_FLAG_BIT_COUNT] and
- * [NormalZone.UNIQUE_FLAG_BIT_COUNT]. Currently, up to `2^3` (8) unique flags are supported.
+ * The value `0` is reserved for "no flag", so the three-bit unique-flag field supports seven
+ * distinct flags.
  */
-public enum class RegionZoneFlag(private val bit: Int) {
-    Flag1(bit = 0),
-    Flag2(bit = 1),
-    Flag3(bit = 2),
-    Flag4(bit = 3),
-    Flag5(bit = 4),
-    Flag6(bit = 5),
-    Flag7(bit = 6),
-    Flag8(bit = 7);
+public enum class RegionZoneFlag(private val value: Int) {
+    Flag1(1),
+    Flag2(2),
+    Flag3(3),
+    Flag4(4),
+    Flag5(5),
+    Flag6(6),
+    Flag7(7);
 
     public val bitmask: Int
-        get() = 1 shl bit
+        get() = value
 }

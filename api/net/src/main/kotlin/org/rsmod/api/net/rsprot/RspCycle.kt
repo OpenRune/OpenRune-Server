@@ -154,6 +154,19 @@ class RspCycle(
             }
         }
 
+        val scene = sceneBuildArea
+        if (scene != null) {
+            val activeRegionUid = regionUid ?: return
+            val sceneProvider = createSceneZoneProvider(scene.zones)
+            val rebuild =
+                RebuildRegionV2(scene.center.x, scene.center.z, scene.reload, sceneProvider)
+            knownBuildArea = buildArea
+            knownRegionUid = activeRegionUid
+            cachedRegionZoneProvider = null
+            session.queue(rebuild)
+            return
+        }
+
         val buildCenter =
             ZoneKey.from(buildArea)
                 .translate(BUILD_AREA_ZONE_RADIUS, BUILD_AREA_ZONE_RADIUS)
@@ -187,6 +200,24 @@ class RspCycle(
         knownBuildArea = buildArea
         cachedRegionZoneProvider = zoneProvider
         session.queue(rebuild)
+    }
+
+    private fun createSceneZoneProvider(
+        zones: Map<ZoneKey, RegionZoneCopy>,
+    ): RebuildRegionV2.RebuildRegionZoneProvider {
+        val references =
+            zones.mapValues { (_, copyZone) ->
+                val reference = ReferenceZone(copyZone.packed)
+                RebuildRegionZone(
+                    zoneX = reference.zoneX,
+                    zoneZ = reference.zoneZ,
+                    level = reference.level,
+                    rotation = reference.rotation,
+                )
+            }
+        return RebuildRegionV2.RebuildRegionZoneProvider { zoneX, zoneZ, level ->
+            references[ZoneKey(zoneX, zoneZ, level)]
+        }
     }
 
     private fun createRegionZoneProvider(region: Region): RebuildRegionV2.RebuildRegionZoneProvider {
