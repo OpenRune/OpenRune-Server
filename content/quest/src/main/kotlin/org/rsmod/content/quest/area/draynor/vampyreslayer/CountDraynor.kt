@@ -11,6 +11,8 @@ import org.rsmod.api.invtx.select
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
+import org.rsmod.api.npc.owner.assignSpawnOwner
+import org.rsmod.api.npc.owner.isSpawnOwnedBy
 import org.rsmod.api.npc.stat.statDrain
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
@@ -29,6 +31,7 @@ import org.rsmod.content.quest.area.draynor.vampyreslayer.VampyreSlayerQuest.Com
 import org.rsmod.content.quest.area.draynor.vampyreslayer.VampyreSlayerQuest.Companion.STAGE_COMPLETE
 import org.rsmod.content.quest.area.draynor.vampyreslayer.VampyreSlayerQuest.Companion.STAGE_STARTED
 import org.rsmod.content.quest.area.draynor.vampyreslayer.VampyreSlayerQuest.Companion.STAKE
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
@@ -55,6 +58,7 @@ constructor(
     private val launcher: ProtectedAccessLauncher,
     private val aiPlayerInteractions: AiPlayerInteractions,
     private val worldQueues: WorldQueueList,
+    private val mapClock: MapClock,
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -119,12 +123,14 @@ constructor(
         locRepo.del(coffin, COUNT_ARISE_TICKS + COFFIN_OPEN_TICKS)
         val rising = Npc(COUNT_IN_COFFIN, coffin.coords)
         npcRepo.add(rising, COUNT_ARISE_TICKS + 1)
+        rising.assignSpawnOwner(player, this@CountDraynor.mapClock.cycle)
         rising.anim(COUNT_ARISE_SEQ)
         delay(COUNT_ARISE_TICKS)
         vars[BUSY] = 0
         if (rising.isSlotAssigned) npcRepo.del(rising, Int.MAX_VALUE)
         val count = Npc(COUNT_DRAYNOR, COUNT_SPAWN)
         npcRepo.add(count, COUNT_LIFESPAN)
+        count.assignSpawnOwner(player, this@CountDraynor.mapClock.cycle)
         count.faceSquare(COUNT_SPAWN_FACING)
         count.anim(COUNT_STEP_OUT_SEQ)
         locRepo.add(coffin.coords, COFFIN_OPEN, COFFIN_OPEN_TICKS, coffin.angle, coffin.shape)
@@ -134,8 +140,7 @@ constructor(
 
     private fun countFor(player: Player): Npc? =
         npcRepo.findAll(ZoneKey.from(COUNT_SPAWN), zoneRadius = 1).firstOrNull {
-            (it.isType(COUNT_DRAYNOR) || it.isType(COUNT_IN_COFFIN)) &&
-                it.coords.level == player.coords.level
+            (it.isType(COUNT_DRAYNOR) || it.isType(COUNT_IN_COFFIN)) && it.isSpawnOwnedBy(player)
         }
 
     private fun onCountHit(count: Npc, hit: HitBuilder) {
