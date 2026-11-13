@@ -172,7 +172,10 @@ constructor(
                         man2?.walk(opening[CoordGrid(3258, 3384)])
                     }
                     21 -> man2?.walk(opening[CoordGrid(3258, 3385)])
-                    23 -> despawn(listOf(man))
+                    23 -> {
+                        despawn(listOfNotNull(man, man2))
+                        actors.removeAll { it === man || it === man2 }
+                    }
                     26 -> {
                         access.camLookAt(85, 60, 400, SNAP, SNAP)
                         access.camMoveAt(85, 53, 430, SNAP, SNAP)
@@ -258,6 +261,7 @@ constructor(
             )
             scene.useWindow(BimScene.Barbarian, "pushup")
             access.telejump(pushup[CoordGrid(3076, 3423)])
+            access.resetAnim()
 
             // Barbarian Village, first pushup set.
             cinematicDelay(access, 1)
@@ -309,7 +313,7 @@ constructor(
                 access.anim("seq.human_unarmedblock")
                 atlas.anim("seq.human_unarmedpunch")
                 access.soundSynth(SynthType(2503))
-                if ((round + 1) % 2 == 0) {
+                if ((round + 1) % 2 == 0 && round != 9) {
                     access.say("Eugh...")
                 }
                 if (round == 4) {
@@ -325,7 +329,6 @@ constructor(
             cinematicDelay(access, 2)
 
             access.telejump(pushup[CoordGrid(3074, 3417)])
-            scene.useWindow(BimScene.Barbarian, "pushup")
             despawn(actors.filter { it.isType(BARBARIAN_FEMALE) || it.isType(ATLAS_CUTSCENE) })
             actors.removeAll { it.isType(BARBARIAN_FEMALE) || it.isType(ATLAS_CUTSCENE) }
             access.camReset()
@@ -386,8 +389,8 @@ constructor(
             // Second pushup set.
             scene.useWindow(BimScene.Barbarian, "pushup")
             access.telejump(pushup[CoordGrid(3076, 3423)])
-            access.faceAngle(1024)
             cinematicDelay(access, 1)
+            access.faceAngle(1024)
             val secondBarbarianOne =
                 access.spawn(BARBARIAN_MALE, pushup[CoordGrid(3073, 3421)], Direction.NorthEast)
             actors += secondBarbarianOne
@@ -448,6 +451,7 @@ constructor(
             val palaceStart = palace[CoordGrid(3212, 3392)]
             collision.allocateIfAbsent(palaceStart.x, palaceStart.z, palaceStart.level)
             access.telejump(palaceStart, collision, TeleportType.Exempt)
+            access.resetAnim()
             access.faceAngle(1536)
             despawn(
                 actors.filter {
@@ -506,7 +510,6 @@ constructor(
                         actors.remove(dog)
                     }
                     11 -> {
-                        scene.useWindow(BimScene.Palace, "mid")
                         access.camLookAt(103, 51, 280, 1, 0)
                         access.camMoveAt(78, 52, 600, 3, 3)
                         sprintBaraek =
@@ -514,6 +517,7 @@ constructor(
                                 .also { actors += it }
                     }
                     16 -> {
+                        scene.useWindow(BimScene.Palace, "mid")
                         access.camLookAt(103, 51, 280, 1, 0)
                         access.camMoveAt(78, 52, 600, 3, 3)
                     }
@@ -594,8 +598,8 @@ constructor(
                 access.spawn(BARBARIAN_FEMALE_2, pushup[CoordGrid(3073, 3420)], Direction.NorthEast)
             scene.useWindow(BimScene.Barbarian, "pushup")
             access.telejump(pushup[CoordGrid(3076, 3423)])
-            access.faceAngle(663)
             cinematicDelay(access, 1)
+            access.faceAngle(663)
 
             // Final dialogue at Barbarian Village.
             val lastAtlas =
@@ -726,7 +730,6 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.endWorkoutScene() {
-        fadeFromBlackNow()
         showEntityOps()
         restoreLastAcceptAid()
         maxDrawDistance(false)
@@ -737,6 +740,8 @@ constructor(
         camReset()
         openTopLevelTabs()
         syncDrawDistance()
+        delay(3)
+        fadeFromBlackNow()
     }
 
     private suspend fun ProtectedAccess.fadeToBlack(duration: Int = 50) {
