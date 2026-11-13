@@ -1,7 +1,6 @@
 package org.rsmod.content.bosses.moons.blood
 
 import org.rsmod.api.bosses.dsl.CurrentTile
-import org.rsmod.api.bosses.dsl.after
 import org.rsmod.api.bosses.dsl.anim
 import org.rsmod.api.bosses.dsl.area
 import org.rsmod.api.bosses.dsl.external

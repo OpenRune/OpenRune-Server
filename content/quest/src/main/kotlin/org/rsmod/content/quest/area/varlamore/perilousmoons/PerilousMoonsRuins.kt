@@ -13,12 +13,12 @@ import org.rsmod.api.player.hook.NeypotzliPassageKind
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
-import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.PmoonRuinsPartsRow
 import org.rsmod.api.table.PmoonRuinsSpawnsRow
 import org.rsmod.game.entity.Npc

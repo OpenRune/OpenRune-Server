@@ -1,11 +1,10 @@
 package org.rsmod.content.bosses.moons.blood
 
+import kotlin.math.abs
 import org.rsmod.api.bosses.dsl.after
 import org.rsmod.api.bosses.dsl.area
-import kotlin.math.abs
 import org.rsmod.api.bosses.dsl.customTiles
 import org.rsmod.api.bosses.dsl.external
-import org.rsmod.api.bosses.spec.TileSet
 import org.rsmod.api.bosses.dsl.locAnim
 import org.rsmod.api.bosses.dsl.onEach
 import org.rsmod.api.bosses.dsl.parallel
@@ -15,6 +14,7 @@ import org.rsmod.api.bosses.dsl.spawnLoc
 import org.rsmod.api.bosses.dsl.spawnTile
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.TargetExpr
+import org.rsmod.api.bosses.spec.TileSet
 import org.rsmod.content.bosses.moons.Moon
 import org.rsmod.content.bosses.moons.MoonsExternals
 

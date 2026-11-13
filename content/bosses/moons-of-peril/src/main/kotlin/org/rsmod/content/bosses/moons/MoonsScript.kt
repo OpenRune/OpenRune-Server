@@ -8,16 +8,14 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.player.hook.NeypotzliHook
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
-import org.rsmod.api.player.output.spam
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.script.onArea
-import org.rsmod.api.script.onModifyNpcHit
-import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.api.script.onAreaExit
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onEvent
+import org.rsmod.api.script.onModifyNpcHit
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onPlayerLogin
@@ -32,6 +30,7 @@ import org.rsmod.content.bosses.moons.eclipse.Side
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcStateEvents
+import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript

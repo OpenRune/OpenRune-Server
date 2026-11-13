@@ -111,7 +111,6 @@ public enum class MoonSet(
         if (this == null) return false
         return id in ids || (allowBroken && id == brokenId)
     }
-
 }
 
 private fun Collection<String>.toIds(): Set<Int> = mapTo(HashSet()) { it.asRSCM(RSCMType.OBJ) }

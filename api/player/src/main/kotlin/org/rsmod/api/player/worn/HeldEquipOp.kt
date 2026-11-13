@@ -124,7 +124,7 @@ constructor(
             return HeldEquipResult.Fail.Prevented(refusal)
         }
         val statRequirements =
-            type.statRequirements().filter { player.statBase(RSCM.getReverseMapping(RSCMType.STAT,it.stat.id)) < it.level }
+            type.statRequirements().filter { player.statBase(RSCM.getReverseMapping(RSCMType.STAT, it.stat.id)) < it.level }
         if (statRequirements.isNotEmpty()) {
             val messages = type.toMessages(statRequirements)
             return HeldEquipResult.Fail.StatRequirements(messages)

@@ -39,7 +39,6 @@ constructor(
     private val sessions = IdentityHashMap<Player, Session>()
     private var cycle = 0
 
-
     override fun ScriptContext.startup() {
         onOpLoc1("loc.river_fishing_spot") { castOrAlign(it.loc.coords) }
         onOpLoc1("loc.river_fishing_spot_enter") { castOrAlign(it.loc.coords) }

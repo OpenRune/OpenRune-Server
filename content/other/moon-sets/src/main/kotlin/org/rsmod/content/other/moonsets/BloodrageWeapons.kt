@@ -64,7 +64,6 @@ constructor(private val random: GameRandom, private val speeds: WeaponSpeeds) : 
             manager.continueCombat(this, target)
         }
     }
-
 }
 
 private const val PROC_SPOTANIM = "spotanim.special_dual_macuahuitl_spotanim"

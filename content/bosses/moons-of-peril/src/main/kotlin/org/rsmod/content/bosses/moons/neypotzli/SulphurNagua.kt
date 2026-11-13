@@ -3,13 +3,13 @@ package org.rsmod.content.bosses.moons.neypotzli
 import jakarta.inject.Inject
 import java.util.IdentityHashMap
 import org.rsmod.api.bosses.dsl.*
+import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.DamageExpr
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.StatDrainEntry
-import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.script.onEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcStateEvents

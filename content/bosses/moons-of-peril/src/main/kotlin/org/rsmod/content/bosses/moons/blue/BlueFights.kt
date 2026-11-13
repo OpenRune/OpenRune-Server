@@ -24,10 +24,9 @@ import org.rsmod.content.bosses.moons.blue.FrozenWeapons.FreezeResult
 import org.rsmod.content.bosses.moons.blue.FrozenWeapons.ReleaseResult
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.util.PathingEntityCommon
+import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.HitType
-import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 
