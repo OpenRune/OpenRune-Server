@@ -1,0 +1,9 @@
+[gamevals.varn]
+burn_stacks = 97
+
+[gamevals.varp]
+burn_stacks = 64950
+
+[gamevals.timer]
+burn_npc = 64910
+burn_player = 64911

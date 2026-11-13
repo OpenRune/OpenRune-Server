@@ -65,7 +65,7 @@ class FoundryLifecycleTest {
         val death = PlayerDeath(
             MapClock(), drops, PlayerDeathHandlingResolver(emptySet()),
             setOf(FoundryDeathPreDropHook(f.events)), emptySet(), emptySet(), emptySet(), emptySet(),
-            mockk<AreaChecker>(relaxed = true),
+            mockk<AreaChecker>(relaxed = true), mockk<org.rsmod.api.mechanics.burn.Burn>(relaxed = true),
         )
         // Exercise the actual mutation pipeline, not the preview or a manually ordered hook.
         val handle = PlayerDeath::class.java.declaredMethods.single { it.name.startsWith("handleDeathDrops") }
