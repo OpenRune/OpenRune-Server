@@ -56,6 +56,12 @@ public object RangedMaxHitOperations {
             modified = scale(modified, multiplier = 7, divisor = 6)
         } else if (RangeAttr.BlackMaskI in rangeAttributes && NpcAttr.SlayerTask in npcAttributes) {
             var multiplier = 23
+            var divisor = 20
+
+            if (RangeAttr.EclipseAtlatl in rangeAttributes) {
+                multiplier = 7
+                divisor = 6
+            }
 
             if (applyRevWeaponMod) {
                 applyRevWeaponMod = false
@@ -72,7 +78,7 @@ public object RangedMaxHitOperations {
                 multiplier += 6
             }
 
-            modified = scale(modified, multiplier, divisor = 20)
+            modified = scale(modified, multiplier, divisor)
         }
 
         if (RangeAttr.TwistedBow in rangeAttributes) {
@@ -163,9 +169,17 @@ public object RangedMaxHitOperations {
         return modified
     }
 
-    public fun calculateEffectiveRanged(player: Player, attackStyle: RangedAttackStyle?): Int =
+    /**
+     * @param useStrengthLevel The Eclipse atlatl takes its damage from the visible Strength level
+     *   (and melee strength bonus) while still using the ranged style bonus and ranged prayers.
+     */
+    public fun calculateEffectiveRanged(
+        player: Player,
+        attackStyle: RangedAttackStyle?,
+        useStrengthLevel: Boolean = false,
+    ): Int =
         calculateEffectiveRanged(
-            visLevel = player.stat("stat.ranged"),
+            visLevel = player.stat(if (useStrengthLevel) "stat.strength" else "stat.ranged"),
             vars = player.vars,
             worn = player.worn,
             attackStyle = attackStyle,

@@ -89,6 +89,10 @@ public class CombatRangedAttributeCollector {
                     CombatRangedAttributes.TwistedBow
                 }
 
+                EquipmentChecks.isEclipseAtlatl(weapon) -> {
+                    CombatRangedAttributes.EclipseAtlatl
+                }
+
                 weapon.isAnyType("obj.wild_cave_bow_charged", "obj.wild_cave_webweaver_charged") -> {
                     CombatRangedAttributes.RevenantWeapon
                 }

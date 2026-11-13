@@ -138,3 +138,4 @@ pmoon_inside=64500
 pmoon_trap_first_rock=64501
 pmoon_fight_state=64503
 burn_stacks=64950
+frostweaver_pending=64951
