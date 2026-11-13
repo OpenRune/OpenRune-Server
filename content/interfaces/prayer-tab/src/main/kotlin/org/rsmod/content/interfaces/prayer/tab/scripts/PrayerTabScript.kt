@@ -3,6 +3,7 @@ package org.rsmod.content.interfaces.prayer.tab.scripts
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.player.hook.PrayerEnableHook
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
@@ -32,6 +33,7 @@ private constructor(
     private val repo: PrayerRepository,
     private val eventBus: EventBus,
     private val protectedAccess: ProtectedAccessLauncher,
+    private val enableHooks: Set<@JvmSuppressWildcards PrayerEnableHook>,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         for ((component, prayer) in repo.prayerComponents.map { RSCM.getReverseMapping(RSCMType.COMPONENT, it.key.packed) to it.value }) {
@@ -90,6 +92,7 @@ private constructor(
         if (prayer.overhead != null) {
             player.overheadIcon = prayer.overhead
         }
+        enableHooks.forEach { it.onEnable(player, prayer.enabled) }
     }
 
     private fun ProtectedAccess.disablePrayer(prayer: Prayer) {

@@ -5,6 +5,7 @@ import dtx.rs.RSGuaranteedTable
 import dtx.rs.RSPreRollTable
 import dtx.rs.RSWeightedTable
 import org.rsmod.api.droptable.ChanceRollStyle
+import org.rsmod.api.droptable.ClueTier
 import org.rsmod.api.droptable.DropChanceTableScope
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropWeightedTableScope
@@ -49,7 +50,7 @@ public object DropTableTomlParser {
         }
         return rsPlayerGuaranteedTable {
             for (entry in entries) {
-                val item = buildItem(entry.obj, parseCount(entry), entry.toHooks(), resolver)
+                val item = buildItem(entry.obj, entry.clue, parseCount(entry), entry.toHooks(), resolver)
                 if (item.requiresRollableWrapper()) {
                     add(dropRollable(item))
                 } else {
@@ -99,8 +100,8 @@ public object DropTableTomlParser {
             entry.shared != null -> {
                 entry.weight weight resolver.sharedTable(entry.shared)
             }
-            entry.obj != null -> {
-                val item = buildItem(entry.obj, parseCount(entry), entry.toHooks(), resolver)
+            entry.obj != null || entry.clue != null -> {
+                val item = buildItem(entry.obj, entry.clue, parseCount(entry), entry.toHooks(), resolver)
                 if (item.requiresRollableWrapper()) {
                     entry.weight weight dropRollable(item)
                 } else {
@@ -110,7 +111,7 @@ public object DropTableTomlParser {
             else ->
                 error(
                     "Main entry in '$sourcePath' with weight ${entry.weight} " +
-                        "must define obj, shared, or nothing = true.",
+                        "must define obj, clue, shared, or nothing = true.",
                 )
         }
     }
@@ -173,7 +174,7 @@ public object DropTableTomlParser {
         resolver: DropTableTomlResolver,
         useRolls: Boolean,
     ) {
-        val item = buildItem(entry.obj, parseCount(entry), entry.toHooks(), resolver)
+        val item = buildItem(entry.obj, entry.clue, parseCount(entry), entry.toHooks(), resolver)
         val style = if (useRolls) ChanceRollStyle.Rolls else ChanceRollStyle.Chance
         // Always go through addRateFirstItem so clue scrolls get rate-boost wiring.
         boostedIf(entry.boosted) {
@@ -198,12 +199,16 @@ public object DropTableTomlParser {
     }
 
     private fun buildItem(
-        obj: String,
+        obj: String?,
+        clue: String?,
         count: ParsedCount,
         hooks: TomlDropHooks,
         resolver: DropTableTomlResolver,
     ): DropRollItem {
-        val config = PendingDropItemConfig(obj, count.range)
+        val tier = clue?.let(ClueTier::parse)
+        val key = tier?.boxObj ?: obj ?: error("Drop entry must define obj or clue.")
+        val config = PendingDropItemConfig(key, count.range)
+        config.clue = tier
         config.countChoices = count.choices
         resolver.applyHooks(config, hooks)
         return config.toItem()
@@ -253,7 +258,6 @@ public object DropTableTomlParser {
         TomlDropHooks(
             shouldDropLootingBag = shouldDropLootingBag,
             shouldDropBrimstoneKey = shouldDropBrimstoneKey,
-            clueScrollBox = clueScrollBox,
             quest = quest,
             questMode = questMode,
         )
@@ -262,7 +266,6 @@ public object DropTableTomlParser {
         TomlDropHooks(
             shouldDropLootingBag = shouldDropLootingBag,
             shouldDropBrimstoneKey = shouldDropBrimstoneKey,
-            clueScrollBox = clueScrollBox,
             quest = quest,
             questMode = questMode,
         )
@@ -271,7 +274,6 @@ public object DropTableTomlParser {
         TomlDropHooks(
             shouldDropLootingBag = shouldDropLootingBag,
             shouldDropBrimstoneKey = shouldDropBrimstoneKey,
-            clueScrollBox = clueScrollBox,
             requireRingOfWealth = requireRingOfWealth,
             excludeRingOfWealth = excludeRingOfWealth,
             requireWilderness = requireWilderness,

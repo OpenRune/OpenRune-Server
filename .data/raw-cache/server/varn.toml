@@ -296,6 +296,15 @@ id = "varn.toa_zebak_cloud_last"
 id = "varn.toa_zebak_cloud_target"
 
 [[varn]]
+id = "varn.protect_melee"
+
+[[varn]]
+id = "varn.protect_ranged"
+
+[[varn]]
+id = "varn.protect_magic"
+
+[[varn]]
 id = "varn.magic_defence_drain"
 
 [[varn]]

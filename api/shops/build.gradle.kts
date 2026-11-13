@@ -26,6 +26,8 @@ dependencies {
     implementation(projects.engine.game)
     implementation(projects.engine.objtx)
     implementation(projects.engine.plugin)
-    testImplementation(projects.engine.annotations)
+
+    testImplementation(libs.mockk)
     testImplementation(projects.api.invStorage)
+    testImplementation(projects.engine.annotations)
 }

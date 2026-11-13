@@ -2,12 +2,13 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
+import org.rsmod.api.droptable.ClueTier
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.ringNothing
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.game.entity.Player
 
@@ -39,11 +40,7 @@ public val pendaDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         23 weight SharedDropTables.herb
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 90 weight "obj.trail_clue_beginner" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_beginner")
-        }
-        1 outOf 121 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
-        }
+        1 outOf 90 chance clue(ClueTier.Beginner)
+        1 outOf 121 chance clue(ClueTier.Easy)
     },
 )

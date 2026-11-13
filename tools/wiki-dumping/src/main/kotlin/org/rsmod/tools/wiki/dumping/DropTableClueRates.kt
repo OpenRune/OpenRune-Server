@@ -21,6 +21,25 @@ internal data class ClueTertiaryRollExport(
     val modifier: ClueTertiaryRollModifier = ClueTertiaryRollModifier(),
 )
 
+private val CLUE_OBJ =
+    Regex("""^obj\.trail_(?:clue_)?(beginner|easy|medium|hard|elite|master)(?:_|$)""")
+private val CLUE_CASKET_OBJ = Regex("""^obj\.trail_reward_casket_""")
+private val KILL_STEP_NOTE =
+    Regex("""completing an? .*clue|Treasure Trails/Full guide""", RegexOption.IGNORE_CASE)
+
+/** Tier name of a representative clue scroll obj, as drop tables spell it (`clue = "hard"`). */
+internal fun clueTierOf(obj: String): String? = CLUE_OBJ.find(obj)?.groupValues?.get(1)
+
+internal fun ResolvedDropEntry.clueTier(): String? = clueTierOf(obj)
+
+/**
+ * The clue or casket a monster hands over when it is the target of a kill step. The trails
+ * content gives those out itself, so they stay out of the npc's drop table.
+ */
+internal fun isClueKillStepDrop(obj: String, conditionNotes: List<String>): Boolean =
+    (clueTierOf(obj) != null || CLUE_CASKET_OBJ.containsMatchIn(obj)) &&
+        conditionNotes.any(KILL_STEP_NOTE::containsMatchIn)
+
 private val RING_OF_WEALTH_NOTE = Regex("""ring\s*of\s*wealth""", RegexOption.IGNORE_CASE)
 private val WEALTH_CLUE_RATE =
     Regex(

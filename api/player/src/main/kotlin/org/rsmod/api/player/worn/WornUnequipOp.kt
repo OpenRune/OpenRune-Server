@@ -4,6 +4,7 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.invtx.invTransfer
+import org.rsmod.api.player.events.PlayerWornEvents
 import org.rsmod.api.player.events.interact.HeldEquipEvents
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -57,6 +58,7 @@ public class WornUnequipOp @Inject constructor(private val eventBus: EventBus) {
 
             val unequip = HeldEquipEvents.Unequip(player, wearpos, objType)
             eventBus.publish(unequip)
+            eventBus.publishIfHeard { PlayerWornEvents.Unequip(player, objType, wearpos) }
 
             if (rebuildAppearance) {
                 player.rebuildAppearance()

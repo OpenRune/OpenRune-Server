@@ -11,6 +11,7 @@ dependencies {
     implementation(projects.api.death)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
+    implementation(projects.content.drops)
     implementation(projects.api.instances)
     implementation(projects.api.invtx)
     implementation(projects.api.market)

@@ -1845,7 +1845,7 @@ launched (see Effects reference for when that damage lands).
   dragonfire types, and the melee formula (with `meleeAttackType`) for `Melee` and `Typeless`.
   `minHit` is clamped into `0..max`.
 - `Accuracy` rolls melee accuracy (using `meleeAttackType`), ranged or magic accuracy by hit type;
-  `Typeless` always lands.
+  `Typeless` always lands. `kind = MagicAccuracy` rolls the npc magic attack against the target magic defence regardless of hit type, for typeless magic attacks (Brassican Mage); `kind = MagicalRanged` rolls ranged attack against magic defence.
 - Dragonfire hit types (`Dragonfire`, `DragonfireMetal`, `WyvernIce`) discard the rolled value: the
   interpreter takes the expression's maximum (`range.last` for `Roll`, the value for `Fixed`, the
   formula max for `NpcMaxHit`), reduces it with `DragonfireProtection.resolveMaxHit` for the

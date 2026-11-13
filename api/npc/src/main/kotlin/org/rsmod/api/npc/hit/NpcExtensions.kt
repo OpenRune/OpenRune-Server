@@ -231,6 +231,27 @@ public fun Npc.isStyleImmuneTo(type: HitType): Boolean =
         HitType.Typeless -> false
     }
 
+/**
+ * The percentage of a [type] hit this npc negates. `varn.immune_*` means it cannot be hit that way
+ * at all, whatever the [penetration]. `varn.protect_*` is a percentage from an overhead prayer, which
+ * [penetration] takes away from.
+ */
+public fun Npc.styleReduction(type: HitType, penetration: Int = 0): Int {
+    if (isStyleImmuneTo(type)) {
+        return FULL_STYLE_PROTECTION
+    }
+    val protection =
+        when (type) {
+            HitType.Melee -> vars["varn.protect_melee"]
+            HitType.Ranged -> vars["varn.protect_ranged"]
+            HitType.Magic -> vars["varn.protect_magic"]
+            HitType.Typeless -> 0
+        }
+    return (protection - penetration).coerceIn(0, FULL_STYLE_PROTECTION)
+}
+
+public const val FULL_STYLE_PROTECTION: Int = 100
+
 private fun Npc.modifyAndQueueHit(delay: Int, builder: HitBuilder, modifier: NpcHitModifier): Hit {
     modifier.modify(builder, this)
     val hit = builder.build()

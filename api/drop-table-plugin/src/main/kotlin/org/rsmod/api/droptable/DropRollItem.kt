@@ -1,5 +1,7 @@
 package org.rsmod.api.droptable
 
+import dtx.core.RollResult
+import dtx.core.flatten
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
@@ -14,6 +16,7 @@ public data class DropRollItem(
     public val transformObj: (Player) -> String? = { null },
     public val bonusDrops: List<DropRollItem> = emptyList(),
     public val isNothing: Boolean = false,
+    public val clue: ClueTier? = null,
 ) {
     public constructor(
         obj: String,
@@ -65,6 +68,13 @@ public fun DropRollItem.rollCount(random: GameRandom): Int {
     }
     return random.of(count.first, count.last)
 }
+
+public fun RollResult<DropRollItem>.toDropList(): List<DropRollItem> =
+    when (val result = flatten()) {
+        is RollResult.Nothing -> emptyList()
+        is RollResult.Single -> listOf(result.result)
+        is RollResult.ListOf -> result.results
+    }
 
 public fun nothingDrop(
     includeWhen: (Player) -> Boolean = { player -> !player.wearingRingOfWealth() },

@@ -65,6 +65,7 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         player.showHeadbar(headbar)
 
         publish(PlayerHitEvents.Impact(player, hit))
+        publishAttackImpact(hit)
     }
 
     private fun ProtectedAccess.publishPlayerHitpointsChangedEvent(oldHitpoints: Int, hit: Hit) {

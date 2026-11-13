@@ -2,13 +2,12 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
-import org.rsmod.api.droptable.rsPlayerGuaranteedTable
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -60,8 +59,6 @@ public val theNightmareDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         // Drops Need Manual (rate): The drop rate of the Little Nightmare depends on the amount of players in the fight; 1/800 for 1, 1/1,600 for 2, 1/2,400 for 3, 1/3,200 for 4, and 1/4,000 for 5 and beyond. The team size is counted when the fight starts.
         1 outOf 800 weight "obj.nightmarepet" count 1
         1 outOf 1900 weight "obj.jar_of_dreams" count 1
-        1 outOf 180 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 180 chance clue(ClueTier.Elite)
     },
 )

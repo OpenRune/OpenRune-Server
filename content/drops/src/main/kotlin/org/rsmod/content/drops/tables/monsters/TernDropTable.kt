@@ -2,14 +2,13 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
-import org.rsmod.api.droptable.rsPlayerGuaranteedTable
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.clue
+import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.nothing
-import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -48,8 +47,6 @@ public val ternDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
              true
         }
         1 outOf 10 weight "obj.sailing_tern_beak" count 1
-        1 outOf 118 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
-        }
+        1 outOf 118 chance clue(ClueTier.Easy)
     },
 )

@@ -12,7 +12,6 @@ import org.rsmod.api.droptable.toml.DropTableTomlResolver
 import org.rsmod.api.droptable.toml.TomlDropHooks
 import org.rsmod.api.droptable.wearingRingOfWealth
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.content.drops.shouldDropBrimstoneKey
 import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.tables.shared.SharedDropTables
@@ -81,10 +80,6 @@ constructor(
             config.killCondition = { player, npc, areaChecker ->
                 player.shouldDropBrimstoneKey(npc, areaChecker)
             }
-        }
-        if (hooks.clueScrollBox) {
-            val scrollObj = config.obj
-            config.transformObj = { player -> player.clueScrollTransformObj(scrollObj) }
         }
     }
 

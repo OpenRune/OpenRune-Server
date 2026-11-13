@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 kotlin {
@@ -10,6 +11,7 @@ dependencies {
     implementation(libs.guice)
     implementation(projects.api.attr)
     implementation(projects.api.config)
+    implementation(projects.api.random)
     implementation(projects.api.generated)
     implementation(projects.api.combat.combatCommons)
     implementation(projects.api.combat.combatManager)
@@ -23,4 +25,7 @@ dependencies {
     implementation(projects.engine.game)
     implementation(projects.engine.map)
     implementation(projects.engine.plugin)
+
+    testImplementation(libs.mockk)
+    testImplementation(projects.engine.annotations)
 }

@@ -73,6 +73,35 @@ it through the interface close hook. Keep cleanup tied to the interface,
 not the suspended dialogue: walking or a hit can cancel that dialogue.
 Disabled popups do not set the flag.
 
+## Treasure Trails
+
+- Clue targets that move with quest progress (`[proc,script6657]`) switch on
+quest completion, not the mid-quest var values the client checks (e.g.
+`%sote >= 192`), because quest progress here lives in the quest stage map
+rather than the Jagex quest varbits. Eluned, Jardric, Radimus Erkle and the
+whirlpool cavern therefore move once the quest is completed (or counted as
+completed by the quest-requirements mode), slightly later than in OSRS.
+- Per-tier completion counts use custom `varp.trail_completed_<tier>`. The
+Jagex `*_clues_completed_deprecated` varbits do not count the tier they are
+named after (packet captures show a medium casket incrementing
+`hard_clues_completed_deprecated`), so they are not reused.
+- Casket rewards go into the inventory (overflow to the floor) as the casket
+opens. OSRS moves them when the reward screen closes; `inv.trail_rewardinv`
+is temporary, so delivering on close could lose them on a disconnect. The
+reward screen shows a copy, with noted rewards displayed unnoted.
+- Picking up scroll boxes past the tier cap is refused. OSRS takes the stack
+and destroys the excess ("Some of your Scroll Boxes were destroyed...").
+- A beginner trail's state survives dropping the clue; only opening a scroll
+box starts a fresh trail. Steps are rolled uniformly from the tier's pool.
+- Not yet confirmed by a capture, so worded or tuned by guess: the strange
+device temperature bands (`enum.trail_hotcold_temperatures`, copied from the
+X Marks the Spot orb) and its "Nothing interesting happens." fallback; the
+4-tile emote radius; Uri spawning one tile south for 100 ticks without his
+spawn sound (synth 1930 has no symbol here); the "Check steps" message; and
+the dig / npc / Reldo hand-over lines. Verified from captures: reading,
+scroll box opening, the npc "has given you another clue scroll!" box, Uri's
+dialogue, and the casket completion messages and jingle.
+
 ## Types
 ```
 engine

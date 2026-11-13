@@ -103,7 +103,19 @@ constructor(
         return player.vars["varbit.slayer_toggleoff_superiormobs"] == 0
     }
 
-    private fun rollSpawn(player: Player): Boolean = Random.nextInt(spawnDenominator(player)) == 0
+    /** Spawns another of [killed], which must be a superior, with no roll. */
+    fun respawnSuperior(player: Player, killed: Npc, npcRepo: NpcRepository): Boolean {
+        val type = killed.visType
+        val coords = SlayerSuperiorSpawnTiles.resolve(player, killed, type, collision) ?: return false
+        spawnSuperior(player, coords, type, npcRepo)
+        return true
+    }
+
+    private fun rollSpawn(player: Player): Boolean {
+        val multiplier = player.vars["varp.slayer_superior_rate_multiplier"]
+        val denominator = applyRateMultiplier(spawnDenominator(player), multiplier)
+        return Random.nextInt(denominator) == 0
+    }
 
     private fun spawnDenominator(player: Player): Int {
         val onWildernessTask = SlayerTaskManager.getCurrentAssignedMaster(player)?.let(SlayerTaskManager::isWildernessMaster) == true
@@ -171,6 +183,11 @@ constructor(
 
     companion object {
         private const val VARBIT_SUPERIOR_ACTIVE = "varbit.slayer_superior_active"
+
+        /** [percent] is 100 for the normal rate; 0 also means normal, as a var starts at 0. */
+        internal fun applyRateMultiplier(denominator: Int, percent: Int): Int =
+            if (percent <= 0) denominator else (denominator * 100 / percent).coerceAtLeast(1)
+
         const val SPAWN_MESSAGE = "A superior foe has appeared..."
         private const val BIGGER_AND_BADDER_BIT = 35
         private const val SPAWN_CHANCE_BASE = 200

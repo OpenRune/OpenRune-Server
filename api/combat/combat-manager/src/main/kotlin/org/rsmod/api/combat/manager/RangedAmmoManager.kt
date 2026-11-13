@@ -4,6 +4,8 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.ranged.RangedAmmunition
+import org.rsmod.api.player.events.ResourceKind
+import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.events.EventBus
@@ -122,9 +124,12 @@ constructor(
         dropDelay: Int,
         dropDuration: Int,
     ) {
+        val record = player.attackRecord
         val roll = random.of(maxExclusive = 100)
         val recovery = RangedAmmunition.ammoRecoveryRate(player)
-        if (roll < recovery) {
+        val conserve = roll < recovery || record?.rollSave(random) == true
+        record?.addResource(ResourceKind.Ammo, ammoType, ammoCount, conserve)
+        if (conserve) {
             return
         }
 

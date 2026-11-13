@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.api.areaChecker)
     implementation(projects.api.dropTable)
     implementation(projects.api.random)
+    implementation(projects.engine.events)
     implementation(projects.engine.game)
     implementation(projects.engine.plugin)
 }

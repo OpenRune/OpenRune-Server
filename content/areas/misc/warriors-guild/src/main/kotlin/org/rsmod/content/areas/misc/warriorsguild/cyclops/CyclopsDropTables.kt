@@ -2,8 +2,10 @@ package org.rsmod.content.areas.misc.warriorsguild.cyclops
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
+import org.rsmod.api.droptable.ClueTier
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.rsPlayerPrerollTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
@@ -11,7 +13,6 @@ import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.areas.misc.warriorsguild.Defenders
 import org.rsmod.content.areas.misc.warriorsguild.cyclopsRoom
 import org.rsmod.content.areas.misc.warriorsguild.cyclopsTier
-import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.game.entity.Player
 
@@ -69,9 +70,7 @@ public val warriorsGuildCyclopsDropTable: RSDropTable<Player, DropRollItem> =
             },
         tertiaries =
             rsPlayerTertiaryTable {
-                1 outOf 486 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-                    player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-                }
+                1 outOf 486 chance clue(ClueTier.Hard)
                 1 outOf 400 weight "obj.dorgesh_construction_bone" count 1
                 1 outOf 5013 weight "obj.dorgesh_construction_bone_curved" count 1
             },
@@ -126,9 +125,7 @@ public val warriorsGuildBasementCyclopsDropTable: RSDropTable<Player, DropRollIt
             },
         tertiaries =
             rsPlayerTertiaryTable {
-                1 outOf 243 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-                    player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-                }
+                1 outOf 243 chance clue(ClueTier.Hard)
                 1 outOf 400 weight "obj.dorgesh_construction_bone" count 1
                 1 outOf 5013 weight "obj.dorgesh_construction_bone_curved" count 1
             },

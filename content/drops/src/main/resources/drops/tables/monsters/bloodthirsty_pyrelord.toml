@@ -137,5 +137,4 @@ should_drop_looting_bag = true
 [[tertiary]]
 numerator = 1
 denominator = 1
-obj = "obj.trail_medium_emote_exp1"
-count = 1
+clue = "medium"

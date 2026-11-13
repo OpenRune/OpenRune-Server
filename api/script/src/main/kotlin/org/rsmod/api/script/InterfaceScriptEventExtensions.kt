@@ -1,6 +1,5 @@
 package org.rsmod.api.script
 
-import dev.openrune.cache.filestore.definition.InterfaceType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -15,6 +14,7 @@ import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.ui.IfOverlayButtonT
 import org.rsmod.api.player.ui.IfOverlayDrag
 import org.rsmod.api.player.ui.IfOverlaySubOpMenu
+import org.rsmod.api.player.ui.PlayerInterfaceEvents
 import org.rsmod.events.EventBus
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -23,6 +23,18 @@ public fun ScriptContext.onIfOpen(type: String, action: IfOpenSub.() -> Unit): U
 
 public fun ScriptContext.onIfClose(type: String, action: IfCloseSub.() -> Unit): Unit =
     onEvent(type.asRSCM(RSCMType.INTERFACE), action)
+
+/** Observes [type] opening. Unlike [onIfOpen], any number of scripts can subscribe. */
+public fun ScriptContext.onPlayerIfOpened(type: String, action: PlayerInterfaceEvents.Opened.() -> Unit) {
+    val id = type.asRSCM(RSCMType.INTERFACE)
+    onEvent<PlayerInterfaceEvents.Opened> { if (interf.id == id) action() }
+}
+
+/** Observes [type] closing. Unlike [onIfClose], any number of scripts can subscribe. */
+public fun ScriptContext.onPlayerIfClosed(type: String, action: PlayerInterfaceEvents.Closed.() -> Unit) {
+    val id = type.asRSCM(RSCMType.INTERFACE)
+    onEvent<PlayerInterfaceEvents.Closed> { if (interf.id == id) action() }
+}
 
 public fun ScriptContext.onIfOverlayButton(
     button: String,

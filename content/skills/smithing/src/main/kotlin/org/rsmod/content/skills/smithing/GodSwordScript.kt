@@ -1,10 +1,15 @@
 package org.rsmod.content.skills.smithing
 
 import org.rsmod.api.player.events.interact.HeldUEvents
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.content.skills.smithing.util.SmithingUtils.hasHammer
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLocCategoryU
+import org.rsmod.content.skills.smithing.util.SmithingUtils.hasHammer
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -91,9 +96,20 @@ class GodSwordScript : PluginScript() {
 
         val product = hiltToGodsword[hiltInternal] ?: return
 
-        if (invDel(inv, hiltInternal, 1).success && invDel(inv, "obj.godwars_godsword_blade1+2+3", 1).success) {
-            invAdd(inv, product, 1)
-        }
+        val godsword =
+            SkillingProduct(
+                player = player,
+                skill = "stat.smithing",
+                item = product,
+                grantsExperience = false,
+                source = SkillingProductSource.GodswordHilt,
+                inputs =
+                    listOf(
+                        SkillingInput(hiltInternal),
+                        SkillingInput("obj.godwars_godsword_blade1+2+3"),
+                    ),
+            )
+        awardSkillingProduct(godsword)
     }
 
     private suspend fun ProtectedAccess.forgeBlade() {
@@ -115,9 +131,16 @@ class GodSwordScript : PluginScript() {
         soundSynth("synth.anvil02")
         delay(4)
 
-        if (toConsume.all { invDel(inv, it, 1).success }) {
-            invAdd(inv, result, 1)
-            statAdvance("stat.smithing", 100.0)
+        val blade =
+            SkillingProduct(
+                player = player,
+                skill = "stat.smithing",
+                item = result,
+                experience = 100.0,
+                source = SkillingProductSource.GodswordBlade,
+                inputs = toConsume.map { SkillingInput(it) },
+            )
+        if (awardSkillingProduct(blade) == SkillingAwardResult.Success) {
             objbox(
                 result,
                 "Even for an experienced smith it is not an easy task, but eventually it is done.",
@@ -154,5 +177,4 @@ class GodSwordScript : PluginScript() {
 
         return null
     }
-
 }

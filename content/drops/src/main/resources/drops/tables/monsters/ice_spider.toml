@@ -17,9 +17,7 @@ count = 1
 [[tertiary]]
 numerator = 1
 denominator = 128
-obj = "obj.trail_clue_beginner"
-count = 1
-clue_scroll_box = true
+clue = "beginner"
 
 
 # Unknown wiki drop rate: Frozen tear [tertiary/Tertiary/<ref name=row group=d>Only dropped in Ruins of Tapoyauik.</ref>]

@@ -2,13 +2,13 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -84,8 +84,6 @@ public val yamaDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tertiaries = rsPlayerTertiaryTable {
         // Drops Need Manual (rate): The drop rate is fixed at 1/2500, as long as contribution is higher than 15%.
         1 outOf 2500 weight "obj.yamapet" count 1
-        1 outOf 28 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 28 chance clue(ClueTier.Elite)
     },
 )

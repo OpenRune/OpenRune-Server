@@ -26,7 +26,7 @@ internal object BarrowsLoot {
     private val LOOP_KEY_HALF = 1006..1008
     private val TOOTH_KEY_HALF = 1009..1011
 
-    const val CLUE_OBJ = "obj.trail_elite_emote_exp1"
+    const val CLUE_OBJ = "obj.league_clue_box_elite"
     const val CLUE_DENOMINATOR = 200
 
     fun roll(

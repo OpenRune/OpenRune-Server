@@ -2,13 +2,14 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
+import org.rsmod.api.droptable.ClueTier
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.brimstoneKeyRoll
-import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.content.drops.shouldDropSanguineTorvaKit
 import org.rsmod.content.drops.vestigeProgressRoll
 import org.rsmod.game.entity.Player
@@ -72,17 +73,9 @@ public val vardorvisDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
             player.shouldDropSanguineTorvaKit(npc, "obj.dt2_sanguine_torva_kit")
         }
         1 outOf 3000 weight "obj.vardorvispet" count 1
-        1 outOf 152 weight "obj.trail_clue_easy_simple001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_easy_simple001")
-        }
-        1 outOf 152 weight "obj.trail_medium_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_medium_emote_exp1")
-        }
-        1 outOf 152 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
-        1 outOf 152 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
-        }
+        1 outOf 152 chance clue(ClueTier.Easy)
+        1 outOf 152 chance clue(ClueTier.Medium)
+        1 outOf 152 chance clue(ClueTier.Hard)
+        1 outOf 152 chance clue(ClueTier.Elite)
     },
 )

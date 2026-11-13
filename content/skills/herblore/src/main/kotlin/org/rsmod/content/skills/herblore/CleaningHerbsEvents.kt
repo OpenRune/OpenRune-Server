@@ -1,10 +1,12 @@
 package org.rsmod.content.skills.herblore
 
-import org.rsmod.api.invtx.add
-import org.rsmod.api.invtx.delete
-import org.rsmod.api.invtx.invTransaction
-import org.rsmod.api.invtx.select
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreCleaningRow
@@ -39,19 +41,26 @@ class CleaningHerbsEvents : PluginScript() {
             return
         }
 
-        val result = player.invTransaction(inv) {
-            val inventory = select(inv)
-            delete(inventory, row.input.id, 1)
-            add(inventory, row.output.id, 1)
-        }
-        if (result.failure) return
-
-        if (row.xp > 0) {
-            statAdvance("stat.herblore", row.xp / 10.0)
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.herblore",
+                item = row.output.internalName,
+                experience = row.xp / 10.0,
+                source = SkillingProductSource.HerbCleaning(row),
+                inputs = listOf(SkillingInput(row.input.internalName)),
+            )
+        when (awardSkillingProduct(product)) {
+            SkillingAwardResult.Success -> Unit
+            SkillingAwardResult.InventoryFull -> {
+                mes("You don't have enough inventory space.")
+                return
+            }
+            SkillingAwardResult.Cancelled -> return
         }
 
         if (inv.contains(row.input.internalName)) {
-            weakQueue("queue.herblore_clean", 2, task)
+            weakQueue("queue.herblore_clean", player.skillCycles("stat.herblore", 2), task)
         }
     }
 

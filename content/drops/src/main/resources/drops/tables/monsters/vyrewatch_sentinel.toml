@@ -168,9 +168,7 @@ count = "6..14"
 [[tertiary]]
 numerator = 1
 denominator = 95
-obj = "obj.trail_clue_hard_map001"
-count = 1
-clue_scroll_box = true
+clue = "hard"
 
 
 # Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (2 weight)

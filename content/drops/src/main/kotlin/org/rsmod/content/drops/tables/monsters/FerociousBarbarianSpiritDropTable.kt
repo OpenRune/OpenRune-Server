@@ -2,13 +2,11 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
-import org.rsmod.api.droptable.rsPlayerGuaranteedTable
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
-import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -52,10 +50,5 @@ public val ferociousBarbarianSpiritDropTable: RSDropTable<Player, DropRollItem> 
         8 weight SharedDropTables.gem
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.trail_elite_emote_exp1" count 1 condition { player ->
-            // Drops Need Manual: The elite clue scroll and elite casket are only dropped when completing an elite clue scroll asking you to kill a ferocious barbarian spirit.
-             true
-        }
-        1 outOf 1 weight "obj.trail_reward_casket_elite" count 1
     },
 )

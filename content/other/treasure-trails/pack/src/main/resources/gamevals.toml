@@ -1,0 +1,97 @@
+[gamevals.dbtable]
+trail_tier = 65498
+trail_charlie_task = 65496
+trail_map_interface = 65497
+trail_emote_area = 65494
+
+[gamevals.param]
+trail_clue_step = 623
+trail_item_group = 258
+
+[gamevals.inv]
+trail_stash = 1120
+
+[gamevals.enum]
+trail_uri_phrases = 65450
+trail_hotcold_temperatures = 65451
+trail_stash_units = 1368
+
+[gamevals.varp]
+trail_completed_beginner = 63800
+trail_completed_easy = 63801
+trail_completed_medium = 63802
+trail_completed_hard = 63803
+trail_completed_elite = 63804
+trail_completed_master = 63805
+trail_progress_low = 63806
+trail_progress_high = 63807
+trail_beginner_step = 63808
+trail_emote_first = 63809
+trail_puzzle_solved = 63810
+trail_encounter_defeated = 63811
+trail_challenge_step = 63812
+trail_challenge_done = 63813
+trail_master_step = 63814
+trail_lightbox_seed = 63815
+trail_master_parts = 63816
+
+[gamevals.varbit]
+trail_beginner_length = 63800
+trail_beginner_progress = 63801
+trail_easy_length = 63802
+trail_easy_progress = 63803
+trail_medium_length = 63804
+trail_medium_progress = 63805
+trail_hard_length = 63806
+trail_hard_progress = 63807
+trail_elite_length = 63808
+trail_elite_progress = 63809
+trail_master_length = 63810
+trail_master_progress = 63811
+trail_master_part1_index = 63812
+trail_master_part2_index = 63813
+trail_master_part3_index = 63814
+trail_master_part1_found = 63815
+trail_master_part2_found = 63816
+trail_master_part3_found = 63817
+
+[gamevals.dbrow]
+trail_tier_beginner = 55457
+trail_tier_easy = 55458
+trail_tier_medium = 55459
+trail_tier_hard = 55460
+trail_tier_elite = 55461
+trail_tier_master = 55462
+trail_charlie_task_trout = 55463
+trail_charlie_task_pike = 55464
+trail_charlie_task_raw_herring = 55465
+trail_charlie_task_raw_trout = 55466
+trail_charlie_task_iron_ore = 55467
+trail_charlie_task_iron_dagger = 55468
+trail_charlie_task_leather_body = 55469
+trail_charlie_task_leather_chaps = 55470
+trail_map_interface_champions_guild = 55471
+trail_map_interface_varrock_east_mine = 55472
+trail_map_interface_draynor_bank = 55473
+trail_map_interface_standing_stones = 55474
+trail_map_interface_wizards_tower = 55475
+trail_emote_area_al_kharid_mine = 55476
+trail_emote_area_ardougne_mill = 55477
+trail_map_interface_easy_map006 = 55558
+trail_map_interface_medium_map008 = 55559
+trail_map_interface_medium_map009 = 55560
+trail_map_interface_medium_map010 = 55561
+trail_map_interface_medium_map011 = 55562
+trail_map_interface_medium_map012 = 55563
+trail_sherlock_task_dragon_scimitar = 55564
+trail_sherlock_task_nature_rune = 55565
+trail_sherlock_task_super_defence = 55566
+trail_sherlock_task_green_dhide_body = 55567
+trail_sherlock_task_yew_longbow = 55568
+trail_sherlock_task_black_warlock = 55569
+trail_sherlock_task_red_chinchompa = 55570
+trail_sherlock_task_mithril_ore = 55571
+trail_sherlock_task_mithril_2h = 55572
+trail_sherlock_task_raw_shark = 55573
+trail_sherlock_task_yew_logs = 55574
+trail_sherlock_task_swordfish = 55575

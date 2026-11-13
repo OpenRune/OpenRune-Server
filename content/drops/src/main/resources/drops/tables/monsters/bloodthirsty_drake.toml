@@ -237,8 +237,7 @@ count = "5000..7000"
 [[tertiary]]
 numerator = 1
 denominator = 1
-obj = "obj.trail_clue_hard_map001"
-count = 1
+clue = "hard"
 
 
 # Unknown wiki drop rate: Grimy avantoe [main/Noted herbs/1/{{#expr:1/(5*{{#var:herbbase}}) round 1}}]

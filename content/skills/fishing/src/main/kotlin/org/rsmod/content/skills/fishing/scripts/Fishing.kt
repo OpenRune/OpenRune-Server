@@ -12,6 +12,12 @@ import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.stat.fishingLvl
+import org.rsmod.api.player.stat.resolveSkillRoll
+import org.rsmod.api.player.stat.skillCycles
+import org.rsmod.api.player.stat.skillNeedsBait
+import org.rsmod.api.player.stat.skillNeedsSpace
+import org.rsmod.api.player.stat.skillTool
+import org.rsmod.api.player.stat.statRate
 import org.rsmod.api.player.stat.strengthLvl
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpContentNpc1
@@ -144,7 +150,7 @@ constructor(
         }
         val attempt = prepare(task.spot, task.method, verbose = false) ?: return
         refreshAnim(attempt)
-        rollAndAward(attempt)
+        rollAndAward(attempt, task.npc.visType.internalName)
         weakQueue(CATCH_QUEUE, rollDelay(attempt.bait), task)
     }
 
@@ -180,7 +186,8 @@ constructor(
 
         val unlocked = FishingCatchLogic.unlocked(spot.spotId, active.methodId, player.fishingLvl, rows)
         val bait = resolveBait(active)
-        val hasBait = bait == null || invTotal(inv, bait) > 0
+        val hasBait =
+            bait == null || invTotal(inv, bait) > 0 || !player.skillNeedsBait("stat.fishing")
 
         when (FishingCatchLogic.attemptGate(active.bait, hasMethodTool(active), hasBait, unlocked)) {
             Gate.NoTool -> {
@@ -219,7 +226,7 @@ constructor(
             return null
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.fishing")) {
             if (verbose) {
                 mes("Your inventory is too full to hold any more fish.")
                 soundSynth("synth.pillory_wrong")
@@ -230,7 +237,7 @@ constructor(
         return FishAttempt(active, bait, eligible)
     }
 
-    private fun ProtectedAccess.rollAndAward(attempt: FishAttempt) {
+    private fun ProtectedAccess.rollAndAward(attempt: FishAttempt, subject: String) {
         val active = attempt.active
         val activeBait = attempt.bait
         val hasFlakes = invTotal(inv, SPIRIT_FLAKES) > 0
@@ -239,8 +246,9 @@ constructor(
         val lures = sharkLureQuantity()
         val diabolicWorms = activeBait == DIABOLIC_WORMS
 
-        val caught =
-            FishingCatchLogic.rollCatch(attempt.eligible) { row ->
+        val invisibleBoost = invisibleLvls.get(player, "stat.fishing")
+        val rates =
+            attempt.eligible.associateWith { row ->
                 var l = row.low
                 var h = row.high
                 if (harpoonBonus > 0) {
@@ -252,8 +260,20 @@ constructor(
                     l = (l * rate).toInt()
                     h = (h * rate).toInt()
                 }
-                statRandom("stat.fishing", l, h, invisibleLvls)
-            } ?: return
+                player.statRate("stat.fishing", l, h, invisibleBoost)
+            }
+        val rolled =
+            FishingCatchLogic.rollCatch(attempt.eligible) { row ->
+                rates.getValue(row) > random.randomDouble()
+            }
+        val success =
+            player.resolveSkillRoll(
+                "stat.fishing",
+                FishingCatchLogic.attemptChance(rates.values),
+                rolled != null,
+                subject,
+            )
+        val caught = FishingCatchLogic.settleCatch(attempt.eligible, rolled, success) ?: return
 
         val type = types()[caught.fishId]!!
         var xp = caught.xpTenths / 10.0 * xpMods.get(player, "stat.fishing")
@@ -292,7 +312,7 @@ constructor(
             statAdvance("stat.agility", caught.agiXpTenths / 10.0 * xpMods.get(player, "stat.agility"))
         }
         val consumedBait = caught.baitOverride ?: activeBait
-        if (consumedBait != null) {
+        if (consumedBait != null && player.skillNeedsBait("stat.fishing")) {
             invDel(inv, consumedBait, 1)
         }
         if (hasFlakes) {
@@ -305,8 +325,10 @@ constructor(
     }
 
     // Diabolic worms give a 50% chance for the catch roll to come a tick sooner.
-    private fun ProtectedAccess.rollDelay(bait: String?): Int =
-        if (bait == DIABOLIC_WORMS && random.of(2) == 0) CATCH_CYCLE - 1 else CATCH_CYCLE
+    private fun ProtectedAccess.rollDelay(bait: String?): Int {
+        val cycle = if (bait == DIABOLIC_WORMS && random.of(2) == 0) CATCH_CYCLE - 1 else CATCH_CYCLE
+        return player.skillCycles("stat.fishing", cycle)
+    }
 
     private class FishTask(
         val npc: Npc,
@@ -327,7 +349,8 @@ constructor(
         val altTool = method.altTool
         return invTotal(inv, tool) > 0 ||
             (altTool != null && carrying(altTool)) ||
-            (tool == HARPOON && hasWieldableHarpoon())
+            (tool == HARPOON && hasWieldableHarpoon()) ||
+            player.skillTool("stat.fishing", null) != null
     }
 
     // Wieldable harpoons count from the worn slot as well as the inventory.

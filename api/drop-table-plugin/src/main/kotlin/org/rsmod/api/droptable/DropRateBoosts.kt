@@ -11,8 +11,3 @@ public object DropRateBoosts {
     @Volatile
     public var clueScrollBoostPercent: (Player, ArgMap) -> Int = { _, _ -> 0 }
 }
-
-public fun looksLikeClueScrollObj(obj: String): Boolean {
-    val normalized = obj.removePrefix("obj.").lowercase()
-    return "clue" in normalized
-}

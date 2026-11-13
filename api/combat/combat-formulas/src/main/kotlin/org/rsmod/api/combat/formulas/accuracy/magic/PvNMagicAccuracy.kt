@@ -36,6 +36,7 @@ constructor(
         spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
+        specialMultiplier: Double = 1.0,
     ): Int {
         val targetType = target.visType
         val elementalWeakness = targetType.param(params.elemental_weakness_percent)
@@ -51,6 +52,7 @@ constructor(
             targetWeaknessPercent = elementalWeakness,
             spellbook = spellbook,
             usedSunfireRune = usedSunfireRune,
+            specialMultiplier = specialMultiplier,
         )
     }
 
@@ -66,6 +68,7 @@ constructor(
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
         npc: Npc? = null,
+        specialMultiplier: Double = 1.0,
     ): Int {
         val spellAttributes =
             magicAttributes.spellCollect(source, spell, spellbook, usedSunfireRune, random)
@@ -73,13 +76,14 @@ constructor(
         val slayerTask = target.isSlayerTask(source)
         val npcAttributes = npcAttributes.collect(target, npc, targetCurrHp, targetMaxHp, slayerTask)
 
-        val attackRoll =
+        val baseAttackRoll =
             computeSpellAttackRoll(
                 source = source,
                 targetWeaknessPercent = targetWeaknessPercent,
                 spellAttributes = spellAttributes,
                 npcAttributes = npcAttributes,
             )
+        val attackRoll = (baseAttackRoll * specialMultiplier).toInt()
 
         val amascutInvocationLvl = source.vars["varbit.toa_client_raid_level"]
         val baseDefenceRoll =

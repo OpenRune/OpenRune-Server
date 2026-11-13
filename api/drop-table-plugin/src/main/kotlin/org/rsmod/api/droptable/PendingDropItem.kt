@@ -15,6 +15,7 @@ public class PendingDropItemConfig internal constructor(
     public var condition: (Player) -> Boolean = { true }
     public var transformObj: (Player) -> String? = { null }
     public var killCondition: ((Player, Npc, AreaChecker) -> Boolean)? = null
+    public var clue: ClueTier? = null
 
     public fun toItem(): DropRollItem =
         DropRollItem(
@@ -24,6 +25,7 @@ public class PendingDropItemConfig internal constructor(
             condition = condition,
             killCondition = killCondition,
             transformObj = transformObj,
+            clue = clue,
         )
 }
 

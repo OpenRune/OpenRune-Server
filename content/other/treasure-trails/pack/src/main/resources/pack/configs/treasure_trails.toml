@@ -1,0 +1,374 @@
+[[varp]]
+id = "varp.trail_completed_beginner"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_completed_easy"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_completed_medium"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_completed_hard"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_completed_elite"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_completed_master"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_beginner_step"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_master_step"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_lightbox_seed"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_challenge_step"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_challenge_done"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_emote_first"
+scope = "Temp"
+transmit = "Never"
+
+[[inventory]]
+id = "inv.trail_stash"
+size = 2112
+scope = "Perm"
+protect = false
+
+[[varp]]
+id = "varp.trail_progress_low"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.trail_beginner_length"
+varp = "varp.trail_progress_low"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+id = "varbit.trail_beginner_progress"
+varp = "varp.trail_progress_low"
+startBit = 4
+endBit = 7
+
+[[varbit]]
+id = "varbit.trail_easy_length"
+varp = "varp.trail_progress_low"
+startBit = 8
+endBit = 11
+
+[[varbit]]
+id = "varbit.trail_easy_progress"
+varp = "varp.trail_progress_low"
+startBit = 12
+endBit = 15
+
+[[varbit]]
+id = "varbit.trail_medium_length"
+varp = "varp.trail_progress_low"
+startBit = 16
+endBit = 19
+
+[[varbit]]
+id = "varbit.trail_medium_progress"
+varp = "varp.trail_progress_low"
+startBit = 20
+endBit = 23
+
+[[varp]]
+id = "varp.trail_progress_high"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.trail_hard_length"
+varp = "varp.trail_progress_high"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+id = "varbit.trail_hard_progress"
+varp = "varp.trail_progress_high"
+startBit = 4
+endBit = 7
+
+[[varbit]]
+id = "varbit.trail_elite_length"
+varp = "varp.trail_progress_high"
+startBit = 8
+endBit = 11
+
+[[varbit]]
+id = "varbit.trail_elite_progress"
+varp = "varp.trail_progress_high"
+startBit = 12
+endBit = 15
+
+[[varbit]]
+id = "varbit.trail_master_length"
+varp = "varp.trail_progress_high"
+startBit = 16
+endBit = 19
+
+[[varbit]]
+id = "varbit.trail_master_progress"
+varp = "varp.trail_progress_high"
+startBit = 20
+endBit = 23
+
+[[enum]]
+isServerOnly = true
+id = "enum.trail_uri_phrases"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "A great captain is always ready to change course."
+1 = "Actions have consequences."
+2 = "Can I have your teabag?"
+3 = "Can you stand me?"
+4 = "Have you found the key to the secret room?"
+5 = "I am the egg man, are you one of the egg men?"
+6 = "I believe that it is very rainy in Varrock."
+7 = "I have a story about that."
+8 = "I heard that the tall man fears only strong winds."
+9 = "I quite fancy an onion."
+10 = "In Canifis the men are known for eating much spam."
+11 = "In the end, only the three-legged will survive."
+12 = "It is possible to commit no mistakes and still lose."
+13 = "Loser says what."
+14 = "My magic carpet is full of eels."
+15 = "Once, I was a poor man, but then I found a party hat."
+16 = "Quickly! I've got a bee sticking out of my arm!"
+17 = "The slowest of fishermen catch the swiftest of fish."
+18 = "*sneezes* What?"
+19 = "The sudden appearance of a deaf squirrel is most puzzling, comrade."
+20 = "There were three goblins in a bar, which one left first?"
+21 = "Up in the north, I hear they keep milk in bags rather than buckets."
+22 = "Want to see me bend a spoon?"
+23 = "What's cheese?"
+24 = "Would you like to buy a pewter spoon?"
+
+[[enum]]
+isServerOnly = true
+id = "enum.trail_hotcold_temperatures"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+500 = "ice cold"
+200 = "very cold"
+150 = "cold"
+100 = "warm"
+70 = "hot"
+30 = "very hot"
+4 = "incredibly hot"
+0 = "visibly shaking"
+
+[[npc]]
+id = "npc.trail_hard"
+inherit = "npc.trail_hard"
+attackRange = 8
+[npc.params]
+"param.attack_anim"="seq.human_castwave"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.proj_travel"="spotanim.firewave_travel"
+"param.proj_type"="projanim.magic_spell"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.trail_hard2"
+inherit = "npc.trail_hard2"
+attackRange = 8
+[npc.params]
+"param.attack_anim"="seq.human_castwave"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.double_agent_1"
+inherit = "npc.double_agent_1"
+[npc.params]
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.double_agent_2"
+inherit = "npc.double_agent_2"
+[npc.params]
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.double_agent_master"
+inherit = "npc.double_agent_master"
+[npc.params]
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.elite_npc_1"
+inherit = "npc.elite_npc_1"
+attackRange = 7
+[npc.params]
+"param.attack_anim"="seq.human_bow"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_standard"
+"param.proj_type"="projanim.arrow"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.elite_npc_2"
+inherit = "npc.elite_npc_2"
+[npc.params]
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_block"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.trail_zaros_wizard"
+inherit = "npc.trail_zaros_wizard"
+attackRange = 8
+[npc.params]
+"param.attack_anim"="seq.human_castwave"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.trail_zaros_range"
+inherit = "npc.trail_zaros_range"
+attackRange = 7
+[npc.params]
+"param.attack_anim"="seq.human_bow"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_standard"
+"param.proj_type"="projanim.arrow"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.trail_zaros_melee"
+inherit = "npc.trail_zaros_melee"
+[npc.params]
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_block"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.trail_cabbage_mage"
+inherit = "npc.trail_cabbage_mage"
+attackRange = 8
+[npc.params]
+"param.attack_anim"="seq.human_castwave"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.dropped_remains"=-1
+
+[[varp]]
+id = "varp.trail_puzzle_solved"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.trail_encounter_defeated"
+scope = "Perm"
+transmit = "Never"
+
+[[inventory]]
+isServerOnly = true
+id = "inv.trail_puzzleinv"
+inherit = "inv.trail_puzzleinv"
+scope = "Temp"
+protect = false
+
+[[varp]]
+id = "varp.trail_master_parts"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.trail_master_part1_index"
+varp = "varp.trail_master_parts"
+startBit = 0
+endBit = 5
+
+[[varbit]]
+id = "varbit.trail_master_part2_index"
+varp = "varp.trail_master_parts"
+startBit = 6
+endBit = 11
+
+[[varbit]]
+id = "varbit.trail_master_part3_index"
+varp = "varp.trail_master_parts"
+startBit = 12
+endBit = 17
+
+[[varbit]]
+id = "varbit.trail_master_part1_found"
+varp = "varp.trail_master_parts"
+startBit = 18
+endBit = 18
+
+[[varbit]]
+id = "varbit.trail_master_part2_found"
+varp = "varp.trail_master_parts"
+startBit = 19
+endBit = 19
+
+[[varbit]]
+id = "varbit.trail_master_part3_found"
+varp = "varp.trail_master_parts"
+startBit = 20
+endBit = 20

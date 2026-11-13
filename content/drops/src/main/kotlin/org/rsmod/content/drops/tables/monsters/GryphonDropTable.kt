@@ -2,15 +2,15 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
+import org.rsmod.api.droptable.ClueTier
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.clue
+import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.tables.shared.SharedDropTables
-import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.nothing
-import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -48,8 +48,6 @@ public val gryphonDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tertiaries = rsPlayerTertiaryTable {
         // Drops Need Manual (rate): The rarity changes to 1/1,000 while on a Gryphon Slayer task.
         1 outOf 2500 weight "obj.horn_of_plenty_uncharged" count 1
-        1 outOf 95 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
+        1 outOf 95 chance clue(ClueTier.Hard)
     },
 )

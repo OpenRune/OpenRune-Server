@@ -122,6 +122,4 @@ count = 1
 [[tertiary]]
 numerator = 1
 denominator = 64
-obj = "obj.trail_clue_beginner"
-count = 1
-clue_scroll_box = true
+clue = "beginner"

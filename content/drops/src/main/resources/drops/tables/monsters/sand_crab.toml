@@ -131,6 +131,4 @@ shared = "gem"
 [[tertiary]]
 numerator = 1
 denominator = 121
-obj = "obj.trail_clue_easy_simple001"
-count = 1
-clue_scroll_box = true
+clue = "easy"

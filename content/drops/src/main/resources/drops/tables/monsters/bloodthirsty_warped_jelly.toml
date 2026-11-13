@@ -173,5 +173,4 @@ count = "8..15"
 [[tertiary]]
 numerator = 1
 denominator = 1
-obj = "obj.trail_clue_hard_map001"
-count = 1
+clue = "hard"

@@ -22,6 +22,9 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.firemakingLvl
+import org.rsmod.api.player.stat.skillCycles
+import org.rsmod.api.player.stat.skillNeedsSpace
+import org.rsmod.api.player.stat.skillTool
 import org.rsmod.api.player.stat.woodcuttingLvl
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.controller.ControllerRepository
@@ -71,7 +74,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.woodcutting", type.internalName)) {
             val product = type.treeLogs
             mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
             soundSynth("synth.pillory_wrong")
@@ -106,7 +109,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.woodcutting", type.internalName)) {
             val product = type.treeLogs
             mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
             soundSynth("synth.pillory_wrong")
@@ -122,10 +125,10 @@ constructor(
         val despawn: Boolean
 
         if (actionDelay < mapClock) {
-            actionDelay = mapClock + 3
+            actionDelay = mapClock + chopDelay(type)
         } else if (actionDelay == mapClock) {
             val (low, high) = cutSuccessRates(type, axe)
-            cutLogs = statRandom("stat.woodcutting", low, high, invisibleLvls)
+            cutLogs = statRandom("stat.woodcutting", low, high, invisibleLvls, type.internalName)
         }
 
         if (type.hasDespawnTimer) {
@@ -137,6 +140,7 @@ constructor(
             despawn = cutLogs && random.of(1, 255) > type.treeDepleteChance
         }
 
+        var depletes = true
         if (cutLogs) {
             val logs = type.treeLogs
             val xp = type.treeXp * xpMods.get(player, "stat.woodcutting")
@@ -153,9 +157,10 @@ constructor(
             if (awardSkillingProduct(product) == SkillingAwardResult.Success) {
                 spam("You get some ${logs.name.lowercase()}.")
             }
+            depletes = product.depletes
         }
 
-        if (despawn) {
+        if (despawn && depletes) {
             val respawnTime = type.resolveRespawnTime(random)
             locRepo.change(tree, type.treeStump, respawnTime)
             resetAnim()
@@ -167,6 +172,10 @@ constructor(
 
         opLoc3(tree)
     }
+
+    /** The swing rolls on the tick after this delay ends, so one attempt takes one tick more. */
+    private fun ProtectedAccess.chopDelay(type: ObjectServerType): Int =
+        (player.skillCycles("stat.woodcutting", CHOP_CYCLE, type.internalName) - 1).coerceAtLeast(1)
 
     private fun Controller.treeDespawnTick() {
         val type = ServerCacheManager.getObject(treeLocId)!!
@@ -284,6 +293,8 @@ constructor(
         val ObjectServerType.treeXp: Double by locXpParam(params.skill_xp)
         val ObjectServerType.treeStump: ObjectServerType by locParam(params.next_loc_stage)
         val ObjectServerType.treeDespawnTime: Int by locParam(params.despawn_time)
+        private const val CHOP_CYCLE = 4
+
         val ObjectServerType.treeDepleteChance: Int by locParam(params.deplete_chance)
         val ObjectServerType.treeFixedYields: Int by locParam(WoodcuttingParams.fixed_yields)
         val ObjectServerType.treeRespawnTime: Int by locParam(params.respawn_time)
@@ -303,7 +314,8 @@ constructor(
                     }
                     addAll(carried)
                 }
-            return candidates.maxWithOrNull(axeComparator(tree))
+            val best = candidates.maxWithOrNull(axeComparator(tree))
+            return player.skillTool("stat.woodcutting", best, tree.internalName)
         }
 
         private fun axeComparator(tree: ObjectServerType): Comparator<InvObj> =

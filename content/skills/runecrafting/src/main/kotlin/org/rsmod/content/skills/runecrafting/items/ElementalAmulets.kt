@@ -5,7 +5,6 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseRunecraftingLvl
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.stats.xpmod.XpModifiers
-import org.rsmod.content.skills.runecrafting.action.RunecraftAction.advanceRunecraftingXp
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -92,7 +91,7 @@ class ElementalAmulets @Inject constructor(private val xpMods: XpModifiers) : Pl
         if (invDel(inv, recipe.gem, 1).failure) return
         if (invDel(inv, recipe.rune, RUNES_PER_AMULET).failure) return
         if (invAdd(inv, recipe.amulet, 1).success) {
-            advanceRunecraftingXp(recipe.xp, xpMods)
+            advanceRunecraftingXp(recipe.xp)
         }
     }
 
@@ -122,8 +121,12 @@ class ElementalAmulets @Inject constructor(private val xpMods: XpModifiers) : Pl
             if (invDel(inv, recipe.rune, RUNES_PER_ELEMENTAL).failure) return
         }
         if (invAdd(inv, "obj.elemental_amulet", 1).success) {
-            advanceRunecraftingXp(ELEMENTAL_XP, xpMods)
+            advanceRunecraftingXp(ELEMENTAL_XP)
         }
+    }
+
+    private fun ProtectedAccess.advanceRunecraftingXp(baseXp: Double) {
+        statAdvance("stat.runecrafting", baseXp * xpMods.get(player, "stat.runecrafting"))
     }
 
     private companion object {

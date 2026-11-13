@@ -1,8 +1,14 @@
 package org.rsmod.content.skills.cooking
 
 import jakarta.inject.Inject
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.cookingLvl
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.api.script.onOpContentMixedLocU
 import org.rsmod.api.script.onOpLoc1
@@ -102,7 +108,13 @@ class CookingEvents @Inject constructor(
 
         if (player.cookingLvl >= stopBurn) return false
         val (low, high) = food.low to food.high
-        return !skillSuccess(low, high, player.cookingLvl)
+        return !player.skillSuccess(
+            "stat.cooking",
+            low,
+            high,
+            player.cookingLvl,
+            food.input.internalName,
+        )
     }
 
     private fun ProtectedAccess.hasCookingCape(): Boolean {
@@ -189,7 +201,8 @@ class CookingEvents @Inject constructor(
             return
         }
         anim(cookAnim(surface))
-        weakQueue("queue.cooking_cook", food.cookTicks ?: DEFAULT_COOK_TICKS, CookTask(food, surface, amount, 0))
+        val cycle = player.skillCycles("stat.cooking", food.cookTicks ?: DEFAULT_COOK_TICKS)
+        weakQueue("queue.cooking_cook", cycle, CookTask(food, surface, amount, 0))
     }
 
     private fun ProtectedAccess.processCookTick(task: CookTask) {
@@ -207,22 +220,31 @@ class CookingEvents @Inject constructor(
         val cooked = task.cooked + 1
         if (cooked < task.amount && inv.contains(food.raw.internalName)) {
             anim(cookAnim(task.surface))
-            val delay = maxOf(food.cookTicks ?: DEFAULT_COOK_TICKS, MIN_REQUEUE_TICKS)
+            val cycle = maxOf(food.cookTicks ?: DEFAULT_COOK_TICKS, MIN_REQUEUE_TICKS)
+            val delay = player.skillCycles("stat.cooking", cycle)
             weakQueue("queue.cooking_cook", delay, CookTask(food, task.surface, task.amount, cooked))
         }
     }
 
     private fun ProtectedAccess.applyCook(food: CookingFoodsRow, surface: CookingSurface) {
         val burned = isBurned(food, surface)
-        invDel(inv, food.raw.internalName, 1)
 
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.cooking",
+                item = if (burned) food.burnt.internalName else food.cooked.internalName,
+                experience = if (burned) 0.0 else food.xp * xpMods.get(player, "stat.cooking"),
+                grantsExperience = !burned,
+                source = SkillingProductSource.Cooking(food, burned),
+                inputs = listOf(SkillingInput(food.raw.internalName)),
+            )
+        if (awardSkillingProduct(product) != SkillingAwardResult.Success) {
+            return
+        }
         if (burned) {
-            invAdd(inv, food.burnt.internalName, 1)
             spam("You accidentally burn the ${food.cooked.name.lowercase()}.")
         } else {
-            invAdd(inv, food.cooked.internalName, 1)
-            val xpModifier = xpMods.get(player, "stat.cooking")
-            statAdvance("stat.cooking", food.xp.toDouble() * xpModifier)
             spam("You successfully cook the ${food.cooked.name.lowercase()}.")
         }
     }

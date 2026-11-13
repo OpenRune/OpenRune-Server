@@ -55,6 +55,10 @@ public class VarPlayerIntMapDelegate(
         } else if (transmit.onDiff && previous != value) {
             VarpSync.writeVarp(client, varp, value)
         }
+
+        if (previous != value) {
+            PlayerVarWatch.changed(player, varp.id, previous, value)
+        }
     }
 
     public operator fun set(varp: VarBitType, value: Int) {

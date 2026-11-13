@@ -20,6 +20,9 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.miningLvl
+import org.rsmod.api.player.stat.skillCycles
+import org.rsmod.api.player.stat.skillNeedsSpace
+import org.rsmod.api.player.stat.skillTool
 import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpContentLoc1
@@ -81,7 +84,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.mining", type.internalName)) {
             mes(inventoryFullMessage(data))
             soundSynth("synth.pillory_wrong")
             return
@@ -116,7 +119,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.mining", type.internalName)) {
             mes(inventoryFullMessage(data))
             soundSynth("synth.pillory_wrong")
             resetAnim()
@@ -128,7 +131,7 @@ constructor(
             anim(miningAnim(pickaxe, data))
         }
 
-        val delay = pickaxeActionDelay(pickaxe)
+        val delay = player.skillCycles("stat.mining", pickaxeActionDelay(pickaxe), type.internalName)
         var minedOre = false
 
         if (actionDelay < mapClock) {
@@ -146,7 +149,7 @@ constructor(
                     return
                 }
                 GemPreRoll.KeepOre -> {
-                    minedOre = rollOreSuccess(data)
+                    minedOre = rollOreSuccess(data, type.internalName)
                 }
             }
         }
@@ -253,11 +256,11 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.rollOreSuccess(data: MiningRocksRow): Boolean {
+    private fun ProtectedAccess.rollOreSuccess(data: MiningRocksRow, subject: String): Boolean {
         val gloryBoost = data.isGemRock && player.wearingChargedGlory()
         val low = if (gloryBoost) data.successRateLow * 3 else data.successRateLow
         val high = if (gloryBoost) data.successRateHigh * 3 else data.successRateHigh
-        return statRandom("stat.mining", low, high, invisibleLvls)
+        return statRandom("stat.mining", low, high, invisibleLvls, subject)
     }
 
     private fun ProtectedAccess.depleteRock(rock: BoundLocInfo, data: MiningRocksRow) {
@@ -430,7 +433,7 @@ constructor(
                     }
                     addAll(carried)
                 }
-            return candidates.maxWithOrNull(pickaxeComparator)
+            return player.skillTool("stat.mining", candidates.maxWithOrNull(pickaxeComparator))
         }
 
         /** Higher is better: lower action delay first, then higher mining level req. */

@@ -1,18 +1,15 @@
 package org.rsmod.content.areas.wilderness.locs
 
 import dtx.core.ArgMap
-import dtx.core.RollResult
-import dtx.core.flatten
 import jakarta.inject.Inject
-import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropTableRegistry
-import org.rsmod.api.droptable.rollCount
+import org.rsmod.api.droptable.toDropList
+import org.rsmod.api.player.events.LootSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.loc.LocRepository
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.api.script.onOpLoc2
+import org.rsmod.content.drops.LootDelivery
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -28,7 +25,7 @@ class MuddyChestScript
 @Inject
 constructor(
     private val locRepo: LocRepository,
-    private val objRepo: ObjRepository,
+    private val loot: LootDelivery,
     private val dropRegistry: DropTableRegistry,
 ) : PluginScript() {
 
@@ -52,17 +49,7 @@ constructor(
         VarPlayerIntMapSetter.set(player, VARP_KC, player.vars[VARP_KC] + 1)
 
         val table = dropRegistry.forLoc(CHEST_CLOSED) ?: return
-        when (val result = table.roll(player, ArgMap()).flatten()) {
-            is RollResult.Nothing -> Unit
-            is RollResult.Single -> giveDrop(result.result)
-            is RollResult.ListOf -> result.results.forEach { giveDrop(it) }
-        }
+        loot.give(player, LootSource.Loc(CHEST_CLOSED), table.roll(player, ArgMap()).toDropList())
         delay(1)
-    }
-
-    private fun ProtectedAccess.giveDrop(drop: DropRollItem) {
-        if (drop.isNothing || !drop.condition(player)) return
-        val obj = drop.transformObj(player) ?: drop.obj
-        invAddOrDrop(objRepo, obj, drop.rollCount(random))
     }
 }

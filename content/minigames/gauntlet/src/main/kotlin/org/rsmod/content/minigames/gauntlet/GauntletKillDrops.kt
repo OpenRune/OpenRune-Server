@@ -3,12 +3,12 @@ package org.rsmod.content.minigames.gauntlet
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlin.random.Random
-import org.rsmod.api.config.constants
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.death.NpcDropReceiveHook
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.NpcKillExtraDrops
 import org.rsmod.api.invtx.invAdd
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.content.minigames.gauntlet.layout.MonsterKind
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -16,7 +16,8 @@ import org.rsmod.plugin.module.PluginModule
 
 class GauntletKillDropsModule : PluginModule() {
     override fun bind() {
-        addSetBinding<NpcDeathKillHook>(GauntletKillDropsHook::class.java)
+        addSetBinding<NpcDeathKillHook>(GauntletKillPointsHook::class.java)
+        addSetBinding<NpcKillExtraDrops>(GauntletKillDrops::class.java)
         addSetBinding<NpcDropReceiveHook>(GauntletShardReceiveHook::class.java)
     }
 }
@@ -37,14 +38,11 @@ class GauntletShardReceiveHook @Inject constructor(private val runs: GauntletRun
 }
 
 @Singleton
-class GauntletKillDropsHook
-@Inject
-constructor(private val runs: GauntletRuns, private val objRepo: ObjRepository) :
+class GauntletKillPointsHook @Inject constructor(private val runs: GauntletRuns) :
     NpcDeathKillHook {
     override fun onKill(context: NpcDeathKillContext) {
         val kind = kindOf(context.npc) ?: return
-        val run = runs.runFor(context.hero) ?: return
-        val corrupted = run.mode.corrupted
+        if (runs.runFor(context.hero) == null) return
         context.hero.addGauntletPoints(
             when (tierOf(kind)) {
                 Tier.WEAK -> GauntletPoints.WEAK_KILL
@@ -52,10 +50,21 @@ constructor(private val runs: GauntletRuns, private val objRepo: ObjRepository) 
                 Tier.DEMI -> GauntletPoints.DEMI_KILL
             }
         )
-        if (frameDrops(run, kind)) give(context, gauntletObj("generic_component", corrupted))
+    }
+}
+
+@Singleton
+class GauntletKillDrops @Inject constructor(private val runs: GauntletRuns) : NpcKillExtraDrops {
+    override fun drops(player: Player, npc: Npc): List<DropRollItem> {
+        val kind = kindOf(npc) ?: return emptyList()
+        val run = runs.runFor(player) ?: return emptyList()
+        val corrupted = run.mode.corrupted
+        val drops = ArrayList<DropRollItem>(2)
+        if (frameDrops(run, kind)) drops += DropRollItem(gauntletObj("generic_component", corrupted), 1)
         if (tierOf(kind) == Tier.DEMI) {
-            componentFor(run, kind)?.let { give(context, gauntletObj(it, corrupted)) }
+            componentFor(run, kind)?.let { drops += DropRollItem(gauntletObj(it, corrupted), 1) }
         }
+        return drops
     }
 
     private fun frameDrops(run: GauntletRun, kind: MonsterKind): Boolean =
@@ -89,23 +98,6 @@ constructor(private val runs: GauntletRuns, private val objRepo: ObjRepository) 
         return COMPONENTS[pick]
     }
 
-    private fun give(context: NpcDeathKillContext, obj: String) {
-        val duration = context.hero.lootDropDuration ?: constants.lootdrop_duration
-        objRepo.add(obj, context.dropCoords, duration, context.hero, 1)
-    }
-
-    private fun tierOf(kind: MonsterKind): Tier =
-        when (kind) {
-            in MonsterKind.WEAK -> Tier.WEAK
-            in MonsterKind.STRONG -> Tier.STRONG
-            else -> Tier.DEMI
-        }
-
-    private fun kindOf(npc: Npc): MonsterKind? =
-        MonsterKind.entries.firstOrNull {
-            npc.isType("npc.crystal_${it.locName}") || npc.isType("npc.crystal_${it.locName}_hm")
-        }
-
     private companion object {
         const val WEAK_FRAME_ODDS = 4
         const val STRONG_FRAME_NUMERATOR = 2
@@ -126,3 +118,15 @@ private enum class Tier {
     STRONG,
     DEMI,
 }
+
+private fun tierOf(kind: MonsterKind): Tier =
+    when (kind) {
+        in MonsterKind.WEAK -> Tier.WEAK
+        in MonsterKind.STRONG -> Tier.STRONG
+        else -> Tier.DEMI
+    }
+
+private fun kindOf(npc: Npc): MonsterKind? =
+    MonsterKind.entries.firstOrNull {
+        npc.isType("npc.crystal_${it.locName}") || npc.isType("npc.crystal_${it.locName}_hm")
+    }
