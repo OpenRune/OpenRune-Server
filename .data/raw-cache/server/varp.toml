@@ -941,3 +941,9 @@ isServerOnly = true
 id = "varp.burn_stacks"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.frostweaver_pending"
+scope = "Temp"
+transmit = "Never"

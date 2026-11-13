@@ -14,6 +14,9 @@ public object EquipmentChecks {
 
     public fun isTwistedBow(obj: InvObj?): Boolean = obj.isType("obj.twisted_bow")
 
+    public fun isEclipseAtlatl(obj: InvObj?): Boolean =
+        obj.isAnyType("obj.eclipse_atlatl", "obj.br_eclipse_atlatl")
+
     public fun isDragonHunterCrossbow(obj: InvObj?): Boolean =
         obj.isAnyType(
             "obj.dragonhunter_xbow",
