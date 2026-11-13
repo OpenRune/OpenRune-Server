@@ -1,6 +1,6 @@
 [[spawn]]
 npc = "npc.bim_marley_edge"
-coords = "0_48_54_16_15"
+coords = "0_48_54_16_14"
 
 [[spawn]]
 npc = "npc.canoeing_hari"

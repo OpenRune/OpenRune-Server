@@ -75,6 +75,7 @@ import org.rsmod.api.player.isOutOfCombat
 import org.rsmod.api.player.mapMultiway
 import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
+import net.rsprot.protocol.game.outgoing.camera.CamTargetV4
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.ChatType
@@ -159,6 +160,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.player.ProtectedAccessLostException
+import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
@@ -943,6 +945,10 @@ public class ProtectedAccess(
 
     public fun faceDirection(direction: Direction) {
         player.faceDirection(direction)
+    }
+
+    public fun faceAngle(angle: Int) {
+        player.pendingFaceAngle = EntityFaceAngle(angle)
     }
 
     public fun faceLoc(loc: BoundLocInfo) {
@@ -3807,6 +3813,10 @@ public class ProtectedAccess(
         heightRelative: Boolean = false,
     ) {
         Camera.camLookAtV3(player, dest, height, rate, rate2, heightRelative)
+    }
+
+    public fun camTarget(target: CamTargetV4.CamTargetType) {
+        Camera.camTarget(player, target)
     }
 
     public fun camShake(axis: CamShakeAxis, random: Int, amplitude: Int, rate: Int) {

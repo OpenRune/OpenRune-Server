@@ -15,6 +15,7 @@ public class RegionStaticTemplate internal constructor(private val regionZoneLen
     RegionTemplate() {
     internal val backing: RegionZoneCopyMap = RegionZoneCopyMap()
     internal var largeRegion: Boolean = false
+    override var terrainOnly: Boolean = false
 
     override fun build(southWest: ZoneKey): RegionZoneCopyMap = backing.translate(southWest)
 
@@ -295,6 +296,8 @@ public class RegionStaticTemplate internal constructor(private val regionZoneLen
 }
 
 public sealed class RegionTemplate {
+    public abstract val terrainOnly: Boolean
+
     internal abstract fun build(southWest: ZoneKey): RegionZoneCopyMap
 
     internal abstract fun isLargeRegion(): Boolean

@@ -1,0 +1,167 @@
+# Below Ice Mountain NPC placement and wander overrides.
+#
+# Facing values come from the spawnangle fields in the packet log. NPCs that
+# only ever show idle/say in the log are pinned with NoMove so they cannot
+# drift from their OSRS position. The wandering NPCs keep a small wander range
+# measured from their observed packet-log paths.
+
+[[npc]]
+id = "npc.bim_willow_outside"
+inherit = "npc.bim_willow_outside"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "East"
+
+[[npc]]
+id = "npc.bim_willow_outside_entrace"
+inherit = "npc.bim_willow_outside_entrace"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "NorthWest"
+
+[[npc]]
+id = "npc.bim_willow_inside"
+inherit = "npc.bim_willow_inside"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "South"
+
+[[npc]]
+id = "npc.bim_willow_postquest"
+inherit = "npc.bim_willow_postquest"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "South"
+
+[[npc]]
+id = "npc.bim_checkal_barb"
+inherit = "npc.bim_checkal_barb"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "West"
+
+[[npc]]
+id = "npc.bim_checkal_temple_outside"
+inherit = "npc.bim_checkal_temple_outside"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "SouthWest"
+
+[[npc]]
+id = "npc.bim_checkal_postquest"
+inherit = "npc.bim_checkal_postquest"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "South"
+
+[[npc]]
+id = "npc.bim_burntof_pub"
+inherit = "npc.bim_burntof_pub"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "North"
+
+[[npc]]
+id = "npc.bim_burntof_temple_outside"
+inherit = "npc.bim_burntof_temple_outside"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "East"
+
+[[npc]]
+id = "npc.bim_burntof_postquest"
+inherit = "npc.bim_burntof_postquest"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "South"
+
+[[npc]]
+id = "npc.bim_marley_temple_outside"
+inherit = "npc.bim_marley_temple_outside"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "West"
+
+[[npc]]
+id = "npc.bim_marley_postquest"
+inherit = "npc.bim_marley_postquest"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "South"
+
+[[npc]]
+id = "npc.bim_atlas"
+inherit = "npc.bim_atlas"
+defaultMode = "Wander"
+moveRestrict = "Indoors"
+wanderRange = 3
+respawnDir = "East"
+
+[[npc]]
+id = "npc.tramppg"
+inherit = "npc.tramppg"
+defaultMode = "Wander"
+wanderRange = 3
+respawnDir = "West"
+
+[[npc]]
+id = "npc.fai_varrock_bluemoon_chef"
+inherit = "npc.fai_varrock_bluemoon_chef"
+defaultMode = "Wander"
+moveRestrict = "Indoors"
+wanderRange = 3
+respawnDir = "South"
+
+[[npc]]
+id = "npc.camdozaal_ramarno_entrance_multi"
+inherit = "npc.camdozaal_ramarno_entrance_multi"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "NorthEast"
+
+[[npc]]
+id = "npc.camdozaal_ramarno_multi"
+inherit = "npc.camdozaal_ramarno_multi"
+moveRestrict = "NoMove"
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "SouthWest"
+
+[[npc]]
+id = "npc.bim_golem_boss"
+inherit = "npc.bim_golem_boss"
+huntMode = 6
+huntRange = 5
+maxRange = 7
+attackRange = 1
+defaultMode = "None"
+wanderRange = 0
+respawnDir = "South"
+[npc.params]
+"param.headbar" = "headbar.health_30"
+"param.attackrate" = 5
+"param.attack_melee" = 20
+"param.melee_strength" = 50
+"param.defence_stab" = 40
+"param.defence_slash" = 40
+"param.defence_crush" = 0
+"param.defence_magic" = 5
+"param.defence_ranged" = 30
+"param.attack_anim" = "seq.ancient_guardian_attack_melee"
+"param.death_anim" = "seq.ancient_guardian_death"
+"param.attack_sound" = "synth.bim_ancient_guardian_melee_attack"
+"param.death_sound" = "synth.bim_ancient_guardian_death"
+"param.npc_attack_type" = "category.attacktype_crush"

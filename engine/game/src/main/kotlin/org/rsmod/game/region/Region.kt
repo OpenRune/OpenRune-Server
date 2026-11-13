@@ -14,6 +14,7 @@ public data class Region(
     public val uid: Int,
     public var slot: Int,
 ) {
+    public var terrainOnly: Boolean = false
     private var remappedLocCoords: RemappedRegionLocMap? = null
     private val normalZones: NormalRegionZoneMap = NormalRegionZoneMap()
 

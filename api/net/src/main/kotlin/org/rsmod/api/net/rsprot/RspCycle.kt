@@ -154,8 +154,12 @@ class RspCycle(
             }
         }
 
+        val buildCenter =
+            ZoneKey.from(buildArea)
+                .translate(BUILD_AREA_ZONE_RADIUS, BUILD_AREA_ZONE_RADIUS)
+
         if (regionUid == null) {
-            val rebuild = RebuildNormalV2(x shr 3, z shr 3, worldArea)
+            val rebuild = RebuildNormalV2(buildCenter.x, buildCenter.z, worldArea)
             knownBuildArea = buildArea
             knownRegionUid = null
             cachedRegionZoneProvider = null
@@ -179,7 +183,7 @@ class RspCycle(
         }
 
         val zoneProvider = cachedRegionZoneProvider ?: createRegionZoneProvider(region)
-        val rebuild = RebuildRegionV2(x shr 3, z shr 3, true, zoneProvider)
+        val rebuild = RebuildRegionV2(buildCenter.x, buildCenter.z, true, zoneProvider)
         knownBuildArea = buildArea
         cachedRegionZoneProvider = zoneProvider
         session.queue(rebuild)
@@ -200,5 +204,9 @@ class RspCycle(
             }
         }
         return zoneProvider
+    }
+
+    private companion object {
+        const val BUILD_AREA_ZONE_RADIUS = 6
     }
 }

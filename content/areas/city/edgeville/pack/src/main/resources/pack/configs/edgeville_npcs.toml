@@ -2,6 +2,7 @@
 id = "npc.bim_marley_edge"
 inherit = "npc.bim_marley_edge"
 wanderRange = 2
+respawnDir = "SouthWest"
 
 [[npc]]
 id = "npc.hundred_dave_mum"

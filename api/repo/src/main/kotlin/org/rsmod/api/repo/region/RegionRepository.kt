@@ -77,6 +77,7 @@ public class RegionRepository @Inject constructor(private val registry: RegionRe
         }
 
         val region = result.region
+        region.terrainOnly = template.terrainOnly
         val southWestZone = ZoneKey.from(region.southWest)
         val copyZones = template.build(southWestZone)
 
@@ -94,6 +95,7 @@ public class RegionRepository @Inject constructor(private val registry: RegionRe
         }
 
         val region = result.region
+        region.terrainOnly = template.terrainOnly
         val southWestZone = ZoneKey.from(region.southWest)
         val copyZones = template.build(southWestZone)
 
