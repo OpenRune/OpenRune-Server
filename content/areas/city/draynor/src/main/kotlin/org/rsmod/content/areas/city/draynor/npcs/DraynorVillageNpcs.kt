@@ -12,13 +12,17 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
 import org.rsmod.content.areas.city.draynor.npcs.DiangoHolidayItems.Companion.openHolidayItems
 import org.rsmod.content.interfaces.omnishop.openOmnishop
+import org.rsmod.content.quest.area.draynor.vampyreslayer.VampyreSlayerQuest
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginScript() {
+class DraynorVillageNpcs
+@Inject
+constructor(private val shops: Shops, private val vampyreSlayer: VampyreSlayerQuest) :
+    PluginScript() {
     private var Player.morganThanked by intVarBit("varbit.morgan_postquest_dialogue")
     private var Player.metAggie by intVarBit("varbit.gobdip_met_aggie")
     private var Player.bankJob by intVarBit("varbit.wom_bankjob")
@@ -49,8 +53,8 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
     }
 
     private suspend fun Dialogue.morgan() {
-        if (!QuestRequirements.hasCompleted(player, VAMPYRE_SLAYER)) {
-            chatNpc(worried, "Please, please help us, bold adventurer!")
+        if (!vampyreSlayer.isComplete(player)) {
+            with(vampyreSlayer) { morgan() }
             return
         }
         if (player.morganThanked == 0) {
@@ -1225,7 +1229,6 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
     }
 
     private companion object {
-        const val VAMPYRE_SLAYER = "quest_vampyreslayer"
         const val DRAGON_SLAYER = "quest_dragonslayer1"
         const val PRINCE_ALI_RESCUE = "quest_princealirescue"
         const val FREMENNIK_ISLES = "quest_fremennikisles"
