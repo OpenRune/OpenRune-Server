@@ -1,0 +1,19 @@
+[[npc]]
+id = "npc.crazy_archaeologist"
+inherit = "npc.crazy_archaeologist"
+huntMode = 8
+respawnRate = 15
+attackRange = 10
+[npc.params]
+"param.killcount_varp" = "varp.total_crazyarchaeologist_kills"
+"param.killcount_notify" = false
+
+[[npc]]
+id = "npc.fossil_crazy_archaeologist"
+inherit = "npc.fossil_crazy_archaeologist"
+huntMode = 8
+respawnRate = 50
+attackRange = 10
+[npc.params]
+"param.killcount_varp" = "varp.total_derangedarchaeologist_kills"
+"param.killcount_notify" = false
