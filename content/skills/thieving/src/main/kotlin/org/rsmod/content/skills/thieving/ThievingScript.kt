@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.npc.interact.AiPlayerInteractions
@@ -18,6 +19,8 @@ import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.skills.farming.FarmingBags
+import org.rsmod.content.skills.farming.FarmingSeedShopAccess
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.BoundLocInfo
@@ -79,6 +82,7 @@ constructor(
         }
         mes("You steal ${describe(loot.obj, count)}.")
         statAdvance(THIEVING, stall.xp)
+        FarmingSeedShopAccess.recordSuccessfulTheft(player, stall.loc)
         restock(loc, stall)
     }
 
@@ -127,7 +131,10 @@ constructor(
             mes("You need to empty your coin pouches before you can continue pickpocketing.")
             return
         }
-        if (inv.isFull() && (pouch == null || inv.count(pouch.obj) == 0)) {
+        val canReceiveSeed =
+            target.seedBox &&
+                target.loot?.any { receiveLoot(it, it.min, seedBox = true, autoCommit = false) } == true
+        if (inv.isFull() && (pouch == null || inv.count(pouch.obj) == 0) && !canReceiveSeed) {
             mes("You don't have enough inventory space.")
             return
         }
@@ -140,25 +147,44 @@ constructor(
         }
         val loot = target.loot?.roll(random)
         val count = loot?.let { random.of(it.min, it.max) } ?: 0
-        val received =
-            player.invTransaction(inv) {
-                val inventory = select(inv)
-                if (pouch != null) add(inventory, pouch.obj.asRSCM(RSCMType.OBJ), 1)
-                if (loot != null) add(inventory, loot.obj.asRSCM(RSCMType.OBJ), count)
+        val boxed =
+            loot != null &&
+                target.seedBox &&
+                FarmingBags.storePickpocketSeed(player, loot.obj, count, autoCommit = false)
+        val toInv = loot != null && !boxed
+        if (pouch != null || toInv) {
+            val received =
+                player.invTransaction(inv) {
+                    val inventory = select(inv)
+                    if (pouch != null) add(inventory, pouch.obj.asRSCM(RSCMType.OBJ), 1)
+                    if (loot != null && toInv) add(inventory, loot.obj.asRSCM(RSCMType.OBJ), count)
+                }
+            if (received.failure) {
+                // UNVERIFIED: message when the inv fills during the pickpocket delay (guess)
+                mes(NO_SPACE)
+                return
             }
-        if (received.failure) {
-            // UNVERIFIED: message when the inv fills during the pickpocket delay (guess)
-            mes(NO_SPACE)
-            return
         }
         mes("You pick $owner's pocket.", ChatType.Spam)
         anim(PICKPOCKET_SEQ)
         soundSynth(PICK_SYNTH)
+        if (loot != null && boxed) {
+            check(FarmingBags.storePickpocketSeed(player, loot.obj, count)) { "Seed box refused $loot after accepting it." }
+        }
         if (loot != null) {
             mes("You steal ${describe(loot.obj, count)}.", ChatType.Spam)
         }
         statAdvance(THIEVING, target.xp)
     }
+
+    private fun ProtectedAccess.receiveLoot(
+        loot: Loot,
+        count: Int,
+        seedBox: Boolean,
+        autoCommit: Boolean = true,
+    ): Boolean =
+        (seedBox && FarmingBags.storePickpocketSeed(player, loot.obj, count, autoCommit)) ||
+            player.invAdd(inv, loot.obj, count, autoCommit = autoCommit).success
 
     private fun ProtectedAccess.openPouches(pouch: CoinPouch, all: Boolean) {
         val count = if (all) inv.count(pouch.obj) else 1

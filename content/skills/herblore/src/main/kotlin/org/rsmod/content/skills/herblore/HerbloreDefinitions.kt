@@ -68,40 +68,64 @@ val HerbloreFinishedRow.skillMultiMaterials: List<Material>
         }
     }
 
-fun HerbloreFinishedRow.hasRequiredMaterials(inventory: Inventory): Boolean {
+fun HerbloreFinishedRow.hasRequiredMaterials(
+    inventory: Inventory,
+    reagents: Inventory? = null,
+): Boolean {
     val amounts = resolvedInputAmounts()
-    input.forEachIndexed { index, item ->
-        val needed = amounts.getOrNull(index) ?: 1
-        if (inventory.count(item.internalName) < needed) {
-            return false
-        }
+    return input.indices.all { index ->
+        availableInput(inventory, reagents, index) >= amounts[index]
     }
-    return true
 }
 
-fun HerbloreFinishedRow.maxProducible(inventory: Inventory): Int {
+fun HerbloreFinishedRow.maxProducible(
+    inventory: Inventory,
+    reagents: Inventory? = null,
+): Int {
     val amounts = resolvedInputAmounts()
     return input.indices.minOf { index ->
-        val needed = amounts.getOrNull(index) ?: 1
-        inventory.count(input[index].internalName) / needed
+        availableInput(inventory, reagents, index) / amounts[index]
     }
+}
+
+private fun HerbloreFinishedRow.availableInput(
+    inventory: Inventory,
+    reagents: Inventory?,
+    index: Int,
+): Int {
+    val item = input[index]
+    val stored =
+        if (index > 0 && item.internalName != "obj.ashes") {
+            reagents?.physicalCount(item.internalName) ?: 0
+        } else 0
+    return (inventory.physicalCount(item.internalName).toLong() + stored)
+        .coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
 }
 
 internal fun HerbloreFinishedRow.brew(
     player: Player,
     output: String,
     saved: HerbloreGoggles.SavedSecondaries,
+    reagents: Inventory? = null,
 ): Boolean {
+    if (!hasRequiredMaterials(player.inv, reagents)) return false
     val amounts = resolvedInputAmounts()
     val ingredients = input
-    return player.invTransaction(player.inv) {
-        val inventory = select(player.inv)
-        ingredients.forEachIndexed { index, item ->
+    return player.invTransaction(player.inv, reagents) {
+        val inv = select(player.inv)
+        val pouch = reagents?.let { select(it) }
+        for (index in ingredients.indices) {
+            val item = ingredients[index]
             val savedAmount = if (index == 0) 0 else saved.savedAmount(item.internalName)
             val needed = (amounts[index] - savedAmount).coerceAtLeast(0)
-            if (needed > 0) delete(inventory, item.id, needed)
+            val fromPouch =
+                if (index > 0 && item.internalName != "obj.ashes" && reagents != null) {
+                    minOf(needed, reagents.physicalCount(item.internalName))
+                } else 0
+            if (fromPouch > 0) delete(checkNotNull(pouch), item.id, fromPouch)
+            if (needed > fromPouch) delete(inv, item.id, needed - fromPouch)
         }
-        add(inventory, output.asRSCM(RSCMType.OBJ), 1)
+        add(inv, output.asRSCM(RSCMType.OBJ), 1)
     }.success
 }
 

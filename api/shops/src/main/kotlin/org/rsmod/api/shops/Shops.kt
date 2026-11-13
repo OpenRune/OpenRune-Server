@@ -139,6 +139,9 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         )
 
         player.initShopSideInv(sideInv)
+        if (player.openedShop?.inv === shopInv) {
+            eventBus.publish(ShopOpenedEvent(player, shopInv.type))
+        }
     }
 
     private fun String.toInventory(observer: Player): Inventory {

@@ -1017,6 +1017,17 @@ object Crafting {
                     output("obj.xbows_sinew")
                 }
             }
+
+            row("dbrow.crafting_celastrus_battlestaff") {
+                production {
+                    input("obj.celastrus_wood")
+                    statReq("stat.fletching", 40)
+                    xp(0)
+                    output("obj.battlestaff")
+                }
+                column(COL_XP_EXTRA, ConstantProvider.getMapping("stat.fletching"), 800)
+                column(COL_TICKS, 4, 3)
+            }
         }
         section("Gems", category = "Cut") {
             row("dbrow.crafting_cut_opal") {

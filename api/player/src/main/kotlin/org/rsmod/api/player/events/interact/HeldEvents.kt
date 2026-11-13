@@ -3,10 +3,7 @@ package org.rsmod.api.player.events.interact
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.definition.type.widget.ComponentType
-import dev.openrune.types.InventoryServerType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.util.Wearpos
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.events.EventBus
@@ -20,11 +17,10 @@ import org.rsmod.game.inv.Inventory
 
 public class HeldBanksideEvents {
     public class Type(
-        public val player: Player,
         public val slot: Int,
         public val type: ItemServerType,
         override val id: Long = type.id.toLong(),
-    ) : KeyedEvent
+    ) : SuspendEvent<ProtectedAccess>
 }
 
 public class HeldDropEvents {

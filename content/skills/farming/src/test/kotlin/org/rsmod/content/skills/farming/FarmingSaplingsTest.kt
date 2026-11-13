@@ -86,6 +86,7 @@ class FarmingSaplingsTest {
         bad.inv[0] = InvObj("obj.watering_can_8")
         bad.inv[2] = InvObj(chain.dry)
         for (slot in listOf(-1, 1, 9999)) assertFalse(water(bad, 2, "obj.watering_can_8", slot))
+        for (slot in listOf(-1, 1, 9999)) assertFalse(water(bad, slot, "obj.watering_can_8", 0))
         assertEquals("obj.watering_can_8".asRSCM(), bad.inv[0]?.id)
         assertEquals(chain.dry.id, bad.inv[2]?.id)
     }
@@ -120,6 +121,28 @@ class FarmingSaplingsTest {
         assertEquals(chain.wet.id, player.inv[2]?.id)
         assertEquals(0, player.vars["varbit.zeah_wateringcan_charges"])
         assertFalse(FarmingSaplings.water(player, 2, "obj.zeah_wateringcan", 1, NOW))
+    }
+
+    @Test
+    fun `patch watering consumes only the selected can without a seedling`() {
+        val standard = WateringCans.CANS.take(9)
+        for ((doses, can) in standard.withIndex()) {
+            val player = player()
+            player.inv[0] = InvObj(can)
+            player.inv[1] = InvObj(standard[8])
+            assertEquals(doses > 0, WateringCans.consume(player, can, 0))
+            assertEquals(standard[maxOf(0, doses - 1)].asRSCM(), player.inv[0]?.id)
+            assertEquals(standard[8].asRSCM(), player.inv[1]?.id)
+        }
+        val player = player()
+        player.inv[0] = InvObj("obj.zeah_wateringcan")
+        player.inv[1] = InvObj("obj.zeah_wateringcan")
+        set(player, "varbit.zeah_wateringcan_charges", 1)
+        assertTrue(WateringCans.consume(player, "obj.zeah_wateringcan", 0))
+        assertFalse(WateringCans.consume(player, "obj.zeah_wateringcan", 1))
+        assertEquals(0, player.vars["varbit.zeah_wateringcan_charges"])
+        assertEquals("obj.zeah_wateringcan".asRSCM(), player.inv[0]?.id)
+        assertEquals("obj.zeah_wateringcan".asRSCM(), player.inv[1]?.id)
     }
 
     @Test
@@ -219,6 +242,29 @@ class FarmingSaplingsTest {
         assertEquals("obj.watering_can_0".asRSCM(), player.inv[0]?.id)
         assertEquals("obj.watering_can_8".asRSCM(), player.inv[1]?.id)
         assertFalse(WateringCans.refill(player, "obj.watering_can_0", 1))
+    }
+
+    @Test
+    fun `Humidify waters every dry seedling and fills cans without maturing the new pots`() {
+        val player = player()
+        val chain = FarmingSaplings.chains.first()
+        player.inv[0] = InvObj(chain.dry)
+        player.inv[1] = InvObj(chain.dry)
+        player.inv[2] = InvObj("obj.watering_can_0")
+        player.inv[3] = InvObj("obj.zeah_wateringcan")
+        assertTrue(FarmingSaplings.hasHumidifyTarget(player))
+        FarmingSaplings.humidify(player)
+        assertFalse(FarmingSaplings.hasHumidifyTarget(player))
+        assertEquals(chain.wet.id, player.inv[0]?.id)
+        assertEquals(chain.wet.id, player.inv[1]?.id)
+        assertEquals("obj.watering_can_8".asRSCM(), player.inv[2]?.id)
+        assertEquals(1000, player.vars["varbit.zeah_wateringcan_charges"])
+        val cycle = player.vars["varp.farming_sapling_clock"]
+        FarmingSaplings.grow(player, cycle * 300_000L + 299_999)
+        assertEquals(chain.wet.id, player.inv[0]?.id)
+        FarmingSaplings.grow(player, (cycle + 1) * 300_000L)
+        assertEquals(chain.sapling.id, player.inv[0]?.id)
+        assertEquals(chain.sapling.id, player.inv[1]?.id)
     }
 
     @Test

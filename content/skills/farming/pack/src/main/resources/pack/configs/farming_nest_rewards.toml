@@ -1,0 +1,47 @@
+[[enum]]
+isServerOnly = true
+id = "enum.farming_wyson_nest_rewards"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.acorn" = 80
+"obj.sweetcorn_seed" = 102
+"obj.strawberry_seed" = 100
+"obj.limpwurt_seed" = 80
+"obj.watermelon_seed" = 70
+"obj.snape_grass_seed" = 40
+"obj.willow_seed" = 16
+"obj.maple_seed" = 6
+"obj.pineapple_tree_seed" = 16
+"obj.cadantine_seed" = 24
+"obj.lantadyme_seed" = 30
+"obj.dwarf_weed_seed" = 30
+"obj.teak_seed" = 20
+"obj.mahogany_seed" = 20
+"obj.torstol_seed" = 4
+"obj.calquat_tree_seed" = 12
+"obj.papaya_tree_seed" = 10
+"obj.palm_tree_seed" = 2
+"obj.dragonfruit_tree_seed" = 2
+"obj.ranarr_seed" = 4
+"obj.snapdragon_seed" = 4
+"obj.yew_seed" = 4
+"obj.magic_tree_seed" = 2
+"obj.spirit_tree_seed" = 4
+"obj.celastrus_tree_seed" = 1
+"obj.redwood_tree_seed" = 1
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_wyson_seed_counts"
+keyType = "OBJ"
+valueType = "INT"
+defaultInt = 1
+
+[enum.values]
+"obj.sweetcorn_seed" = 6
+"obj.strawberry_seed" = 6
+"obj.limpwurt_seed" = 2
+"obj.watermelon_seed" = 2
+"obj.snape_grass_seed" = 2

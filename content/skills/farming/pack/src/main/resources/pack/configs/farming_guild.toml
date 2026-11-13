@@ -1,0 +1,17 @@
+[[inventory]]
+id = "inv.seed_vault"
+inherit = "inv.seed_vault"
+isServerOnly = true
+scope = "Perm"
+stack = "Always"
+protect = false
+placeholders = true
+uimBlocked = true
+
+[[item]]
+id = "obj.seedbox"
+inherit = "obj.seedbox"
+isServerOnly = true
+
+[item.params]
+"param.death_never_kept" = true

@@ -18,6 +18,7 @@ public object ShopCurrencyRows {
                 pluralName = row.string("dbcol.shop_currency:plural_name"),
                 obj = row.objOptional("dbcol.shop_currency:obj"),
                 varbitId = row.intOptional("dbcol.shop_currency:varbit"),
+                omnishopCurrency = row.intOptional("dbcol.shop_currency:omnishop_currency"),
             )
         }
 
@@ -56,4 +57,5 @@ public data class ShopCurrencyRow(
     public val pluralName: String,
     public val obj: ItemServerType?,
     public val varbitId: Int?,
+    public val omnishopCurrency: Int? = null,
 )

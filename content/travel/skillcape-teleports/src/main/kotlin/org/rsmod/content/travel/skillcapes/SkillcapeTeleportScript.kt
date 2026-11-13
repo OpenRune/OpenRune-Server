@@ -14,6 +14,7 @@ import org.rsmod.api.script.onOpWorn4
 import org.rsmod.api.script.onOpWorn5
 import org.rsmod.api.script.onOpWornSubOp
 import org.rsmod.api.table.SkillcapeTeleportDestinationsRow
+import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -41,7 +42,7 @@ class SkillcapeTeleportScript @Inject constructor(private val caster: ItemTelepo
                 onOpHeldSubOp(cape) { event ->
                     heldSubMenu
                         .firstOrNull { it.heldOp == event.op.slot && it.heldSubop == event.subop }
-                        ?.let { teleport(it) }
+                        ?.let { teleport(it, inv, event.slot) }
                 }
             }
             val wornSubMenu = rows.filter { it.wornSubop != null }
@@ -49,7 +50,7 @@ class SkillcapeTeleportScript @Inject constructor(private val caster: ItemTelepo
                 onOpWornSubOp(cape) { event ->
                     wornSubMenu
                         .firstOrNull { it.wornOp == event.op && it.wornSubop == event.subop }
-                        ?.let { teleport(it) }
+                        ?.let { teleport(it, player.worn, event.slot) }
                 }
             }
         }
@@ -61,8 +62,8 @@ class SkillcapeTeleportScript @Inject constructor(private val caster: ItemTelepo
         row: SkillcapeTeleportDestinationsRow,
     ) {
         when (op) {
-            3 -> onOpHeld3(cape) { teleport(row) }
-            4 -> onOpHeld4(cape) { teleport(row) }
+            3 -> onOpHeld3(cape) { teleport(row, inv, it.slot) }
+            4 -> onOpHeld4(cape) { teleport(row, inv, it.slot) }
             else -> error("Unsupported held op $op for $cape")
         }
     }
@@ -73,23 +74,39 @@ class SkillcapeTeleportScript @Inject constructor(private val caster: ItemTelepo
         row: SkillcapeTeleportDestinationsRow,
     ) {
         when (op) {
-            3 -> onOpWorn3(cape) { teleport(row) }
-            4 -> onOpWorn4(cape) { teleport(row) }
-            5 -> onOpWorn5(cape) { teleport(row) }
+            3 -> onOpWorn3(cape) { teleport(row, player.worn, it.slot) }
+            4 -> onOpWorn4(cape) { teleport(row, player.worn, it.slot) }
+            5 -> onOpWorn5(cape) { teleport(row, player.worn, it.slot) }
             else -> error("Unsupported worn op $op for $cape")
         }
     }
 
-    private suspend fun ProtectedAccess.teleport(row: SkillcapeTeleportDestinationsRow) {
-        if (actionDelay > mapClock) {
-            return
-        }
+    private suspend fun ProtectedAccess.teleport(
+        row: SkillcapeTeleportDestinationsRow,
+        container: Inventory,
+        slot: Int,
+    ) {
+        if (actionDelay > mapClock) return
+        val selected = container[slot] ?: return
+        if (row.capes.none { it.id == selected.id }) return
         val stat = row.stat
         if (stat != null && statBase(RSCM.getReverseMapping(RSCMType.STAT, stat.id)) < MAX_LEVEL) {
             mes("You need to have a level of $MAX_LEVEL in that skill.")
             return
         }
-        with(caster) { cast(TeleportType.Standard, row.coords) }
+        if (!isUnlocked(row)) return
+        with(caster) {
+            cast(TeleportType.Standard, row.coords) {
+                container[slot] == selected && isUnlocked(row)
+            }
+        }
+    }
+
+    private fun ProtectedAccess.isUnlocked(row: SkillcapeTeleportDestinationsRow): Boolean {
+        val varbit = row.unlockVarbit ?: return true
+        if (vars[RSCM.getReverseMapping(RSCMType.VARBIT, varbit)] != 0) return true
+        mes(checkNotNull(row.unlockMessage))
+        return false
     }
 
     private companion object {

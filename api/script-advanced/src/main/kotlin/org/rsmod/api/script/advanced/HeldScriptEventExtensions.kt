@@ -3,7 +3,9 @@ package org.rsmod.api.script.advanced
 import dev.openrune.types.ItemServerType
 import org.rsmod.api.player.events.interact.HeldBanksideEvents
 import org.rsmod.api.player.events.interact.HeldDropEvents
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onEvent
+import org.rsmod.api.script.onProtectedEvent
 import org.rsmod.plugin.scripts.ScriptContext
 
 public fun ScriptContext.onDropHeld(action: HeldDropEvents.Drop.() -> Unit): Unit = onEvent(action)
@@ -17,5 +19,5 @@ public fun ScriptContext.onReleaseHeld(action: HeldDropEvents.Release.() -> Unit
 /** Used for inv objs that are given a special `Op9` while in the bankside inv interface. */
 public fun ScriptContext.onOpBankside(
     type: ItemServerType,
-    action: HeldBanksideEvents.Type.() -> Unit,
-): Unit = onEvent(type.id, action)
+    action: suspend ProtectedAccess.(HeldBanksideEvents.Type) -> Unit,
+): Unit = onProtectedEvent(type.id, action)

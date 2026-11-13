@@ -56,9 +56,14 @@ class OmnishopScript : PluginScript() {
         val stock = OmnishopStock.find(shop, index) ?: return
         if (!stock.buyable) return
         val requested = stock.buyQuantity(option) ?: return
+        val check = OmnishopPurchaseCheck(player, shop, stock.row, stock.obj)
+        publish(check)
+        check.failure?.let { mes(it); return }
+        val maximum = minOf(requested, check.maximum)
+        if (maximum <= 0) return
         val costs = stock.buyCosts()
         val payments = costs.map { (currency, price) ->
-            OmnishopPayment(currency.objs, price)
+            OmnishopPayment(currency.objs, currency.points, price)
         }
         for ((index, payment) in payments.withIndex()) {
             if (payment.balance(player) < payment.price) {
@@ -66,12 +71,14 @@ class OmnishopScript : PluginScript() {
                 return
             }
         }
-        val quantity = buyOmnishopStock(player, payments, stock.obj, stock.multiplier, requested,
-            cert = stock.soldNoted)
+        val output = if (stock.multiplier == 0) null else check.output
+        val quantity = buyOmnishopStock(player, payments, output,
+            stock.multiplier, maximum, check.outputVars, cert = stock.soldNoted)
         if (quantity == 0) {
             mes("You don't have enough inventory space.")
             return
         }
+        publish(OmnishopPurchaseCompleted(player, shop, stock.row, stock.obj, quantity))
         redraw()
     }
 

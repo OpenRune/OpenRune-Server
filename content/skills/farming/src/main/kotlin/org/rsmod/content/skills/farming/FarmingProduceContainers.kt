@@ -24,4 +24,9 @@ object FarmingProduceContainers {
     internal fun form(produce: Int, count: Int): ContainerForm? = byContents[produce]?.get(count)
 
     internal fun capacity(produce: Int): Int = capacities.getValue(produce)
+
+    fun fullContainer(produce: String): String? =
+        forms
+            .firstOrNull { it.produce.internalName == produce && it.count == capacity(it.produce.id) }
+            ?.obj?.internalName
 }

@@ -21,6 +21,8 @@ object SkillcapeTeleportTable {
     const val HELD_SUBOP = 5
     const val WORN_OP = 6
     const val WORN_SUBOP = 7
+    const val UNLOCK_VARBIT = 8
+    const val UNLOCK_MESSAGE = 9
 
     private const val GUILD_TELEPORTS = 4
     private const val SKILLING_AREAS = 5
@@ -54,6 +56,8 @@ object SkillcapeTeleportTable {
             column("held_subop", HELD_SUBOP, VarType.INT)
             column("worn_op", WORN_OP, VarType.INT)
             column("worn_subop", WORN_SUBOP, VarType.INT)
+            column("unlock_varbit", UNLOCK_VARBIT, VarType.INT)
+            column("unlock_message", UNLOCK_MESSAGE, VarType.STRING)
 
             teleport(
                 "dbrow.skillcape_teleport_strength_warriors_guild",
@@ -72,6 +76,8 @@ object SkillcapeTeleportTable {
                 FARMING_GUILD,
                 heldOp = 3,
                 wornOp = 3,
+                unlockVarbit = "varbit.zeah_playerhasvisited",
+                unlockMessage = "You must travel to Great Kourend before you can use this teleport.",
             )
             teleport(
                 "dbrow.skillcape_teleport_fishing_fishing_guild",
@@ -302,6 +308,8 @@ object SkillcapeTeleportTable {
         heldOp: Int,
         heldSubop: Int? = null,
         wornOp: Int,
+        unlockVarbit: String? = null,
+        unlockMessage: String? = null,
     ) {
         row(name) {
             columnRSCM(CAPES, capes)
@@ -311,6 +319,10 @@ object SkillcapeTeleportTable {
             column(HELD_OP, heldOp)
             heldSubop?.let { column(HELD_SUBOP, it) }
             column(WORN_OP, wornOp)
+            unlockVarbit?.let {
+                columnRSCM(UNLOCK_VARBIT, it)
+                column(UNLOCK_MESSAGE, checkNotNull(unlockMessage))
+            }
         }
     }
 

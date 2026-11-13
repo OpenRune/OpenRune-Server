@@ -14,6 +14,8 @@ import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.enums.BankEnums.bank_equipment_tab_to_slots_map
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invCompress
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
@@ -212,14 +214,33 @@ constructor(
         invDeposit(slot, count, inv)
     }
 
-    public fun ProtectedAccess.invDeposit(slot: Int, count: Int, inventory: Inventory): Boolean {
+    public fun ProtectedAccess.invDeposit(slot: Int, count: Int, inventory: Inventory): Boolean =
+        deposit(slot, count, inventory)
+
+    public fun ProtectedAccess.invDepositReward(
+        slot: Int,
+        expected: InvObj,
+        reward: InvObj,
+        remainder: InvObj?,
+    ): Boolean {
+        if (inv[slot] != expected || reward.count <= 0) return false
+        return deposit(slot, reward.count, inv, reward, remainder)
+    }
+
+    private fun ProtectedAccess.deposit(
+        slot: Int,
+        count: Int,
+        inventory: Inventory,
+        reward: InvObj? = null,
+        remainder: InvObj? = null,
+    ): Boolean {
         val obj = inventory[slot]
         if (obj == null) {
             resendSlot(inventory, 0)
             return false
         }
 
-        val objType = getInvObj(obj)
+        val objType = getInvObj(reward ?: obj)
 
         if (objType.param(params.no_bank) != 0) {
             mes("A magical force prevents you from banking this item!")
@@ -229,7 +250,7 @@ constructor(
         val tab = selectedTab
 
         val placeholder = placeholder(objType)
-        val containedObjSlot = bank.indexOfFirst { it?.id == obj.id || it?.id == placeholder.id }
+        val containedObjSlot = bank.indexOfFirst { it?.id == objType.id || it?.id == placeholder.id }
         val prioritySlot =
             if (containedObjSlot != -1) {
                 containedObjSlot
@@ -260,15 +281,30 @@ constructor(
                         this.shiftCount = 1
                     }
                 }
-                transfer {
-                    this.from = fromInv
-                    this.into = bankInv
-                    this.fromSlot = slot
-                    this.intoSlot = prioritySlot ?: tabSlots.first
-                    this.intoCapacity = bankCapacity
-                    this.count = count
-                    this.uncert = true
-                    this.strict = false
+                if (reward == null) {
+                    transfer {
+                        this.from = fromInv
+                        this.into = bankInv
+                        this.fromSlot = slot
+                        this.intoSlot = prioritySlot ?: tabSlots.first
+                        this.intoCapacity = bankCapacity
+                        this.count = count
+                        this.uncert = true
+                        this.strict = false
+                    }
+                } else {
+                    delete(fromInv, obj.id, 1, slot)
+                    if (remainder != null) {
+                        add(fromInv, remainder.id, 1, vars = remainder.vars, slot = slot)
+                    }
+                    insert {
+                        this.into = bankInv
+                        this.obj = reward.id
+                        this.strictCount = count
+                        this.slot = prioritySlot ?: tabSlots.first
+                        this.capacity = bankCapacity
+                        this.uncert = true
+                    }
                 }
             }
         val result = insertQuery.results.last()
@@ -290,7 +326,7 @@ constructor(
 
         // Cheap way of checking if obj has taken a new slot in bank.
         val expectedSlot = tabSlots.last + 1
-        val expectedObj = uncert(obj)
+        val expectedObj = uncert(reward ?: obj)
         if (bank[expectedSlot]?.id == expectedObj.id) {
             tab.increaseSize(this)
         }
@@ -1084,7 +1120,7 @@ constructor(
     }
 
     private fun ProtectedAccess.setBanksideExtraOps() {
-        player.setBanksideExtraOps()
+        player.setBanksideExtraOps(eventBus)
     }
 
     private fun ProtectedAccess.setBankWornBonuses() {
@@ -1129,8 +1165,9 @@ constructor(
             return
         }
 
-        val event = HeldBanksideEvents.Type(player, slot, type)
+        val event = HeldBanksideEvents.Type(slot, type)
         publish(event)
+        setBanksideExtraOps()
     }
 
     private fun ProtectedAccess.wornOp(wornSlot: Int, op: IfButtonOp) {

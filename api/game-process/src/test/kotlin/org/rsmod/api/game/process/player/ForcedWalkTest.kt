@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
+import org.rsmod.api.player.hook.PlayerStepValidateHook
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContext
 import org.rsmod.api.player.protect.forcedWalk
@@ -153,7 +154,23 @@ class ForcedWalkTest {
         }
     }
 
-    private class Fixture {
+    @Test
+    fun `step gate stops the second run step even on a forced route`() {
+        for (forced in listOf(false, true)) {
+            val f = Fixture(setOf(PlayerStepValidateHook { _, _, to -> to.x < 3202 }))
+            f.player.forcedRoute = forced
+            f.player.moveSpeed = MoveSpeed.Run
+            f.player.routeDestination.add(f.start.translate(3, 0))
+            f.tick()
+            assertEquals(f.start.translate(1, 0), f.player.coords)
+            assertEquals(1, f.player.pendingStepCount)
+            assertTrue(f.player.routeDestination.isEmpty())
+            f.tick()
+            assertEquals(f.start.translate(1, 0), f.player.coords)
+        }
+    }
+
+    private class Fixture(stepValidators: Set<PlayerStepValidateHook> = emptySet()) {
         val start = CoordGrid(3200, 3200)
         val collision = CollisionFlagMap()
         val player = Player().apply {
@@ -164,7 +181,7 @@ class ForcedWalkTest {
         }
         private val events = EventBus()
         private val movement =
-            PlayerMovementProcessor(collision, RouteFactory(collision), StepFactory(collision), events)
+            PlayerMovementProcessor(collision, RouteFactory(collision), StepFactory(collision), events, stepValidators)
         private val context =
             ProtectedAccessContext(
                 getRandom = { error("Unexpected random access") },

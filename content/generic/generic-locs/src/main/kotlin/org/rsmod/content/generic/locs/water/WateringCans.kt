@@ -27,18 +27,73 @@ object WateringCans {
             GRICOLLER,
         )
     private const val FULL_CAN = "obj.watering_can_8"
-
     val WATER_VESSELS = setOf("obj.bucket_water", "obj.bowl_water", "obj.jug_water")
 
-    private fun isCan(obj: String): Boolean = obj == GRICOLLER || doses(obj) != null
+    fun isCan(obj: String): Boolean = obj == GRICOLLER || doses(obj) != null
 
     fun doses(can: String): Int? = CANS.indexOf(can).takeIf { it in 0..8 }
+
+    fun consume(player: Player, can: String, canSlot: Int): Boolean = use(player, can, canSlot)
+
+    fun water(
+        player: Player,
+        seedlingSlot: Int,
+        can: String,
+        canSlot: Int,
+        dry: Int,
+        wet: Int,
+    ): Boolean = seedlingSlot in player.inv.indices && use(player, can, canSlot, seedlingSlot, dry, wet)
+
+    private fun use(
+        player: Player,
+        can: String,
+        canSlot: Int,
+        seedlingSlot: Int = -1,
+        dry: Int = 0,
+        wet: Int = 0,
+    ): Boolean {
+        if (!isCan(can) || canSlot !in player.inv.indices || player.inv[canSlot]?.id != can.asRSCM()) return false
+        if (seedlingSlot >= 0 && (seedlingSlot !in player.inv.indices || player.inv[seedlingSlot]?.id != dry)) return false
+        val doses = doses(can)
+        if (can == GRICOLLER) {
+            if (player.vars[CHARGES] <= 0) return false
+            if (seedlingSlot < 0) {
+                VarPlayerIntMapSetter.set(player, CHARGES, player.vars[CHARGES] - 1)
+                return true
+            }
+        } else if (doses == 0) {
+            if (seedlingSlot >= 0) player.mes("You need to fill the watering can first.")
+            return false
+        }
+        val result = player.invTransaction(player.inv) {
+            val inv = select(player.inv)
+            if (can != GRICOLLER) {
+                delete(inv, can.asRSCM(), 1, canSlot)
+                add(inv, CANS[checkNotNull(doses) - 1].asRSCM(), 1, slot = canSlot)
+            }
+            if (seedlingSlot >= 0) {
+                delete(inv, dry, 1, seedlingSlot)
+                add(inv, wet, 1, slot = seedlingSlot)
+            }
+        }
+        if (!result.success) return false
+        if (can == GRICOLLER) {
+            VarPlayerIntMapSetter.set(player, CHARGES, player.vars[CHARGES] - 1)
+        }
+        return true
+    }
 
     fun needsRefill(player: Player, can: String): Boolean =
         isCan(can) && player.inv.physicalCount(can) > 0 && when {
             can == GRICOLLER -> player.vars[CHARGES] < TANK_CAPACITY
             else -> doses(can)?.let { it < 8 } == true
         }
+
+    fun refill(player: Player, can: String): Boolean {
+        if (!isCan(can)) return false
+        val slot = player.inv.indexOfFirst { it?.id == can.asRSCM() }
+        return refill(player, can, slot)
+    }
 
     fun refill(player: Player, can: String, slot: Int): Boolean {
         if (!isCan(can) || player.inv[slot]?.id != can.asRSCM()) return false
@@ -52,37 +107,6 @@ object WateringCans {
             delete(inv, can.asRSCM(), 1, slot)
             add(inv, FULL_CAN.asRSCM(), 1, slot = slot)
         }.success
-    }
-
-    fun water(
-        player: Player,
-        seedlingSlot: Int,
-        can: String,
-        canSlot: Int,
-        dry: Int,
-        wet: Int,
-    ): Boolean {
-        if (!isCan(can) || canSlot !in player.inv.indices || player.inv[canSlot]?.id != can.asRSCM()) return false
-        if (seedlingSlot !in player.inv.indices || player.inv[seedlingSlot]?.id != dry) return false
-        val doses = doses(can)
-        if (can == GRICOLLER) {
-            if (player.vars[CHARGES] <= 0) return false
-        } else if (doses == 0) {
-            player.mes("You need to fill the watering can first.")
-            return false
-        }
-        val result = player.invTransaction(player.inv) {
-            val inv = select(player.inv)
-            if (can != GRICOLLER) {
-                delete(inv, can.asRSCM(), 1, canSlot)
-                add(inv, CANS[checkNotNull(doses) - 1].asRSCM(), 1, slot = canSlot)
-            }
-            delete(inv, dry, 1, seedlingSlot)
-            add(inv, wet, 1, slot = seedlingSlot)
-        }
-        if (!result.success) return false
-        if (can == GRICOLLER) VarPlayerIntMapSetter.set(player, CHARGES, player.vars[CHARGES] - 1)
-        return true
     }
 
     fun refillFrom(

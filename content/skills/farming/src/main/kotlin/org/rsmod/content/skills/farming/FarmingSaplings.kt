@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.farming
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.ItemServerType
 import org.rsmod.api.invtx.add
@@ -58,6 +59,33 @@ object FarmingSaplings {
         return WateringCans.water(player, seedlingSlot, can, canSlot, chain.dry.id, chain.wet.id)
     }
 
+    fun hasHumidifyTarget(player: Player): Boolean =
+        player.inv.any { obj -> obj != null && dry(obj.id) != null } ||
+            WateringCans.CANS.any { WateringCans.needsRefill(player, it) }
+
+    fun humidify(player: Player) {
+        grow(player)
+        val result = player.invTransaction(player.inv) {
+            val inv = select(player.inv)
+            for (slot in player.inv.indices) {
+                val obj = player.inv[slot] ?: continue
+                val chain = dry(obj.id)
+                val doses = WateringCans.doses(checkNotNull(ServerCacheManager.getItem(obj.id)).internalName)
+                when {
+                    chain != null -> {
+                        delete(inv, obj.id, 1, slot)
+                        add(inv, chain.wet.id, 1, slot = slot)
+                    }
+                    doses != null && doses < 8 -> {
+                        delete(inv, obj.id, 1, slot)
+                        add(inv, WateringCans.CANS[8].asRSCM(), 1, slot = slot)
+                    }
+                }
+            }
+        }
+        if (result.err != null) return
+        WateringCans.refill(player, "obj.zeah_wateringcan")
+    }
     fun grow(player: Player, millis: Long = System.currentTimeMillis()) {
         val cycle = FarmingClock.cycle(player, 5, millis).toInt()
         val previous = player.vars[CLOCK]

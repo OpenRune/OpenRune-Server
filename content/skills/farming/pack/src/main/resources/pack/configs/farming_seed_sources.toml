@@ -1,0 +1,53 @@
+[[varp]]
+id = "varp.farming_seed_stall_theft_until"
+scope = "Perm"
+transmit = "Never"
+
+[[inventory]]
+isServerOnly = true
+id = "inv.farmer_supplies"
+name = "Farming Supplies"
+scope = "Shared"
+stack = "Always"
+size = 7
+protect = false
+runWeight = false
+restock = false
+allStock = false
+dummyInv = true
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.dibber"
+count = 500
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.rake"
+count = 500
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.gardening_trowel"
+count = 500
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.watering_can_0"
+count = 500
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.plantpot_empty"
+count = 500
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bucket_compost"
+count = 500
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.plant_cure"
+count = 500
+restockCycles = 100

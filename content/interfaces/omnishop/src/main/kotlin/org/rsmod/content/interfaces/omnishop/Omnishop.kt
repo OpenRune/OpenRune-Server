@@ -9,6 +9,8 @@ import dev.openrune.types.dbcol.DbHelper
 import dev.openrune.types.enums.enum
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.shops.currency.ShopCurrency
+import org.rsmod.api.shops.currency.ShopCurrencyRows
 import org.rsmod.game.entity.Player
 
 internal var Player.omnishopSelectedId by intVarp("varp.omnishop_selected_id")
@@ -77,6 +79,9 @@ internal class RawDbRow(id: Int) {
 internal class OmnishopCurrency(val row: Int) {
     private val raw = RawDbRow(row)
 
+    val points: ShopCurrency?
+        get() = POINT_CURRENCIES[row]
+
     val objs: List<ItemServerType>
         get() = raw.ints(CURRENCY_OBJ).mapNotNull { ServerCacheManager.getItem(it) }
 
@@ -84,14 +89,28 @@ internal class OmnishopCurrency(val row: Int) {
         get() = runCatching { DbHelper.row(row).getColumn(CURRENCY_PLURAL).column.values }
             .getOrNull()
             ?.firstOrNull() as? String ?: "currency"
+
+    companion object {
+        private val POINT_CURRENCIES by lazy {
+            val rows = ShopCurrencyRows.all().filter { it.omnishopCurrency != null }
+            check(rows.map { it.omnishopCurrency }.distinct().size == rows.size)
+            check(rows.map { it.varbitId }.distinct().size == rows.size)
+            rows.associate { metadata ->
+                check(metadata.varbitId != null && metadata.obj == null)
+                check(RawDbRow(checkNotNull(metadata.omnishopCurrency)).ints(CURRENCY_OBJ)
+                    .none { ServerCacheManager.getItem(it) != null })
+                checkNotNull(metadata.omnishopCurrency) to ShopCurrencyRows.toShopCurrency(metadata)
+            }
+        }
+    }
 }
 
-internal class OmnishopStock(private val shop: RawDbRow, private val stock: RawDbRow) {
+internal class OmnishopStock(val row: Int, private val shop: RawDbRow, private val stock: RawDbRow) {
     val obj: ItemServerType =
         ServerCacheManager.getItem(stock.int(STOCK_OBJ) ?: -1) ?: error("Omnishop stock has no obj")
 
     val multiplier: Int
-        get() = stock.int(STOCK_MULTIPLIER)?.takeIf { it > 0 } ?: 1
+        get() = stock.int(STOCK_MULTIPLIER) ?: 1
 
     val buyable: Boolean
         get() = stock.bool(STOCK_BUYABLE) ?: true
@@ -135,12 +154,12 @@ internal class OmnishopStock(private val shop: RawDbRow, private val stock: RawD
         fun find(shopRow: Int, index: Int): OmnishopStock? {
             val shop = runCatching { RawDbRow(shopRow) }.getOrNull() ?: return null
             val stockRow = shop.ints(SHOP_STOCK).getOrNull(index) ?: return null
-            return runCatching { OmnishopStock(shop, RawDbRow(stockRow)) }.getOrNull()
+            return runCatching { OmnishopStock(stockRow, shop, RawDbRow(stockRow)) }.getOrNull()
         }
 
         fun all(shopRow: Int): List<OmnishopStock> {
             val shop = runCatching { RawDbRow(shopRow) }.getOrNull() ?: return emptyList()
-            return shop.ints(SHOP_STOCK).mapNotNull { runCatching { OmnishopStock(shop, RawDbRow(it)) }.getOrNull() }
+            return shop.ints(SHOP_STOCK).mapNotNull { runCatching { OmnishopStock(it, shop, RawDbRow(it)) }.getOrNull() }
         }
     }
 }

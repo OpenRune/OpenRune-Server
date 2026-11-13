@@ -9,6 +9,7 @@ dependencies {
     implementation(projects.content.quest)
     implementation(projects.api.death)
     implementation(projects.content.interfaces.omnishop)
+    implementation(projects.content.skills.farming)
     testImplementation(projects.content.generic.genericLocs)
     testImplementation(projects.api.hunt)
     testImplementation(libs.fastutil)

@@ -1,0 +1,165 @@
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_names"
+keyType = "INT"
+valueType = "STRING"
+[enum.values]
+1 = "Tree Gnome Village"
+2 = "Gnome Stronghold"
+3 = "Battlefield of Khazard"
+4 = "Grand Exchange"
+5 = "Feldip Hills"
+6 = "Prifddinas"
+7 = "Port Sarim"
+8 = "Etceteria"
+9 = "Brimhaven"
+10 = "Hosidius"
+11 = "Farming Guild"
+12 = "Your house"
+13 = "Poison Waste"
+14 = "Laguna Aurorae"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_arrivals"
+keyType = "INT"
+valueType = "COORDGRID"
+[enum.values]
+1 = 41651298
+2 = 40324468
+3 = 41864379
+4 = 52186548
+5 = 40766242
+6 = 53647339
+7 = 50105529
+9 = 45878403
+14 = 19696353
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_sites"
+keyType = "INT"
+valueType = "STRING"
+[enum.values]
+7 = "port_sarim_spirit"
+8 = "etceteria_spirit"
+9 = "brimhaven_spirit"
+10 = "hosidius_spirit"
+11 = "farming_guild_spirit"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_destination_quests"
+keyType = "INT"
+valueType = "STRING"
+[enum.values]
+6 = "quest_songoftheelves"
+14 = "quest_pandemonium"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_origin_quests"
+keyType = "INT"
+valueType = "STRING"
+[enum.values]
+2 = "quest_grandtree"
+6 = "quest_songoftheelves"
+14 = "quest_pandemonium"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_gate_vars"
+keyType = "INT"
+valueType = "INT"
+[enum.values]
+13 = "varbit.pog"
+14 = "varbit.laguna_aurorae_visited"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_gate_values"
+keyType = "INT"
+valueType = "INT"
+[enum.values]
+13 = 37
+14 = 1
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_anchors"
+keyType = "INT"
+valueType = "COORDGRID"
+[enum.values]
+1 = 41602142
+2 = 40308086
+3 = 41864379
+4 = 52186550
+5 = 40733474
+6 = 53663724
+7 = 50138298
+8 = 42815250
+9 = 45911171
+10 = 27741654
+11 = 20532902
+13 = 38325287
+14 = 19696354
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_heads"
+keyType = "INT"
+valueType = "NPC"
+[enum.values]
+1 = "npc.treevillage_spirittree"
+2 = "npc.treevillage_spirittree"
+3 = "npc.treevillage_small_spirittree"
+4 = "npc.treevillage_small_spirittree"
+5 = "npc.treevillage_small_spirittree"
+6 = "npc.treevillage_small_spirittree"
+7 = "npc.treevillage_small_spirittree"
+8 = "npc.treevillage_small_spirittree"
+9 = "npc.treevillage_small_spirittree"
+10 = "npc.treevillage_small_spirittree"
+11 = "npc.treevillage_small_spirittree"
+12 = "npc.treevillage_small_spirittree"
+13 = "npc.pog_spirit_tree_healthy_dummy"
+14 = "npc.treevillage_small_spirittree"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_source_locs"
+keyType = "LOC"
+valueType = "INT"
+[enum.values]
+"loc.ent" = 1
+"loc.stronghold_ent" = 2
+"loc.spirittree_small" = 0
+"loc.spirittree_prif" = 6
+"loc.pog_spirit_tree_multi" = 13
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_farming_levels"
+keyType = "INT"
+valueType = "INT"
+[enum.values]
+11 = 85
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_spirit_planting_limits"
+keyType = "INT"
+valueType = "INT"
+[enum.values]
+83 = 1
+88 = 2
+93 = 3
+96 = 4
+99 = 2147483647
+
+[[mesanim]]
+id = "mesanim.farming_spirit_tree"
+len1 = "seq.chatent1"
+len2 = "seq.chatent2"
+len3 = "seq.chatent3"
+len4 = "seq.chatent4"

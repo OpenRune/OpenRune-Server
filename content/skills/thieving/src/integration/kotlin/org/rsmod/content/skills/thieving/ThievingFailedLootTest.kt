@@ -9,6 +9,7 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.scope.GameTestScope
+import org.rsmod.content.skills.farming.FarmingBags
 import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
@@ -51,6 +52,28 @@ class ThievingFailedLootTest {
             assertMessageSent(NO_SPACE)
             assertAllBones()
             assertEquals(xp, player.statMap.getFineXP(THIEVING))
+        }
+
+    @Test
+    fun GameTestState.`a pickpocketed seed goes into an open seed box when the inv is full`() =
+        runThievingTest {
+            val farmer = spawnTarget("npc.master_farmer_1")
+            fillAllButOneSlot()
+            player.inv[SLOT_COUNT - 1] = InvObj(FarmingBags.SEED_BOX_OPEN, 1)
+            val xp = player.statMap.getFineXP(THIEVING)
+            random.next = 0
+            random.then = 0
+            random.then = 2
+
+            player.opNpc3(farmer)
+            advanceUntil({ player.isAccessProtected })
+            advanceUntil({ !player.isAccessProtected })
+
+            assertEquals(2, FarmingBags.seedBox.count(player, "obj.potato_seed"))
+            assertEquals(0, player.inv.count("obj.potato_seed"))
+            assertEquals(SLOT_COUNT - 1, player.inv.count(BONES))
+            assertEquals(InvObj(FarmingBags.SEED_BOX_OPEN, 1), player.inv[SLOT_COUNT - 1])
+            assert(player.statMap.getFineXP(THIEVING) > xp)
         }
 
     @Test

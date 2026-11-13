@@ -15,6 +15,8 @@ internal class LootTable(private val entries: List<Pair<Int, Loot>>) {
         }
         return entries.last().second
     }
+
+    fun any(predicate: (Loot) -> Boolean): Boolean = entries.any { predicate(it.second) }
 }
 
 internal class Stall(
@@ -43,6 +45,7 @@ internal class Pickpocket(
     val pouch: CoinPouch? = null,
     val lowercaseName: Boolean = false,
     val pocketName: String? = null,
+    val seedBox: Boolean = false,
 )
 
 internal object ThievingTables {
@@ -200,6 +203,7 @@ internal object ThievingTables {
                 stunDamage = 3,
                 caughtShout = "Cor blimey mate, what are ye doing in me pockets?",
                 loot = masterFarmerLoot,
+                seedBox = true,
             )
         )
 }
