@@ -2,6 +2,10 @@
 rock = 52
 mining_pickaxe = 53
 
+[gamevals.area]
+cam_torum_mine = 32453
+cam_torum_mine_east = 32454
+
 [gamevals.param]
 skill_action_delay = 65382
 skill_wall_anim = 65383
@@ -43,6 +47,6 @@ mining_saltrock_blue = 55509
 mining_saltrock_green = 55510
 mining_saltrock_basalt = 55511
 mining_ancientessence = 55512
-mining_infernalshale = 55513
+mining_calcified = 55513
 mining_gauntlet_rock = 55515
 mining_gauntlet_rock_hm = 55516

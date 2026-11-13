@@ -10,6 +10,9 @@ val MiningRocksRow.miningXp: Double
 val MiningRocksRow.isInfinite: Boolean
     get() = depleteMechanic == 3
 
+val MiningRocksRow.isTimed: Boolean
+    get() = depleteMechanic == 4
+
 val MiningRocksRow.hasDepleteRange: Boolean
     get() = depleteMechanic == 2
 

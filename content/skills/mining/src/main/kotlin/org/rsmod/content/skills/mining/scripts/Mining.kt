@@ -39,6 +39,7 @@ import org.rsmod.content.skills.mining.configs.hasBonusRolls
 import org.rsmod.content.skills.mining.configs.hasDepleteRange
 import org.rsmod.content.skills.mining.configs.isGemRock
 import org.rsmod.content.skills.mining.configs.isInfinite
+import org.rsmod.content.skills.mining.configs.isTimed
 import org.rsmod.content.skills.mining.configs.miningXp
 import org.rsmod.content.skills.mining.drops.MiningGemDropTables
 import org.rsmod.game.MapClock
@@ -57,6 +58,7 @@ constructor(
     private val xpMods: XpModifiers,
     private val invisibleLvls: InvisibleLevels,
     private val mapClock: MapClock,
+    private val calcified: CalcifiedMine,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpContentLoc1("content.rock") { attempt(it.loc, it.type) }
@@ -146,7 +148,7 @@ constructor(
                     return
                 }
                 GemPreRoll.KeepOre -> {
-                    minedOre = rollOreSuccess(data)
+                    minedOre = rollOreSuccess(rock, data)
                 }
             }
         }
@@ -176,6 +178,7 @@ constructor(
                     val ore = getInvObj(InvObj(product.item)).name.lowercase().removeSuffix(" ore")
                     spam("You manage to mine some $ore.")
                     soundSynth(ORE_OBTAINED_SOUND)
+                    if (data.isTimed) calcified.arm(rock)
                 }
             }
 
@@ -253,10 +256,14 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.rollOreSuccess(data: MiningRocksRow): Boolean {
+    private fun ProtectedAccess.rollOreSuccess(rock: BoundLocInfo, data: MiningRocksRow): Boolean {
         val gloryBoost = data.isGemRock && player.wearingChargedGlory()
-        val low = if (gloryBoost) data.successRateLow * 3 else data.successRateLow
-        val high = if (gloryBoost) data.successRateHigh * 3 else data.successRateHigh
+        var low = if (gloryBoost) data.successRateLow * 3 else data.successRateLow
+        var high = if (gloryBoost) data.successRateHigh * 3 else data.successRateHigh
+        if (calcified.isWet(rock.coords)) {
+            low = low * CalcifiedMine.WET_BOOST_PERCENT / 100
+            high = high * CalcifiedMine.WET_BOOST_PERCENT / 100
+        }
         return statRandom("stat.mining", low, high, invisibleLvls)
     }
 
@@ -267,7 +274,7 @@ constructor(
     }
 
     private fun ProtectedAccess.shouldDeplete(rock: BoundLocInfo, data: MiningRocksRow): Boolean {
-        if (data.isInfinite) {
+        if (data.isInfinite || data.isTimed) {
             return false
         }
         val gloveExtras = player.miningGloveExtras(data)
