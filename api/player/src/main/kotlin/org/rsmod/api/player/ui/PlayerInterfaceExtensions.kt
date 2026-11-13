@@ -23,6 +23,7 @@ import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHead
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetNpcHeadActive
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetObject
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetPlayerHead
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetPosition
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetText
 import net.rsprot.protocol.game.outgoing.misc.player.TriggerOnDialogAbort
 import org.rsmod.annotations.InternalApi
@@ -264,6 +265,11 @@ public fun Player.ifSetText(internal: String, text: String) {
 public fun Player.ifSetHide(internal: String, hide: Boolean) {
     val target = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
     client.write(IfSetHide(target.interfaceId, target.component, hide))
+}
+
+public fun Player.ifSetPosition(internal: String, x: Int, y: Int) {
+    val target = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
+    client.write(IfSetPosition(target.interfaceId, target.component, x, y))
 }
 
 public fun Player.ifOpenTop(topLevel: String) {

@@ -1,0 +1,32 @@
+[[enum]]
+isServerOnly = true
+id = "enum.construction_nails"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+1 = "obj.nails_bronze"
+2 = "obj.nails_iron"
+3 = "obj.nails"
+4 = "obj.nails_black"
+5 = "obj.nails_mithril"
+6 = "obj.nails_adamant"
+7 = "obj.nails_rune"
+8 = "obj.nails_dragon"
+
+[[enum]]
+isServerOnly = true
+id = "enum.construction_material_xp"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.woodplank" = 290
+"obj.plank_oak" = 600
+"obj.plank_teak" = 900
+"obj.plank_mahogany" = 1400
+"obj.cloth" = 150
+"obj.limestonebrick" = 200
+"obj.gold_leaf" = 3000
+"obj.marble_block" = 5000
+"obj.poh_magic_crystal" = 10000
