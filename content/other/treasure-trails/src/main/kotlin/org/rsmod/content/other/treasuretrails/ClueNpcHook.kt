@@ -118,16 +118,18 @@ constructor(
         tier: TrailTierRow,
         praise: String? = null,
         epilogue: String? = null,
+        obtained: Boolean = false,
     ) {
         val given = advance(tier) ?: return
         val name = npcVisType(npc).name
         val casket = given.id == tier.casketObj.id
-        val master = tier.difficulty == TrailTiers.MASTER
+        val modern = TrailTiers.newWording(tier)
         val text =
             when {
-                casket && master -> MasterParts.CASKET
+                casket && modern -> MasterParts.CASKET
                 casket -> "$name has given you a casket!"
-                master -> "You've been given a new clue!"
+                modern && obtained -> MasterParts.NEW_CLUE
+                modern -> "You've been given a new clue!"
                 else -> "$name has given you another clue scroll!"
             }
         startDialogue(npc) {
@@ -226,7 +228,7 @@ constructor(
                 return
             }
             if (TrailFlow.clueSlot(player, tier) == null) return
-            completeTalk(npc, tier)
+            completeTalk(npc, tier, obtained = true)
             return
         }
         val task = TrailCharlieTaskRow.all().firstOrNull { it.step.rowId == step.rowId } ?: return
@@ -239,7 +241,7 @@ constructor(
         }
         if (TrailFlow.clueSlot(player, tier) == null) return
         if (!worn && invDel(inv, item, 1).failure) return
-        completeTalk(npc, tier)
+        completeTalk(npc, tier, obtained = true)
     }
 
     private suspend fun ProtectedAccess.faloSong(npc: Npc, tier: TrailTierRow, step: ClueStep) {
@@ -279,7 +281,14 @@ constructor(
         ClueUri.clear(player)
         val phrase = random.pick(TrailEnums.trail_uri_phrases.mapNotNull { it.value })
         val casket = given.id == tier.casketObj.id
-        val text = if (casket) "You've been given a casket!" else "You've been given a clue!"
+        val modern = TrailTiers.newWording(tier)
+        val text =
+            when {
+                casket && modern -> MasterParts.CASKET
+                casket -> "You've been given a casket!"
+                modern -> "You've been given a new clue!"
+                else -> "You've been given a clue!"
+            }
         startDialogue(npc) {
             chatNpc(shifty, phrase)
             chatPlayer(confused, "What?")

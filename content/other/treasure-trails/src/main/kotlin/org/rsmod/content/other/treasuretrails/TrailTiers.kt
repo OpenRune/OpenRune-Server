@@ -51,11 +51,13 @@ object TrailTiers {
 
     fun playableTiers(): List<TrailTierRow> = PLAYABLE.map(::tier)
 
+    fun newWording(tier: TrailTierRow): Boolean = tier.difficulty >= ELITE
+
     fun foundText(tier: TrailTierRow, given: ItemServerType): String =
         when {
             given.id == tier.casketObj.id ->
-                if (tier.difficulty == MASTER) MasterParts.CASKET else "You've found a casket!"
-            tier.difficulty == MASTER -> "You've found a new clue!"
+                if (newWording(tier)) MasterParts.CASKET else "You've found a casket!"
+            newWording(tier) || tier.difficulty == MEDIUM -> "You've found a new clue!"
             else -> "You've found another clue!"
         }
 

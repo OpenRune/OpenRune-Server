@@ -80,6 +80,11 @@ object ClueStash {
             mes("You need $PLANKS ${tier.stashPlank.name.lowercase()}s to build this.")
             return
         }
+        val leaf = tier.difficulty == TrailTiers.MASTER
+        if (leaf && inv.count(GOLD_LEAF) < 1) {
+            mes("You need a gold leaf to build this.")
+            return
+        }
         anim(BUILD_SEQ)
         delay(BUILD_DELAY)
         val result =
@@ -94,6 +99,13 @@ object ClueStash {
                     this.from = from
                     this.obj = nails.asRSCM(RSCMType.OBJ)
                     this.strictCount = NAILS
+                }
+                if (leaf) {
+                    delete {
+                        this.from = from
+                        this.obj = GOLD_LEAF.asRSCM(RSCMType.OBJ)
+                        this.strictCount = 1
+                    }
                 }
             }
         if (result.failure || built(player, loc)) return
@@ -208,6 +220,7 @@ object ClueStash {
     private const val NAILS = 10
     private const val BUILD_DELAY = 3
     private const val DRAGON_NAILS = "obj.nails_dragon"
+    private const val GOLD_LEAF = "obj.gold_leaf"
     private const val CONSTRUCTION = "stat.construction"
     private const val BUILD_SEQ = "seq.human_poh_build"
 }

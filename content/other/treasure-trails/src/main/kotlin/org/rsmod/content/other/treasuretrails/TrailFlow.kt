@@ -125,7 +125,7 @@ object TrailFlow {
 
     suspend fun ProtectedAccess.openBox(tier: TrailTierRow) {
         if (TrailTiers.ownedClues(player, tier.difficulty) > 0) {
-            mes(ClueTakeHook.ALREADY_HAVE_CLUE)
+            mes(ClueTakeHook.BOX_REFUSES)
             return
         }
         val clue = freshClue(tier, random)

@@ -56,11 +56,13 @@ class ClueLocHook @Inject constructor(private val instanceCoords: ClueInstanceCo
     private fun searchTrail(player: Player, loc: BoundLocInfo): HeldTrail? =
         TrailFlow.heldTrails(player).firstOrNull { trail ->
             when (val target = ClueSteps.target(player, trail.step)) {
-                is ClueTarget.Search ->
+                is ClueTarget.Search -> {
+                    val spot = instanceCoords.toPlayerSpace(player, target.row.coord)
                     loc.bounds().asSequence().any {
-                        it == instanceCoords.toPlayerSpace(player, target.row.coord)
+                        it.level == spot.level && it.chebyshevDistance(spot) <= SEARCH_RADIUS
                     } &&
                         loc.id in setOfNotNull(target.row.loc.id, target.row.fallbackLoc?.id)
+                }
                 is ClueTarget.OpenWithKey ->
                     loc.coords == instanceCoords.toPlayerSpace(player, target.row.locCoord) &&
                         loc.id == target.row.loc.id
@@ -79,6 +81,7 @@ class ClueLocHook @Inject constructor(private val instanceCoords: ClueInstanceCo
 
     private companion object {
         const val MAX_OPS = 5
+        const val SEARCH_RADIUS = 1
         const val SEARCH_OP = "Search"
     }
 }

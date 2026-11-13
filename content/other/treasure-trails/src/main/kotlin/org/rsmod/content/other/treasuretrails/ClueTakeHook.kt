@@ -27,6 +27,7 @@ class ClueTakeHook : PlayerObjTakeValidateHook {
 
     internal companion object {
         const val ALREADY_HAVE_CLUE = "You already have a clue scroll of this tier."
+        const val BOX_REFUSES = "The clue box refuses to open - you already have a clue."
         const val TOO_MANY_BOXES = "You can't carry any more scroll boxes of this tier."
 
         fun boxesUnlocked(player: Player): Boolean =
