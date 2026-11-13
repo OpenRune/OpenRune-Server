@@ -1,0 +1,47 @@
+[[varp]]
+isServerOnly = true
+id = "varp.birdhouse_seeded_a"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.birdhouse_seeds_a"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.birdhouse_seeded_b"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.birdhouse_seeds_b"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.birdhouse_seeded_c"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.birdhouse_seeds_c"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.birdhouse_seeded_d"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.birdhouse_seeds_d"
+scope = "Perm"
+transmit = "Never"

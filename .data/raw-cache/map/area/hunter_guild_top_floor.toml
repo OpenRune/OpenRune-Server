@@ -1,0 +1,12 @@
+[[area]]
+name = "Hunter Guild top floor"
+area_id = "area.hunter_guild_top_floor"
+levels = [1]
+
+[[area.polygons]]
+vertices = [
+    [1546, 3026],
+    [1566, 3026],
+    [1566, 3046],
+    [1546, 3046],
+]

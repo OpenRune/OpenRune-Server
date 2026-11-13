@@ -803,6 +803,59 @@ object Crafting {
                     category("MixedHide")
                 }
             }
+            row("dbrow.crafting_hg_furpouch_small") {
+                production {
+                    input("obj.hunting_fur_jaguar_perfect", 4)
+                    statReq("stat.crafting", 35)
+                    xp(200)
+                    output("obj.hg_furpouch_small")
+                    category("HunterPouch")
+                }
+                column(COL_SPAM_MESSAGE, "You make a {output}.")
+            }
+            row("dbrow.crafting_hg_furpouch_med") {
+                production {
+                    input("obj.hg_furpouch_small")
+                    input("obj.hunting_fur_leopard_perfect", 3)
+                    statReq("stat.crafting", 50)
+                    xp(400)
+                    output("obj.hg_furpouch_med")
+                    category("HunterPouch")
+                }
+                column(COL_SPAM_MESSAGE, "You make a {output}.")
+            }
+            row("dbrow.crafting_hg_furpouch_large") {
+                production {
+                    input("obj.hg_furpouch_med")
+                    input("obj.hunting_fur_tiger_perfect", 3)
+                    statReq("stat.crafting", 65)
+                    xp(600)
+                    output("obj.hg_furpouch_large")
+                    category("HunterPouch")
+                }
+                column(COL_SPAM_MESSAGE, "You make a {output}.")
+            }
+            row("dbrow.crafting_hg_meatpouch_small") {
+                production {
+                    input("obj.hunting_fennecfox_fur", 4)
+                    statReq("stat.crafting", 35)
+                    xp(300)
+                    output("obj.hg_meatpouch_small")
+                    category("HunterPouch")
+                }
+                column(COL_SPAM_MESSAGE, "You make a {output}.")
+            }
+            row("dbrow.crafting_hg_meatpouch_large") {
+                production {
+                    input("obj.hg_meatpouch_small")
+                    input("obj.hunting_antelopesun_fur", 3)
+                    statReq("stat.crafting", 65)
+                    xp(600)
+                    output("obj.hg_meatpouch_large")
+                    category("HunterPouch")
+                }
+                column(COL_SPAM_MESSAGE, "You make a {output}.")
+            }
         }
 
         section("Shields", category = "Shield") {

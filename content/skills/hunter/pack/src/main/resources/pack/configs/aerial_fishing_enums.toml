@@ -1,0 +1,16 @@
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_pearl_shop_prices"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.fishingrod_pearl" = 100
+"obj.fishingrod_pearl_fly" = 120
+"obj.fishingrod_pearl_brut" = 150
+"obj.fish_sack" = 500
+"obj.trawler_reward_hat" = 50
+"obj.trawler_reward_top" = 50
+"obj.trawler_reward_legs" = 50
+"obj.trawler_reward_boots" = 50
+"obj.shark_lure_pack" = 1

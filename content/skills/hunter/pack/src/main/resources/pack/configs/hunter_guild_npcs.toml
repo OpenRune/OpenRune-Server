@@ -1,0 +1,34 @@
+[[npc]]
+id = "npc.hg_gilman"
+inherit = "npc.hg_gilman"
+wanderRange = 0
+
+[[npc]]
+id = "npc.hg_verity"
+inherit = "npc.hg_verity"
+wanderRange = 0
+
+[[npc]]
+id = "npc.hunting_falcon_onspeedy"
+inherit = "npc.hunting_falcon_onspeedy"
+wanderRange = 0
+
+[[npc]]
+id = "npc.hunting_falcon_onsilent"
+inherit = "npc.hunting_falcon_onsilent"
+wanderRange = 0
+
+[[npc]]
+id = "npc.hunting_falcon_onspeedy2"
+inherit = "npc.hunting_falcon_onspeedy2"
+wanderRange = 0
+
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_guild_bar_prices"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.trappers_tipple" = 3
+"obj.stew" = 20

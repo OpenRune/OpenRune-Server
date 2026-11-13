@@ -230,6 +230,10 @@ public class Dialogue(
         access.chatNpcSpecificNp(title, type, mesanim, text)
     }
 
+    public suspend fun choice1(choice1: String, title: String = Constants.cm_options) {
+        access.choice1(choice1 = choice1, title = title)
+    }
+
     /** @see [ProtectedAccess.choice2] */
     public suspend fun <T> choice2(
         choice1: String,

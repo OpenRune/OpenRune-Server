@@ -1,0 +1,28 @@
+[[enum]]
+isServerOnly = true
+id = "enum.butterfly_restored_stats"
+keyType = "INT"
+valueType = "STAT"
+
+[enum.values]
+0 = "stat.attack"
+1 = "stat.defence"
+2 = "stat.strength"
+3 = "stat.ranged"
+4 = "stat.magic"
+5 = "stat.cooking"
+6 = "stat.woodcutting"
+7 = "stat.fletching"
+8 = "stat.fishing"
+9 = "stat.firemaking"
+10 = "stat.crafting"
+11 = "stat.smithing"
+12 = "stat.mining"
+13 = "stat.herblore"
+14 = "stat.agility"
+15 = "stat.thieving"
+16 = "stat.slayer"
+17 = "stat.farming"
+18 = "stat.runecrafting"
+19 = "stat.hunter"
+20 = "stat.construction"

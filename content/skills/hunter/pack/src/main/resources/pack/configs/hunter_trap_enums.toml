@@ -1,0 +1,25 @@
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_trap_limits"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+1 = 1
+20 = 2
+40 = 3
+60 = 4
+80 = 5
+
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_crab_trap_limits"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+1 = 1
+21 = 2
+40 = 3
+60 = 4
+80 = 5
