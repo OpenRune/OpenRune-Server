@@ -46,3 +46,5 @@ warguild_shield=64902
 npc_venom=64903
 pmoon_chain=64800
 pmoon_parry=64801
+burn_npc=64910
+burn_player=64911

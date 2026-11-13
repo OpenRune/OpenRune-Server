@@ -935,3 +935,9 @@ isServerOnly = true
 id = "varp.pmoon_unique_mask"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.burn_stacks"
+scope = "Temp"
+transmit = "Never"
