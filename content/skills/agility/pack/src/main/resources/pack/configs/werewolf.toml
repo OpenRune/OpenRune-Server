@@ -1,0 +1,74 @@
+[[npc]]
+id = "npc.werewolf_trainer_stick"
+inherit = "npc.werewolf_trainer_stick"
+timer = 12
+
+[[npc]]
+id = "npc.waa_skullball"
+inherit = "npc.waa_skullball"
+defaultMode = "None"
+blockWalk = "None"
+moveRestrict = "PassThru"
+
+[[varp]]
+id = "varp.agility_skullball"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.agility_skullball_goals"
+varp = "varp.agility_skullball"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+id = "varbit.agility_skullball_heading"
+varp = "varp.agility_skullball"
+startBit = 4
+endBit = 7
+
+[[varbit]]
+id = "varbit.agility_skullball_steps"
+varp = "varp.agility_skullball"
+startBit = 8
+endBit = 11
+
+[[varp]]
+id = "varp.agility_skullball_start"
+scope = "Temp"
+transmit = "Never"
+
+# One line is picked each time; the second shows up about half the time live, so it is in twice.
+[[enum]]
+isServerOnly = true
+id = "enum.agility_werewolf_stick_shouts"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "Bring me the stick when you've finished the course!"
+1 = "Don't forget to give me the stick when you're done!"
+2 = "Don't forget to give me the stick when you're done!"
+3 = "Remember - no stick, no agility bonus!"
+
+[[enum]]
+isServerOnly = true
+id = "enum.agility_werewolf_obstacle_shouts"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "Let's see those powerful backlegs at work!!"
+1 = "Let the bloodlust take you!!"
+2 = "Get on with it - you need your whiskers plucking!!!!"
+
+[[enum]]
+isServerOnly = true
+id = "enum.agility_werewolf_slide_shouts"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+0 = "Give my regards to the ground..."
+1 = "Now for a true test of teeth..."
+2 = "Don't let the spikes or the blood put you off..."

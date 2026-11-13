@@ -66,6 +66,15 @@ class OmnishopScript : PluginScript() {
                 return
             }
         }
+        if (stock.virtual) {
+            publish(
+                OmnishopVirtualPurchase(this, stock.obj.id, requested) { wanted ->
+                    payOmnishopStock(player, payments, wanted)
+                }
+            )
+            redraw()
+            return
+        }
         val quantity = buyOmnishopStock(player, payments, stock.obj, stock.multiplier, requested,
             cert = stock.soldNoted)
         if (quantity == 0) {

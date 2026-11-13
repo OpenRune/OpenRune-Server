@@ -195,11 +195,100 @@ class OmnishopPurchaseTest {
         assertEquals(3, f.count("obj.forestry_pheasant_feathers"))
     }
 
-    private class Fixture {
+    @Test
+    fun `virtual stock spends only what is owned and grants what was paid for`() {
+        val f = Fixture(ARENA_SHOP)
+        val paid = mutableListOf<Int>()
+        f.onVirtualPurchase(XP_STOCK) { paid += it.pay(it.requested) }
+        f.player.inv[0] = InvObj(TICKET, 1)
+        f.buy(XP_INDEX, 1)
+        f.buy(XP_INDEX, 1)
+        assertEquals(listOf(1), paid)
+        assertEquals(0, f.count(TICKET))
+    }
+
+    @Test
+    fun `virtual stock without a handler spends nothing`() {
+        val f = Fixture(ARENA_SHOP)
+        f.player.inv[0] = InvObj(TICKET, 10)
+        f.buy(XP_INDEX, 1)
+        assertEquals(10, f.count(TICKET))
+    }
+
+    @Test
+    fun `virtual stock payment is capped by the balance and never overflows`() {
+        val f = Fixture(ARENA_SHOP)
+        val tickets = listOf(OmnishopPayment(listOf(f.type(TICKET)), 1))
+        f.player.inv[0] = InvObj(TICKET, 7)
+        assertEquals(7, f.pay(tickets, requested = 50))
+        assertEquals(0, f.count(TICKET))
+        assertEquals(0, f.pay(tickets, requested = 50))
+        f.player.inv[0] = InvObj(TICKET, Int.MAX_VALUE)
+        assertEquals(50, f.pay(tickets, requested = 50))
+        assertEquals(Int.MAX_VALUE - 50, f.count(TICKET))
+        assertEquals(0, f.pay(tickets, requested = 51))
+        assertEquals(Int.MAX_VALUE - 50, f.count(TICKET))
+    }
+
+    @Test
+    fun `virtual stock payment that a second currency cannot cover takes nothing`() {
+        val f = Fixture(ARENA_SHOP)
+        val payments = listOf(
+            OmnishopPayment(listOf(f.type(TICKET)), 1),
+            OmnishopPayment(listOf(f.type(VOUCHER)), 5),
+        )
+        f.player.inv[0] = InvObj(TICKET, 10)
+        f.player.inv[1] = InvObj(VOUCHER, 4)
+        assertEquals(0, f.pay(payments, requested = 1))
+        assertEquals(10, f.count(TICKET))
+        assertEquals(4, f.count(VOUCHER))
+    }
+
+    @Test
+    fun `virtual stock is paid for with a full inventory and leaves the rest alone`() {
+        val f = Fixture(ARENA_SHOP)
+        val paid = mutableListOf<Int>()
+        f.onVirtualPurchase(XP_STOCK) { paid += it.pay(it.requested) }
+        f.player.inv[0] = InvObj(TICKET, 3)
+        f.fill(28)
+        f.buy(XP_INDEX, 1)
+        assertEquals(listOf(1), paid)
+        assertEquals(2, f.count(TICKET))
+        assertEquals(27, f.count("obj.spade"))
+    }
+
+    @Test
+    fun `a handler paying twice spends only what is owned`() {
+        val f = Fixture(ARENA_SHOP)
+        val paid = mutableListOf<Int>()
+        f.onVirtualPurchase(XP_STOCK) {
+            paid += it.pay(it.requested)
+            paid += it.pay(it.requested)
+        }
+        f.player.inv[0] = InvObj(TICKET, 1)
+        f.buy(XP_INDEX, 1)
+        assertEquals(listOf(1, 0), paid)
+        assertEquals(0, f.count(TICKET))
+    }
+
+    @Test
+    fun `virtual stock payment takes a price spread over several objs exactly`() {
+        val f = Fixture(ARENA_SHOP)
+        val payment = listOf(OmnishopPayment(listOf(f.type(TICKET), f.type(VOUCHER)), 3))
+        f.player.inv[0] = InvObj(TICKET, 4)
+        f.player.inv[1] = InvObj(VOUCHER, 4)
+        assertEquals(2, f.pay(payment, requested = 2))
+        assertEquals(0, f.count(TICKET))
+        assertEquals(2, f.count(VOUCHER))
+        assertEquals(0, f.pay(payment, requested = 1))
+        assertEquals(2, f.count(VOUCHER))
+    }
+
+    private class Fixture(shopRow: String = "dbrow.forestry_shop") {
         private val events = EventBus()
         private val coroutine = GameCoroutine("omnishop-test")
         private val script = OmnishopScript()
-        private val shop = "dbrow.forestry_shop".asRSCM(RSCMType.DBROW)
+        private val shop = shopRow.asRSCM(RSCMType.DBROW)
 
         @OptIn(InternalApi::class)
         val player = Player().apply {
@@ -225,6 +314,13 @@ class OmnishopPurchaseTest {
         fun fill(count: Int) {
             for (slot in 0 until count) if (player.inv[slot] == null) player.inv[slot] = InvObj("obj.spade")
         }
+        fun pay(payments: List<OmnishopPayment>, requested: Int) =
+            payOmnishopStock(player, payments, requested)
+        fun onVirtualPurchase(obj: String, action: (OmnishopVirtualPurchase) -> Unit) {
+            events.subscribeKeyed(OmnishopVirtualPurchase::class.java, type(obj).id.toLong()) {
+                action(this)
+            }
+        }
         fun purchase(payments: List<OmnishopPayment>, output: ItemServerType, multiplier: Int = 1,
             requested: Int = 1, cert: Boolean = false) =
             buyOmnishopStock(player, payments, output, multiplier, requested, cert)
@@ -243,6 +339,11 @@ class OmnishopPurchaseTest {
         private const val BLADE = 1
         private const val CAPE_POUCH = 6
         private const val PHEASANT_FEATHERS = 3
+        private const val ARENA_SHOP = "dbrow.agilityarena_rewards_newshop"
+        private const val XP_STOCK = "obj.agilityarena_xp_dummyitem"
+        private const val XP_INDEX = 0
+        private const val TICKET = "obj.agilityarena_ticket_new"
+        private const val VOUCHER = "obj.agilityarena_voucher"
         private val RESTORED = mutableListOf<() -> Unit>()
 
         @OptIn(InternalApi::class)

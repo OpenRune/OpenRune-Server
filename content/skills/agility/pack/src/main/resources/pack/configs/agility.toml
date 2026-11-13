@@ -1,0 +1,144 @@
+[[varp]]
+id = "varp.agility_lap"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.agility_lap_course"
+varp = "varp.agility_lap"
+startBit = 0
+endBit = 15
+
+[[varbit]]
+id = "varbit.agility_lap_step"
+varp = "varp.agility_lap"
+startBit = 16
+endBit = 23
+
+[[varp]]
+id = "varp.agility_mark_ready_minute"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_gnome_stronghold"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_draynor"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_al_kharid"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_varrock"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_canifis"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_falador"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_seers"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_pollnivneach"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_rellekka"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_ardougne"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_barbarian"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_wilderness"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_prifddinas"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_ape_atoll"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_werewolf"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_shayzien_basic"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_shayzien_advanced"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_wyrm_basic"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_wyrm_advanced"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_penguin"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_laps_brimhaven_arena"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_arena_tagged_rotation"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_arena_left_clock"
+scope = "Temp"
+transmit = "Never"
+
+# UNVERIFIED: only the three-line anim is captured; wolf chatheads have one idle.
+[[mesanim]]
+id = "mesanim.skullball_werewolf"
+len1 = "seq.lore_wolf_chathead_idle"
+len2 = "seq.lore_wolf_chathead_idle"
+len3 = "seq.lore_wolf_chathead_idle"
+len4 = "seq.lore_wolf_chathead_idle"

@@ -4,9 +4,7 @@ import jakarta.inject.Inject
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
-import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.registry.zone.ZonePlayerActivityBitSet
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.PathingEntity.Companion.INVALID_SLOT
@@ -86,6 +84,23 @@ constructor(
         return entries.entries.asSequence()
     }
 
+    /**
+     * Returns a snapshot of every [Player] in [zones], safe to iterate while they move between
+     * zones. Hidden, dying and logging out players are included, as with [findAll].
+     */
+    public fun findAll(zones: Collection<ZoneKey>): List<Player> {
+        var found: ArrayList<Player>? = null
+        for (zone in zones) {
+            val entries = this.zones[zone] ?: continue
+            if (entries.isEmpty()) {
+                continue
+            }
+            found = found ?: ArrayList()
+            found.addAll(entries.entries)
+        }
+        return found ?: emptyList()
+    }
+
     private fun zoneDel(player: Player, zone: ZoneKey) {
         if (zone == ZoneKey.NULL) {
             return
@@ -149,7 +164,7 @@ constructor(
             if (characterId != 0 && player.characterId != characterId) {
                 continue
             }
-            //TODO MUTED
+            // TODO MUTED
         }
     }
 

@@ -1,0 +1,14 @@
+[[varp]]
+id = "varp.agility_arena_last_tag"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_arena_tag_lock"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_arena_session_tagged"
+scope = "Temp"
+transmit = "Never"

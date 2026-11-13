@@ -1,0 +1,6 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.looting_bag"
+inherit = "inv.looting_bag"
+scope = "Perm"
+protect = false
