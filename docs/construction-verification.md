@@ -15,10 +15,9 @@ being built at all, which blocks sections A to D.
    Loaded 30 house rooms, 184 hotspots, 172 doorways, 483/500 furniture locs resolved.
    ```
 
-2. Launch `C:\Users\Christian\AppData\Local\RSProx\RSProx.exe`, click **Launch Session** in the
-   launcher window (it does nothing until you do, and it can be sitting minimised).
-3. Log in as `getest123` / `getest`.
-4. Kit out:
+2. Launch a client (RSProx: click **Launch Session** in the launcher window - it does nothing until
+   you do, and it can be sitting minimised) and log in with a test account.
+3. Kit out:
 
    ```
    ::master
@@ -31,7 +30,7 @@ being built at all, which blocks sections A to D.
    ::item 8790 100   bolt of cloth
    ```
 
-5. `::buildmode` to enter the house with hotspots showing.
+4. `::buildmode` to enter the house with hotspots showing.
 
 When you finish, **log out through the game's own logout tab** before stopping the server. Killing
 the server with a player logged in loses that character's save.

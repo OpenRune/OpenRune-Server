@@ -66,7 +66,7 @@ object ConstructionDispensers {
             fill = listOf("obj.beer_glass" to drink, "obj.poh_beer_glass" to drink),
         )
 
-    internal val dispensers: List<Dispenser> =
+    private val dispensers: List<Dispenser> =
         listOf(
             Dispenser("loc.poh_larder_1", take = LARDER_1),
             Dispenser("loc.poh_larder_2", take = LARDER_2),

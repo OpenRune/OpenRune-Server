@@ -53,59 +53,35 @@ class HotspotNamingTest {
     }
 
     @Test
-    fun `named hotspots are placed by the room's override table`() {
-        assertEquals(4, HotspotNaming.overrideSlot("chapel", "loc.poh_chapelwindow_hotspot_rimmington"))
-        assertEquals(
-            6,
-            HotspotNaming.overrideSlot("costume room", "loc.poh_cos_room_fancy_dress_box_hotspot"),
-        )
-        assertEquals(1, HotspotNaming.overrideSlot("menagerie", "loc.poh_menagerie_pethouse_hotspot"))
-        assertEquals(7, HotspotNaming.overrideSlot("menagerie", "loc.poh_menagerie_petfeeder_hotspot"))
-        assertEquals(3, HotspotNaming.overrideSlot("menagerie outdoors", "loc.poh_menagerie_habitat_feature"))
-    }
+    fun `several locs matching one fragment are the parts of one slot`() {
+        val overrides = mapOf("combatring" to 5, "pethouse" to 1)
 
-    @Test
-    fun `several locs mapping to one slot are its parts`() {
-        assertEquals(5, HotspotNaming.overrideSlot("menagerie", "loc.poh_menagerie_combatring_hotspot"))
+        assertEquals(5, HotspotNaming.overrideSlot(overrides, "loc.poh_menagerie_combatring_hotspot"))
         assertEquals(
             5,
-            HotspotNaming.overrideSlot("menagerie", "loc.poh_menagerie_combatring_mat_hotspot"),
+            HotspotNaming.overrideSlot(overrides, "loc.poh_menagerie_combatring_mat_hotspot"),
         )
-        for (part in listOf("theme_edge", "theme_outercorner", "theme_path_1", "theme_feature")) {
-            assertEquals(4, HotspotNaming.overrideSlot("superior garden", "loc.poh_superior_garden_hotspot_$part"))
-        }
-        for (part in listOf("rug_side", "rug_corner", "rug_middle")) {
-            assertEquals(4, HotspotNaming.overrideSlot("league hall", "loc.poh_leaguehall_${part}_hotspot"))
-        }
+        assertEquals(1, HotspotNaming.overrideSlot(overrides, "loc.poh_menagerie_pethouse_hotspot"))
     }
 
     @Test
     fun `the longest matching override fragment wins`() {
+        val overrides = mapOf("seating_" to 9, "seating_a_" to 6, "seating_b_" to 7)
+
         assertEquals(
             6,
-            HotspotNaming.overrideSlot("superior garden", "loc.poh_superior_garden_hotspot_seating_a_left"),
+            HotspotNaming.overrideSlot(overrides, "loc.poh_superior_garden_hotspot_seating_a_left"),
         )
         assertEquals(
             7,
-            HotspotNaming.overrideSlot("superior garden", "loc.poh_superior_garden_hotspot_seating_b_right"),
-        )
-        assertEquals(
-            5,
-            HotspotNaming.overrideSlot("superior garden", "loc.poh_superior_garden_hotspot_fence_post_m"),
+            HotspotNaming.overrideSlot(overrides, "loc.poh_superior_garden_hotspot_seating_b_right"),
         )
     }
 
     @Test
-    fun `league hall numbers its three pedestals as separate slots`() {
-        assertEquals(1, HotspotNaming.overrideSlot("league hall", "loc.poh_leaguehall_pedestal_hotspot_1"))
-        assertEquals(2, HotspotNaming.overrideSlot("league hall", "loc.poh_leaguehall_pedestal_hotspot_2"))
-        assertEquals(3, HotspotNaming.overrideSlot("league hall", "loc.poh_leaguehall_pedestal_hotspot_3"))
-    }
-
-    @Test
-    fun `a room with no override table yields nothing`() {
-        assertNull(HotspotNaming.overrideSlot("parlour", "loc.poh_parlour_1"))
-        assertNull(HotspotNaming.overrideSlot("chapel", "loc.poh_dynamic_window"))
+    fun `a loc no fragment matches yields nothing`() {
+        assertNull(HotspotNaming.overrideSlot(emptyMap(), "loc.poh_parlour_1"))
+        assertNull(HotspotNaming.overrideSlot(mapOf("chapelwindow" to 4), "loc.poh_dynamic_window"))
     }
 
     @Test

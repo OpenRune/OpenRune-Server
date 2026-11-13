@@ -11,6 +11,7 @@ import org.rsmod.api.table.FurnitureRow
 import org.rsmod.api.table.PohHotspotRow
 import org.rsmod.api.table.PohRoomRow
 import org.rsmod.api.table.construction.ConstructionFurnitureBuildRow
+import org.rsmod.api.table.construction.ConstructionHotspotOverrideRow
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
@@ -32,37 +33,6 @@ private class FurnitureBuild(
     val parts: Map<Int, Int>,
 )
 
-/** `model_obj` -> what it builds, out of `dbtable.construction_furniture_build`. */
-private val FURNITURE_BUILDS: Map<Int, FurnitureBuild> by lazy {
-    ConstructionFurnitureBuildRow.all().associate { row ->
-        row.modelObj.id to
-            FurnitureBuild(
-                locs = row.locs.map { it.id },
-                xp = row.xp / 10.0,
-                parts = row.parts.chunked(2).associate { (spot, built) -> spot.id to built.id },
-            )
-    }
-}
-
-/** The xp a build awards, where the reference table knows it. */
-fun furnitureXp(modelObjId: Int): Double? = FURNITURE_BUILDS[modelObjId]?.xp
-
-/**
- * Hotspot loc -> the `model_obj`s built on it, read back out of the same pairs. This says which
- * hotspot a loc belongs to without going near its name, which the name conventions get wrong: the
- * formal garden's hedge runs on `poh_posh_garden_5end`/`_5mid`/`_5cor`, so reading that `5` as a
- * slot number files the whole hedge under the flower bed.
- */
-private val HOTSPOT_FURNITURE: Map<Int, Set<Int>> by lazy {
-    val out = HashMap<Int, MutableSet<Int>>()
-    for ((objId, build) in FURNITURE_BUILDS) {
-        for (hotspotLoc in build.parts.keys) {
-            out.getOrPut(hotspotLoc) { HashSet() } += objId
-        }
-    }
-    out
-}
-
 class HotspotPart(
     val locId: Int,
     val localX: Int,
@@ -83,8 +53,8 @@ class DoorDef(
     val localX: Int,
     val localZ: Int,
     val locId: Int,
-    /** Compass direction of the wall this doorway sits on: 0 north, 1 east, 2 south, 3 west. */
-    val direction: Int,
+    /** The wall this doorway sits on. */
+    val direction: Direction,
 )
 
 class RoomDef(
@@ -111,15 +81,35 @@ class RoomDef(
      * some rooms - the portal room among them, which made it unbuildable - so the doorways actually
      * found in its chunk stand in.
      */
-    private val doorDirections: Set<Int> =
-        row.doorLocations.mapTo(HashSet()) { it and 3 }.ifEmpty {
+    private val doorDirections: Set<Direction> =
+        row.doorLocations.mapTo(HashSet()) { Direction(quarterTurns(it, 0)) }.ifEmpty {
             doors.mapTo(HashSet()) { it.direction }
         }
 
-    fun doorsAfter(rotation: Int): Set<Int> =
-        doorDirections.mapTo(HashSet()) { (it + rotation) and 3 }
+    fun doorsAfter(rotation: Int): Set<Direction> =
+        doorDirections.mapTo(HashSet()) { it.turned(rotation) }
+
+    /** The gardens have no roof, so nothing can be built above them. */
+    val outdoors: Boolean
+        get() = row.hasRoof == 0
+
+    /**
+     * `dbcol.poh_room:floor_restriction` is 1 for the dungeon rooms and 2 for the rooms that need
+     * the ground under them; every other room goes anywhere above ground.
+     */
+    fun fitsOn(level: Int): Boolean =
+        when (row.floorRestriction) {
+            DUNGEON_ONLY -> level == LEVEL_DUNGEON
+            GROUND_ONLY -> level == LEVEL_GROUND
+            else -> level != LEVEL_DUNGEON
+        }
 
     fun hotspot(index: Int): HotspotDef? = hotspots.firstOrNull { it.index == index }
+
+    private companion object {
+        const val DUNGEON_ONLY = 1
+        const val GROUND_ONLY = 2
+    }
 }
 
 /**
@@ -130,15 +120,35 @@ class RoomDef(
  * - **where** a hotspot sits, from the numbered hotspot locs in the room's source map chunk;
  * - **what** a built piece of furniture looks like, from the loc sharing an internal name with the
  *   furniture's `model_obj`.
+ *
+ * [load] has to run once the static map is in, which is at plugin startup rather than injection.
  */
 @Singleton
 class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryNormal) {
     private val locNames = HashMap<Int, String>()
-    private val byId: Map<Int, RoomDef> by lazy { load() }
+    private var builds: Map<Int, FurnitureBuild> = emptyMap()
+    private var hotspotFurniture: Map<Int, Set<Int>> = emptyMap()
+    private var overrides: Map<Int, Map<String, Int>> = emptyMap()
+    private var byId: Map<Int, RoomDef> = emptyMap()
+
+    fun load() {
+        builds = loadBuilds()
+        hotspotFurniture = hotspotFurnitureOf(builds)
+        overrides =
+            ConstructionHotspotOverrideRow.all().associate { row ->
+                row.room.id to row.slots.associate { it.t0 to it.t1 }
+            }
+        byId = loadRooms()
+    }
 
     fun all(): Collection<RoomDef> = byId.values
 
     fun room(id: Int): RoomDef? = byId[id]
+
+    /** The xp a build awards, where `dbtable.construction_furniture_build` knows it. */
+    fun xp(furniture: FurnitureRow): Double =
+        builds[furniture.modelObj.id]?.xp
+            ?: furniture.materials().sumOf { (material, count) -> materialXp(material) * count }
 
     fun hotspotLocIds(): Set<Int> =
         byId.values.flatMapTo(HashSet()) { def ->
@@ -161,18 +171,16 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
      * `dbtable.furniture` has no loc column, and the obj and loc names are different vocabularies
      * rather than spelling variants - `obj.poh_armchair_1` builds `loc.poh_chair1`, `obj.poh_rug_1`
      * builds three locs - so only about 200 of 500 rows can be matched by name at all. The rest come
-     * from [FURNITURE_LOCS], keyed by `model_obj`. Name matching stays as the fallback for rows
-     * added to the cache since that table was transcribed.
+     * from `dbtable.construction_furniture_build`, keyed by `model_obj`. Name matching stays as the
+     * fallback for rows added to the cache since that table was transcribed.
      */
     fun builtLocIds(furniture: FurnitureRow): List<Int> {
-        val mapped = FURNITURE_BUILDS[furniture.modelObj.id]?.locs?.filter(::locExists)
+        val mapped = builds[furniture.modelObj.id]?.locs?.filter(::locExists)
         if (!mapped.isNullOrEmpty()) {
             return mapped
         }
         return listOfNotNull(namedLocId(furniture))
     }
-
-    fun builtLocId(furniture: FurnitureRow): Int? = builtLocIds(furniture).firstOrNull()
 
     /**
      * Resolves content added to the cache after that table was transcribed, where the loc name
@@ -199,8 +207,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
                 "${stem}_rot0",
             )
         return candidates.firstNotNullOfOrNull { name ->
-            val id = runCatching { RSCM.getRSCM(LOC_PREFIX + name) }.getOrDefault(-1)
-            id.takeIf { it > 0 && locExists(it) }
+            RSCM.getRSCMOrNull(LOC_PREFIX + name, RSCMType.LOC)?.takeIf(::locExists)
         }
     }
 
@@ -213,15 +220,41 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
      * single-tile piece uses.
      */
     fun builtLocFor(furniture: FurnitureRow, part: HotspotPart): Int? {
-        val build = FURNITURE_BUILDS[furniture.modelObj.id]
-        val paired = build?.parts?.get(part.locId)
+        val paired = builds[furniture.modelObj.id]?.parts?.get(part.locId)
         if (paired != null && locExists(paired)) {
             return paired
         }
         return builtLocIds(furniture).firstOrNull()
     }
 
-    private fun load(): Map<Int, RoomDef> {
+    private fun loadBuilds(): Map<Int, FurnitureBuild> =
+        ConstructionFurnitureBuildRow.all().associate { row ->
+            row.modelObj.id to
+                FurnitureBuild(
+                    locs = row.locs.map { it.id },
+                    xp = row.xp / 10.0,
+                    parts =
+                        row.parts.chunked(2).associate { (spot, built) -> spot.id to built.id },
+                )
+        }
+
+    /**
+     * Hotspot loc -> the `model_obj`s built on it, read back out of the build pairs. This says
+     * which hotspot a loc belongs to without going near its name, which the name conventions get
+     * wrong: the formal garden's hedge runs on `poh_posh_garden_5end`/`_5mid`/`_5cor`, so reading
+     * that `5` as a slot number files the whole hedge under the flower bed.
+     */
+    private fun hotspotFurnitureOf(builds: Map<Int, FurnitureBuild>): Map<Int, Set<Int>> {
+        val out = HashMap<Int, MutableSet<Int>>()
+        for ((objId, build) in builds) {
+            for (hotspotLoc in build.parts.keys) {
+                out.getOrPut(hotspotLoc) { HashSet() } += objId
+            }
+        }
+        return out
+    }
+
+    private fun loadRooms(): Map<Int, RoomDef> {
         val rooms =
             PohRoomRow.all()
                 .mapNotNull { row ->
@@ -249,7 +282,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
     /**
      * `dbcol.poh_room:source_offset` is a **tile** offset from [TEMPLATE_BASE], not a zone key: the
      * values run 0, 8, 16 ... 56 across and 0 ... 64 up, an 8x9 grid of one-zone room chunks parked
-     * in unreachable map space. [locateTemplates] re-derives the base if this stops matching.
+     * in unreachable map space.
      */
     private fun sourceZoneOf(offset: List<Int>): ZoneKey =
         ZoneKey.from(TEMPLATE_BASE.translate(offset[0], offset[1]))
@@ -264,6 +297,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
         if (rows.isEmpty()) {
             return HotspotScan(emptyList(), emptyList())
         }
+        val roomOverrides = overrides[row.roomObj.id].orEmpty()
         val grouped = HashMap<Int, MutableList<HotspotPart>>()
         val named = ArrayList<Pair<LocInfo, String>>()
         val leftover = LinkedHashSet<String>()
@@ -273,7 +307,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
             val namedSlot = HotspotNaming.slotOf(name)
             val slot = tableSlot(loc.id, rows, namedSlot)
                 ?: namedSlot
-                ?: HotspotNaming.overrideSlot(row.name, name)
+                ?: HotspotNaming.overrideSlot(roomOverrides, name)
             if (slot != null) {
                 val index = slot - 1
                 if (index in rows.indices) {
@@ -330,7 +364,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
      * to `_3` filling rows 4 to 6.
      */
     private fun tableSlot(locId: Int, rows: List<PohHotspotRow>, ordinal: Int?): Int? {
-        val furniture = HOTSPOT_FURNITURE[locId] ?: return null
+        val furniture = hotspotFurniture[locId] ?: return null
         val matches =
             rows.indices.filter { i -> rows[i].builddata.any { it.modelObj.id in furniture } }
         if (matches.isEmpty()) {
@@ -370,19 +404,19 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
             angleId = loc.angleId,
         )
 
-    // Reverse name lookups are the expensive part of classifying a loc, and a full map sweep asks
-    // about millions of them drawn from only a few thousand distinct ids.
+    // Reverse name lookups are the expensive part of classifying a loc, and a room chunk asks about
+    // the same few ids many times over.
     private fun locName(locId: Int): String =
         locNames.getOrPut(locId) { RSCM.getReverseMapping(RSCMType.LOC, locId) }
 
     private fun isDoor(locId: Int): Boolean = HotspotNaming.isDoor(locName(locId))
 
-    private fun wallDirection(localX: Int, localZ: Int): Int? =
+    private fun wallDirection(localX: Int, localZ: Int): Direction? =
         when {
-            localZ >= ZONE_MAX -> 0
-            localX >= ZONE_MAX -> 1
-            localZ <= 0 -> 2
-            localX <= 0 -> 3
+            localZ >= ZONE_MAX -> Direction(0)
+            localX >= ZONE_MAX -> Direction(1)
+            localZ <= 0 -> Direction(2)
+            localX <= 0 -> Direction(3)
             else -> null
         }
 
@@ -396,7 +430,7 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
             return
         }
         val builds = rooms.flatMap { it.hotspots }.flatMap { it.builds }.distinctBy { it.rowId }
-        val unresolved = builds.filter { builtLocId(it) == null }
+        val unresolved = builds.filter { builtLocIds(it).isEmpty() }
         logger.info {
             "Loaded ${rooms.size} house rooms, " +
                 "${rooms.sumOf { it.hotspots.size }} hotspots, " +
@@ -405,12 +439,14 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
         }
         if (rooms.all { it.hotspots.isEmpty() }) {
             logger.warn {
-                "No house room chunk contained a hotspot. ${locateTemplates()}"
+                "No house room chunk contained a hotspot: the room template chunks are not where " +
+                    "dbcol.poh_room:source_offset says, relative to $TEMPLATE_BASE."
             }
             return
         }
         for (room in rooms) {
-            val buildable = room.row.hotspot.indices.filter { room.row.hotspot[it].builddata.isNotEmpty() }
+            val buildable =
+                room.row.hotspot.indices.filter { room.row.hotspot[it].builddata.isNotEmpty() }
             val missing = buildable.map { it + 1 } - room.hotspots.map { it.index + 1 }
             if (missing.isEmpty()) {
                 continue
@@ -426,9 +462,13 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
         }
         reportMultiPart(rooms)
         if (unresolved.isNotEmpty()) {
+            val names =
+                unresolved.take(UNRESOLVED_REPORT).joinToString {
+                    it.name + '/' + it.modelObj.internalName
+                }
             logger.warn {
                 "${unresolved.size} furniture rows have no matching loc and cannot be shown once " +
-                    "built: ${unresolved.take(UNRESOLVED_REPORT).joinToString { it.name + '/' + it.modelObj.internalName }}"
+                    "built: $names"
             }
         }
     }
@@ -465,33 +505,8 @@ class ConstructionCatalogue @Inject constructor(private val locReg: LocRegistryN
         }
     }
 
-    /**
-     * Sweeps the static map for the doorway hotspots every house room chunk carries, so a wrong
-     * `source_offset` reading reports where the templates actually are instead of just failing.
-     */
-    private fun locateTemplates(): String {
-        val found = ArrayList<String>()
-        for (zoneX in 0..ZoneKey.X_BIT_MASK) {
-            for (zoneZ in 0..ZoneKey.Z_BIT_MASK) {
-                val zone = ZoneKey(zoneX, zoneZ, 0)
-                val door = locReg.findAll(zone).firstOrNull { isDoor(it.id) } ?: continue
-                found += "zone $zoneX,$zoneZ (tile ${door.coords.x},${door.coords.z})"
-                if (found.size >= TEMPLATE_SCAN_REPORT) {
-                    return "Doorway hotspots found at: ${found.joinToString()} ..."
-                }
-            }
-        }
-        return if (found.isEmpty()) {
-            "A full map sweep found no `loc.poh_hotspot_door*` at all, so the room chunks are not " +
-                "in this cache's static map."
-        } else {
-            "Doorway hotspots found at: ${found.joinToString()}"
-        }
-    }
-
     private companion object {
         const val ZONE_MAX = 7
-        const val TEMPLATE_SCAN_REPORT = 8
         const val UNRESOLVED_REPORT = 40
 
         /** South-west tile of the house room template grid, verified against every room chunk. */

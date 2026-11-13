@@ -4,5 +4,12 @@ import dev.openrune.definition.dbtables.DBTable
 import dev.openrune.pack.PluginPack
 
 class ConstructionPluginPack : PluginPack() {
-    override fun dbTables(): List<DBTable> = listOf(ConstructionTables.furnitureBuilds(), ConstructionDispensers.table())
+    override fun dbTables(): List<DBTable> =
+        listOf(
+            ConstructionTables.furnitureBuilds(),
+            ConstructionDispensers.table(),
+            ConstructionPortals.table(),
+            ConstructionHotspotOverrides.table(),
+            ConstructionPools.table(),
+        )
 }

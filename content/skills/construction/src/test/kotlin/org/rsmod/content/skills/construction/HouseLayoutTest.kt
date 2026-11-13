@@ -6,18 +6,20 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class HouseLayoutTest {
+    private fun slot(level: Int, x: Int, z: Int): RoomSlot = checkNotNull(RoomSlot.of(level, x, z))
+
     @Test
     fun `round trips rooms and furniture`() {
         val layout = HouseLayout()
-        layout.place(slotKey(LEVEL_GROUND, 4, 4), room = 4166, rotation = 2)
-        layout.place(slotKey(LEVEL_GROUND, 4, 5), room = 4167, rotation = 0)
-        layout.build(slotKey(LEVEL_GROUND, 4, 4), hotspot = 3, row = 6031)
+        layout.place(slot(LEVEL_GROUND, 4, 4), room = 4166, rotation = 2)
+        layout.place(slot(LEVEL_GROUND, 4, 5), room = 4167, rotation = 0)
+        layout.build(slot(LEVEL_GROUND, 4, 4), hotspot = 3, row = 6031)
 
         val decoded = HouseLayout.decode(layout.encode())
 
         assertEquals(layout.rooms, decoded.rooms)
         assertEquals(layout.furniture, decoded.furniture)
-        assertEquals(6031, decoded.built(slotKey(LEVEL_GROUND, 4, 4), 3))
+        assertEquals(6031, decoded.built(slot(LEVEL_GROUND, 4, 4), 3))
     }
 
     @Test
@@ -29,25 +31,26 @@ class HouseLayoutTest {
 
     @Test
     fun `removing a room drops its furniture`() {
-        val slot = slotKey(LEVEL_GROUND, 2, 2)
+        val removed = slot(LEVEL_GROUND, 2, 2)
+        val kept = slot(LEVEL_GROUND, 2, 3)
         val layout = HouseLayout()
-        layout.place(slot, room = 4166, rotation = 0)
-        layout.build(slot, hotspot = 0, row = 6030)
-        layout.place(slotKey(LEVEL_GROUND, 2, 3), room = 4166, rotation = 0)
-        layout.build(slotKey(LEVEL_GROUND, 2, 3), hotspot = 0, row = 6030)
+        layout.place(removed, room = 4166, rotation = 0)
+        layout.build(removed, hotspot = 0, row = 6030)
+        layout.place(kept, room = 4166, rotation = 0)
+        layout.build(kept, hotspot = 0, row = 6030)
 
-        layout.remove(slot)
+        layout.remove(removed)
 
-        assertNull(layout.built(slot, 0))
-        assertEquals(6030, layout.built(slotKey(LEVEL_GROUND, 2, 3), 0))
+        assertNull(layout.built(removed, 0))
+        assertEquals(6030, layout.built(kept, 0))
     }
 
     @Test
     fun `a room holding up the house cannot be removed`() {
         val layout = HouseLayout()
-        val garden = slotKey(LEVEL_GROUND, 4, 4)
-        val parlour = slotKey(LEVEL_GROUND, 4, 5)
-        val bedroom = slotKey(LEVEL_GROUND + 1, 4, 5)
+        val garden = slot(LEVEL_GROUND, 4, 4)
+        val parlour = slot(LEVEL_GROUND, 4, 5)
+        val bedroom = slot(LEVEL_GROUND + 1, 4, 5)
         layout.place(garden, room = 1, rotation = 0)
         assertNotNull(layout.removalRefusal(garden), "the only ground floor room came out")
         assertNotNull(layout.removalRefusal(parlour), "an empty slot came out")
@@ -61,10 +64,10 @@ class HouseLayoutTest {
 
     @Test
     fun `furniture for an unknown room is dropped on decode`() {
-        val slot = slotKey(LEVEL_GROUND, 1, 1)
-        val decoded = HouseLayout.decode("1||$slot:0:6030")
+        val unplaced = slot(LEVEL_GROUND, 1, 1)
+        val decoded = HouseLayout.decode("1||${unplaced.packed}:0:6030")
 
-        assertNull(decoded.built(slot, 0))
+        assertNull(decoded.built(unplaced, 0))
     }
 
     @Test
@@ -72,10 +75,10 @@ class HouseLayoutTest {
         for (level in 0 until HOUSE_LEVELS) {
             for (x in 0 until HOUSE_GRID) {
                 for (z in 0 until HOUSE_GRID) {
-                    val slot = slotKey(level, x, z)
-                    assertEquals(level, slotLevel(slot))
-                    assertEquals(x, slotX(slot))
-                    assertEquals(z, slotZ(slot))
+                    val packed = slot(level, x, z)
+                    assertEquals(level, packed.level)
+                    assertEquals(x, packed.x)
+                    assertEquals(z, packed.z)
                 }
             }
         }
@@ -83,10 +86,18 @@ class HouseLayoutTest {
 
     @Test
     fun `neighbours stay inside the grid`() {
-        val corner = slotKey(LEVEL_GROUND, 0, 0)
-        assertNull(neighbour(corner, 2))
-        assertNull(neighbour(corner, 3))
-        assertEquals(slotKey(LEVEL_GROUND, 0, 1), neighbour(corner, 0))
-        assertEquals(slotKey(LEVEL_GROUND, 1, 0), neighbour(corner, 1))
+        val corner = slot(LEVEL_GROUND, 0, 0)
+        assertNull(corner.neighbour(Direction(2)))
+        assertNull(corner.neighbour(Direction(3)))
+        assertEquals(slot(LEVEL_GROUND, 0, 1), corner.neighbour(Direction(0)))
+        assertEquals(slot(LEVEL_GROUND, 1, 0), corner.neighbour(Direction(1)))
+        assertNull(slot(HOUSE_LEVELS - 1, 0, 0).above())
+    }
+
+    @Test
+    fun `directions wrap around the compass`() {
+        assertEquals(Direction(0), Direction(3).turned(1))
+        assertEquals(Direction(1), Direction(3).opposite)
+        assertEquals(Direction(2), Direction(2).turned(4))
     }
 }

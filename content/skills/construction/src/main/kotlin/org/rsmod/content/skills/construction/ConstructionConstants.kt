@@ -1,33 +1,41 @@
 package org.rsmod.content.skills.construction
 
+import org.rsmod.api.enums.ConstructionEnums.construction_material_xp
+import org.rsmod.api.enums.ConstructionEnums.construction_nails
+
 const val STAT_CONSTRUCTION: String = "stat.construction"
+const val STAT_MAGIC: String = "stat.magic"
 
 const val OBJ_COINS: String = "obj.coins"
 const val OBJ_SAW: String = "obj.poh_saw"
+const val OBJ_HAMMER: String = "obj.hammer"
 
 /**
  * `dbtable.furniture` asks for `obj.any_nails`, which is a build menu placeholder rather than an obj
- * anyone can hold, so a build that wants nails is paid for with whichever of these the player has.
- * Ordered cheapest first, so better nails are kept back.
+ * anyone can hold, so a build that wants nails is paid for with whichever tier the player has,
+ * cheapest first so better nails are kept back.
  */
 const val OBJ_ANY_NAILS: String = "obj.any_nails"
 
-val NAIL_OBJS: List<String> =
-    listOf(
-        "obj.nails_bronze",
-        "obj.nails_iron",
-        "obj.nails",
-        "obj.nails_black",
-        "obj.nails_mithril",
-        "obj.nails_adamant",
-        "obj.nails_rune",
-        "obj.nails_dragon",
-    )
+fun materialOptions(material: String): List<String> {
+    if (material != OBJ_ANY_NAILS) {
+        return listOf(material)
+    }
+    return construction_nails.filterValuesNotNull().backing.entries
+        .sortedBy { it.key }
+        .map { it.value.internalName }
+}
 
-/** The objs that can pay for [material]; all but nails are only ever themselves. */
-fun materialOptions(material: String): List<String> =
-    if (material == OBJ_ANY_NAILS) NAIL_OBJS else listOf(material)
-const val OBJ_HAMMER: String = "obj.hammer"
+/**
+ * Construction xp per unit of [material], for furniture `dbtable.construction_furniture_build` has
+ * no xp for. Only the standard plank, cloth and stone materials carry a value.
+ */
+fun materialXp(material: String): Double {
+    val tenths = construction_material_xp.backing.entries
+        .firstOrNull { it.key.internalName == material }
+        ?.value
+    return (tenths ?: 0) / 10.0
+}
 
 const val SEQ_BUILD: String = "seq.human_poh_build"
 
@@ -40,31 +48,32 @@ const val QUEUE_BUILD: String = "queue.construction_build"
 const val QUEUE_REMOVE: String = "queue.construction_remove"
 
 const val VARBIT_BUILD_MODE: String = "varbit.poh_building_mode"
+const val VARBIT_DEFAULT_BUILD_MODE: String = "varbit.poh_teleport_building_mode"
+const val VARBIT_TELE_OUTSIDE: String = "varbit.poh_tele_toggle"
+
+const val INTERFACE_HOUSE_OPTIONS: String = "interface.poh_options"
+const val COMPONENT_ROOM_COUNT: String = "component.poh_options:roomcount"
+const val COMPONENT_BUILD_MODE_ON: String = "component.poh_options:build_mode_on"
+const val COMPONENT_BUILD_MODE_OFF: String = "component.poh_options:build_mode_off"
+const val COMPONENT_LEAVE_HOUSE: String = "component.poh_options:leave_house"
+const val COMPONENT_TELE_INSIDE: String = "component.poh_options:tele_on"
+const val COMPONENT_TELE_OUTSIDE: String = "component.poh_options:tele_off"
+const val COMPONENT_DEFAULT_BUILD_ON: String = "component.poh_options:default_build_mode_on"
+const val COMPONENT_DEFAULT_BUILD_OFF: String = "component.poh_options:default_build_mode_off"
 const val VARBIT_HOUSE_STYLE: String = "varbit.poh_house_style"
 const val VARBIT_HOUSE_LOCATION: String = "varbit.poh_house_location"
 
 const val INTERFACE_FURNITURE: String = "interface.poh_furniture_creation"
 const val COMPONENT_FURNITURE_CONTENTS: String = "component.poh_furniture_creation:contents"
 
-/**
- * The entries are named `:01`..`:31` and are static children of the list, not subcomponents of
- * `contents`, so each one carries its own click event.
- */
 fun furnitureEntryComponent(slot: Int): String =
     "component.poh_furniture_creation:%02d".format(slot + 1)
+
 const val CLIENTSCRIPT_FURNITURE_ENTRY: String =
     "clientscript.[clientscript,poh_furniture_creation_entry]"
 
 const val FURNITURE_SLOTS: Int = 31
 
-/**
- * The build menu's entries are children 4..34 of the interface, a list layer whose children are
- * `hide=yes` in the cache, so the server shows the ones it fills. `enum_1461` is the client's own
- * slot -> component map and starts at this child.
- */
-const val FURNITURE_FIRST_ENTRY_CHILD: Int = 4
-
-/** The entries carry no position of their own and the list layer does not arrange them. */
 /** How many children the entry script builds inside one entry; its op resumes from one of them. */
 const val FURNITURE_ENTRY_CHILDREN: Int = 16
 
@@ -85,23 +94,4 @@ val TOWN_PORTALS: List<String> =
         "loc.poh_kourend_portal",
         "loc.poh_prifddinas_portal",
         "loc.poh_aldarin_portal",
-    )
-
-/**
- * Construction xp is not in the cache tables, so it is derived from what a build consumes. These are
- * the per-unit values every plank-and-nails build in OSRS works out to.
- *
- * ponytail: covers the common materials; anything unlisted builds for no xp until someone needs it.
- */
-val MATERIAL_XP: Map<String, Double> =
-    mapOf(
-        "obj.woodplank" to 29.0,
-        "obj.plank_oak" to 60.0,
-        "obj.plank_teak" to 90.0,
-        "obj.plank_mahogany" to 140.0,
-        "obj.cloth" to 15.0,
-        "obj.limestone_brick" to 20.0,
-        "obj.gold_leaf" to 300.0,
-        "obj.marble_block" to 500.0,
-        "obj.magic_stone" to 1000.0,
     )

@@ -267,14 +267,9 @@ public fun Player.ifSetHide(internal: String, hide: Boolean) {
     client.write(IfSetHide(target.interfaceId, target.component, hide))
 }
 
-/** For the children of a list layer, which are addressed by index rather than by their own name. */
-public fun Player.ifSetHide(interfaceId: Int, component: Int, hide: Boolean) {
-    client.write(IfSetHide(interfaceId, component, hide))
-}
-
-/** Places a component within its parent, for lists the client does not lay out on its own. */
-public fun Player.ifSetPosition(interfaceId: Int, component: Int, x: Int, y: Int) {
-    client.write(IfSetPosition(interfaceId, component, x, y))
+public fun Player.ifSetPosition(internal: String, x: Int, y: Int) {
+    val target = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
+    client.write(IfSetPosition(target.interfaceId, target.component, x, y))
 }
 
 public fun Player.ifOpenTop(topLevel: String) {

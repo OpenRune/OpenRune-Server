@@ -39,11 +39,13 @@ class PohDispensers : PluginScript() {
             } else {
                 objs.getOrNull(menu("Take what?", hotkeys = true, objs.map(::name))) ?: return
             }
-        invAdd(inv, obj, 1)
+        if (!player.dispense(obj)) {
+            mes("You don't have enough inventory space.")
+        }
     }
 
     private fun ProtectedAccess.fill(from: String, into: String) {
-        if (invReplace(inv, from, 1, into).success) {
+        if (player.fill(from, into)) {
             spam("You fill the ${name(from).lowercase()}.")
         }
     }
