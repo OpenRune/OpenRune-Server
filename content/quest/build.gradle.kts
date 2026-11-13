@@ -4,6 +4,9 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.instances)
+    testImplementation(libs.mockk)
+    testImplementation(projects.content.areas.misc.blackKnightsFortress)
     testImplementation(projects.api.invPlugin)
     testImplementation(projects.api.objCharges)
     testImplementation(projects.api.gameProcess)
