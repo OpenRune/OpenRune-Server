@@ -1,6 +1,6 @@
 # OpenRune-Server — Agent Guide
 
-OSRS-compatible game server (revision 240.2), Kotlin, modular fork of RSMod/Alter.
+OSRS-compatible game server (revision 242), Kotlin, modular fork of RSMod/Alter.
 Gameplay ships as auto-loaded plugins in `content/` — core engine code rarely needs
 touching.
 
@@ -275,7 +275,7 @@ Baseline numbers, taken from this repo's `SpawnInterface.kt` and the OSRS client
 
 ## Config
 
-- `game.yml`: name, `game-port: 43594`, `revision: 240.2`, environment, world id,
+- `game.yml`: name, `game-port: 43594`, `revision: 242`, environment, world id,
   central-server link (PostgreSQL). `game.example.yml` documents extra keys, e.g.
   `gameplay.quest-requirements.mode` (`assume-completed` / `respect-progress` /
   `virtual-completions`) and remote central config.

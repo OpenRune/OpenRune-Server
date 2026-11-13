@@ -118,6 +118,7 @@ import org.rsmod.api.player.ui.ifDoubleobjbox
 import org.rsmod.api.player.ui.ifLevelUpDisplay
 import org.rsmod.api.player.ui.ifMenu
 import org.rsmod.api.player.ui.ifMesbox
+import org.rsmod.api.player.ui.ifMesboxEmpty
 import org.rsmod.api.player.ui.ifObjbox
 import org.rsmod.api.player.ui.ifOpenFullOverlay
 import org.rsmod.api.player.ui.ifOpenMain
@@ -2176,6 +2177,10 @@ public class ProtectedAccess(
         val (pgText, lineCount) = pages.first()
         val lineHeight = alignment.mesLineHeight(lineCount)
         player.ifMesbox(pgText, pauseText = "", lineHeight, context.eventBus)
+    }
+
+    public fun mesboxEmpty() {
+        player.ifMesboxEmpty(context.eventBus)
     }
 
     /**

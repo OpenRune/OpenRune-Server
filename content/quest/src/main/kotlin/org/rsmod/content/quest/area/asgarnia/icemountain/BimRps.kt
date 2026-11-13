@@ -24,141 +24,159 @@ constructor(
         with(dialogue) {
             val player = player
             collision.allocateIfAbsent(PUB_X, PUB_Z, PUB_LEVEL)
+            access.hideEntityOps()
             access.telejump(CoordGrid(PUB_X, PUB_Z, PUB_LEVEL))
+            access.resetAnim()
+            access.faceAngle(1024)
 
-        val burntof = spawn(BURNOTOF, CoordGrid(PUB_X, BURNOTOF_Z, PUB_LEVEL), Direction.South, pin = true)
-        access.camMoveToV3(CoordGrid(2961, 3369, PUB_LEVEL), 400, SNAP, SNAP)
-        access.camLookAtV3(CoordGrid(2955, 3369, PUB_LEVEL), 180, SNAP, SNAP)
-        playMusic(15)
-        access.fadeOverlay(0, FADE_BLACK, 0, FADE_CLEAR, 50)
-        access.delay(2)
-        access.closeFadeOverlay(cycles = 2)
+            val burntof =
+                spawn(BURNOTOF, CoordGrid(PUB_X, BURNOTOF_Z, PUB_LEVEL), Direction.South, pin = true)
+            access.camMoveToV3(CoordGrid(2961, 3369, PUB_LEVEL), 400, SNAP, SNAP)
+            access.camLookAtV3(CoordGrid(2955, 3369, PUB_LEVEL), 180, SNAP, SNAP)
+            playMusic(72)
+            access.fadeOverlay(0, FADE_BLACK, 0, FADE_CLEAR, 50)
+            access.delay(2)
+            access.closeFadeOverlay(cycles = 2)
 
-        chatNpcSpecific(
-            "Burntof",
-            BURNOTOF,
-            neutral,
-            "The rulesh are ash followsh. We both pick a shign to show and then shay " +
-                "'rock, paper, shcissors.' After schissors, we show our shigns.",
-        )
-        chatNpcSpecific(
-            "Burntof",
-            BURNOTOF,
-            neutral,
-            "Thish ish a besht of three game. Nowsh, pick what you are going to shhow.",
-        )
-
-        playSigns(player, burntof)
-        val first = chooseSign()
-        val firstActual = first.beatsMe()
-        mesbox("Burntof chose ${firstActual.label.lowercase()}.")
-        chatNpcSpecific("Burntof", BURNOTOF, drunk, "Looksh like you win the firsht round.")
-        chatPlayer(confused, "But...? I put out ${first.label.lowercase()}?")
-        chatNpcSpecific(
-            "Burntof",
-            BURNOTOF,
-            drunk,
-            "Yesh, and I put out *hic* ${first.losesTo().label.lowercase()}... I think.",
-        )
-        chatPlayer(neutral, "Okay then... I guess the first round goes to me.")
-
-        playSigns(player, burntof)
-        val second = chooseSign()
-        val secondActual = second.beatsMe()
-        mesbox("Burntof chose ${secondActual.label.lowercase()}.")
-        chatPlayer(happy, "I won! That's two rounds to me, so you have to help.")
-        chatNpcSpecific(
-            "Burntof",
-            BURNOTOF,
-            drunk,
-            "Hooold it right there *hic* bud, I thinksh I won that round...",
-        )
-        chatPlayer(
-            quiz,
-            "But ${second.label.lowercase()} beats ${secondActual.label.lowercase()}?",
-        )
-        chatNpcSpecific(
-            "Burntof",
-            BURNOTOF,
-            drunk,
-            "Yesh, that is correct, but you chose ${second.label.lowercase()}. So I win.",
-        )
-        chatPlayer(neutral, "Whatever, let's just play the last round.")
-
-        playSigns(player, burntof)
-        val third = chooseSign()
-        val thirdActual = third.beatsMe()
-        mesbox("Burntof chose ${thirdActual.label.lowercase()}.")
-        chatNpcSpecific(
-            "Burntof",
-            BURNOTOF,
-            drunk,
-            "Well, it looksh like I win, sho I don't have to help you out.",
-        )
-        val changed = thirdActual.beatsMe()
-        mesbox("You quickly change your sign to ${changed.label.lowercase()}.")
-        chatPlayer(quiz, "Are you okay Burntof? I clearly beat you. Check my hand again.")
-        chatNpcSpecific(
-            "Burntof",
-            BURNOTOF,
-            happy,
-            "Merlinsh beard! You did. A deal'sh a deal, I'll help you out.",
-        )
-        chatNpcSpecific(
-            "Burntof",
-            BURNOTOF,
-            drunk,
-            "But I think I'll need one more drink before I hitsh the road.",
-        )
-        chatNpcSpecific("Burntof", BURNOTOF, drunk, "Tina! Bring me another beer pleash.")
-        chatNpcSpecific(
-            "Tina",
-            TINA,
-            happy,
-            "Sure thing Burntof, I'll be right there!",
-        )
-        val tina = spawn(TINA, CoordGrid(PUB_X, TINA_Z, PUB_LEVEL), Direction.South, pin = false)
-        tina.walk(
-            listOf(
-                CoordGrid(2955, 3373, PUB_LEVEL),
-                CoordGrid(2955, 3372, PUB_LEVEL),
-                CoordGrid(2955, 3371, PUB_LEVEL),
-                CoordGrid(2956, 3371, PUB_LEVEL),
+            chatNpcSpecific(
+                "Burntof",
+                BURNOTOF,
+                drunk,
+                "The rulesh are ash followsh. We both pick a shign to show and then shay " +
+                    "'rock, paper, shcissors.' After schissors, we show our shigns.",
             )
-        )
-        access.delay(4)
-        chatNpcSpecific("Tina", TINA, happy, "Here you go.")
-        chatNpcSpecific("Burntof", BURNOTOF, drunk, "Thanksh Tina.")
+            chatNpcSpecific(
+                "Burntof",
+                BURNOTOF,
+                drunk,
+                "Thish ish a besht of three game. Nowsh, pick what you are going to shhow.",
+            )
 
-        access.soundSynth(SynthType(2401))
-        access.fadeOverlay(0, FADE_CLEAR, 0, FADE_BLACK, 50)
-        access.delay(2)
-        despawn(tina)
-        despawn(burntof)
-        access.telejump(CoordGrid(PUB_X, RETURN_Z, 0))
-        access.camReset()
-        player.bimBurntof = BimBurntof.RECRUITED
-        quest.markOneRecruited(player)
-        access.fadeOverlay(0, FADE_BLACK, 0, FADE_CLEAR, 50)
-        access.delay(2)
-        access.closeFadeOverlay(cycles = 2)
+            val first = chooseSign(1)
+            playSigns(player, burntof)
+            access.mesboxEmpty()
+            access.delay(5)
+            val firstActual = first.beatsMe()
+            mesbox("Burntof chose ${firstActual.label.lowercase()}.")
+            chatNpcSpecific("Burntof", BURNOTOF, drunk, "Looksh like you win the firsht round.")
+            chatPlayer(quiz, "But...? I put out ${first.label.lowercase()}?")
+            chatNpcSpecific(
+                "Burntof",
+                BURNOTOF,
+                drunk,
+                "Yesh, and I put out *hic* ${first.losesTo().label.lowercase()}... I think.",
+            )
+            chatPlayer(quiz, "Okay then... I guess the first round goes to me.")
 
-        if (quest.hasAllRecruits(player)) {
-            quest.markAllRecruited(player)
+            val second = chooseSign(2)
+            playSigns(player, burntof)
+            access.mesboxEmpty()
+            access.delay(5)
+            val secondActual = second.beatsMe()
+            mesbox("Burntof chose ${secondActual.label.lowercase()}.")
+            chatPlayer(happy, "I won! That's two rounds to me, so you have to help.")
+            chatNpcSpecific(
+                "Burntof",
+                BURNOTOF,
+                drunk,
+                "Hooold it right there *hic* bud, I thinksh I won that round...",
+            )
             chatPlayer(
-                neutral,
-                "Well, that's everyone. I guess I should head off the entrance on the west side of " +
-                    "Ice Mountain.",
+                quiz,
+                "But ${secondActual.beatsMe().label.lowercase()} beats " +
+                    "${secondActual.label.lowercase()}?",
             )
-        } else {
-            chatPlayer(
-                neutral,
-                "That was interesting, but that's Burntof recruited. On to the next person.",
+            chatNpcSpecific(
+                "Burntof",
+                BURNOTOF,
+                drunk,
+                "Yesh, that is correct, but you chose ${second.label.lowercase()}. So I win.",
             )
+            chatPlayer(angry, "Whatever, let's just play the last round.")
+
+            val third = chooseSign(3)
+            playSigns(player, burntof)
+            access.mesboxEmpty()
+            access.delay(5)
+            val thirdActual = third.beatsMe()
+            mesbox("Burntof chose ${thirdActual.label.lowercase()}.")
+            chatNpcSpecific(
+                "Burntof",
+                BURNOTOF,
+                drunk,
+                "Well, it looksh like I win, sho I don't have to help you out.",
+            )
+            val changed = thirdActual.beatsMe()
+            mesbox("You quickly change your sign to ${changed.label.lowercase()}.")
+            chatPlayer(shifty, "Are you okay Burntof? I clearly beat you. Check my hand again.")
+            chatNpcSpecific(
+                "Burntof",
+                BURNOTOF,
+                shocked,
+                "Merlinsh beard! You did. A deal'sh a deal, I'll help you out.",
+            )
+            chatNpcSpecific(
+                "Burntof",
+                BURNOTOF,
+                drunk,
+                "But I think I'll need one more drink before I hitsh the road.",
+            )
+            chatNpcSpecific("Burntof", BURNOTOF, drunk, "Tina! Bring me another beer pleash.")
+            val tina = spawn(TINA, CoordGrid(PUB_X, TINA_Z, PUB_LEVEL), Direction.South, pin = false)
+            tina.walk(
+                listOf(
+                    CoordGrid(2955, 3373, PUB_LEVEL),
+                    CoordGrid(2955, 3372, PUB_LEVEL),
+                    CoordGrid(2955, 3371, PUB_LEVEL),
+                    CoordGrid(2956, 3371, PUB_LEVEL),
+                )
+            )
+            chatNpcSpecific(
+                "Tina",
+                TINA,
+                happy,
+                "Sure thing Burntof, I'll be right there!",
+            )
+            access.delay(7)
+            burntof.faceSquare(tina.coords)
+            tina.faceSquare(burntof.coords)
+            chatNpcSpecific("Tina", TINA, happy, "Here you go.")
+            chatNpcSpecific("Burntof", BURNOTOF, drunk, "Thanksh Tina.")
+
+            access.mesboxEmpty()
+            access.soundSynth(SynthType(2401))
+            access.delay(3)
+            access.fadeOverlay(0, FADE_CLEAR, 0, FADE_BLACK, 50)
+            access.delay(2)
+            despawn(tina)
+            despawn(burntof)
+            access.telejump(CoordGrid(PUB_X, RETURN_Z, 0))
+            access.resetAnim()
+            access.camReset()
+            access.showEntityOps()
+            player.bimBurntof = BimBurntof.RECRUITED
+            quest.markOneRecruited(player)
+            access.delay(3)
+            access.fadeOverlay(0, FADE_BLACK, 0, FADE_CLEAR, 50)
+            access.delay(2)
+            access.closeFadeOverlay(cycles = 2)
+
+            if (quest.hasAllRecruits(player)) {
+                quest.markAllRecruited(player)
+                chatPlayer(
+                    happy,
+                    "Well, that's everyone. I guess I should head off the entrance on the west side of " +
+                        "Ice Mountain.",
+                )
+            } else {
+                chatPlayer(
+                    neutral,
+                    "That was interesting, but that's Burntof recruited. On to the next person.",
+                )
+            }
         }
-    }
 
-    private suspend fun Dialogue.chooseSign(): RpsSign =
+    private suspend fun Dialogue.chooseSign(round: Int): RpsSign =
         when (
             choice3(
                 "Rock.",
@@ -167,7 +185,7 @@ constructor(
                 2,
                 "Scissors.",
                 3,
-                title = "What sign will you show?",
+                title = "Round $round: What sign will you show?",
             )
         ) {
             1 -> RpsSign.Rock
