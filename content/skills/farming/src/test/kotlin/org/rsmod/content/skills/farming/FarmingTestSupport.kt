@@ -8,6 +8,8 @@ import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
+import org.rsmod.game.client.Client
+import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.plugin.scripts.ScriptContext
@@ -36,4 +38,13 @@ internal fun installFarmingTestInventory(restored: MutableList<() -> Unit>) {
     with(InvTransactionsScript(PlayerItemStorage(emptySet()))) {
         ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
     }
+}
+
+internal class SilentClient : Client<Any, Any> {
+    override fun write(message: Any) {}
+    override fun close() {}
+    override fun read(player: Player) {}
+    override fun flush() {}
+    override fun flushHighPriority() {}
+    override fun unregister(service: Any, player: Player) {}
 }

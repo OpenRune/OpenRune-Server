@@ -63,6 +63,7 @@ public data class GameplayConfig(
     @JsonProperty("bots-enabled")
     val botsEnabled: Boolean = true,
     @JsonProperty("run-energy") val runEnergy: RunEnergyYaml = RunEnergyYaml(),
+    @JsonProperty("farming-growth-rate") val farmingGrowthRate: Int = 1,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
