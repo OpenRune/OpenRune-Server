@@ -64,6 +64,7 @@ public data class GameplayConfig(
     val gravestones: GravestonesYaml = GravestonesYaml(),
     @JsonProperty("bots-enabled")
     val botsEnabled: Boolean = true,
+    @JsonProperty("run-energy") val runEnergy: RunEnergyYaml = RunEnergyYaml(),
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -80,6 +81,12 @@ public data class ClueScrollsYaml(
 @JsonIgnoreProperties(ignoreUnknown = true)
 public data class DropRatesYaml(
     val multiplier: Double = 1.0,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public data class RunEnergyYaml(
+    @JsonProperty("drain-denominator") val drainDenominator: Int = 1,
+    val infinite: Boolean = false,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

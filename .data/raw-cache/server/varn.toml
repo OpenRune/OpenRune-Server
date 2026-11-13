@@ -303,3 +303,9 @@ id = "varn.protect_ranged"
 
 [[varn]]
 id = "varn.protect_magic"
+
+[[varn]]
+id = "varn.magic_defence_drain"
+
+[[varn]]
+id = "varn.venom_strikes"

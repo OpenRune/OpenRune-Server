@@ -847,6 +847,7 @@ id = "npc.rat"
 inherit = "npc.rat"
 respawnRate = 2
 [npc.params]
+"param.rat"=1
 "param.attack_sound"=710
 "param.defend_sound"=713
 "param.death_sound"=711
@@ -865,6 +866,7 @@ id = "npc.giantrat"
 inherit = "npc.giantrat"
 respawnRate = 30
 [npc.params]
+"param.rat"=1
 "param.attack_sound"=710
 "param.defend_sound"=713
 "param.death_sound"=711
@@ -879,6 +881,7 @@ id = "npc.giantrat_grey"
 inherit = "npc.giantrat_grey"
 respawnRate = 30
 [npc.params]
+"param.rat"=1
 "param.attack_sound"=710
 "param.defend_sound"=713
 "param.death_sound"=711
@@ -893,6 +896,7 @@ id = "npc.giantrat_grey2"
 inherit = "npc.giantrat_grey2"
 respawnRate = 30
 [npc.params]
+"param.rat"=1
 "param.attack_sound"=710
 "param.defend_sound"=713
 "param.death_sound"=711
@@ -907,6 +911,7 @@ id = "npc.giantrat_grey3"
 inherit = "npc.giantrat_grey3"
 respawnRate = 30
 [npc.params]
+"param.rat"=1
 "param.attack_sound"=710
 "param.defend_sound"=713
 "param.death_sound"=711
@@ -921,6 +926,7 @@ id = "npc.giantrat1_2"
 inherit = "npc.giantrat1_2"
 respawnRate = 30
 [npc.params]
+"param.rat"=1
 "param.attack_sound"=710
 "param.defend_sound"=713
 "param.death_sound"=711
@@ -935,6 +941,7 @@ id = "npc.giantrat1_3"
 inherit = "npc.giantrat1_3"
 respawnRate = 30
 [npc.params]
+"param.rat"=1
 "param.attack_sound"=710
 "param.defend_sound"=713
 "param.death_sound"=711
@@ -1321,6 +1328,7 @@ maxRange = 40
 defaultMode = "None"
 respawnRate = 30
 [npc.params]
+"param.rat"=1
 "param.killcount_varp"="varp.total_rat_boss_kills"
 "param.boss_hp_bar_mode"=2
 "param.death_anim"="seq.npc_rat_boss_death_01"
@@ -1334,6 +1342,7 @@ maxRange = 40
 defaultMode = "None"
 respawnRate = 30
 [npc.params]
+"param.rat"=1
 "param.killcount_varp"="varp.total_rat_boss_kills"
 "param.boss_hp_bar_mode"=2
 "param.death_anim"="seq.npc_rat_boss_death_01"
@@ -1344,6 +1353,7 @@ inherit = "npc.rat_boss_giant_rat"
 huntMode = 6
 huntRange = 10
 [npc.params]
+"param.rat"=1
 "param.attack_anim"="seq.giant_rat_update_attack"
 "param.defend_anim"="seq.giant_rat_update_defend"
 "param.death_anim"="seq.giant_rat_update_death"

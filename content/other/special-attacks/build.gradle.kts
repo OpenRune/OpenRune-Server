@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.combat.combatManager)
+    implementation(projects.api.objCharges)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.npc)
     implementation(projects.api.repo)

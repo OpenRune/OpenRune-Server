@@ -2,6 +2,7 @@ package org.rsmod.api.net.rsprot.handlers
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
@@ -30,6 +31,8 @@ class IfSubOpHandler
     private val eventBus: EventBus,
     private val protectedAccess: ProtectedAccessLauncher,
 ) : MessageHandler<IfSubOp> {
+
+    private val inventoryInterface = "interface.inventory".asRSCM()
 
     private val IfSubOp.asComponent: Component
         get() = Component(interfaceId, componentId)
@@ -68,7 +71,7 @@ class IfSubOpHandler
         val invObj = if (tryHeld) inventory[comsub] else null
 
         if (player.ui.containsOverlay(interfaceType) || player.ui.containsTopLevel(interfaceType)) {
-            if (tryHeld && invObj != null) {
+            if (tryHeld && invObj != null && message.interfaceId == inventoryInterface) {
                 if (!verifyHeldSubOp(player, inventory, invObj, packetObjType, heldOp)) {
                     return
                 }

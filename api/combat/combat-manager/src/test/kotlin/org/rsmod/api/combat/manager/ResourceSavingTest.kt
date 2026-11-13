@@ -66,12 +66,12 @@ class ResourceSavingTest {
         f.ammo.useQuiverAmmo(f.player, f.arrow, CoordGrid.ZERO, dropDelay = 1)
 
         assertEquals(9, f.quiverCount())
-        verify(exactly = 0) { f.random.of(maxExclusive = 100) }
+        verify(exactly = 1) { f.random.of(maxExclusive = 100) }
     }
 
     @Test
     fun `a saved arrow is not spent and cannot drop to the ground`() {
-        val f = Fixture(saveRolls = listOf(0))
+        val f = Fixture(saveRolls = listOf(BREAKS, 0))
         f.quiver(10)
         f.onPrepare { saveChance = 50 }
 
@@ -85,7 +85,7 @@ class ResourceSavingTest {
 
     @Test
     fun `an unsaved arrow is spent and reported`() {
-        val f = Fixture(saveRolls = listOf(50))
+        val f = Fixture(saveRolls = listOf(BREAKS, 50))
         f.quiver(10)
         f.onPrepare { saveChance = 50 }
 
@@ -97,7 +97,7 @@ class ResourceSavingTest {
 
     @Test
     fun `the last arrow stays when saved`() {
-        val f = Fixture(saveRolls = listOf(0))
+        val f = Fixture(saveRolls = listOf(BREAKS, 0))
         f.quiver(1)
         f.onPrepare { saveChance = 100 }
 
@@ -108,7 +108,7 @@ class ResourceSavingTest {
 
     @Test
     fun `each shot of a two arrow attack rolls separately`() {
-        val f = Fixture(saveRolls = listOf(0, 99))
+        val f = Fixture(saveRolls = listOf(BREAKS, 0, BREAKS, 99))
         f.quiver(10)
         f.onPrepare { saveChance = 50 }
 
@@ -426,7 +426,7 @@ class ResourceSavingTest {
     }
 
     @Test
-    fun `a chance of zero never rolls`() {
+    fun `a chance of zero takes only the recovery roll`() {
         val f = Fixture()
         f.quiver(5)
         f.onPrepare {}
@@ -434,7 +434,7 @@ class ResourceSavingTest {
         f.attack { f.ammo.useQuiverAmmo(f.player, f.arrow, CoordGrid.ZERO, 1) }
 
         assertEquals(4, f.quiverCount())
-        verify(exactly = 0) { f.random.of(maxExclusive = 100) }
+        verify(exactly = 1) { f.random.of(maxExclusive = 100) }
     }
 
     @OptIn(InternalApi::class)
@@ -569,6 +569,7 @@ class ResourceSavingTest {
     companion object {
         private const val VAROBJ = "varobj.tumeken_charges"
         private const val POUCH = "varbit.rune_pouch_quantity_1"
+        private const val BREAKS = 0
         private val RESTORED = mutableListOf<() -> Unit>()
 
         private fun item(symbol: String): ItemServerType =

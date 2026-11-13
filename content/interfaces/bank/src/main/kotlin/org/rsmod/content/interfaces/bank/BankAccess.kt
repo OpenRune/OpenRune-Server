@@ -10,3 +10,7 @@ fun ProtectedAccess.tryOpenBank(): Boolean {
     ifOpenMainSidePair(main = "interface.bankmain", side = "interface.bankside", transparency = -2)
     return true
 }
+
+fun ProtectedAccess.openCollectionBox() {
+    ifOpenMainModal("interface.ge_collect")
+}

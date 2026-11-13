@@ -16,6 +16,8 @@ private typealias StaffAttr = CombatStaffAttributes
 private typealias NpcAttr = CombatNpcAttributes
 
 public object MagicMaxHitOperations {
+    private const val ELEMENTAL_AMULET_MAX_HIT = 2
+
     /**
      * @param sourceMagic The source's **current** magic level. Required for the Magic dart
      *   modifier.
@@ -48,6 +50,10 @@ public object MagicMaxHitOperations {
 
         if (SpellAttr.ChaosGauntlets in spellAttributes && SpellAttr.BoltSpell in spellAttributes) {
             modified += 3
+        }
+
+        if (SpellAttr.ElementalAmulet in spellAttributes) {
+            modified += ELEMENTAL_AMULET_MAX_HIT
         }
 
         if (SpellAttr.ChargeSpell in spellAttributes) {
@@ -125,6 +131,10 @@ public object MagicMaxHitOperations {
             modified += 3
         }
 
+        if (SpellAttr.ElementalAmulet in spellAttributes) {
+            modified += ELEMENTAL_AMULET_MAX_HIT
+        }
+
         if (SpellAttr.ChargeSpell in spellAttributes) {
             modified += 10
         }
@@ -167,7 +177,13 @@ public object MagicMaxHitOperations {
                 NpcAttr.FireWeakness in npcAttributes && SpellAttr.FireSpell in spellAttributes
 
         if (applySpellWeaknessMod) {
-            val additive = (baseDamage * (targetWeaknessPercent / 100.0)).toInt()
+            val weaknessBase =
+                if (SpellAttr.ElementalAmulet in spellAttributes) {
+                    baseDamage + ELEMENTAL_AMULET_MAX_HIT
+                } else {
+                    baseDamage
+                }
+            val additive = (weaknessBase * (targetWeaknessPercent / 100.0)).toInt()
             modifiedMax += additive
         }
 

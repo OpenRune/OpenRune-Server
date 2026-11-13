@@ -8,6 +8,8 @@ dependencies {
     implementation(projects.api.player)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.script)
+    implementation(projects.content.generic.genericLocs)
+    implementation(projects.content.interfaces.bank)
     testImplementation(projects.api.invStorage)
     testImplementation(projects.api.gameProcess)
     testImplementation(libs.fastutil)

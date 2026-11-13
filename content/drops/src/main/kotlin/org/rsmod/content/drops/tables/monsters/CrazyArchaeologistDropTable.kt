@@ -2,20 +2,16 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
-import org.rsmod.api.droptable.rsPlayerGuaranteedTable
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.rsPlayerPrerollTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.api.droptable.rsPlayerPrerollTable
-import org.rsmod.api.droptable.dropRollable
-import org.rsmod.content.drops.tables.shared.SharedDropTables
-import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.shouldDropLootingBag
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.api.droptable.ClueTier
 import org.rsmod.api.droptable.clue
-import org.rsmod.api.droptable.wearingRingOfWealth
-import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.content.drops.shouldDropLootingBag
+import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -24,8 +20,10 @@ public val crazyArchaeologistDropTable: RSDropTable<Player, DropRollItem> = RSDr
     tableIdentifier = "Crazy archaeologist Drops",
     npcs = npcs("npc.crazy_archaeologist"),
     preRoll = rsPlayerPrerollTable {
-        1 outOf 256 weight "obj.odium_shard2" count 1
-        1 outOf 256 weight "obj.malediction_shard2" count 1
+        boosted {
+            1 outOf 256 weight "obj.odium_shard2" count 1
+            1 outOf 256 weight "obj.malediction_shard2" count 1
+        }
     },
     mainTable = rsPlayerWeightedTable(total = 132) {
         name("Crazy archaeologist Drops")
@@ -63,7 +61,7 @@ public val crazyArchaeologistDropTable: RSDropTable<Player, DropRollItem> = RSDr
             player -> player.shouldDropLootingBag()
         }
         onBuilder { brimstoneKeyRoll() }
-        1 outOf 128 weight "obj.fedora" count 1
+        boosted { 1 outOf 128 weight "obj.fedora" count 1 }
         1 outOf 121 chance clue(ClueTier.Hard)
         1 outOf 64 chance clue(ClueTier.Hard)
     },
