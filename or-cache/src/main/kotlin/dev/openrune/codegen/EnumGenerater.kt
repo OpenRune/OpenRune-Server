@@ -3,9 +3,9 @@ package dev.openrune.codegen
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.buildCodeBlock
 import dev.openrune.definition.type.EnumType
 import java.io.File
@@ -125,7 +125,9 @@ private fun writeEnumAccessorObject(
         referencedOpenRuneClassNames(k).forEach { extraImports += it }
         referencedOpenRuneClassNames(v).forEach { extraImports += it }
 
-        val init = buildCodeBlock { add("enum(%S)", slug) }
+        val init = buildCodeBlock {
+            if (isSyntheticEnumSlug(slug)) add("enum(%L)", id) else add("enum(%S)", slug)
+        }
         props += PropertySpec.builder(propName, mapType, KModifier.PUBLIC).initializer(init).build()
     }
 
