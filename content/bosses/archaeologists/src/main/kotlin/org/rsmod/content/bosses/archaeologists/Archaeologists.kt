@@ -6,6 +6,7 @@ import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Effect
+import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -28,10 +29,20 @@ private const val SPECIAL_WEIGHT = 1
 private const val BOOK_THROW_SEQ = "seq.book_chuck"
 private const val BOOK_MELEE_SEQ = "seq.human_unarmedpunch"
 private const val BOOK_PROJECTILE = "spotanim.crazy_archaeologist_book"
-private const val BOOK_PROJECTILE_TYPE = "projanim.crazy_archaeologist_book"
 private const val BOOK_IMPACT_SPOTANIM = "spotanim.castlewars_catapult_splash"
-private const val BOOK_THROW_SYNTH = "synth.archaeologist_book_throw"
-private const val BOOK_IMPACT_SYNTH = "synth.archaeologist_book_impact"
+private const val BOOK_THROW_SYNTH = "synth.thrown"
+private const val BOOK_IMPACT_SYNTH = "synth.chinchompa_explode"
+
+private val BOOK_PROJECTILE_CONFIG =
+    ProjectileConfig(
+        startHeight = 40,
+        endHeight = 36,
+        startDelay = 41,
+        travelTime = 5,
+        angle = 15,
+        progress = 11,
+        stepMultiplier = 5,
+    )
 
 private const val CRAZY_SPECIAL_QUOTE = "Rain of knowledge!"
 private const val CRAZY_DEATH_QUOTE = "Ow!"
@@ -123,7 +134,7 @@ private fun archaeologistSpec(
                 sound(BOOK_THROW_SYNTH, radius = 8)
                 projectile(
                     spotanim = BOOK_PROJECTILE,
-                    travel = BOOK_PROJECTILE_TYPE,
+                    config = BOOK_PROJECTILE_CONFIG,
                     onImpact = sound(BOOK_IMPACT_SYNTH, radius = 1, at = ImpactTile),
                     resolveOnImpact = true,
                     hit =

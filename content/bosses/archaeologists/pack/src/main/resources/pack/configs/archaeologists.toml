@@ -17,36 +17,3 @@ attackRange = 10
 [npc.params]
 "param.killcount_varp" = "varp.total_derangedarchaeologist_kills"
 "param.killcount_notify" = false
-
-[[projectile]]
-isServerOnly = true
-id = "projanim.crazy_archaeologist_book"
-startHeight = 40
-endHeight = 36
-delay = 41
-angle = 15
-lengthAdjustment = 5
-progress = 11
-stepMultiplier = 5
-
-[[projectile]]
-isServerOnly = true
-id = "projanim.crazy_archaeologist_book_rain"
-startHeight = 40
-endHeight = 2
-delay = 41
-angle = 40
-lengthAdjustment = 79
-progress = 11
-stepMultiplier = 0
-
-[[projectile]]
-isServerOnly = true
-id = "projanim.crazy_archaeologist_book_rain_secondary"
-startHeight = 2
-endHeight = 2
-delay = 0
-angle = 40
-lengthAdjustment = 120
-progress = 11
-stepMultiplier = 0

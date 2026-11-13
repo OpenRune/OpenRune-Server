@@ -1,11 +1,11 @@
 package org.rsmod.content.bosses.archaeologists
 
-import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.SpotanimType
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.bossProjectile
+import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.random.GameRandom
@@ -34,11 +34,31 @@ internal object BookRain {
     private const val THROW_SOUND_RADIUS = 10
 
     private const val BOOK_PROJECTILE = "spotanim.crazy_archaeologist_book_special"
-    private const val PRIMARY_PROJECTILE = "projanim.crazy_archaeologist_book_rain"
-    private const val SECONDARY_PROJECTILE = "projanim.crazy_archaeologist_book_rain_secondary"
     private const val EXPLOSION_SPOTANIM = "spotanim.firewave_impact"
-    private const val THROW_SYNTH = "synth.archaeologist_book_throw"
-    private const val IMPACT_SYNTH = "synth.archaeologist_book_impact"
+    private const val THROW_SYNTH = "synth.thrown"
+    private const val IMPACT_SYNTH = "synth.chinchompa_explode"
+
+    private val PRIMARY_PROJECTILE =
+        ProjectileConfig(
+            startHeight = 40,
+            endHeight = 2,
+            startDelay = 41,
+            travelTime = 79,
+            angle = 40,
+            progress = 11,
+            stepMultiplier = 0,
+        )
+
+    private val SECONDARY_PROJECTILE =
+        ProjectileConfig(
+            startHeight = 2,
+            endHeight = 2,
+            startDelay = 0,
+            travelTime = 120,
+            angle = 40,
+            progress = 11,
+            stepMultiplier = 0,
+        )
 
     fun launch(deps: BossDeps, npc: Npc, target: Player, params: Any?) {
         val config = params as? BookRainConfig ?: return
@@ -99,13 +119,10 @@ internal object BookRain {
         deps: BossDeps,
         source: CoordGrid,
         tiles: List<CoordGrid>,
-        travel: String,
+        travel: ProjectileConfig,
         delayStep: Int = 0,
         travelStep: Int = 0,
     ) {
-        val type =
-            ServerCacheManager.getProjectile(travel.asRSCM(RSCMType.PROJANIM))
-                ?: error("Projectile not found: $travel")
         deps.worldRepo.soundArea(
             source,
             THROW_SYNTH,
@@ -117,12 +134,12 @@ internal object BookRain {
                 spotanim = BOOK_PROJECTILE.asRSCM(RSCMType.SPOTANIM),
                 src = source,
                 target = tile,
-                startHeight = type.startHeight,
-                endHeight = type.endHeight,
-                delay = type.delay + index * delayStep,
-                travel = type.lengthAdjustment + index * travelStep,
-                curve = type.angle,
-                progress = type.progress,
+                startHeight = travel.startHeight,
+                endHeight = travel.endHeight,
+                delay = travel.startDelay + index * delayStep,
+                travel = travel.travelTime + index * travelStep,
+                curve = travel.angle,
+                progress = travel.progress,
             )
         }
     }
