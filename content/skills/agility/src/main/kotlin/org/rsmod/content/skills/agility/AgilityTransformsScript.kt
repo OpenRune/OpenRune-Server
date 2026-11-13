@@ -85,7 +85,7 @@ class AgilityTransformsScript @Inject constructor(private val players: PlayerLis
         player.transmog = AgilityForms.penguinSuit.npc
         rebuildAppearance()
         mes("You shrink and Larry puts you in the penguin suit.")
-        // TODO(content): live swaps the combat, prayer, magic and emote tabs for penguin ones.
+        // TODO(content): the penguin emotes the clockwork suit unlocks.
     }
 
     private suspend fun ProtectedAccess.enter(dest: CoordGrid, message: String) {

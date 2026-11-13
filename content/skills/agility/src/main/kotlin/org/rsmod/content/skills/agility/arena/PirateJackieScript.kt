@@ -22,6 +22,7 @@ import org.rsmod.plugin.scripts.ScriptContext
  */
 class PirateJackieScript : PluginScript() {
     override fun ScriptContext.startup() {
+        // TODO(content): the Brimhaven graceful recolour, 250 vouchers for the whole outfit.
         onOpNpc1(JACKIE) { startDialogue(it.npc) { jackie() } }
         onOpNpc3(JACKIE) { openOmnishop(STORE) }
         onOmnishopVirtualPurchase(XP_STOCK) {

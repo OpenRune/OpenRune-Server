@@ -317,15 +317,15 @@ wiki's.
 ## Agility reward shops
 
 Grace's shop sells the plain graceful set and amylase packs for marks of grace.
-The graceful recolours are not built. Her lap count scroll lists Skullball at 0
-laps, as a finished game counts no lap, and turning her lap counter off silences
-the lap count message on every course and the Agility Arena. Worm Tongue's shop
-cannot sell the graceful crafting kit, because the kit is a dummy item the
-omnishop cannot hand over. His Stats option is missing, and so is his call from
-the start ladder before the player first talks to him. A returning player's talk
-options are a guess; only a first conversation is captured. The map spawns his
-three-option form, not live's npc that switches forms on the first talk, so his
-Shop option shows from the start.
+Her lap count scroll lists Skullball at 0 laps, as a finished game counts no
+lap, and turning her lap counter off silences the lap count message on every
+course and the Agility Arena. Pirate Jackie's Brimhaven graceful recolour is not
+built. Worm Tongue's shop cannot sell the graceful crafting kit, because the kit
+is a dummy item the omnishop cannot hand over. His Stats option is missing, and
+so is his call from the start ladder before the player first talks to him. A
+returning player's talk options are a guess; only a first conversation is
+captured. The map spawns his three-option form, not live's npc that switches
+forms on the first talk, so his Shop option shows from the start.
 
 ## Brimhaven Agility Arena crossings
 
@@ -557,12 +557,12 @@ it from below.
 
 ## Agility shortcuts left to map transports
 
-Swims, the Mourning's End Part II trap and hanging wall, the Mountain Daughter
-boulder, the Fenkenstrain bridges, the Darkmeyer walls, the Pollnivneach ditch,
-the Death Plateau path's top and bottom rocks, the Temple of the Eye rubble, the
-Nardah rocks, the rope swings, the Mos Le'Harmless, Lumbridge diary and
-Burthorpe stepping stones, the Wilderness cave jumps, the Wilderness God Wars
-crevice, the Lost Tribe's second hole and every shortcut another content script
+The swims to the Crossbow Tree and the Strong Trees, the Mourning's End Part II
+blade traps and wall supports, the Mountain Daughter boulder, the Mausoleum
+bridge, the Darkmeyer north-eastern wall, the Pollnivneach slope, the Death
+Plateau climbing rocks, the Temple of the Eye rubble, the ropeswings by Moss
+Giant Island, the Mos Le'Harmless stepping stone, the Revenant Caves pillar
+jumps, the Lost Tribe's second hole and every shortcut another content script
 already runs still teleport across with the level check and nothing else.
 
 ## Hallowed Sepulchre floors

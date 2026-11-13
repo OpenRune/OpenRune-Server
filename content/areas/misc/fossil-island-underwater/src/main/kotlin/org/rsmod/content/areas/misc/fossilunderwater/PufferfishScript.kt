@@ -12,6 +12,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 /** The sea floor's pufferfish: caught into the pack and squeezed for a breath of air. */
 class PufferfishScript @Inject constructor(private val npcRepo: NpcRepository) : PluginScript() {
     override fun ScriptContext.startup() {
+        // TODO(content): charging the merfolk trident with pufferfish, up to 10 charges.
         onOpNpc1(PUFFERFISH_NPC) { catch(it.npc) }
         onOpHeld1(PUFFERFISH) { depuff(it.slot) }
     }
@@ -20,7 +21,6 @@ class PufferfishScript @Inject constructor(private val npcRepo: NpcRepository) :
         if (!npc.isSlotAssigned) {
             return
         }
-        // TODO(content): with a merfolk trident carried the catch charges it instead.
         if (invAdd(inv, PUFFERFISH, 1).failure) {
             // UNVERIFIED: live's answer to a full pack.
             mes("You don't have enough inventory space.")

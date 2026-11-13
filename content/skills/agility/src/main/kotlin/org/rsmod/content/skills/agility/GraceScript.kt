@@ -18,7 +18,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class GraceScript @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
-        // TODO(content): the graceful recolours and their prices.
         onOpNpc1(GRACE) { startDialogue(it.npc) { talk() } }
         onOpNpc3(GRACE) { openShop() }
         onOpNpc4(GRACE) { viewLaps() }

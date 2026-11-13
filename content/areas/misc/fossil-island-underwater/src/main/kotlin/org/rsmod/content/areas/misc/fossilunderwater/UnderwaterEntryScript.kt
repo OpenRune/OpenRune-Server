@@ -21,7 +21,7 @@ class UnderwaterEntryScript @Inject constructor(private val eventBus: EventBus) 
         onOpLoc1(ROWBOAT_DIVING) { travelFromSea() }
         onOpLoc2(ROWBOAT_DIVING) { dive() }
         onOpLoc1(ROPE) { climbRope() }
-        // TODO(content): the expedition camp's and the barge's rowboats.
+        // TODO(content): the Museum Camp's and the canal barge's rowboats.
     }
 
     private suspend fun ProtectedAccess.travelFromNorth() {
