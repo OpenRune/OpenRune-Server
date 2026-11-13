@@ -73,6 +73,36 @@ A world listing one mode is locked to it: `::worldtype` has nothing to offer. A 
 several is a *mixed world* — see
 [the mixed-world limit](world-type-plugins.md#the-mixed-world-limit).
 
+### Farming growth speed
+
+`gameplay.farming-growth-rate` in `game.yml` sets the server's Farming growth speed.
+It is a positive integer: `1` (the default) preserves normal timing; `5` advances five
+growth minutes per real minute. Patches, weeds and inventory/banked saplings share
+this clock. It changes growth timing, not XP, yields, level requirements or disease rules.
+Restart the server after changing the configuration.
+
+Content can set `player.farmingGrowthRate` (import
+`org.rsmod.content.skills.farming.farmingGrowthRate`) to override the server rate.
+Set it to `0` to inherit the default again. The override and clock progress persist
+in the player's per-mode save, including logout and offline growth.
+
+Rate changes preserve accumulated progress: elapsed time is settled using the
+previously recorded rate before the new rate takes effect. An offline player adopts
+a changed server default on their next clock update, not retroactively. Existing
+saves without virtual-clock state catch up at normal timing on their first update.
+
+Administrators can test their own character with:
+
+| Command | Effect |
+|---|---|
+| `::farmrate` | Show effective, server and player growth rates |
+| `::farmrate 5` | Set a persistent 5× player override |
+| `::farmrate reset` | Remove the player override |
+| `::farmadvance 20` | Advance 20 growth minutes through normal growth/disease checks |
+
+Advancing updates supported patches and inventory/banked saplings immediately.
+It neither harvests crops nor grants XP. These commands do not affect other players.
+
 ## Switching mode
 
 `::worldtype` opens a menu of the modes this world serves, current one marked. Picking one swaps the

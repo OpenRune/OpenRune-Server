@@ -34,6 +34,12 @@ farming_patch_35 = 64417
 farming_clock = 65439
 farming_growth_offset = 64498
 farming_sapling_clock = 64499
+farming_growth_rate = 64449
+farming_growth_applied_rate = 64450
+farming_growth_real_minute = 64451
+farming_growth_real_millis = 64452
+farming_growth_minute = 64453
+farming_growth_millis = 64454
 
 [gamevals.timer]
 farming_transmit = 4445

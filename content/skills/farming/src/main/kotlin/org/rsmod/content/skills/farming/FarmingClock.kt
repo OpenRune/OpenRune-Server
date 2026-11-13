@@ -9,6 +9,65 @@ object FarmingClock {
     private const val INITIALIZED = 32
     internal const val MINUTE_MILLIS = 60_000L
 
+    private const val RATE = "varp.farming_growth_rate"
+    private const val APPLIED_RATE = "varp.farming_growth_applied_rate"
+    private const val REAL_MINUTE = "varp.farming_growth_real_minute"
+    private const val REAL_MILLIS = "varp.farming_growth_real_millis"
+    private const val GROWTH_MINUTE = "varp.farming_growth_minute"
+    private const val GROWTH_MILLIS = "varp.farming_growth_millis"
+
+    var defaultRate: Int = 1
+        set(value) {
+            require(value > 0) { "Farming growth rate must be positive" }
+            field = value
+        }
+
+    fun rate(player: Player): Int = player.vars[RATE].let { if (it == 0) defaultRate else it }
+
+    fun millis(player: Player, realMillis: Long = System.currentTimeMillis()): Long {
+        val rate = rate(player)
+        require(rate > 0) { "Farming growth rate must be positive" }
+        val applied = player.vars[APPLIED_RATE]
+        val previousReal = player.vars[REAL_MINUTE] * MINUTE_MILLIS + player.vars[REAL_MILLIS]
+        val previousGrowth = player.vars[GROWTH_MINUTE] * MINUTE_MILLIS + player.vars[GROWTH_MILLIS]
+        val now = maxOf(realMillis, previousReal)
+        // Settle elapsed time at the old rate before adopting a changed default or player rate.
+        val growth = if (applied == 0) now else
+            Math.addExact(previousGrowth, Math.multiplyExact(now - previousReal, applied.toLong()))
+        save(player, now, growth, rate)
+        return growth
+    }
+
+    internal fun setRate(player: Player, rate: Int, realMillis: Long = System.currentTimeMillis()) {
+        require(rate >= 0) { "Use zero for the server default or a positive Farming growth rate" }
+        millis(player, realMillis)
+        VarPlayerIntMapSetter.set(player, RATE, rate)
+        millis(player, realMillis)
+        reschedule(player, realMillis)
+    }
+
+    internal fun advance(player: Player, minutes: Int, realMillis: Long = System.currentTimeMillis()) {
+        require(minutes > 0) { "Farming advance must be positive" }
+        val growth = Math.addExact(millis(player, realMillis), minutes * MINUTE_MILLIS)
+        val real = player.vars[REAL_MINUTE] * MINUTE_MILLIS + player.vars[REAL_MILLIS]
+        save(player, real, growth, rate(player))
+        reschedule(player, realMillis)
+    }
+
+    private fun save(player: Player, real: Long, growth: Long, rate: Int) {
+        val realMinute = Math.toIntExact(Math.floorDiv(real, MINUTE_MILLIS))
+        val growthMinute = Math.toIntExact(Math.floorDiv(growth, MINUTE_MILLIS))
+        VarPlayerIntMapSetter.set(player, REAL_MINUTE, realMinute)
+        VarPlayerIntMapSetter.set(player, REAL_MILLIS, Math.floorMod(real, MINUTE_MILLIS).toInt())
+        VarPlayerIntMapSetter.set(player, GROWTH_MINUTE, growthMinute)
+        VarPlayerIntMapSetter.set(player, GROWTH_MILLIS, Math.floorMod(growth, MINUTE_MILLIS).toInt())
+        VarPlayerIntMapSetter.set(player, APPLIED_RATE, rate)
+    }
+
+    private fun reschedule(player: Player, realMillis: Long) {
+        player.softTimer("timer.farming_saplings", ticksUntilNext(player, 5, realMillis))
+    }
+
     fun offset(player: Player): Int {
         val saved = player.vars[OFFSET]
         if (saved and INITIALIZED != 0) return saved and 31
@@ -18,7 +77,7 @@ object FarmingClock {
     }
 
     fun cycle(player: Player, minutes: Int, millis: Long): Long =
-        cycle(offset(player), minutes, millis)
+        cycle(offset(player), minutes, millis(player, millis))
 
     internal fun cycle(offset: Int, minutes: Int, millis: Long): Long {
         require(minutes > 0)
@@ -26,8 +85,14 @@ object FarmingClock {
     }
 
     internal fun ticksUntilNext(player: Player, minutes: Int, millis: Long): Int {
-        val next = (cycle(player, minutes, millis) + 1) * minutes * MINUTE_MILLIS -
+        val growth = millis(player, millis)
+        val next = (cycle(offset(player), minutes, growth) + 1) * minutes * MINUTE_MILLIS -
             offset(player) * MINUTE_MILLIS
-        return ((next - millis + 599) / 600).toInt().coerceAtLeast(1)
+        val remaining = (next - growth + rate(player) - 1) / rate(player)
+        return ((remaining + 599) / 600).toInt().coerceAtLeast(1)
     }
 }
+
+var Player.farmingGrowthRate: Int
+    get() = vars["varp.farming_growth_rate"]
+    set(value) = FarmingClock.setRate(this, value)

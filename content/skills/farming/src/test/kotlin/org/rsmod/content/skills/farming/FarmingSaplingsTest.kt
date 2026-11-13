@@ -300,6 +300,27 @@ class FarmingSaplingsTest {
         assertEquals(32, player.vars["varp.farming_growth_offset"])
     }
 
+    @Test
+    fun `player growth rate matures inventory and stacked bank pots at the accelerated boundary`() {
+        val player = player()
+        FarmingClock.setRate(player, 5, NOW)
+        val chain = FarmingSaplings.chains.first()
+        player.inv[0] = InvObj(chain.wet)
+        for (slot in 1..27) player.inv[slot] = InvObj("obj.spade")
+        val bank = player.invMap.getOrPut("inv.bank")
+        bank[0] = InvObj(chain.wet, 28)
+        FarmingSaplings.grow(player, NOW)
+        FarmingSaplings.grow(player, NOW + 59_999)
+        assertEquals(chain.wet.id, player.inv[0]?.id)
+        assertEquals(28, bank.physicalCount(chain.wet.internalName))
+        FarmingSaplings.grow(player, NOW + 60_000)
+        assertEquals(chain.sapling.id, player.inv[0]?.id)
+        assertEquals(28, bank.physicalCount(chain.sapling.internalName))
+        assertEquals(0, bank.physicalCount(chain.wet.internalName))
+        FarmingSaplings.grow(player, NOW + 60_000)
+        assertEquals(28, bank.physicalCount(chain.sapling.internalName))
+    }
+
     private fun player(): Player = Player().apply {
         inv = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.inv".asRSCM())), arrayOfNulls(28))
         set(this, "varp.farming_growth_offset", 32)

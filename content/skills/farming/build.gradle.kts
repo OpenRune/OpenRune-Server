@@ -9,6 +9,7 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.registry)
     implementation(projects.api.script)
+    implementation(projects.api.serverConfig)
     implementation(projects.content.generic.genericLocs)
     implementation(projects.content.interfaces.bank)
     implementation(projects.content.quest)

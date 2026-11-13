@@ -691,6 +691,39 @@ class FarmingInventoryTest {
         assertEquals(1, f.refreshes.size)
     }
 
+    @Test
+    fun `accelerated offline growth matures patches once without awarding harvests`() {
+        val f = Fixture("guam")
+        val initial = f.planted()
+        val now = 10_000 * FarmingClock.MINUTE_MILLIS
+        VarPlayerIntMapSetter.set(f.player, "varp.farming_clock", 10_000)
+        VarPlayerIntMapSetter.set(f.player, "varp.farming_growth_offset", 32)
+        FarmingClock.setRate(f.player, 5, now)
+        f.service.refresh(f.player, now + 16 * FarmingClock.MINUTE_MILLIS)
+        assertEquals(initial.copy(stage = 4).matured(f.crop), f.state())
+        assertEquals(0, f.xp())
+        assertEquals(0, f.count(f.crop.produce))
+        assertEquals(1, f.refreshes.size)
+        f.service.refresh(f.player, now + 16 * FarmingClock.MINUTE_MILLIS)
+        assertEquals(1, f.refreshes.size)
+    }
+
+    @Test
+    fun `advancing growth still kills an untreated diseased crop`() {
+        val f = Fixture("guam")
+        val diseased = f.planted().copy(stage = 1, health = Health.DISEASED)
+        f.state(diseased)
+        val now = 10_000 * FarmingClock.MINUTE_MILLIS
+        VarPlayerIntMapSetter.set(f.player, "varp.farming_clock", 10_000)
+        VarPlayerIntMapSetter.set(f.player, "varp.farming_growth_offset", 32)
+        FarmingClock.advance(f.player, 80, now)
+        f.service.refresh(f.player, now)
+        assertEquals(Health.DEAD, f.state().health)
+        assertEquals(1, f.state().stage)
+        assertEquals(0, f.xp())
+        assertEquals(0, f.count(f.crop.produce))
+    }
+
     private class Fixture(
         name: String, rolls: List<Int> = emptyList(),
     ) {

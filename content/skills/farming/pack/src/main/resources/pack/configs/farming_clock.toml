@@ -1,0 +1,35 @@
+[[varp]]
+id = "varp.farming_growth_rate"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_growth_applied_rate"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_growth_real_minute"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_growth_real_millis"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_growth_minute"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_growth_millis"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"

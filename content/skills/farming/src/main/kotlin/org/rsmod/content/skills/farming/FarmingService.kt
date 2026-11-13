@@ -384,7 +384,7 @@ constructor(
     }
 
     private fun grow(player: Player, millis: Long) {
-        val now = Math.floorDiv(millis, FarmingClock.MINUTE_MILLIS)
+        val now = Math.floorDiv(FarmingClock.millis(player, millis), FarmingClock.MINUTE_MILLIS)
         val last = player.vars[VARP_CLOCK].toLong()
         if (now <= last) return
         VarPlayerIntMapSetter.set(player, VARP_CLOCK, now.toInt())
