@@ -730,7 +730,7 @@
         "Bird house trapping",
         "Bird snaring",
         "Box trapping",
-        "Butterfly netting",
+        "Insect netting",
         "Crab trapping",
         "Deadfall trapping",
         "Drift net fishing",
@@ -951,7 +951,7 @@
       "image": "https://oldschool.runescape.wiki/images/thumb/Jungle_Demon.png/48px-Jungle_Demon.png?b44f3"
     },
     "Glough": {
-      "image": "https://oldschool.runescape.wiki/images/thumb/Glough.png/48px-Glough.png?81044"
+      "image": "https://oldschool.runescape.wiki/images/thumb/Glough.png/48px-Glough.png?ec759"
     },
     "Fareed": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Fareed.png/48px-Fareed.png?537e7"
@@ -1731,5 +1731,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-11-09"
+  "fetched": "2026-11-13"
 }
