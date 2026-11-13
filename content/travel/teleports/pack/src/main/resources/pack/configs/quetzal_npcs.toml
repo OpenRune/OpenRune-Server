@@ -1,0 +1,83 @@
+[[npc]]
+id = "npc.quetzal_fortis"
+inherit = "npc.quetzal_fortis"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_teomat"
+inherit = "npc.quetzal_teomat"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_sunsetcoast"
+inherit = "npc.quetzal_sunsetcoast"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_hunterguild"
+inherit = "npc.quetzal_hunterguild"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_camtorum"
+inherit = "npc.quetzal_camtorum"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_colossalwyrm"
+inherit = "npc.quetzal_colossalwyrm"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_outerfortis"
+inherit = "npc.quetzal_outerfortis"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_colosseum"
+inherit = "npc.quetzal_colosseum"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_aldarin"
+inherit = "npc.quetzal_aldarin"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_quetzacalligorge"
+inherit = "npc.quetzal_quetzacalligorge"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_salvageroverlook"
+inherit = "npc.quetzal_salvageroverlook"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_talteklan"
+inherit = "npc.quetzal_talteklan"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_auburnvalley"
+inherit = "npc.quetzal_auburnvalley"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.quetzal_kastori"
+inherit = "npc.quetzal_kastori"
+moveRestrict = "NoMove"
+wanderRange = 0

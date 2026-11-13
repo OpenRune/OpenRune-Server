@@ -143,4 +143,69 @@ Sword hand-in and ore-pack conversion use all-or-nothing inventory transactions.
 Failed payment leaves the sword, commission and reward state unchanged. Coins go
 to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
 
+## Teleport items
+
+Destinations live in the `teleport_destination` dbtable and the items that use them in
+`teleport_item` (`content/travel/teleports`). Teleport jewellery, Xeric's talisman, skill capes,
+spirit trees and fairy rings are their own modules. Known differences from OSRS:
+
+- Every destination is open: quest, diary and unlock requirements (Darkmeyer, Slepe, ...) are not
+  checked.
+- A destination whose map region is missing tells the player so instead of teleporting, and no
+  charge is spent.
+- All items use the standard jewellery teleport animation; the ectophial and seed pods do not play
+  their own.
+- Achievement diary rewards (Ardougne cloak, Karamja gloves, desert amulet, Morytania legs,
+  Fremennik sea boots, Kandarin headgear, wilderness sword, western banner, Explorer's ring, Rada's
+  blessing) teleport without their daily limits. Tiers that cannot teleport in OSRS (desert amulet
+  1, western banner 1 and 2, and so on) still cannot.
+- Kharedst's memoirs and the Book of the Dead spend `veos_memoir_charges`, but recharging at the
+  Old Memorial and adding pages are not implemented.
+- Memoir charges sit in a player varbit, so every copy a player owns shares one pool.
+- The camulet has unlimited charges, as if Lazim had upgraded it, and both destinations are open.
+  The grand seed pod is used up by `Squash`; its `Launch` op is not implemented.
+
+Wilderness obelisks use the `wilderness_obelisk` rows. `Set Destination` and `Teleport to
+Destination` need no Wilderness diary and do not remember a choice: both open the list and send
+the pad straight to the picked obelisk.
+
+Gnome gliders use the `glider` rows. Every glider, including Feldip Hills and Ape Atoll, is open
+without The Grand Tree, One Small Favour or Monkey Madness II, and pilots skip their dialogue.
+`varbit.pilot_multinpc_var` is set on login so the Feldip and Ape Atoll pilots show their glider
+forms. Captain Errdo's `Talk-to` at the Digsite opens the map, so Lemanto Andra is two-way here
+(it is arrival-only in OSRS).
+
+Charter ships use the `charter` rows. They are free, open from a plain list rather than the
+Sailing-era charter map, and land on the dock instead of the ship's deck (gangplanks are not
+usable yet). Tempestus, Crandor and Barracuda HQ from Jagex's `chartering_destinations` are not
+stops.
+
+Quetzals read Jagex's own `dbtable.quetzal`. Every landing site is marked built on login (Twilight's
+Promise and the Hunter landing-site builds are not required), and flights are a fade rather than
+the flying cutscene.
+
+Teleport scrolls land on the tiles in `enum.teleport_scroll_destinations` (the wiki's map squares,
+all ground level) and need no unlocks; the Revenant cave scroll, which offers three Wilderness
+entrances, is not handled yet.
+
+Magic carpets use the `carpet_shantay` and `carpet_pollnivneach` rows (hub first). Rides are free,
+fly a straight line at 3 tiles a tick with no banking turns or sound, and need no quests (Uzer,
+Sophanem and Menaphos included).
+
+Minecarts use the `lovakengj_minecart` rows (any station to any other, free without The Forsaken
+Tower) and the `keldagrim_cart` rows (Keldagrim first; the Grand Exchange trapdoor and the Ice
+Mountain and White Wolf Mountain carts lead back to it). Rides are a fade with no fare.
+
+Boats, ferries and rowboats come from `dbtable.teleport_route`, generated from the shortest-path
+plugin's ship and boat lists (91 routes). They are free, need no quests, and sail with a fade.
+Routes whose op did not match the cache (some Rellekka boats, Waterbirth's Jarvald, and a few
+others) are not bound, and the Entrana and Void Knight ferries keep their own scripts.
+
+Minigame teleports (Grouping tab) use the `minigame` rows, matched by name to Jagex's
+`minigame_teleport` rows. They play the home-teleport cast and share Jagex's 20-minute cooldown
+(varp 888, which also greys the Grouping Teleport button), but need no minigame unlocks. The
+cooldown message wording is a guess. The Minigame Teleport spell opens the scrolling `minigames`
+list, where Select teleports; the Grouping tab's Teleport button works too. The channels tab
+buttons open their panels.
+
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)

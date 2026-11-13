@@ -6,4 +6,5 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.content.generic.genericLocs)
     implementation(projects.content.quest)
+    implementation(projects.content.travel.teleports)
 }
