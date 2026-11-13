@@ -1,8 +1,8 @@
 package org.rsmod.content.other.treasuretrails
 
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 class ClueVesselOddsTest {
     @Test

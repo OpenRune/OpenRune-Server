@@ -130,7 +130,6 @@ object TrailTiers {
 
     internal fun varp(id: Int): String = RSCM.getReverseMapping(RSCMType.VARP, id)
 
-
     private const val CHECK_STEPS_OP = "Check steps"
     private const val READ_OP = "Read"
     private const val CHALLENGE_SCROLL_NAME = "Challenge scroll"

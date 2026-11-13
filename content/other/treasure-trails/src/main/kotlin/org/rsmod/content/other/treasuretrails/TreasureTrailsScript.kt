@@ -12,7 +12,6 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
-import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
@@ -20,6 +19,7 @@ import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.table.TrailTierRow
 import org.rsmod.content.other.treasuretrails.ClueStash.build
 import org.rsmod.content.other.treasuretrails.ClueStash.search

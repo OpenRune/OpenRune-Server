@@ -2,10 +2,10 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.ClueTier
-import org.rsmod.api.droptable.clue
+import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.clue
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.content.drops.hasReachedDelve
 import org.rsmod.game.entity.Player

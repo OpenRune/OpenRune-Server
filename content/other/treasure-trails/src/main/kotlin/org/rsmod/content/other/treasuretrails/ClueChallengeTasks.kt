@@ -10,10 +10,10 @@ import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.feet
 import org.rsmod.api.player.hat
+import org.rsmod.api.player.hook.PrayerEnableHook
 import org.rsmod.api.player.legs
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.torso
-import org.rsmod.api.player.hook.PrayerEnableHook
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.cluehelper.CluehelperClueSkillchallengeRow
 import org.rsmod.game.entity.Player

@@ -5,10 +5,10 @@ import dtx.core.singleRollable
 import dtx.rs.RSDropTable
 import dtx.rs.locs
 import dtx.rs.rsGuaranteedTable
+import org.rsmod.api.droptable.ClueTier
 import org.rsmod.api.droptable.DropRateModifiers
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.RegisterDropTable
-import org.rsmod.api.droptable.ClueTier
 import org.rsmod.api.droptable.clue
 import org.rsmod.content.drops.eliteClueDropDenominator
 import org.rsmod.game.entity.Player

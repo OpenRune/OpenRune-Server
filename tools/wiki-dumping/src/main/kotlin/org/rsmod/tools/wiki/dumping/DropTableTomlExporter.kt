@@ -258,7 +258,6 @@ private fun ResolvedDropEntry.toTomlChanceEntries(): List<TomlChanceEntry> {
     )
 }
 
-
 private fun ResolvedDropEntry.formatTomlCount(): String {
     val range = quantityRange()
     if (range != null) {

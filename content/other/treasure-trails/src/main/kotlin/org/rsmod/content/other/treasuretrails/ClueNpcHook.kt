@@ -1,12 +1,12 @@
 package org.rsmod.content.other.treasuretrails
 
-import jakarta.inject.Inject
-import org.rsmod.api.enums.TrailEnums
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
+import jakarta.inject.Inject
+import org.rsmod.api.enums.TrailEnums
 import org.rsmod.api.music.MusicRepository
-import org.rsmod.api.player.hook.PlayerNpcOpHook
 import org.rsmod.api.player.bonus.WornBonuses
+import org.rsmod.api.player.hook.PlayerNpcOpHook
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.worn.EquipmentChecks
