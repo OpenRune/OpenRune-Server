@@ -1,16 +1,15 @@
 package org.rsmod.content.bosses.moons.blood
 
-import dev.openrune.types.NpcMode
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.content.bosses.moons.Moon
+import org.rsmod.content.bosses.moons.MoonsExternals
+import org.rsmod.content.bosses.moons.MoonsFights
 import org.rsmod.content.bosses.moons.arena
 import org.rsmod.content.bosses.moons.focusPhase
-import org.rsmod.content.bosses.moons.MoonsFights
-import org.rsmod.content.bosses.moons.MoonsExternals
 
 class BloodMoon @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 

@@ -1,8 +1,6 @@
 package org.rsmod.api.spells.attack
 
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.magic.MagicSpell

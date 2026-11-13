@@ -1,13 +1,15 @@
 package org.rsmod.content.bosses.moons
 
 import dev.openrune.definition.type.widget.IfEvent
-import dtx.core.ArgMap
-import dtx.core.RollResult
-import dtx.core.flatten
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
+import dtx.core.ArgMap
+import dtx.core.RollResult
+import dtx.core.flatten
 import jakarta.inject.Inject
+import org.rsmod.api.droptable.DropTableRegistry
+import org.rsmod.api.droptable.rollCount
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
@@ -15,8 +17,6 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.api.droptable.DropTableRegistry
-import org.rsmod.api.droptable.rollCount
 import org.rsmod.content.bosses.moons.MoonsFights.Companion.set
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.game.entity.Player

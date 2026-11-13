@@ -6,8 +6,8 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.util.EnumMap
 import java.util.IdentityHashMap
-import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.bosses.runtime.Angles
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.PersonalHpTracker
@@ -17,28 +17,28 @@ import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.music.MusicPlayer
-import org.rsmod.api.player.output.runClientScript
-import org.rsmod.api.player.stat.statHeal
-import org.rsmod.api.player.ui.ifOpenFullOverlay
-import org.rsmod.api.table.MusicRow
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.projAnimSpecific
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.output.spam
-import org.rsmod.api.player.output.projAnimSpecific
 import org.rsmod.api.player.output.spotanimMapPrivate
-import org.rsmod.game.hit.Hitmark
-import org.rsmod.game.proj.ProjAnim
+import org.rsmod.api.player.stat.statHeal
 import org.rsmod.api.player.ui.ifCloseOverlay
+import org.rsmod.api.player.ui.ifOpenFullOverlay
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.table.MusicRow
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.EntityExactMove
 import org.rsmod.game.entity.util.PathingEntityCommon
-import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.hit.Hitmark
+import org.rsmod.game.map.collision.isWalkBlocked
+import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 
 interface BlueHooks {
@@ -499,7 +499,6 @@ constructor(
         val fight = fights[player] ?: return
         if (damage > 0 && !fight.subdued && tracker(fight.moon)?.damage(player, damage) == true) subdue(player)
     }
-
 
     /** Runs once for the player whose pool reached 0; the shared npc itself never dies. */
     fun subdue(player: Player) {

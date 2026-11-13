@@ -3,13 +3,14 @@ package org.rsmod.content.bosses.moons.blood
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.dsl.Centre
 import org.rsmod.api.bosses.dsl.CurrentTile
-import org.rsmod.api.bosses.dsl.onTiles
+import org.rsmod.api.bosses.dsl.after
 import org.rsmod.api.bosses.dsl.anim
 import org.rsmod.api.bosses.dsl.external
 import org.rsmod.api.bosses.dsl.invulnerable
 import org.rsmod.api.bosses.dsl.message
-import org.rsmod.api.bosses.dsl.oneOf
 import org.rsmod.api.bosses.dsl.onEach
+import org.rsmod.api.bosses.dsl.onTiles
+import org.rsmod.api.bosses.dsl.oneOf
 import org.rsmod.api.bosses.dsl.parallel
 import org.rsmod.api.bosses.dsl.playersIn
 import org.rsmod.api.bosses.dsl.projectile
@@ -21,7 +22,6 @@ import org.rsmod.api.bosses.dsl.spawnTile
 import org.rsmod.api.bosses.dsl.summon
 import org.rsmod.api.bosses.dsl.vulnerable
 import org.rsmod.api.bosses.dsl.wait
-import org.rsmod.api.bosses.dsl.after
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.content.bosses.moons.Moon

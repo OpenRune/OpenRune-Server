@@ -88,5 +88,4 @@ class CrushingEvents @Inject constructor(private val hooks: Set<@JvmSuppressWild
     }
 
     private data class CrushTask(val recipe: HerbloreCrushingRow)
-
 }
