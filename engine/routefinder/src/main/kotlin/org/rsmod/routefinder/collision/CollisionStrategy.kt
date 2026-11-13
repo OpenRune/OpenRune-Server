@@ -11,6 +11,10 @@ public interface CollisionStrategy {
         }
     }
 
+    public object NoClip : CollisionStrategy {
+        override fun canMove(tileFlag: Int, blockFlag: Int): Boolean = true
+    }
+
     public object Blocked : CollisionStrategy {
         override fun canMove(tileFlag: Int, blockFlag: Int): Boolean {
             val flag = blockFlag and CollisionFlag.BLOCK_WALK.inv()

@@ -7,6 +7,7 @@ import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.player.aggressiveNpc
+import org.rsmod.api.combat.player.armedSpecialAtMeleeDistance
 import org.rsmod.api.combat.player.attackRange
 import org.rsmod.api.combat.player.pkPredator1
 import org.rsmod.api.combat.player.resolveAutocastSpell
@@ -25,6 +26,7 @@ import org.rsmod.api.script.advanced.onOpPlayer1
 import org.rsmod.api.script.advanced.onOpPlayer2
 import org.rsmod.api.script.onApPlayerT
 import org.rsmod.api.script.onEvent
+import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
 import org.rsmod.game.entity.Player
@@ -41,6 +43,7 @@ constructor(
     private val spells: MagicSpellRegistry,
     private val runes: MagicRuneManager,
     private val autocast: AutocastWeapons,
+    private val specials: SpecialAttackRegistry,
     private val attackValidateHooks: Set<PvPAttackValidateHook>,
     private val pjTimer: WildernessPjTimer,
 ) : PluginScript() {
@@ -63,7 +66,7 @@ constructor(
         // Weapons such as salamanders have an attack range of `1` but can attack with both ranged
         // and magic. These attacks should be treated as ap range, not op.
         val isMeleeAttackType = type == null || type.isMelee
-        if (attackRange == 1 && isMeleeAttackType) {
+        if (attackRange == 1 && isMeleeAttackType || armedSpecialAtMeleeDistance(specials)) {
             if (!canAttack(target)) {
                 return
             }

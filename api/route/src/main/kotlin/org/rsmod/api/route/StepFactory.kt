@@ -166,7 +166,7 @@ public class StepFactory @Inject constructor(flags: CollisionFlagMap) {
         // Npcs with "Blocked" MoveRestrict can walk under other npcs
         if (collision == CollisionStrategy.Blocked) {
             0
-        } else if (moveRestrict == MoveRestrict.PassThru) {
+        } else if (moveRestrict == MoveRestrict.PassThru || moveRestrict == MoveRestrict.NoClip) {
             0
         } else {
             CollisionFlag.BLOCK_NPCS

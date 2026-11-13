@@ -63,8 +63,14 @@ class MiningProductPrepareScript @Inject constructor(private val random: GameRan
             "obj.rubium_geode" -> {
                 product.experience = random.of(10, 100).toDouble() * xpMod
             }
-            "obj.infernal_shale" -> {
-                product.experience = random.of(10, 103).toDouble() * xpMod
+            "obj.blessed_bone_shard" -> {
+                if (random.of(CALCIFIED_DEPOSIT_ODDS) == 0) {
+                    product.item = "obj.calcified_deposit"
+                    product.count = 1
+                    product.experience = (data.miningXp + CALCIFIED_DEPOSIT_BONUS_XP) * xpMod
+                } else {
+                    product.count = random.of(1, 3)
+                }
             }
         }
     }
@@ -96,6 +102,8 @@ class MiningProductPrepareScript @Inject constructor(private val random: GameRan
     }
 
     private companion object {
+        private const val CALCIFIED_DEPOSIT_ODDS = 75
+        private const val CALCIFIED_DEPOSIT_BONUS_XP = 3
         private val SANDSTONE_SIZES =
             listOf(
                 "obj.enakh_sandstone_tiny" to 30.0,

@@ -48,7 +48,8 @@ internal fun BossDeps.startTimers(encounter: BossEncounter, tick: Int) {
             val effects = schedule.due(mapClock.cycle)
             val npc = encounter.npc
             val target = encounter.lastTarget?.takeIf { it.isValidTarget() }
-            if (target != null && npc.isSlotAssigned && npc.hitpoints > 0) {
+            val canRun = target != null || encounter.spec.ambient
+            if (canRun && npc.isSlotAssigned && npc.hitpoints > 0) {
                 for (effect in effects) {
                     EffectInterpreter(npc, target, encounter.spec, encounter, this).run(null, effect)
                 }

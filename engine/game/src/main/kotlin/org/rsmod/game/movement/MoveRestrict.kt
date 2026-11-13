@@ -12,5 +12,6 @@ public val MoveRestrict.collisionStrategy: CollisionStrategy?
             MoveRestrict.Indoors -> CollisionStrategy.Indoors
             MoveRestrict.Outdoors -> CollisionStrategy.Outdoors
             MoveRestrict.PassThru -> CollisionStrategy.Normal
+            MoveRestrict.NoClip -> CollisionStrategy.NoClip
             MoveRestrict.NoMove -> null
         }

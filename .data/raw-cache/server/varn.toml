@@ -300,3 +300,6 @@ id = "varn.magic_defence_drain"
 
 [[varn]]
 id = "varn.venom_strikes"
+
+[[varn]]
+id = "varn.burn_stacks"

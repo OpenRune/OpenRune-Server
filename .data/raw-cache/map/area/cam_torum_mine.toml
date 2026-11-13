@@ -1,0 +1,25 @@
+[[area]]
+name = "Cam Torum Mine"
+area_id = "area.cam_torum_mine"
+levels = [1]
+
+[[area.polygons]]
+vertices = [
+    [1490, 9530],
+    [1528, 9530],
+    [1528, 9553],
+    [1490, 9553],
+]
+
+[[area]]
+name = "Cam Torum Mine East"
+area_id = "area.cam_torum_mine_east"
+levels = [1]
+
+[[area.polygons]]
+vertices = [
+    [1510, 9530],
+    [1528, 9530],
+    [1528, 9553],
+    [1510, 9553],
+]

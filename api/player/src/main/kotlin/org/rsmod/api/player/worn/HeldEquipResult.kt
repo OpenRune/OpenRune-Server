@@ -11,6 +11,8 @@ public sealed class HeldEquipResult {
     public sealed class Fail(public val messages: List<String>) : HeldEquipResult() {
         public data object InvalidObj : Fail(emptyList())
 
+        public class Prevented(message: String) : Fail(listOf(message))
+
         public class NotEnoughInvSpace(message: String) : Fail(listOf(message))
 
         public class NotEnoughWornSpace(message: String) : Fail(listOf(message))

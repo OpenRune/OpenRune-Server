@@ -25,6 +25,7 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.specials.SpecialAttackType
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
+import org.rsmod.api.spells.attack.SpellAttackManager
 import org.rsmod.api.spells.attack.SpellAttackRegistry
 import org.rsmod.api.spells.attack.attack
 import org.rsmod.api.weapons.WeaponRegistry
@@ -43,6 +44,7 @@ constructor(
     private val manager: PlayerAttackManager,
     private val ammunition: RangedAmmoManager,
     private val spellsReg: SpellAttackRegistry,
+    private val spellManager: SpellAttackManager,
     private val skullHooks: Set<PvPSkullHook>,
     private val specialAttackHooks: Set<PvPSpecialAttackHook>,
     private val pjTimer: WildernessPjTimer,
@@ -143,7 +145,7 @@ constructor(
 
         // Set the next attack clock before executing any special attack, ensuring all attacks
         // default to the weapon's standard attack delay.
-        val attackRate = speeds.actual(player)
+        val attackRate = speeds.actualVsPlayer(player)
         manager.setNextAttackDelay(player, attackRate)
 
         // Important: Special attack handlers are responsible for explicitly calling `opplayer2`
@@ -289,6 +291,7 @@ constructor(
         if (spell != null) {
             applyPkVars(target)
             spell.attack(this, target, attack)
+            spellManager.afterSpell(this, target, attack)
             return
         }
 

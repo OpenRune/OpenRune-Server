@@ -650,7 +650,7 @@ object Mining {
                 column(COL_CELESTIAL_RING, true)
             }
 
-            row("dbrow.mining_infernalshale") {
+            row("dbrow.mining_calcified") {
                 columnRSCM(
                     COL_ROCK_OBJECT,
                     "loc.varlamore_mining_rock",
@@ -658,18 +658,18 @@ object Mining {
                     "loc.varlamore_mining_rock03",
                     "loc.varlamore_mining_rock04",
                 )
-                column(COL_LEVEL, 78)
-                column(COL_XP, 550)
-                columnRSCM(COL_ORE_ITEM, "obj.infernal_shale")
-                column(COL_RESPAWN_CYCLES, 40)
-                column(COL_SUCCESS_RATE_LOW, 15)
+                column(COL_LEVEL, 41)
+                column(COL_XP, 330)
+                columnRSCM(COL_ORE_ITEM, "obj.blessed_bone_shard")
+                column(COL_RESPAWN_CYCLES, 50)
+                column(COL_SUCCESS_RATE_LOW, 12)
                 column(COL_SUCCESS_RATE_HIGH, 80)
-                column(COL_DEPLETE_MECHANIC, 1)
+                column(COL_DEPLETE_MECHANIC, 4)
                 columnRSCM(COL_EMPTY_ROCK, "loc.varlamore_mining_rock_empty")
-                column(COL_CLUE_BASE_CHANCE, 100000)
+                column(COL_CLUE_BASE_CHANCE, 741600)
                 column(COL_MINING_WALL, false)
                 column(COL_MINING_GLOVES, 0)
-                column(COL_VARROCK_ARMOUR, 4)
+                column(COL_VARROCK_ARMOUR, 0)
                 column(COL_MINING_CAPE, false)
                 column(COL_CELESTIAL_RING, false)
             }

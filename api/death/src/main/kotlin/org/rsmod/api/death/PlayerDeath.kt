@@ -8,6 +8,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWildernessBasic
+import org.rsmod.api.mechanics.burn.Burn
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
 import org.rsmod.api.player.death.DeathCause
@@ -35,6 +36,7 @@ constructor(
     private val respawnPoint: PlayerRespawnPoint,
     private val deathOverrideHooks: Set<PlayerDeathOverrideHook>,
     private val areaChecker: AreaChecker,
+    private val burn: Burn,
 ) {
     private var Player.specialAttackType by intVarp("varp.sa_attack")
     private var Player.inInstance by boolVarBit("varbit.player_in_instance")
@@ -136,6 +138,7 @@ constructor(
     private fun ProtectedAccess.resetPlayerState() {
         player.disablePrayers()
         player.cureAllToxins()
+        burn.clear(player)
         player.deathResetTimers()
 
         player.specialAttackType = 0

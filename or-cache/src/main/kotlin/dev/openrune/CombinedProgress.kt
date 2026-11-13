@@ -3,10 +3,10 @@ package dev.openrune
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.cache.tools.progress.CacheProgress
 import dev.openrune.cache.tools.progress.ProgressTracker
-import me.tongfei.progressbar.ProgressBar
-import me.tongfei.progressbar.ProgressBarStyle
 import java.time.Duration
 import java.time.temporal.ChronoUnit
+import me.tongfei.progressbar.ProgressBar
+import me.tongfei.progressbar.ProgressBarStyle
 
 class CombinedProgress : CacheProgress {
 

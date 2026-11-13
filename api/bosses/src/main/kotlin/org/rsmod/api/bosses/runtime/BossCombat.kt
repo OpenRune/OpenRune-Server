@@ -3,6 +3,7 @@ package org.rsmod.api.bosses.runtime
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import java.util.Collections
 import java.util.IdentityHashMap
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.validation.SpecValidator
@@ -83,14 +84,16 @@ object BossCombat {
         val hitRules = IdentityHashMap<BossSpec, HitRules>()
         for (spec in specs) hitRules[spec] = HitRules(spec, deps)
         val hasReactions = hitRules.values.any { it.hasReactions }
+        val hasPersonalHp = specs.any { it.personalHp != null }
 
         with(ctx) {
             for (npcType in npcTypes) {
                 // Only one script may own a npc type's hit event, so bosses that handle it
                 // themselves must not declare hit reactions or pass onHit.
-                if (hasReactions || onHit != null) {
+                if (hasReactions || hasPersonalHp || onHit != null) {
                     onNpcHit(npcType) {
                         val encounter = deps.encounterRegistry.of(npc)
+                        applyPersonalDamage(this, encounter, deps)
                         hitRules.getValue(encounter.spec).react(this, encounter)
                         onHit?.invoke(this)
                     }
@@ -116,9 +119,15 @@ object BossCombat {
             }
 
             val bossIds = npcTypes.map { it.id }.toSet()
+            val ambient = specs.any { it.ambient }
+            if (ambient) {
+                onEvent<NpcStateEvents.Create> { if (npc.type.id in bossIds) startAmbient(npc, deps) }
+            }
             // Ensures phases and other states are reset
             onEvent<NpcStateEvents.Respawn> {
-                if (npc.type.id in bossIds) resetBoss(npc, deps)
+                if (npc.type.id !in bossIds) return@onEvent
+                resetBoss(npc, deps)
+                if (ambient) startAmbient(npc, deps)
             }
             onEvent<NpcStateEvents.Delete> {
                 if (npc.type.id in bossIds) {
@@ -126,6 +135,19 @@ object BossCombat {
                 }
             }
         }
+    }
+
+    private fun applyPersonalDamage(
+        event: NpcHitEvents.Impact,
+        encounter: BossEncounter,
+        deps: BossDeps,
+    ) {
+        val tracker = encounter.personalHp ?: return
+        if (!event.hit.isFromPlayer) return
+        val attacker = event.hit.resolvePlayerSource(deps.playerList) ?: return
+        if (!tracker.damage(attacker, event.hit.damage)) return
+        val onDeath = encounter.spec.personalHp?.onDeath ?: return
+        deps.runAbility(event.npc, attacker, onDeath)
     }
 
     /**
@@ -150,8 +172,30 @@ object BossCombat {
         deps: BossDeps,
         onCombatTick: (suspend StandardNpcAccess.(Player) -> Unit)?,
     ) {
+        if (deps.encounterRegistry.of(npc).spec.ambient) return
         onCombatTick?.invoke(this, target)
+        tickEncounter(npc, this, target, deps)
+    }
 
+    /** Drives an ambient spec once a tick for as long as [npc] stays in the world. */
+    private fun startAmbient(npc: Npc, deps: BossDeps) {
+        npc.ignoreCombatInteractions = true
+        if (!ambientLoops.add(npc)) return
+        fun step() {
+            deps.worldQueues.add(1) {
+                if (!npc.isSlotAssigned) {
+                    ambientLoops.remove(npc)
+                    return@add
+                }
+                val encounter = deps.encounterRegistry.of(npc)
+                if (encounter.spec.ambient && npc.hitpoints > 0) tickEncounter(npc, null, null, deps)
+                step()
+            }
+        }
+        step()
+    }
+
+    private fun tickEncounter(npc: Npc, access: StandardNpcAccess?, target: Player?, deps: BossDeps) {
         val encounter = deps.encounterRegistry.of(npc)
         val spec = encounter.spec
         if (encounter.currentPhase == null) return
@@ -159,11 +203,11 @@ object BossCombat {
         if (encounter.phaseEnteredTick < 0) {
             encounter.phaseEnteredTick = tick
         }
-        encounter.lastTarget = target
+        if (target != null) encounter.lastTarget = target
         deps.startTimers(encounter, tick)
 
-        checkAutoTransitions(this, target, encounter, tick, spec, deps)
-        checkTriggers(this, target, spec, deps, encounter)
+        checkAutoTransitions(access, target, encounter, tick, spec, deps)
+        checkTriggers(access, target, spec, deps, encounter)
 
         if (tick < encounter.busyUntil) return
 
@@ -173,7 +217,7 @@ object BossCombat {
         if (priority != null) {
             val effect = spec.abilities[priority] ?: return
             encounter.startAttack(priority, tick)
-            EffectInterpreter(npc, target, spec, encounter, deps).run(this, effect)
+            EffectInterpreter(npc, target, spec, encounter, deps).run(access, effect)
             return
         }
 
@@ -184,12 +228,12 @@ object BossCombat {
         encounter.startAttack(abilityName, tick)
 
         val interpreter = EffectInterpreter(npc, target, spec, encounter, deps)
-        interpreter.run(this, effect)
+        interpreter.run(access, effect)
     }
 
-    private suspend fun checkTriggers(
-        access: StandardNpcAccess,
-        target: Player,
+    private fun checkTriggers(
+        access: StandardNpcAccess?,
+        target: Player?,
         spec: BossSpec,
         deps: BossDeps,
         encounter: BossEncounter,
@@ -205,9 +249,9 @@ object BossCombat {
         }
     }
 
-    private suspend fun checkAutoTransitions(
-        access: StandardNpcAccess,
-        target: Player,
+    private fun checkAutoTransitions(
+        access: StandardNpcAccess?,
+        target: Player?,
         encounter: BossEncounter,
         tick: Int,
         spec: BossSpec,
@@ -238,15 +282,17 @@ object BossCombat {
         }
     }
 
-    private suspend fun runEntry(
-        access: StandardNpcAccess,
-        target: Player,
+    private fun runEntry(
+        access: StandardNpcAccess?,
+        target: Player?,
         abilityName: String,
         spec: BossSpec,
         encounter: BossEncounter,
         deps: BossDeps,
     ) {
         val effect = spec.abilities[abilityName] ?: return
-        EffectInterpreter(access.npc, target, spec, encounter, deps).run(access, effect)
+        EffectInterpreter(encounter.npc, target, spec, encounter, deps).run(access, effect)
     }
+
+    private val ambientLoops: MutableSet<Npc> = Collections.newSetFromMap(IdentityHashMap())
 }

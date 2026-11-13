@@ -9,5 +9,7 @@ class QuestPluginPack : PluginPack() {
             DaddysHomeFurnitureTable.daddysHomeFurniture(),
             DaddysHomeCrateTable.daddysHomeCrate(),
             GlarialRestrictionsTable.restrictions(),
+            PerilousMoonsRuinsTables.parts(),
+            PerilousMoonsRuinsTables.spawns(),
         )
 }

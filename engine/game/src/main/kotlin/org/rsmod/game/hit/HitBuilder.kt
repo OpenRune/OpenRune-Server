@@ -28,6 +28,8 @@ public class HitBuilder(
      */
     public var penetration: Int = 0
 
+    public var forceMaxHitmark: Boolean = false
+
     public fun isRighthandObj(type: ItemServerType): Boolean = type.id == righthandType
 
     public fun isSecondaryObj(type: ItemServerType): Boolean = type.id == secondaryType
@@ -63,10 +65,10 @@ public class HitBuilder(
                 public = zeroDamageHitmarkTint ?: publicHitmark
             }
         } else {
-            if (damage >= targetMaxDamageThreshold) {
+            if (forceMaxHitmark || damage >= targetMaxDamageThreshold) {
                 target = maxDamageHitmarkLit ?: targetHitmark
             }
-            if (damage >= sourceMaxDamageThreshold) {
+            if (forceMaxHitmark || damage >= sourceMaxDamageThreshold) {
                 source = maxDamageHitmarkLit ?: sourceHitmark
             }
         }

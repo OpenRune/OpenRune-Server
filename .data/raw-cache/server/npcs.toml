@@ -1909,6 +1909,8 @@ inherit = "npc.ds2_brut_black_dragon"
 id = "npc.earth_nagua"
 inherit = "npc.earth_nagua"
 [npc.params]
+"param.attack_anim"="seq.npc_djinn_earth01_attack01"
+"param.death_anim"="seq.npc_djinn_earth01_death01"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=15
 "param.killcount_varp"="varp.kc_earthen_nagua"
@@ -1918,6 +1920,8 @@ inherit = "npc.earth_nagua"
 id = "npc.earth_nagua_reinforced"
 inherit = "npc.earth_nagua_reinforced"
 [npc.params]
+"param.attack_anim"="seq.npc_djinn_earth01_attack02"
+"param.death_anim"="seq.npc_djinn_earth01_death01"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=15
 "param.killcount_varp"="varp.kc_earthen_nagua"
@@ -1945,6 +1949,8 @@ inherit = "npc.fossil_zygomite"
 id = "npc.frost_nagua"
 inherit = "npc.frost_nagua"
 [npc.params]
+"param.attack_anim"="seq.frost_nagua_slayer_basic"
+"param.death_anim"="seq.frost_nagua_slayer_death"
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_frost_nagua"
@@ -1954,6 +1960,8 @@ inherit = "npc.frost_nagua"
 id = "npc.frost_nagua_cutscene"
 inherit = "npc.frost_nagua_cutscene"
 [npc.params]
+"param.attack_anim"="seq.frost_nagua_slayer_basic"
+"param.death_anim"="seq.frost_nagua_slayer_death"
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_frost_nagua"
@@ -2862,6 +2870,8 @@ inherit = "npc.olaf2_brine_rats"
 id = "npc.pmoon_sulphur_nagua"
 inherit = "npc.pmoon_sulphur_nagua"
 [npc.params]
+"param.attack_anim"="seq.npc_djinn_04_melee"
+"param.death_anim"="seq.npc_djinn_04_slayer_death"
 "param.elemental_weakness_type"=0
 "param.elemental_weakness_percent"=15
 "param.killcount_varp"="varp.kc_sulphur_nagua"
@@ -4093,6 +4103,8 @@ inherit = "npc.varlamore_wyrm_light01"
 id = "npc.vmq3_ruins_frost_nagua"
 inherit = "npc.vmq3_ruins_frost_nagua"
 [npc.params]
+"param.attack_anim"="seq.frost_nagua_slayer_basic"
+"param.death_anim"="seq.frost_nagua_slayer_death"
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_frost_nagua"
@@ -15104,6 +15116,104 @@ inherit = "npc.green_dragon_myth_guild"
 "param.elemental_weakness_percent"=50
 
 [[npc]]
+id = "npc.pmoon_boss_blood_moon"
+inherit = "npc.pmoon_boss_blood_moon"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+"param.headbar_hidden"=true
+"param.boss_hp_bar_colour_back"=1048576
+"param.boss_hp_bar_colour_sliding"=4194304
+"param.boss_hp_bar_colour_remaining"=7866376
+"param.attack_range"=15
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.thrall_immunity"=1
+"param.burn_immunity"=1
+"param.freeze_resistance"=100
+"param.elemental_weakness_type"=0
+"param.elemental_weakness_percent"=15
+
+[[npc]]
+id = "npc.pmoon_boss_blue_moon"
+inherit = "npc.pmoon_boss_blue_moon"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+"param.headbar_hidden"=true
+"param.boss_hp_bar_colour_back"=1581088
+"param.boss_hp_bar_colour_sliding"=5798024
+"param.boss_hp_bar_colour_remaining"=10543352
+"param.attack_range"=15
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.thrall_immunity"=1
+"param.burn_immunity"=1
+"param.freeze_resistance"=100
+"param.elemental_weakness_type"=0
+"param.elemental_weakness_percent"=15
+
+[[npc]]
+id = "npc.pmoon_boss_eclipse_moon"
+inherit = "npc.pmoon_boss_eclipse_moon"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+"param.headbar_hidden"=true
+"param.boss_hp_bar_colour_back"=2101248
+"param.boss_hp_bar_colour_sliding"=8407048
+"param.boss_hp_bar_colour_remaining"=15239184
+"param.attack_range"=15
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.thrall_immunity"=1
+"param.burn_immunity"=1
+"param.freeze_resistance"=100
+"param.elemental_weakness_type"=0
+"param.elemental_weakness_percent"=15
+
+[[npc]]
+id = "npc.pmoon_boss_eclipse_clone"
+inherit = "npc.pmoon_boss_eclipse_clone"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+
+[[npc]]
+id = "npc.pmoon_boss_icicle_1"
+inherit = "npc.pmoon_boss_icicle_1"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+"param.headbar_hidden"=true
+
+[[npc]]
+id = "npc.pmoon_boss_icicle_2"
+inherit = "npc.pmoon_boss_icicle_2"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+"param.headbar_hidden"=true
+
+[[npc]]
+id = "npc.pmoon_boss_icicle_3"
+inherit = "npc.pmoon_boss_icicle_3"
+moveRestrict = "NoMove"
+wanderRange = 0
+[npc.params]
+"param.hitpoints_locked"=true
+"param.headbar_hidden"=true
+
+[[npc]]
 id = "npc.pmoon_boss_blood_moon_vis"
 inherit = "npc.pmoon_boss_blood_moon_vis"
 [npc.params]
@@ -15128,6 +15238,7 @@ inherit = "npc.pmoon_boss_blue_moon_vis"
 id = "npc.pmoon_boss_jaguar"
 inherit = "npc.pmoon_boss_jaguar"
 [npc.params]
+"param.hitpoints_locked"=true
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=15
 
@@ -17167,3 +17278,9 @@ wanderRange = 0
 id = "npc.poh_sawmill_opp"
 inherit = "npc.poh_sawmill_opp"
 wanderRange = 0
+
+[[npc]]
+id = "npc.pmoon_boss_winter_storm"
+inherit = "npc.pmoon_boss_winter_storm"
+moveRestrict = "NoClip"
+defaultMode = "None"

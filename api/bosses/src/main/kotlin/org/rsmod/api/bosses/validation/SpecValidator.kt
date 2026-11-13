@@ -29,7 +29,8 @@ object SpecValidator {
      * `ImpactTile` resolves), [currentTileBound] inside an [Effect.OnTiles] (so `CurrentTile`
      * resolves), [tileNames]/[setNames] bound by enclosing [Effect.WithTile]/[Effect.WithTiles],
      * [deferred] when it runs on a later tick outside the ability's own timeline ([Effect.After],
-     * impacts, on-hit effects).
+     * impacts, on-hit effects), [targetless] when it runs with no current target (an ambient spec,
+     * outside an [Effect.OnEach]).
      */
     private data class Scope(
         val label: String,
@@ -39,6 +40,7 @@ object SpecValidator {
         val setNames: Set<String> = emptySet(),
         val deferred: Boolean = false,
         val hitAware: Boolean = false,
+        val targetless: Boolean = false,
     ) {
         val prefix: String
             get() = if (label.isNotEmpty()) "$label: " else ""
@@ -49,13 +51,18 @@ object SpecValidator {
         private val abilityNames = spec.abilities.keys
         private val phaseNames = spec.phases.keys
 
+        private val ambient = spec.ambient
+
+        private fun root(label: String, deferred: Boolean = false) =
+            Scope(label, deferred = deferred, targetless = ambient)
+
         fun run(): List<ValidationError> {
             val bossName = spec.npcTypes.joinToString()
             if (spec.abilities.isEmpty()) error("Boss '$bossName' has no abilities defined.")
             if (spec.phases.isEmpty()) error("Boss '$bossName' has no phases defined.")
 
             for ((phaseName, phase) in spec.phases) {
-                val scope = Scope("phase '$phaseName'")
+                val scope = root("phase '$phaseName'")
                 phase.entry?.let { requireAbility(it, scope, "entry ability") }
                 phase.transmog?.let {
                     if (it !in spec.npcTypes) {
@@ -67,10 +74,19 @@ object SpecValidator {
                     forced.condition?.let { condition(it, scope) }
                 }
                 selector(phase.selector, scope, abilityNames)
-                phase.timers.forEach { timer(it, Scope("phase '$phaseName' timer", deferred = true)) }
+                phase.timers.forEach { timer(it, root("phase '$phaseName' timer", deferred = true)) }
             }
 
-            spec.timers.forEach { timer(it, Scope("timer", deferred = true)) }
+            spec.timers.forEach { timer(it, root("timer", deferred = true)) }
+
+            spec.personalHp?.let { personal ->
+                val scope = Scope("personalHp")
+                if (personal.maxHitpoints <= 0) {
+                    error("${scope.prefix}maxHitpoints '${personal.maxHitpoints}' must be greater than 0.")
+                }
+                personal.onDeath?.let { requireAbility(it, scope, "onDeath ability") }
+                personal.headbar?.let { headbarRef(it, scope) }
+            }
 
             for ((ability, delay) in spec.abilityAttackDelays) {
                 val scope = Scope("ability '$ability'")
@@ -78,8 +94,8 @@ object SpecValidator {
                 if (delay <= 0) error("${scope.prefix}attack delay '$delay' must be greater than 0.")
             }
 
-            spec.triggers.forEach { effect(it.effect, Scope("trigger")) }
-            spec.triggers.forEach { condition(it.condition, Scope("trigger")) }
+            spec.triggers.forEach { effect(it.effect, root("trigger")) }
+            spec.triggers.forEach { condition(it.condition, root("trigger")) }
 
             for (reaction in spec.hitReactions) {
                 val scope = Scope("hit reaction")
@@ -108,8 +124,10 @@ object SpecValidator {
                 }
             }
 
+            val onDeath = spec.personalHp?.onDeath
             for ((name, ability) in spec.abilities) {
-                effect(ability, Scope("ability '$name'"))
+                val scope = if (name == onDeath) Scope("ability '$name'") else root("ability '$name'")
+                effect(ability, scope)
             }
 
             val hpValues = spec.phases.values.mapNotNull { it.entryHp }
@@ -237,6 +255,7 @@ object SpecValidator {
                     varExpr(expr.a, scope)
                     varExpr(expr.b, scope)
                 }
+                is VarExpr.PlayerVar -> requireTarget(scope, "playerVar")
                 is VarExpr.BearingTo -> {
                     target(expr.to, scope, "bearingTo")
                     target(expr.from, scope, "bearingTo")
@@ -244,7 +263,29 @@ object SpecValidator {
             }
         }
 
+        private fun requireTarget(scope: Scope, what: String) {
+            if (!scope.targetless) return
+            error(
+                "${scope.prefix}$what needs a current target, but an ambient spec runs this " +
+                    "without one; aim it with onEach(...) instead."
+            )
+        }
+
+        private fun needsTarget(expr: TargetExpr): Boolean =
+            when (expr) {
+                is TargetExpr.CurrentTarget,
+                is TargetExpr.CurrentTargetTile,
+                is TargetExpr.HighestDamageDealer,
+                is TargetExpr.LowestPrayer,
+                is TargetExpr.RandomNearby,
+                is TargetExpr.Custom,
+                is TargetExpr.TopN,
+                is TargetExpr.FacingQuadrant -> true
+                else -> false
+            }
+
         private fun target(expr: TargetExpr, scope: Scope, what: String) {
+            if (needsTarget(expr) || tilesIn(expr).any(::needsTarget)) requireTarget(scope, what)
             for (tile in tilesIn(expr)) {
                 when (tile) {
                     is TargetExpr.ImpactTile ->
@@ -310,7 +351,10 @@ object SpecValidator {
                     area(tiles.area, scope, what)
                     tiles.tiles.forEach { target(it, scope, what) }
                 }
-                is TileSet.Custom -> area(tiles.area, scope, what)
+                is TileSet.Custom -> {
+                    requireTarget(scope, "custom $what")
+                    area(tiles.area, scope, what)
+                }
                 is TileSet.Plus -> {
                     tileSet(tiles.a, scope)
                     tileSet(tiles.b, scope)
@@ -381,7 +425,7 @@ object SpecValidator {
                 }
                 is Effect.OnEach -> {
                     target(effect.targets, scope, name)
-                    effect(effect.effect, scope)
+                    effect(effect.effect, scope.copy(targetless = false))
                 }
                 is Effect.OnTiles -> {
                     tileSet(effect.tiles, scope)
@@ -403,6 +447,10 @@ object SpecValidator {
                     varn(effect.varn, scope)
                     varExpr(effect.value, scope)
                 }
+                is Effect.SetPlayerVar -> {
+                    requireTarget(scope, name)
+                    varExpr(effect.value, scope)
+                }
                 is Effect.Switch -> {
                     varn(effect.varn, scope)
                     if (effect.cases.isEmpty()) error("${scope.prefix}Switch on '${effect.varn}' has no cases.")
@@ -413,8 +461,10 @@ object SpecValidator {
                 is Effect.SpawnLoc -> {
                     target(effect.at, scope, name)
                     if (effect.angle !in 0..3) error("${scope.prefix}SpawnLoc angle '${effect.angle}' must be 0..3.")
+                    effect.onStand?.let { effect(it, scope.copy(deferred = true, targetless = false)) }
                 }
-                is Effect.Knockback -> area(effect.within, scope, name)
+                is Effect.RemoveLoc -> target(effect.at, scope, name)
+                is Effect.LocAnim -> target(effect.at, scope, name)
                 is Effect.Message -> target(effect.target, scope, name)
                 is Effect.SoundTo -> target(effect.target, scope, name)
                 is Effect.Sound -> effect.at?.let { target(it, scope, name) }
@@ -423,8 +473,19 @@ object SpecValidator {
                 is Effect.CamShake -> effect.target?.let { target(it, scope, name) }
                 is Effect.CamReset -> target(effect.target, scope, name)
                 is Effect.Bleed -> {
-                    effect.onApply?.let { effect(it, scope.copy(deferred = true)) }
-                    effect.onMovingHit?.let { effect(it, scope.copy(deferred = true)) }
+                    requireTarget(scope, name)
+                    effect.onApply?.let { effect(it, scope.copy(deferred = true, targetless = false)) }
+                    effect.onMovingHit?.let { effect(it, scope.copy(deferred = true, targetless = false)) }
+                }
+                is Effect.Poison,
+                is Effect.Freeze,
+                is Effect.DisablePrayers,
+                is Effect.StatDrain,
+                is Effect.FaceTarget,
+                is Effect.TileAoE -> requireTarget(scope, name)
+                is Effect.Knockback -> {
+                    requireTarget(scope, name)
+                    area(effect.within, scope, name)
                 }
                 is Effect.Debris -> target(effect.center, scope, name)
                 is Effect.Summon -> target(effect.centeredOn, scope, name)

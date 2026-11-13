@@ -654,6 +654,18 @@ internal enum class FoodData(
         heal = 14,
         effect = "cooked_moonlight_antelope",
     ),
+    NEYPOTZLI_BREAM(
+        row = "dbrow.neypotzli_bream",
+        items = listOf("obj.bream_fish_cooked"),
+        heal = 1,
+        effect = "neypotzli_bream",
+    ),
+    NEYPOTZLI_MOSS_LIZARD(
+        row = "dbrow.neypotzli_moss_lizard",
+        items = listOf("obj.cooked_lizard"),
+        heal = 1,
+        effect = "neypotzli_moss_lizard",
+    ),
     POTATO_WITH_CHEESE(
         row = "dbrow.potato_with_cheese",
         items = listOf("obj.potato_cheese"),

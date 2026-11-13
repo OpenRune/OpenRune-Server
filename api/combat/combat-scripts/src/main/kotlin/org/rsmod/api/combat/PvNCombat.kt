@@ -24,6 +24,7 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.specials.SpecialAttackType
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
+import org.rsmod.api.spells.attack.SpellAttackManager
 import org.rsmod.api.spells.attack.SpellAttackRegistry
 import org.rsmod.api.spells.attack.attack
 import org.rsmod.api.weapons.WeaponRegistry
@@ -43,6 +44,7 @@ constructor(
     private val manager: PlayerAttackManager,
     private val ammunition: RangedAmmoManager,
     private val spellsReg: SpellAttackRegistry,
+    private val spellManager: SpellAttackManager,
     private val attackValidateHooks: Set<NpcAttackValidateHook>,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Npc, attack: CombatAttack.PlayerAttack) {
@@ -245,6 +247,7 @@ constructor(
         val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ, attack.spell.obj.id)]
         if (spell != null) {
             spell.attack(this, npc, attack)
+            spellManager.afterSpell(this, npc, attack)
             return
         }
 

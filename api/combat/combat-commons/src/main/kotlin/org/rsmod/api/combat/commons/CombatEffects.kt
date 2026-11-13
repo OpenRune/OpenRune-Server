@@ -36,8 +36,18 @@ public object CombatEffects {
         target.freezeImmune = false
     }
 
+    public fun frozenTicks(target: Player): Int =
+        if (target.isFrozen) {
+            target.timerMap.remainingCycles("timer.combat_freeze", target.currentMapClock)
+        } else {
+            0
+        }
+
     public fun isFrozen(target: Npc): Boolean =
         target.vars["varn.freeze_end_clock"] > target.currentMapClock
+
+    public fun frozenTicks(target: Npc): Int =
+        maxOf(0, target.vars["varn.freeze_end_clock"] - target.currentMapClock)
 
     public fun freeze(target: Npc, ticks: Int, ignoreImmunity: Boolean = false): Boolean {
         val clock = target.currentMapClock
