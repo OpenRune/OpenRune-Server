@@ -76,7 +76,7 @@ several is a *mixed world* — see
 ### Farming growth speed
 
 `gameplay.farming-growth-rate` in `game.yml` sets the server's Farming growth speed.
-It is a positive integer: `1` (the default) preserves normal timing; `5` advances five
+It is an integer from `1` to `100`: `1` (the default) preserves normal timing; `5` advances five
 growth minutes per real minute. Patches, weeds and inventory/banked saplings share
 this clock. It changes growth timing, not XP, yields, level requirements or disease rules.
 Restart the server after changing the configuration.
@@ -102,6 +102,8 @@ Administrators can test their own character with:
 
 Advancing updates supported patches and inventory/banked saplings immediately.
 It neither harvests crops nor grants XP. These commands do not affect other players.
+Rate overrides use the same `1`–`100` range. An advance is rejected if it would leave
+less than ten years of clock range at the maximum supported rate.
 
 ## Switching mode
 

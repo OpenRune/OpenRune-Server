@@ -34,8 +34,9 @@ class FarmingCommandsScript @Inject constructor(
         val value = args.firstOrNull()
         if (value != null) {
             val rate = if (value.equals("reset", ignoreCase = true)) 0 else value.toIntOrNull()
-            if (rate == null || (rate <= 0 && !value.equals("reset", ignoreCase = true))) {
-                return player.mes("Use a positive integer or reset for the server default.")
+            if (rate == null || rate > FarmingClock.MAX_RATE ||
+                (rate <= 0 && !value.equals("reset", ignoreCase = true))) {
+                return player.mes("Use a rate from 1 to ${FarmingClock.MAX_RATE} or reset for the server default.")
             }
             refresh()
             player.farmingGrowthRate = rate
@@ -49,7 +50,9 @@ class FarmingCommandsScript @Inject constructor(
         if (minutes == null || minutes <= 0) return player.mes("Usage: ::farmadvance positiveMinutes")
         val millis = System.currentTimeMillis()
         val current = FarmingClock.millis(player, millis) / FarmingClock.MINUTE_MILLIS
-        if (minutes.toLong() + current > Int.MAX_VALUE) return player.mes("That advance exceeds the Farming clock range.")
+        if (minutes.toLong() + current > FarmingClock.MAX_ADVANCE_MINUTE) {
+            return player.mes("That advance leaves insufficient Farming clock headroom.")
+        }
         refresh(millis)
         FarmingClock.advance(player, minutes, millis)
         refresh(millis)

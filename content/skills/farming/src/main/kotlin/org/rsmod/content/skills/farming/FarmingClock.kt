@@ -8,6 +8,10 @@ object FarmingClock {
     private const val OFFSET = "varp.farming_growth_offset"
     private const val INITIALIZED = 32
     internal const val MINUTE_MILLIS = 60_000L
+    internal const val MAX_RATE = 100
+
+    // Keep ten years at the maximum rate available after any administrative advance.
+    internal const val MAX_ADVANCE_MINUTE = Int.MAX_VALUE - MAX_RATE * 60 * 24 * 366 * 10
 
     private const val RATE = "varp.farming_growth_rate"
     private const val APPLIED_RATE = "varp.farming_growth_applied_rate"
@@ -18,7 +22,7 @@ object FarmingClock {
 
     var defaultRate: Int = 1
         set(value) {
-            require(value > 0) { "Farming growth rate must be positive" }
+            require(value in 1..MAX_RATE) { "Farming growth rate must be between 1 and $MAX_RATE" }
             field = value
         }
 
@@ -26,7 +30,7 @@ object FarmingClock {
 
     fun millis(player: Player, realMillis: Long = System.currentTimeMillis()): Long {
         val rate = rate(player)
-        require(rate > 0) { "Farming growth rate must be positive" }
+        require(rate in 1..MAX_RATE) { "Farming growth rate must be between 1 and $MAX_RATE" }
         val applied = player.vars[APPLIED_RATE]
         val previousReal = player.vars[REAL_MINUTE] * MINUTE_MILLIS + player.vars[REAL_MILLIS]
         val previousGrowth = player.vars[GROWTH_MINUTE] * MINUTE_MILLIS + player.vars[GROWTH_MILLIS]
@@ -39,7 +43,7 @@ object FarmingClock {
     }
 
     internal fun setRate(player: Player, rate: Int, realMillis: Long = System.currentTimeMillis()) {
-        require(rate >= 0) { "Use zero for the server default or a positive Farming growth rate" }
+        require(rate in 0..MAX_RATE) { "Use zero for the server default or a Farming growth rate from 1 to $MAX_RATE" }
         millis(player, realMillis)
         VarPlayerIntMapSetter.set(player, RATE, rate)
         millis(player, realMillis)
@@ -49,6 +53,9 @@ object FarmingClock {
     internal fun advance(player: Player, minutes: Int, realMillis: Long = System.currentTimeMillis()) {
         require(minutes > 0) { "Farming advance must be positive" }
         val growth = Math.addExact(millis(player, realMillis), minutes * MINUTE_MILLIS)
+        require(Math.floorDiv(growth, MINUTE_MILLIS) <= MAX_ADVANCE_MINUTE) {
+            "That advance leaves insufficient Farming clock headroom"
+        }
         val real = player.vars[REAL_MINUTE] * MINUTE_MILLIS + player.vars[REAL_MILLIS]
         save(player, real, growth, rate(player))
         reschedule(player, realMillis)

@@ -103,9 +103,44 @@ class FarmingClockTest {
         assertThrows(IllegalArgumentException::class.java) { FarmingClock.defaultRate = 0 }
         assertThrows(IllegalArgumentException::class.java) { FarmingClock.setRate(player, -1, NOW) }
         assertThrows(IllegalArgumentException::class.java) { FarmingClock.advance(player, 0, NOW) }
-        assertThrows(ArithmeticException::class.java) { FarmingClock.advance(player, Int.MAX_VALUE, NOW) }
+        assertThrows(IllegalArgumentException::class.java) { FarmingClock.advance(player, Int.MAX_VALUE, NOW) }
         assertEquals(0, player.farmingGrowthRate)
         assertEquals(NOW, FarmingClock.millis(player, NOW))
+    }
+
+    @Test
+    fun `advance to the integer limit is rejected so subsequent growth and reset still work`() {
+        val player = player()
+        FarmingClock.millis(player, NOW)
+        val toLimit = Int.MAX_VALUE - (NOW / FarmingClock.MINUTE_MILLIS).toInt()
+        assertThrows(IllegalArgumentException::class.java) { FarmingClock.advance(player, toLimit, NOW) }
+        assertEquals(NOW + 60_000, FarmingClock.millis(player, NOW + 60_000))
+        FarmingClock.setRate(player, 0, NOW + 60_000)
+        assertEquals(NOW + 120_000, FarmingClock.millis(player, NOW + 120_000))
+    }
+
+    @Test
+    fun `extreme player and server rates are rejected before changing the clock`() {
+        val player = player()
+        FarmingClock.millis(player, NOW)
+        assertThrows(IllegalArgumentException::class.java) { FarmingClock.defaultRate = Int.MAX_VALUE }
+        assertThrows(IllegalArgumentException::class.java) { FarmingClock.setRate(player, Int.MAX_VALUE, NOW) }
+        assertEquals(1, FarmingClock.rate(player))
+        assertEquals(NOW + 60_000, FarmingClock.millis(player, NOW + 60_000))
+    }
+
+    @Test
+    fun `maximum accepted advance retains headroom for growth at maximum rate and reset`() {
+        val player = player()
+        FarmingClock.setRate(player, FarmingClock.MAX_RATE, NOW)
+        val advance = FarmingClock.MAX_ADVANCE_MINUTE - (NOW / FarmingClock.MINUTE_MILLIS).toInt()
+        assertThrows(IllegalArgumentException::class.java) { FarmingClock.advance(player, advance + 1, NOW) }
+        FarmingClock.advance(player, advance, NOW)
+        val atLimit = FarmingClock.MAX_ADVANCE_MINUTE * FarmingClock.MINUTE_MILLIS
+        assertEquals(atLimit, FarmingClock.millis(player, NOW))
+        assertEquals(atLimit + 6_000_000, FarmingClock.millis(player, NOW + 60_000))
+        FarmingClock.setRate(player, 0, NOW + 60_000)
+        assertEquals(atLimit + 6_060_000, FarmingClock.millis(player, NOW + 120_000))
     }
 
     private fun player(): Player = Player().apply {

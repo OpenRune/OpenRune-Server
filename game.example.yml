@@ -20,7 +20,7 @@ world: 255
 world-types: ["main"]
 
 gameplay:
-  # Farming growth speed: 1 is normal, 5 is five times faster. Must be a positive integer.
+  # Farming growth speed: integer 1-100. 1 is normal, 5 is five times faster.
   # Applies to patches, weeds and saplings, including offline growth.
   farming-growth-rate: 1
   drop-rates:
