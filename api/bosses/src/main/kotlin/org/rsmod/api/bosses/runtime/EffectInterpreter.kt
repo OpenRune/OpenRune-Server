@@ -19,6 +19,8 @@ import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.mechanics.toxins.impl.PlayerBleed
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.heal
+import org.rsmod.api.npc.hit.modifier.NpcHitModifier
+import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.disableOverheadPrayers
 import org.rsmod.api.player.disablePrayers
@@ -46,6 +48,8 @@ import org.rsmod.map.util.Bounds
 
 /** The [BossEncounter.epoch] one ability run belongs to, shared with the interpreters it spawns. */
 class AbilityRun internal constructor(internal var epoch: Int)
+
+private val NoopNpcHitModifier = NpcHitModifier {}
 
 class EffectInterpreter internal constructor(
     private val npc: Npc,
@@ -150,6 +154,7 @@ class EffectInterpreter internal constructor(
             is Effect.Summon -> summon(access, effect)
             is Effect.Bleed -> applyBleed(access, effect)
             is Effect.Poison -> applyPoison(effect)
+            is Effect.Venom -> applyVenom(effect)
             is Effect.Freeze -> applyFreeze(effect)
             is Effect.DisablePrayers ->
                 if (effect.overheadsOnly) target.disableOverheadPrayers() else target.disablePrayers()
@@ -279,6 +284,7 @@ class EffectInterpreter internal constructor(
                 deps.spawnOwnedLoc(npc, resolveTile(effect.at), effect.loc, effect.angle, effect.blockPlayersOnly)
             }
             is Effect.Knockback -> knockback(effect)
+            is Effect.HitNpcs -> hitNpcs(effect)
         }
         onComplete()
     }
@@ -777,6 +783,12 @@ class EffectInterpreter internal constructor(
         }
     }
 
+    private fun applyVenom(effect: Effect.Venom) {
+        if (deps.random.of(effect.outOf) < effect.chance) {
+            CombatEffects.venom(target)
+        }
+    }
+
     private fun applyFreeze(effect: Effect.Freeze) {
         if (deps.random.of(effect.outOf) < effect.chance) {
             CombatEffects.freeze(target, effect.ticks)
@@ -995,6 +1007,25 @@ class EffectInterpreter internal constructor(
             BossHitType.WyvernIce -> DragonfireProtection.DragonfireType.WyvernIce
             else -> null
         }
+
+    private fun hitNpcs(effect: Effect.HitNpcs) {
+        val tiles = effect.on.map(::resolveTile)
+        val typeIds = effect.npcTypes?.map { it.asRSCM(RSCMType.NPC) }?.toSet()
+        val candidates = encounter.ownedNpcSnapshot() + if (effect.includeSelf) listOf(npc) else emptyList()
+        for (victim in candidates) {
+            if (!victim.isSlotAssigned || victim.hitpoints <= 0) continue
+            if (victim !== npc && typeIds != null && victim.visType.id !in typeIds) continue
+            if (tiles.none { victim.covers(it) }) continue
+            val expr = if (victim === npc) effect.selfDamage ?: effect.damage else effect.damage
+            val damage = evaluateDamage(expr, effect.type, target)
+            victim.queueHit(npc, effect.delay, effect.type.toEngine(), damage, NoopNpcHitModifier)
+        }
+    }
+
+    private fun Npc.covers(tile: CoordGrid): Boolean =
+        tile.level == coords.level &&
+            tile.x in coords.x until coords.x + visType.size &&
+            tile.z in coords.z until coords.z + visType.size
 
     private fun evaluateDamage(expr: DamageExpr, hitType: BossHitType, t: Player): Int {
         return when (expr) {

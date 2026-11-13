@@ -558,6 +558,12 @@ internal enum class FoodData(
         heal = 8,
         effect = "fat_snail_meat",
     ),
+    ARAXYTE_VENOM_SAC(
+        row = "dbrow.araxyte_venom_sac",
+        items = listOf("obj.araxyte_venom_sack"),
+        heal = 0,
+        effect = "araxyte_venom_sac",
+    ),
     SPIDER_ON_STICK(
         row = "dbrow.spider_on_stick",
         items = listOf("obj.tbw_spider_on_stick_cooked"),

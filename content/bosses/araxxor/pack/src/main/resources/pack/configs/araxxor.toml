@@ -1,0 +1,20 @@
+[[varp]]
+id = "varp.araxxor_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.araxxor_skip_destroy_prompt"
+varp = "varp.araxxor_state"
+startBit = 0
+endBit = 0
+
+[[varp]]
+id = "varp.araxxor_boots_ranged"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.araxxor_boots_cleave"
+scope = "Temp"
+transmit = "Never"

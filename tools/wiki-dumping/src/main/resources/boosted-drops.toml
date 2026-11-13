@@ -56,3 +56,6 @@ npcs = ["npc.molanisk"]
 [[boosted]]
 objs = ["obj.fire_ruby"]
 npcs = ["npc.slayer_infernal_mage_*"]
+
+[[boosted]]
+objs = ["obj.aranea_boots"]

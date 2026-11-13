@@ -67,7 +67,8 @@ constructor(
         val interaction = npc.interaction
         var interacted = false
 
-        val isUnderTarget = interaction != null && npc.isUnderTarget(interaction)
+        val isUnderTarget =
+            interaction != null && !npc.interactsWhenUnderTarget && npc.isUnderTarget(interaction)
         if (isUnderTarget) {
             // TODO(engine): Red-X has changed a bit over the past revisions. Exceptions have been
             //  added to the condition; will need to test and investigate further.
@@ -81,6 +82,9 @@ constructor(
             return
         }
 
+        val chasesFromUnder =
+            interaction != null && npc.interactsWhenUnderTarget && npc.isUnderTarget(interaction)
+
         if (interaction != null && !npc.isBusy) {
             val cancel = npc.shouldCancelInteraction(interaction)
             if (cancel) {
@@ -88,11 +92,13 @@ constructor(
                 npc.defaultMode()
                 return
             }
-            npc.preMovementInteraction(interaction)
+            npc.preMovementInteraction(interaction, keepRoute = chasesFromUnder)
             interacted = interaction.interacted
         }
 
-        if (!interacted) {
+        if (interacted && chasesFromUnder) {
+            movement.process(npc)
+        } else if (!interacted) {
             // Note: Rerouting to target is handled via the npc's ai mode as it gets re-applied
             // implicitly every cycle.
             movement.process(npc)
@@ -108,13 +114,13 @@ constructor(
         }
     }
 
-    private fun Npc.preMovementInteraction(interaction: Interaction): Unit =
+    private fun Npc.preMovementInteraction(interaction: Interaction, keepRoute: Boolean): Unit =
         with(interaction) {
             interacted = false
             apRangeCalled = false
 
             val step = determinePreMovementStep(this)
-            processInteractionStep(interaction, step)
+            processInteractionStep(interaction, step, keepRoute)
         }
 
     private fun Npc.postMovementInteraction(interaction: Interaction): Unit =
@@ -123,7 +129,11 @@ constructor(
             processInteractionStep(this, step)
         }
 
-    private fun Npc.processInteractionStep(interaction: Interaction, step: InteractionStep): Any =
+    private fun Npc.processInteractionStep(
+        interaction: Interaction,
+        step: InteractionStep,
+        keepRoute: Boolean = false,
+    ): Any =
         with(interaction) {
             when (step) {
                 InteractionStep.TriggerScriptOp -> {
@@ -131,7 +141,7 @@ constructor(
                     interacted = true
                 }
                 InteractionStep.TriggerScriptAp -> {
-                    abortRoute()
+                    if (!keepRoute) abortRoute()
                     triggerAp(interaction)
                     interacted = true
                 }
@@ -263,7 +273,7 @@ constructor(
         boundValidator.touches(source = avatar, target = interaction.target.avatar)
 
     private fun Npc.isWithinApRange(interaction: InteractionNpc): Boolean {
-        val isUnderTarget = isUnderTarget(interaction)
+        val isUnderTarget = !interactsWhenUnderTarget && isUnderTarget(interaction)
         if (isUnderTarget) {
             return false
         }
@@ -339,7 +349,7 @@ constructor(
         boundValidator.touches(source = avatar, target = interaction.target.avatar)
 
     private fun Npc.isWithinApRange(interaction: InteractionPlayer): Boolean {
-        val isUnderTarget = isUnderTarget(interaction)
+        val isUnderTarget = !interactsWhenUnderTarget && isUnderTarget(interaction)
         if (isUnderTarget) {
             return false
         }

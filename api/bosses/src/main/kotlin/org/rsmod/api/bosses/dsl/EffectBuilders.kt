@@ -290,6 +290,16 @@ fun spawnLoc(loc: String, at: TargetExpr.Single, angle: Int = 0, blockPlayersOnl
 
 fun knockback(anim: String, within: Area): Effect = Effect.Knockback(anim, within)
 
+fun hitNpcs(
+    on: List<TargetExpr.Single>,
+    damage: DamageExpr,
+    type: HitType = HitType.Typeless,
+    delay: Int = 1,
+    selfDamage: DamageExpr? = null,
+    includeSelf: Boolean = true,
+    npcTypes: List<String>? = null,
+): Effect = Effect.HitNpcs(on, damage, type, delay, selfDamage, includeSelf, npcTypes)
+
 fun playersIn(area: Area): TargetExpr.Multi = TargetExpr.PlayersIn(area)
 
 fun playersOn(tile: TargetExpr.Single): TargetExpr.Multi = TargetExpr.PlayersOn(tile)
@@ -326,6 +336,10 @@ fun transmog(to: String, durationTicks: Int): Effect = Effect.Transmog(to, durat
 fun poison(damage: Int, chance: Int = 1, outOf: Int = 1): Effect = Effect.Poison(damage, chance, outOf)
 
 fun poison(damage: Int, odds: Odds): Effect = Effect.Poison(damage, odds.chance, odds.outOf)
+
+fun venom(chance: Int = 1, outOf: Int = 1): Effect = Effect.Venom(chance, outOf)
+
+fun venom(odds: Odds): Effect = Effect.Venom(odds.chance, odds.outOf)
 
 fun freeze(ticks: Int, chance: Int = 1, outOf: Int = 1): Effect = Effect.Freeze(ticks, chance, outOf)
 
