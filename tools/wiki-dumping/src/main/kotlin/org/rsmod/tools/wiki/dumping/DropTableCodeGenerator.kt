@@ -216,7 +216,7 @@ data class GeneratedDropTableSpec(
 object DropTableCodeGenerator {
     private const val LOOTING_BAG_OBJ = "obj.looting_bag"
     private const val BRIMSTONE_KEY_OBJ = "obj.konar_key"
-    private const val TRAIL_RIDDLE_KEY_OBJ_PREFIX = "obj.trail_elite_riddle_key"
+    private const val TRAIL_RIDDLE_KEY_OBJ = "obj.trail_elite_riddle_key32"
     private val CLUE_HEADER = Regex("""(.+) (weight|separate) "[^"]+"""")
 
     fun generate(spec: GeneratedDropTableSpec): String = generateFile(listOf(spec))
@@ -484,7 +484,7 @@ object DropTableCodeGenerator {
     ): ResolvedDropEntry? {
         val obj = objLookup.resolveWikiItem(itemLookup, drop.name, noted = drop.isNoted) ?: return null
         // Clue riddle keys are handled by the clue scroll content, not by npc drop tables.
-        if (obj.startsWith(TRAIL_RIDDLE_KEY_OBJ_PREFIX)) return null
+        if (obj == TRAIL_RIDDLE_KEY_OBJ) return null
         if (isClueKillStepDrop(obj, drop.wikiNotes.condition)) return null
         val bonusDrops = resolveBonusDrops(drop.wikiNotes.companionDrops, itemLookup, objLookup, drop.name, drop.quantity)
 
