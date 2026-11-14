@@ -695,7 +695,7 @@ internal fun Player.ifOpenChat(interf: String, widthAndHeightMode: Int, eventBus
     openModal(interf, "component.chatbox:chatmodal", eventBus)
 }
 
-private fun Player.ifSetPauseText(component: String, text: String) {
+internal fun Player.ifSetPauseText(component: String, text: String) {
     if (text.isNotBlank()) {
         ifSetEvents(component, -1..-1, IfEvent.PauseButton)
     } else {
