@@ -6,6 +6,7 @@ import org.rsmod.api.instances.BossInstanceRegistry
 import org.rsmod.api.instances.InstanceArea
 import org.rsmod.api.instances.InstanceNpc
 import org.rsmod.api.instances.InstanceScript
+import org.rsmod.api.instances.exitLocObjects
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.output.ChatType
@@ -13,6 +14,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onOpLoc2
+import org.rsmod.api.script.onOpLoc3
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
@@ -40,6 +42,9 @@ constructor(
         onEnterObject { openGate() }
         onExitObject { leaveLair() }
         onExitObjectApproach2 { leaveLair() }
+        settingsRowData().exitLocObjects().forEach { loc ->
+            onOpLoc3(loc) { quickExitLair() }
+        }
         onInstancePlayerJoin {
             val boss = manager.npcsForInstance(instanceId).firstOrNull { npc ->
                 npc.isType(BOSS_NPC) && npc.hitpoints > 0
@@ -86,6 +91,10 @@ constructor(
 
     private suspend fun ProtectedAccess.leaveLair() {
         mes("Cautiously, you climb out of the damp cave.", ChatType.Spam)
+        defaultLeaveFlow()
+    }
+
+    private suspend fun ProtectedAccess.quickExitLair() {
         defaultLeaveFlow()
     }
 

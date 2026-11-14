@@ -30,6 +30,8 @@ fight, growthlings, lair access, chest loot and the giant bones drop.
 
 - Copies region 12955 (`InstanceArea.copyRegions`), solo, `destroyWhenEmpty = true`.
 - Enter coordinate `3214, 9937`; exit rock pile `loc.gb_moss_caverock_exit` at `3212, 9937`.
+- The exit boulder has `Clamber` (`onExitObject`) and `Quick-exit` (`onOpLoc3`, immediate
+  leave that also works while the boss is still fighting).
 - Leaving uses the DB exit coordinate `3174, 9900`.
 - Kill times are not recorded (`recordsKillTime = false`).
 - The boss is spawned from the instance settings row at `3220, 9933` and attacks on entry.
