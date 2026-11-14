@@ -36,16 +36,24 @@ fight, growthlings, lair access, chest loot and the giant bones drop.
 
 ## Combat
 
+- Stats match the cache/wiki: 115 hitpoints, 130 Attack, 100 Strength, 100 Defence, 90
+  Magic, combat level 128.
 - Attack rate 6 ticks.
 - Melee: crush, sequence `seq.giant_update_moss_attack`, max hit 16.
 - Magic: sequence `seq.giant_basic_spell`, earth blast travel/impact `139`/`140`, max hit 10.
-- The boss is stationary and uses magic outside melee range.
+  The projectile uses `172` start height, `124` end height, `16` curve, `64` progress and
+  5 client cycles per tile (the post-`map_projanim_v2` timing); the impact graphic is
+  attached to the target player, not the cast tile.
+- In melee range the boss rolls melee or magic at equal weight; outside melee range it
+  only uses magic.
 - Members worlds apply poison for 8 damage through `param.npc_poison_severity = 40`.
   Poison is not re-applied while the player is already poisoned.
 - The 50% fire elemental weakness comes from the cache NPC params.
 
 ## Growthlings
 
+- Stats match the cache/wiki: 10 hitpoints, 40 Attack, 38 Strength, 40 Defence, combat
+  level 37, attack speed 4, max hit 5.
 - After losing ~25% HP, each boss attack and each player hit has a 1/5 chance to summon
   three growthlings within three tiles of the boss.
 - There is a 20-tick cooldown after a summon and after the last growthling dies.
@@ -55,10 +63,15 @@ fight, growthlings, lair access, chest loot and the giant bones drop.
   and venom still apply.
 - Growthlings can be damaged normally but cannot die to non-axe weapons: lethal damage is
   capped and the player sees `Cut the growthling down with an axe or secateurs.`
+- Growthlings use the tanglefoot animation set: `seq.tanglefoot_ready` /
+  `seq.tanglefoot_walk` for idle/walk, `seq.tanglefoot_attack`, `seq.tanglefoot_block`
+  and `seq.tanglefoot_death` for combat. Their `maxRange` is 30 so they keep chasing
+  across the lair, and `wanderRange` is 0 so a growthling without a target stands still
+  instead of wandering.
 - Left-clicking a growthling with an axe or magic secateurs equipped prunes it instantly:
-  it plays the equipped axe's chop animation (or the fairy pruning animation for magic
-  secateurs), dies without a hitsplat and awards combat XP for the growthling's maximum
-  hitpoints. The next growthling can be pruned on the following tick.
+  it plays `seq.human_dhsword_stab`, the same animation Jagex uses when using an axe or
+  secateurs on a growthling, dies without a hitsplat and awards combat XP for the
+  growthling's maximum hitpoints. The next growthling can be pruned on the following tick.
 - Using an axe, secateurs or magic secateurs on a growthling also prunes it instantly
   (`You prune the Growthling.`). Growthlings drop no remains.
 - The lair logs provide a bronze axe (`Take-axe`).
@@ -114,5 +127,6 @@ definitions are in `.data/raw-cache/server/{varp,varbit,varn}.toml`.
 - Chest table selection, key rates and herb subtable.
 - Giant bones Prayer row (150 XP).
 - Boss poison severity and suppressed default remains.
+- Boss/growthling combat stats, tanglefoot/moss giant animation params and chase range.
 
 Combat achievements and the giantsoul amulet teleport are intentionally out of scope.

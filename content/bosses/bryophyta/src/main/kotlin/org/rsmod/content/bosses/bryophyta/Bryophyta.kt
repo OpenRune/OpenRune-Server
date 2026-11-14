@@ -3,7 +3,6 @@ package org.rsmod.content.bosses.bryophyta
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcMode
 import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
@@ -14,6 +13,7 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.spawnOwnedNpc
 import org.rsmod.api.bosses.spec.Condition
+import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.combat.manager.PlayerAttackManager
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
@@ -84,7 +84,7 @@ constructor(
                 player.mes(TOO_STRONG_MESSAGE)
                 return@onOpNpcU
             }
-            pruneGrowthling(npc, weapon, awardXp = false)
+            pruneGrowthling(npc, awardXp = false)
         }
         onModifyNpcHit(growthlingType) { onGrowthlingHit(npc, hit) }
 
@@ -117,8 +117,20 @@ constructor(
                     sound("synth.earthblast_cast_and_fire")
                     projectile {
                         spotanim = "spotanim.earthblast_travel"
-                        impact = "spotanim.earthblast_impact"
+                        config =
+                            ProjectileConfig(
+                                startHeight = 172,
+                                endHeight = 124,
+                                startDelay = 51,
+                                travelTime = 0,
+                                angle = 16,
+                                progress = 64,
+                                stepMultiplier = 5,
+                            )
                         hit {
+                            spotanim("spotanim.earthblast_impact", height = 124)
+                            missSpotanim("spotanim.earthblast_impact")
+                            missSound("synth.spellfail")
                             damage(Accuracy(Roll(0..10)))
                             type(Magic)
                             onHit(external(POISON))
@@ -130,7 +142,7 @@ constructor(
                 attackRate = ATTACK_RATE
                 weightedSelectorRandom {
                     +random(melee, weight = 1, requires = WithinMeleeRange)
-                    +random(magic, weight = 1, requires = Condition.Not(WithinMeleeRange))
+                    +random(magic, weight = 1)
                 }
                 every(ATTACK_RATE, external(SUMMON_ROLL))
             }
@@ -146,7 +158,6 @@ constructor(
 
     private suspend fun ProtectedAccess.pruneGrowthling(
         growthling: Npc,
-        weapon: ItemServerType,
         awardXp: Boolean,
     ) {
         if (growthling.hitpoints <= 0) return
@@ -154,7 +165,6 @@ constructor(
         BryophytaGrowthling.prune(
             player = player,
             npc = growthling,
-            weapon = weapon,
             awardXp = awardXp,
             attackStyles = attackStyles,
             attackTypes = attackTypes,

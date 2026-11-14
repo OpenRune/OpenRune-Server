@@ -29,7 +29,6 @@ constructor(
         BryophytaGrowthling.prune(
             player = player,
             npc = npc,
-            weapon = weapon,
             awardXp = true,
             attackStyles = attackStyles,
             attackTypes = attackTypes,

@@ -71,20 +71,52 @@ class BryophytaDataTest {
     }
 
     @Test
-    fun `prune animations resolve in the cache`() {
+    fun `prune animation resolves in the cache`() {
         withCache {
-            val weapons =
-                listOf(
-                    "obj.bronze_axe",
-                    "obj.secateurs",
-                    "obj.fairy_enchanted_secateurs",
-                )
-            for (weapon in weapons) {
-                val type = ServerCacheManager.getItem(weapon.asRSCM(RSCMType.OBJ))
-                assertNotNull(type)
-                val seq = BryophytaGrowthling.pruneAnim(type!!)
-                assertDoesNotThrow { ServerCacheManager.getAnim(seq.asRSCM(RSCMType.SEQ)) }
+            assertDoesNotThrow {
+                ServerCacheManager.getAnim(BryophytaGrowthling.PRUNE_ANIM.asRSCM(RSCMType.SEQ))
             }
+        }
+    }
+
+    @Test
+    fun `growthling uses tanglefoot animations and keeps chase range`() {
+        withCache {
+            val growthling = ServerCacheManager.getNpc(GROWTHLING.asRSCM(RSCMType.NPC))
+            assertNotNull(growthling)
+            assertEquals(10, growthling?.hitpoints)
+            assertEquals(40, growthling?.attack)
+            assertEquals(38, growthling?.strength)
+            assertEquals(40, growthling?.defence)
+            assertEquals(1, growthling?.magic)
+            assertEquals(1, growthling?.ranged)
+            assertEquals(37, growthling?.combatLevel)
+            assertEquals(4, growthling?.param(params.attackrate))
+            assertEquals("seq.tanglefoot_attack".asRSCM(RSCMType.SEQ), growthling?.paramOrNull(params.attack_anim)?.id)
+            assertEquals("seq.tanglefoot_block".asRSCM(RSCMType.SEQ), growthling?.paramOrNull(params.defend_anim)?.id)
+            assertEquals("seq.tanglefoot_death".asRSCM(RSCMType.SEQ), growthling?.paramOrNull(params.death_anim)?.id)
+            assertEquals(30, growthling?.maxRange)
+            assertEquals(0, growthling?.wanderRange)
+        }
+    }
+
+    @Test
+    fun `boss uses moss giant animations and keeps attack range`() {
+        withCache {
+            val boss = ServerCacheManager.getNpc(BOSS.asRSCM(RSCMType.NPC))
+            assertNotNull(boss)
+            assertEquals(115, boss?.hitpoints)
+            assertEquals(130, boss?.attack)
+            assertEquals(100, boss?.strength)
+            assertEquals(100, boss?.defence)
+            assertEquals(90, boss?.magic)
+            assertEquals(1, boss?.ranged)
+            assertEquals(128, boss?.combatLevel)
+            assertEquals(6, boss?.param(params.attackrate))
+            assertEquals("seq.giant_update_moss_attack".asRSCM(RSCMType.SEQ), boss?.paramOrNull(params.attack_anim)?.id)
+            assertEquals("seq.giant_update_moss_defend".asRSCM(RSCMType.SEQ), boss?.paramOrNull(params.defend_anim)?.id)
+            assertEquals("seq.giant_update_moss_death".asRSCM(RSCMType.SEQ), boss?.paramOrNull(params.death_anim)?.id)
+            assertEquals(30, boss?.maxRange)
         }
     }
 

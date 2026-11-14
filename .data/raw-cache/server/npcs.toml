@@ -12918,17 +12918,26 @@ inherit = "npc.galvek_earth_dead"
 [[npc]]
 id = "npc.gb_mossgiant"
 inherit = "npc.gb_mossgiant"
+maxRange = 30
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.npc_poison_severity"=40
 "param.dropped_remains"=-1
+"param.attack_anim"="seq.giant_update_moss_attack"
+"param.defend_anim"="seq.giant_update_moss_defend"
+"param.death_anim"="seq.giant_update_moss_death"
 
 [[npc]]
 id = "npc.gb_growthling"
 inherit = "npc.gb_growthling"
+maxRange = 30
+wanderRange = 0
 [npc.params]
 "param.dropped_remains"=-1
+"param.attack_anim"="seq.tanglefoot_attack"
+"param.defend_anim"="seq.tanglefoot_block"
+"param.death_anim"="seq.tanglefoot_death"
 
 [[npc]]
 id = "npc.swampcrab"
