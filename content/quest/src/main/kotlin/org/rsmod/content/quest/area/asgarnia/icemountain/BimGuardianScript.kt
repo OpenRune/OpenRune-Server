@@ -26,15 +26,29 @@ constructor(
         }
         onOpLoc1("loc.bim_boss_rock") { guardian.minePillar(this, it.loc, quest) }
         onOpLoc1("loc.bim_door") { enterRuins() }
+        onOpLoc1("loc.bim_exit") { exitRuins() }
     }
 
     private suspend fun ProtectedAccess.enterRuins() {
-        if (quest.stage(player) < BimStage.INSIDE_CUTSCENE) {
+        val stage = quest.stage(player)
+        if (stage < BimStage.INSIDE_CUTSCENE) {
             mes("The entrance is blocked.")
             return
         }
         arriveDelay()
+        if (stage == BimStage.GUARDIAN_FIGHT) {
+            guardian.enterFight(this, quest)
+            return
+        }
         telejump(CoordGrid(2952, 5762))
-        guardian.ensureFor(player, quest.stage(player))
+        guardian.ensureFor(player, stage)
+    }
+
+    private suspend fun ProtectedAccess.exitRuins() {
+        if (quest.stage(player) == BimStage.GUARDIAN_FIGHT) {
+            guardian.releaseScene()
+        }
+        arriveDelay()
+        telejump(CoordGrid(2998, 3494))
     }
 }

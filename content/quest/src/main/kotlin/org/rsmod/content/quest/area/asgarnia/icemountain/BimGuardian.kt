@@ -19,6 +19,7 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.stat.miningLvl
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
@@ -98,12 +99,44 @@ constructor(
             return
         }
         when (stage) {
-            BimStage.GUARDIAN_FIGHT -> ensureSpawned(player)
+            BimStage.GUARDIAN_FIGHT -> {
+                val view = ensureFightScene() ?: return
+                if (player.coords.x < RegionRegistry.INSTANCE_MIN_X) {
+                    player.coords = view[FIGHT_ENTRY_TILE]
+                    player.regionRebuildPending = true
+                }
+                ensureSpawned(player)
+            }
             BimStage.GUARDIAN_DEAD -> {
                 ensureBag()
                 openDoorsAndRamarno()
             }
         }
+    }
+
+    internal fun enterFight(access: ProtectedAccess, quest: BelowIceMountain) {
+        if (quest.stage(access.player) != BimStage.GUARDIAN_FIGHT) {
+            return
+        }
+        val view = ensureFightScene() ?: return
+        access.telejump(view[FIGHT_ENTRY_TILE])
+        access.player.regionRebuildPending = true
+        ensureSpawned(access.player)
+    }
+
+    private fun ensureFightScene(): SceneRegion? {
+        val region = sceneRegion
+        val view = scene
+        if (region != null && view != null && regionRepo.isValid(region)) {
+            return view
+        }
+        releaseScene()
+        val allocated = regionRepo.add(RUINS_CAVERN) ?: return null
+        regionRepo.protect(allocated)
+        val allocatedView = SceneRegion(allocated)
+        sceneRegion = allocated
+        scene = allocatedView
+        return allocatedView
     }
 
     fun ensureSpawned(player: Player? = null, attack: Boolean = true) {
@@ -121,7 +154,6 @@ constructor(
         dead = false
         addPillars()
         addDoor()
-        addCutsceneExit()
     }
 
     internal fun armGuardian(player: Player) {
@@ -192,6 +224,7 @@ constructor(
             return
         }
         dead = true
+        addCutsceneExit()
         val npc = guardian
         guardian = null
         if (npc != null) {
@@ -670,6 +703,7 @@ constructor(
         const val SCENE_PROP_TICKS = 6000
 
         val BOSS_TILE = CoordGrid(2952, 5778)
+        val FIGHT_ENTRY_TILE = CoordGrid(2953, 5769)
         val DOOR_TILE = CoordGrid(2951, 5780)
         val DOOR_SCAN_TILES =
             listOf(

@@ -40,6 +40,16 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
+internal val RUINS_CAVERN: RegionTemplate =
+    RegionTemplate.create {
+        copyAllLevels(368, 720) {
+            regionZoneX = 7
+            regionZoneZ = 5
+            zoneWidth = 3
+            zoneLength = 3
+        }
+    }
+
 /**
  * Plays the Ruins of Camdozaal entrance exactly as OSRS does: three copied map blocks, the
  * entrance, the trapped corridor and the cavern, with the player transmogged into Marley for the
@@ -69,7 +79,7 @@ constructor(
             entranceRegion?.let(regionRepo::protect)
             val corridorRegion = regionRepo.add(RUINS_INTERIOR)
             corridorRegion?.let(regionRepo::protect)
-            val cavernRegion = regionRepo.add(RUINS_INTERIOR)
+            val cavernRegion = regionRepo.add(RUINS_CAVERN)
             cavernRegion?.let(regionRepo::protect)
 
             val regions =
