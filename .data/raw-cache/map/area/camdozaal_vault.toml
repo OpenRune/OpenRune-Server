@@ -1,0 +1,12 @@
+[[area]]
+name = "Camdozaal Vault"
+area_id = "area.camdozaal_vault"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [2951, 5824],
+    [2989, 5824],
+    [2989, 5857],
+    [2951, 5857],
+]

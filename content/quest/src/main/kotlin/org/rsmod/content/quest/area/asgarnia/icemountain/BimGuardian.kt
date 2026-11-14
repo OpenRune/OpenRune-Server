@@ -739,6 +739,6 @@ constructor(
         const val ROOM_MIN_X = 2944
         const val ROOM_MAX_X = 2962
         const val ROOM_MIN_Z = 5762
-        const val ROOM_MAX_Z = 5784
+        const val ROOM_MAX_Z = 5783
     }
 }
