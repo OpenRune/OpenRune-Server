@@ -1,8 +1,4 @@
-@file:Suppress("UnusedImport")
-
 package org.rsmod.game.region.zone
-
-import org.rsmod.game.region.util.NormalRegionZoneMap.NormalZone
 
 /**
  * Represents a unique flag that can be assigned to a [RegionZoneCopy].
