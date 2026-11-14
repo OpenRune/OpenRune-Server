@@ -193,8 +193,6 @@ import org.rsmod.routefinder.flag.CollisionFlag
 
 private val logger = InlineLogger()
 
-private const val CHAT_PAUSE_DELAY_TICKS = 1
-
 public class ProtectedAccess(
     public val player: Player,
     public val coroutine: GameCoroutine,
@@ -2158,9 +2156,8 @@ public class ProtectedAccess(
         pauseText: String,
         eventBus: EventBus,
     ) {
-        player.ifMesbox(text, "", lineHeight, eventBus)
+        player.ifMesbox(text, pauseText, lineHeight, eventBus)
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
-        chatPauseText("component.messagebox:continue", pauseText)
         val input = coroutine.pause(ResumePauseButtonInput::class)
         resumePauseButtonWithProtectedAccess(input, modal, "component.messagebox:continue")
     }
@@ -2642,6 +2639,7 @@ public class ProtectedAccess(
         mesanim: MesAnimType?,
         text: String,
         title: String = player.displayName,
+        continueDelayTicks: Int = 0,
     ) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
@@ -2655,6 +2653,7 @@ public class ProtectedAccess(
                 lineHeight = lineHeight,
                 title = title,
                 pauseText = constants.cm_pausebutton,
+                continueDelayTicks = continueDelayTicks,
                 eventBus = context.eventBus,
             )
         }
@@ -2682,10 +2681,12 @@ public class ProtectedAccess(
         )
     }
 
-    private suspend fun chatPauseText(component: String, pauseText: String) {
-        if (player.vars["varbit.cutscene_status"] != 0) {
-            delay(CHAT_PAUSE_DELAY_TICKS)
-        }
+    private suspend fun chatPauseText(
+        component: String,
+        pauseText: String,
+        delayTicks: Int,
+    ) {
+        delay(delayTicks)
         player.ifSetPauseText(component, pauseText)
     }
 
@@ -2695,11 +2696,22 @@ public class ProtectedAccess(
         lineHeight: Int,
         title: String,
         pauseText: String,
+        continueDelayTicks: Int,
         eventBus: EventBus,
     ) {
-        player.ifChatPlayer(title, text, chatanim, "", lineHeight, eventBus)
+        val delayContinue = continueDelayTicks > 0
+        player.ifChatPlayer(
+            title,
+            text,
+            chatanim,
+            if (delayContinue) "" else pauseText,
+            lineHeight,
+            eventBus,
+        )
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
-        chatPauseText("component.chat_right:continue", pauseText)
+        if (delayContinue) {
+            chatPauseText("component.chat_right:continue", pauseText, continueDelayTicks)
+        }
         val input = coroutine.pause(ResumePauseButtonInput::class)
         resumePauseButtonWithProtectedAccess(input, modal, "component.chat_right:continue")
     }
@@ -2769,12 +2781,11 @@ public class ProtectedAccess(
             RSCM.getReverseMapping(RSCMType.NPC, npc.type.id),
             text,
             chatanim,
-            "",
+            pauseText,
             lineHeight,
             eventBus,
         )
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
-        chatPauseText("component.chat_left:continue", pauseText)
         val input = coroutine.pause(ResumePauseButtonInput::class)
         resumePauseButtonWithProtectedAccess(input, modal, "component.chat_left:continue")
     }
@@ -2823,12 +2834,11 @@ public class ProtectedAccess(
             RSCM.getReverseMapping(RSCMType.NPC, npc.type.id),
             text,
             chatanim,
-            "",
+            pauseText,
             lineHeight,
             eventBus,
         )
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
-        chatPauseText("component.chat_left:continue", pauseText)
         val input = coroutine.pause(ResumePauseButtonInput::class)
         resumePauseButtonWithProtectedAccess(input, modal, "component.chat_left:continue")
     }
@@ -2843,6 +2853,7 @@ public class ProtectedAccess(
         type: String,
         mesanim: MesAnimType,
         text: String,
+        continueDelayTicks: Int = 0,
     ) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
@@ -2858,6 +2869,7 @@ public class ProtectedAccess(
                 chatanim = anim,
                 lineHeight = lineHeight,
                 pauseText = constants.cm_pausebutton,
+                continueDelayTicks = continueDelayTicks,
                 eventBus = context.eventBus,
             )
         }
@@ -2870,11 +2882,23 @@ public class ProtectedAccess(
         chatanim: SequenceServerType,
         lineHeight: Int,
         pauseText: String,
+        continueDelayTicks: Int,
         eventBus: EventBus,
     ) {
-        player.ifChatNpcSpecific(title, type, text, chatanim, "", lineHeight, eventBus)
+        val delayContinue = continueDelayTicks > 0
+        player.ifChatNpcSpecific(
+            title,
+            type,
+            text,
+            chatanim,
+            if (delayContinue) "" else pauseText,
+            lineHeight,
+            eventBus,
+        )
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
-        chatPauseText("component.chat_left:continue", pauseText)
+        if (delayContinue) {
+            chatPauseText("component.chat_left:continue", pauseText, continueDelayTicks)
+        }
         val input = coroutine.pause(ResumePauseButtonInput::class)
         resumePauseButtonWithProtectedAccess(input, modal, "component.chat_left:continue")
     }

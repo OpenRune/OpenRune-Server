@@ -674,13 +674,18 @@ constructor(
         lookAt(interior, CAVERN_RISE, rate = 1)
 
         startDialogue {
-            chatPlayer(shocked, "Wow, this place is amazing. I can't believe this was hidden away.")
+            chatPlayer(
+                shocked,
+                "Wow, this place is amazing. I can't believe this was hidden away.",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
+            )
             chatPlayer(quiz, "I wonder how long it's been left untouched for.")
             chatNpcSpecific(
                 "Willow",
                 WILLOW_CUTSCENE,
                 angry,
                 "You're impressed? There's nothing here but dust and fallen rocks.",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
             burntof.say("Yaaa*hic*aawn")
             burntof.walk(interior[CAVERN_BURNOTOF_WANDERS[0]]) {
@@ -690,6 +695,7 @@ constructor(
                 happy,
                 "You don't find it exciting? As an archaeologist, I thought you would be " +
                     "thrilled at this discovery?",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
             dolly(interior, CAVERN_DRIFT_EAST, rate = 2)
             chatNpcSpecific(
@@ -698,6 +704,7 @@ constructor(
                 angry,
                 "Thrilled? What's there to be excited about? I don't see any gold, diamonds, " +
                     "rare gems or piles of lost treasure!",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
             burntof.say("Hmm...")
             burntof.walk(interior[CAVERN_BURNOTOF_WANDERS[1]]) {
@@ -707,6 +714,7 @@ constructor(
                 quiz,
                 "It's not about the money though, right? We've potentially discovered the long " +
                     "lost ruins of an ancient civilisation!",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
             dolly(interior, CAVERN_DRIFT_BACK, rate = 2)
             lookAt(interior, CAVERN_DRIFT_BACK, rate = 1)
@@ -715,14 +723,20 @@ constructor(
                 WILLOW_CUTSCENE,
                 angry,
                 "Of course it's about the money. It's always been about money, you fool.",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
-            chatPlayer(neutral, "I don't understand...")
+            chatPlayer(
+                neutral,
+                "I don't understand...",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
+            )
             chatNpcSpecific(
                 "Willow",
                 WILLOW_CUTSCENE,
                 neutral,
                 "We're not a team of archaeologist, you idiot. We're grave robbers looking for " +
                     "their next score.",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
             burntof.say("Theshe markings look familiar...")
             burntof.walk(interior[CAVERN_BURNOTOF_WANDERS[2]])
@@ -730,6 +744,7 @@ constructor(
                 neutral,
                 "So this entire time, you've just been using me to help break into these ruins " +
                     "in hopes of finding someone else's treasures.",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
             chatNpcSpecific(
                 "Willow",
@@ -737,6 +752,7 @@ constructor(
                 neutral,
                 "Yep, and you were surprisingly easy to convince. I'll admit, you have been a " +
                     "tremendous help, ${player.displayName}.",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
             chatNpcSpecific(
                 "Willow",
@@ -744,14 +760,20 @@ constructor(
                 neutral,
                 "But your usefulness has come to an end I'm afraid. I can't simply let you leave " +
                     "here.",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
-            chatPlayer(worried, "Why not?")
+            chatPlayer(
+                worried,
+                "Why not?",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
+            )
             chatNpcSpecific(
                 "Willow",
                 WILLOW_CUTSCENE,
                 neutral,
                 "I can't risk you running to the authorities and telling them about our little " +
                     "gang. We're wanted in quite a few large cities across Gielinor.",
+                continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
             burntof.say("I've sheen thish before...")
             burntof.walk(interior[CAVERN_BURNOTOF_WANDERS[3]]) {
@@ -1037,6 +1059,7 @@ constructor(
         const val STEP_OVER_FACE_NORTH = 1024
         const val STEP_OVER_TICKS = 3
         const val CAVERN_REBUILD_TICKS = 3
+        const val BETRAYAL_CONTINUE_DELAY_TICKS = 2
         const val FIGHT_FADE_DURATION = 15
         const val FIGHT_FADE_TICKS = 2
         const val QUAKE_SHAKE_STRONG = 50
