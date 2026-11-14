@@ -132,7 +132,10 @@ private suspend fun Dialogue.ramarnoForge() {
             1 -> if (!whatCanIDoHere()) return
             2 -> otherImcandoDwarves()
             3 -> useForge()
-            else -> return
+            else -> {
+                chatPlayer(neutral, "I'll see you later.")
+                return
+            }
         }
     }
 }
@@ -146,34 +149,30 @@ private suspend fun Dialogue.whatCanIDoHere(): Boolean {
             "barronite mine and the offering altar.",
     )
 
-    return when (
-        choice5(
-            "Tell me more about the golem workshop.",
-            1,
-            "Tell me more about the barronite mine.",
-            2,
-            "Tell me more about the offering altar.",
-            3,
-            "Let's talk about something else.",
-            4,
-            "I'll see you later.",
-            5,
-        )
-    ) {
-        1 -> {
-            golemWorkshop()
-            true
+    while (true) {
+        when (
+            choice5(
+                "Tell me more about the golem workshop.",
+                1,
+                "Tell me more about the barronite mine.",
+                2,
+                "Tell me more about the offering altar.",
+                3,
+                "Let's talk about something else.",
+                4,
+                "I'll see you later.",
+                5,
+            )
+        ) {
+            1 -> golemWorkshop()
+            2 -> barroniteMine()
+            3 -> offeringAltar()
+            4 -> return true
+            else -> {
+                chatPlayer(neutral, "I'll see you later.")
+                return false
+            }
         }
-        2 -> {
-            barroniteMine()
-            true
-        }
-        3 -> {
-            offeringAltar()
-            true
-        }
-        4 -> true
-        else -> false
     }
 }
 
@@ -365,7 +364,6 @@ private suspend fun Dialogue.useForge() {
         "Bring me any barronite you find. In return, I can channel enough power from the " +
             "Forge into the city or even open the Great Vault.",
     )
-    chatNpc(neutral, "Is there anything else you wanted to talk about?")
 }
 
 internal suspend fun Dialogue.ramarnoItem() {
