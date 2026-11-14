@@ -101,7 +101,7 @@ constructor(
         when (stage) {
             BimStage.GUARDIAN_FIGHT -> {
                 val view = ensureFightScene() ?: return
-                if (player.coords.x < RegionRegistry.INSTANCE_MIN_X) {
+                if (!RegionRegistry.inWorkingArea(player.coords)) {
                     player.coords = view[FIGHT_ENTRY_TILE]
                     player.regionRebuildPending = true
                 }

@@ -40,7 +40,7 @@ constructor(
             guardian.enterFight(this, quest)
             return
         }
-        telejump(CoordGrid(2952, 5762))
+        telejump(RUINS_ENTRANCE_TILE)
         guardian.ensureFor(player, stage)
     }
 
@@ -49,6 +49,11 @@ constructor(
             guardian.releaseScene()
         }
         arriveDelay()
-        telejump(CoordGrid(2998, 3494))
+        telejump(RUINS_EXIT_TILE)
+    }
+
+    private companion object {
+        val RUINS_ENTRANCE_TILE = CoordGrid(2952, 5762)
+        val RUINS_EXIT_TILE = CoordGrid(2998, 3494)
     }
 }

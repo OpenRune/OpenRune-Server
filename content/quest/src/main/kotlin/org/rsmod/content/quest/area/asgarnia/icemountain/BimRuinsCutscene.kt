@@ -40,6 +40,7 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
+/** The 3x3 zone cavern block OSRS rebuilds for the betrayal scene and guardian fight. */
 internal val RUINS_CAVERN: RegionTemplate =
     RegionTemplate.create {
         copyAllLevels(368, 720) {
@@ -689,6 +690,7 @@ constructor(
                 "Wow, this place is amazing. I can't believe this was hidden away.",
                 continueDelayTicks = BETRAYAL_CONTINUE_DELAY_TICKS,
             )
+            // Unique in the betrayal block: OSRS sets this page's prompt immediately.
             chatPlayer(quiz, "I wonder how long it's been left untouched for.")
             chatNpcSpecific(
                 "Willow",
