@@ -4,37 +4,91 @@ import dev.openrune.types.NpcMode
 import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.instances.InstanceAccess
+import org.rsmod.api.instances.InstanceArea
+import org.rsmod.api.instances.InstanceManager
+import org.rsmod.api.instances.InstanceNpc
+import org.rsmod.api.instances.InstanceRegionRotation
+import org.rsmod.api.instances.InstanceSession
+import org.rsmod.api.instances.InstanceSpec
+import org.rsmod.api.instances.RegionLocal
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.table.MusicRow
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
-import org.rsmod.routefinder.collision.CollisionFlagMap
 
 @Singleton
 class BimRps
 @Inject
 constructor(
-    private val npcRepo: NpcRepository,
-    private val collision: CollisionFlagMap,
+    private val instanceManager: InstanceManager,
+    private val mapClock: MapClock,
 ) {
     suspend fun play(dialogue: Dialogue, quest: BelowIceMountain) =
         with(dialogue) {
             val player = player
-            collision.allocateIfAbsent(PUB_X, PUB_Z, PUB_LEVEL)
+            if (instanceManager.sessionForPlayer(player) != null) {
+                access.mes("You are already inside an instance.")
+                return@with
+            }
+            instanceManager.cancelPendingEntry(player, mapClock.cycle)
+            val session: InstanceSession
+            val enter: CoordGrid
+            when (
+                val result =
+                    instanceManager.create(
+                        player,
+                        RPS_INSTANCE_KEY,
+                        RPS_SPEC,
+                        InstanceAccess.Private,
+                        mapClock.cycle,
+                    )
+            ) {
+                is InstanceManager.Result.Created -> {
+                    session = result.session
+                    enter = result.enter
+                }
+                is InstanceManager.Result.Joined -> {
+                    session = result.session
+                    enter = result.enter
+                }
+                is InstanceManager.Result.Failed -> {
+                    access.mes(result.reason)
+                    return@with
+                }
+            }
             access.hideEntityOps()
-            access.telejump(CoordGrid(PUB_X, PUB_Z, PUB_LEVEL))
+            access.telejump(enter, TeleportType.Exempt)
+            instanceManager.finalizeEntry(player, session, mapClock.cycle)
             access.resetAnim()
             access.faceAngle(1024)
 
-            val burntof =
-                spawn(BURNOTOF, CoordGrid(PUB_X, BURNOTOF_Z, PUB_LEVEL), Direction.South, pin = true)
+            val instanceNpcs = instanceManager.npcsForInstance(session.id)
+            val burntof = instanceNpcs.firstOrNull { it.name == "Burntof" }
+            val tina = instanceNpcs.firstOrNull { it.name == "Tina" }
+            if (burntof == null || tina == null) {
+                access.mes("The pub is unavailable at the moment. Please try again shortly.")
+                val exit = instanceManager.leave(player, session, mapClock.cycle)
+                access.telejump(exit, TeleportType.Exempt)
+                return@with
+            }
+            burntof.mode = NpcMode.None
+            tina.mode = NpcMode.None
             playMusic(72)
             access.delay(1)
-            access.camMoveToV3(CoordGrid(2961, 3369, PUB_LEVEL), 400, SNAP, SNAP)
-            access.camLookAtV3(CoordGrid(2955, 3369, PUB_LEVEL), 180, SNAP, SNAP)
+            val camMove =
+                checkNotNull(
+                    instanceManager.resolveCoord(session, CoordGrid(2961, 3369, PUB_LEVEL)),
+                )
+            val camLook =
+                checkNotNull(
+                    instanceManager.resolveCoord(session, CoordGrid(2955, 3369, PUB_LEVEL)),
+                )
+            access.camMoveToV3(camMove, 400, SNAP, SNAP)
+            access.camLookAtV3(camLook, 180, SNAP, SNAP)
             access.fadeOverlay(0, FADE_BLACK, 0, FADE_CLEAR, 50)
             access.delay(1)
             access.closeFadeOverlay(cycles = 2)
@@ -123,8 +177,6 @@ constructor(
                 "But I think I'll need one more drink before I hitsh the road.",
             )
             chatNpcSpecific("Burntof", BURNOTOF, drunk, "Tina! Bring me another beer pleash.")
-            val tina =
-                spawn(TINA, CoordGrid(PUB_X, TINA_Z, PUB_LEVEL), Direction.South, pin = true)
             chatNpcSpecific(
                 "Tina",
                 TINA,
@@ -135,10 +187,18 @@ constructor(
             tina.clearInteraction()
             tina.walk(
                 listOf(
-                    CoordGrid(2955, 3373, PUB_LEVEL),
-                    CoordGrid(2955, 3372, PUB_LEVEL),
-                    CoordGrid(2955, 3371, PUB_LEVEL),
-                    CoordGrid(2956, 3371, PUB_LEVEL),
+                    checkNotNull(
+                        instanceManager.resolveCoord(session, CoordGrid(2955, 3373, PUB_LEVEL)),
+                    ),
+                    checkNotNull(
+                        instanceManager.resolveCoord(session, CoordGrid(2955, 3372, PUB_LEVEL)),
+                    ),
+                    checkNotNull(
+                        instanceManager.resolveCoord(session, CoordGrid(2955, 3371, PUB_LEVEL)),
+                    ),
+                    checkNotNull(
+                        instanceManager.resolveCoord(session, CoordGrid(2956, 3371, PUB_LEVEL)),
+                    ),
                 )
             )
             access.delay(3)
@@ -152,9 +212,8 @@ constructor(
             access.delay(3)
             access.fadeOverlay(0, FADE_CLEAR, 0, FADE_BLACK, 50)
             access.delay(2)
-            despawn(tina)
-            despawn(burntof)
-            access.telejump(CoordGrid(PUB_X, RETURN_Z, 0))
+            val exit = instanceManager.leave(player, session, mapClock.cycle)
+            access.telejump(exit, TeleportType.Exempt)
             access.resetAnim()
             access.camReset()
             access.showEntityOps()
@@ -217,22 +276,6 @@ constructor(
             RpsSign.Scissors -> RpsSign.Rock
         }
 
-    private fun spawn(type: String, coords: CoordGrid, facing: Direction, pin: Boolean): Npc {
-        val npc = Npc(type, coords)
-        npc.respawnDir = facing
-        if (pin) {
-            npc.mode = NpcMode.None
-        }
-        npcRepo.add(npc, Int.MAX_VALUE)
-        return npc
-    }
-
-    private fun despawn(npc: Npc) {
-        if (npc.isSlotAssigned) {
-            npcRepo.del(npc, Int.MAX_VALUE)
-        }
-    }
-
     private fun Dialogue.playMusic(midi: Int) {
         val row = MusicRow.all().firstOrNull { it.midi.id == midi } ?: return
         access.musicPlay(row)
@@ -256,5 +299,34 @@ constructor(
         const val RETURN_Z = 3368
         const val BURNOTOF = "npc.bim_cutscene_burntof"
         const val TINA = "npc.bim_cutscene_tina"
+        const val RPS_INSTANCE_KEY = "bim_rps"
+
+        val RPS_AREA =
+            InstanceArea.copyRegions(
+                centerRegionId = 11828,
+                gridSize = 3,
+                level = PUB_LEVEL,
+                rotation = InstanceRegionRotation.NONE,
+                enterCoord = RegionLocal(PUB_LEVEL, 46, 52, 12, 41),
+                exitCoord = CoordGrid(PUB_X, RETURN_Z, 0),
+                npcSpawns =
+                    listOf(
+                        InstanceNpc(BURNOTOF, CoordGrid(PUB_X, BURNOTOF_Z, PUB_LEVEL)),
+                        InstanceNpc(TINA, CoordGrid(PUB_X, TINA_Z, PUB_LEVEL)),
+                    ),
+            )
+
+        val RPS_SPEC =
+            InstanceSpec(
+                fee = 0,
+                maxPlayers = 1,
+                reclaimTicks = 20,
+                graceTicks = 0,
+                destroyWhenEmpty = true,
+                area = RPS_AREA,
+                settingsRowId = 0,
+                bossName = "Below Ice Mountain",
+                recordsKillTime = { false },
+            )
     }
 }
