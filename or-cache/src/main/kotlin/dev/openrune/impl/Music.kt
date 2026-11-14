@@ -50,6 +50,18 @@ object Music {
                 column(2, true)
             }
 
+            row("dbrow.music_modern_scape_cave") {
+                column(0, "scape_cave")
+                columnRSCM(1, "dbrow.music_scape_cave")
+                column(2, true)
+            }
+
+            row("dbrow.music_modern_roots_and_flutes") {
+                column(0, "roots_and_flutes")
+                columnRSCM(1, "dbrow.music_roots_and_flutes")
+                column(2, true)
+            }
+
             row("dbrow.music_modern_death_office") {
                 column(0, "death_office")
                 columnRSCM(1, "dbrow.music_restinpeace")
