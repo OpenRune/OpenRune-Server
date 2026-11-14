@@ -9,6 +9,7 @@ import org.rsmod.api.script.onOpNpc2
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.script.onOpNpc5
+import org.rsmod.content.travel.teleports.TravelRequirements.canReach
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -32,7 +33,7 @@ object CharterShips {
     suspend fun ProtectedAccess.chooseCharter() {
         val here =
             ports.indices.firstOrNull { ports[it].coords.chebyshevDistance(coords) <= NEARBY }
-        val choices = ports.indices.filter { it != here }
+        val choices = ports.indices.filter { it != here && player.canReach(ports[it]) }
         val labels = choices.map { ports[it].name } + CANCEL
         val picked = menu(MENU_TITLE, hotkeys = false, choices = labels)
         val port = choices.getOrNull(picked)?.let(ports::get) ?: return

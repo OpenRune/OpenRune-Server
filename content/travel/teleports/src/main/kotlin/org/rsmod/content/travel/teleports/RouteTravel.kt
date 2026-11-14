@@ -1,6 +1,8 @@
 package org.rsmod.content.travel.teleports
 
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.content.travel.teleports.TravelRequirements.canReach
+import org.rsmod.content.travel.teleports.TravelRequirements.checkReach
 
 typealias Travel = suspend ProtectedAccess.(TeleportDestination, String) -> Unit
 
@@ -56,9 +58,14 @@ object RouteTravel {
         depart: (String) -> String,
         travel: Travel,
     ) {
-        val labels = choices.map { stops[it].name } + CANCEL
+        val open = choices.filter { player.canReach(stops[it]) }
+        if (open.isEmpty()) {
+            choices.firstOrNull()?.let { checkReach(stops[it]) }
+            return
+        }
+        val labels = open.map { stops[it].name } + CANCEL
         val picked = menu(title, hotkeys = true, choices = labels)
-        val stop = choices.getOrNull(picked)?.let(stops::get) ?: return
+        val stop = open.getOrNull(picked)?.let(stops::get) ?: return
         travel(stop, depart(stop.name))
     }
 

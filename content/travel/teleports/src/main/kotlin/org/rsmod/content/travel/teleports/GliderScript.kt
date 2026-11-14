@@ -6,7 +6,8 @@ import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
-import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.content.travel.teleports.TravelRequirements.checkReach
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -19,8 +20,9 @@ import org.rsmod.plugin.scripts.ScriptContext
  * the glider across the map, and `varbit.pilot_previous_destination` picks which form each pilot
  * shows.
  *
- * Every pilot form with a `Glider` op opens the map. The Feldip Hills and Ape Atoll buttons are
- * unhidden on open, since their quests are not checked here (see docs/quirks.md).
+ * Every pilot form with a `Glider` op opens the map. Each stop needs the quests on its
+ * `teleport_destination` row; the Feldip Hills and Ape Atoll buttons are shown once One Small
+ * Favour and Monkey Madness II count as complete under the quest requirement policy.
  */
 class GliderScript : PluginScript() {
     private val stops: List<TeleportDestination> by lazy { TeleportNetworks.of(NETWORK) }
@@ -29,7 +31,6 @@ class GliderScript : PluginScript() {
     private var Player.questPilotForm by intVarBit("varbit.pilot_multinpc_var")
 
     override fun ScriptContext.startup() {
-        onPlayerLogin { player.showQuestPilots() }
         for (pilot in PILOTS) {
             onOpNpc1(pilot) { openMap() }
             onOpNpc4(pilot) { flyAgain() }
@@ -45,8 +46,12 @@ class GliderScript : PluginScript() {
         ifOpenMainModal(MAP)
         // The map's onload script hides these after any same-tick change, so unhide them a tick on.
         delay(1)
-        ifSetHide("component.glidermap:ogrearea_container", false)
-        ifSetHide("component.glidermap:apeatoll_container", false)
+        if (QuestRequirements.hasCompleted(player, ONE_SMALL_FAVOUR)) {
+            ifSetHide("component.glidermap:ogrearea_container", false)
+        }
+        if (QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)) {
+            ifSetHide("component.glidermap:apeatoll_container", false)
+        }
     }
 
     /** `Glider-to`: the pilot forms named after a stop fly straight back to it. */
@@ -66,6 +71,9 @@ class GliderScript : PluginScript() {
             mes("You are already at ${stops[destination].name}.")
             return
         }
+        if (!checkReach(stops[destination])) {
+            return
+        }
         if (actionDelay > mapClock) {
             return
         }
@@ -77,7 +85,7 @@ class GliderScript : PluginScript() {
         ifClose()
         vars[JOURNEY] = NO_JOURNEY
         player.previousDestination = destination
-        player.showQuestPilots()
+        player.followQuestPilots()
         telejump(stops[destination].coords)
         fadeOverlay(0, 0, 0, 255, FADE_CYCLES)
         closeFadeOverlay(cycles = FADE_TICKS)
@@ -85,11 +93,14 @@ class GliderScript : PluginScript() {
     }
 
     /**
-     * The Feldip Hills and Ape Atoll pilots only take their `Glider` forms once this var is at
-     * least [QUEST_PILOT_BASE], where it counts up from there by the last destination.
+     * The Feldip Hills and Ape Atoll pilots take their `Glider` forms once their quests lift this
+     * var to [QUEST_PILOT_BASE]; from there it counts up by the last destination, which every
+     * flight keeps in step.
      */
-    private fun Player.showQuestPilots() {
-        questPilotForm = QUEST_PILOT_BASE + previousDestination
+    private fun Player.followQuestPilots() {
+        if (questPilotForm >= QUEST_PILOT_BASE) {
+            questPilotForm = QUEST_PILOT_BASE + previousDestination
+        }
     }
 
     private fun journeyIndex(stop: Int): Int =
@@ -106,6 +117,8 @@ class GliderScript : PluginScript() {
         private const val PREVIOUS = "varbit.pilot_previous_destination"
         private const val NO_JOURNEY = -1
         private const val QUEST_PILOT_BASE = 16
+        private const val ONE_SMALL_FAVOUR = "quest_onesmallfavour"
+        private const val MONKEY_MADNESS_II = "quest_monkeymadness2"
         private const val DIGSITE_PILOT = "npc.pilot_digsite"
         private const val NEARBY = 20
         private const val FLIGHT_TICKS = 8

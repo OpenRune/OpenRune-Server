@@ -8,7 +8,13 @@ import org.rsmod.api.table.TeleportDestinationRow
 import org.rsmod.api.table.TeleportItemRow
 import org.rsmod.map.CoordGrid
 
-data class TeleportDestination(val name: String, val coords: CoordGrid, val wilderness: Boolean)
+data class TeleportDestination(
+    val name: String,
+    val coords: CoordGrid,
+    val wilderness: Boolean,
+    val quests: List<String> = emptyList(),
+    val questsStarted: List<String> = emptyList(),
+)
 
 /**
  * One `teleport_item` row: a family of objs that take the player to the same [destinations] and
@@ -88,7 +94,13 @@ object TeleportNetworks {
             .groupBy { it.network }
             .mapValues { (_, rows) ->
                 rows.sortedBy { it.ordinal }.map {
-                    TeleportDestination(it.name, it.coords, it.wilderness)
+                    TeleportDestination(
+                        it.name,
+                        it.coords,
+                        it.wilderness,
+                        quests = it.quests,
+                        questsStarted = listOfNotNull(it.questsStarted),
+                    )
                 }
             }
     }

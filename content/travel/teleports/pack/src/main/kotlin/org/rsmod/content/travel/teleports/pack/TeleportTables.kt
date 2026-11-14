@@ -19,8 +19,9 @@ import org.rsmod.map.CoordGrid
  * - `unlimited` items that never change;
  * - items whose charges live in `charge_varbit`.
  *
- * Coordinates come from the OSRS wiki teleport tables; destinations that need a quest or unlock in
- * OSRS are open to everyone here (see docs/quirks.md).
+ * Coordinates come from the OSRS wiki teleport tables. `quests` are quest keys a destination needs
+ * completed and `quests_started` ones it needs at least started, checked through the server's quest
+ * requirement policy; the requirements come from the wiki and the shortest-path transport lists.
  */
 object TeleportTables {
     const val DEST_NETWORK = 0
@@ -28,6 +29,8 @@ object TeleportTables {
     const val DEST_NAME = 2
     const val DEST_COORDS = 3
     const val DEST_WILDERNESS = 4
+    const val DEST_QUESTS = 5
+    const val DEST_QUESTS_STARTED = 6
 
     const val ITEM_OBJS = 0
     const val ITEM_NETWORK = 1
@@ -46,6 +49,8 @@ object TeleportTables {
         val z: Int,
         val level: Int = 0,
         val wilderness: Boolean = false,
+        val quests: List<String> = emptyList(),
+        val questsStarted: List<String> = emptyList(),
     )
 
     class Item(
@@ -69,16 +74,41 @@ object TeleportTables {
         linkedMapOf(
             "memoirs" to
                 listOf(
-                    Destination("Lunch by the Lancalliums", 1713, 3612),
-                    Destination("The Fisher's Flute", 1804, 3748),
-                    Destination("History and Hearsay", 1478, 3576),
-                    Destination("Jewellery of Jubilation", 1545, 3761),
-                    Destination("A Dark Disposition", 1681, 3747),
+                    Destination(
+                        "Lunch by the Lancalliums",
+                        1713,
+                        3612,
+                        quests = listOf("quest_depthsofdespair"),
+                    ),
+                    Destination(
+                        "The Fisher's Flute",
+                        1804,
+                        3748,
+                        quests = listOf("quest_queenofthieves"),
+                    ),
+                    Destination(
+                        "History and Hearsay",
+                        1478,
+                        3576,
+                        quests = listOf("quest_taleoftherighteous"),
+                    ),
+                    Destination(
+                        "Jewellery of Jubilation",
+                        1545,
+                        3761,
+                        quests = listOf("quest_forsakentower"),
+                    ),
+                    Destination(
+                        "A Dark Disposition",
+                        1681,
+                        3747,
+                        quests = listOf("quest_ascentofarceuus"),
+                    ),
                 ),
             "drakans_medallion" to
                 listOf(
                     Destination("Ver Sinhaza", 3649, 3230),
-                    Destination("Darkmeyer", 3592, 3337),
+                    Destination("Darkmeyer", 3592, 3337, quests = listOf("quest_sinsofthefather")),
                     Destination("Slepe", 3808, 9700, level = 1),
                     Destination("Castle Drakan", 3166, 7711),
                 ),
@@ -131,42 +161,83 @@ object TeleportTables {
                 ),
             "glider" to
                 listOf(
-                    Destination("Ta Quir Priw", 2465, 3501, level = 3),
-                    Destination("Gandius", 2971, 2968),
-                    Destination("Kar-Hewo", 3284, 3210),
-                    Destination("Lemanto Andra", 3321, 3429),
-                    Destination("Sindarpos", 2850, 3498),
-                    Destination("Lemantolly Undri", 2550, 2970),
-                    Destination("Ookookolly Undri", 2711, 2803),
+                    Destination(
+                        "Ta Quir Priw",
+                        2465,
+                        3501,
+                        level = 3,
+                        quests = listOf("quest_grandtree"),
+                    ),
+                    Destination("Gandius", 2971, 2968, quests = listOf("quest_grandtree")),
+                    Destination("Kar-Hewo", 3284, 3210, quests = listOf("quest_grandtree")),
+                    Destination("Lemanto Andra", 3321, 3429, quests = listOf("quest_grandtree")),
+                    Destination("Sindarpos", 2850, 3498, quests = listOf("quest_grandtree")),
+                    Destination(
+                        "Lemantolly Undri",
+                        2550,
+                        2970,
+                        quests = listOf("quest_grandtree", "quest_onesmallfavour"),
+                    ),
+                    Destination(
+                        "Ookookolly Undri",
+                        2711,
+                        2803,
+                        quests = listOf("quest_grandtree", "quest_monkeymadness2"),
+                    ),
                 ),
             "charter" to
                 listOf(
                     Destination("Port Sarim", 3038, 3192),
                     Destination("Brimhaven", 2760, 3238),
                     Destination("Catherby", 2792, 3414),
-                    Destination("Mos Le'Harmless", 3671, 2931),
+                    Destination("Mos Le'Harmless", 3671, 2931, quests = listOf("quest_cabinfever")),
                     Destination("Musa Point", 2954, 3158),
                     Destination("Port Khazard", 2674, 3144),
-                    Destination("Port Phasmatys", 3702, 3503),
-                    Destination("Shipyard", 3001, 3032),
-                    Destination("Port Tyras", 2142, 3122),
+                    Destination(
+                        "Port Phasmatys",
+                        3702,
+                        3503,
+                        quests = listOf("quest_priestinperil"),
+                    ),
+                    Destination("Shipyard", 3001, 3032, quests = listOf("quest_monkeymadness1")),
+                    Destination("Port Tyras", 2142, 3122, quests = listOf("quest_regicide")),
                     Destination("Corsair Cove", 2589, 2851),
-                    Destination("Prifddinas", 2157, 3330),
+                    Destination("Prifddinas", 2157, 3330, quests = listOf("quest_songoftheelves")),
                     Destination("Port Piscarilius", 1808, 3679),
                     Destination("Land's End", 1496, 3403),
-                    Destination("Civitas illa Fortis", 1743, 3136),
-                    Destination("Aldarin", 1455, 2968),
-                    Destination("Sunset Coast", 1514, 2971),
-                    Destination("The Pandemonium", 3064, 2999),
-                    Destination("The Summer Shore", 3189, 2369),
-                    Destination("Red Rock", 2805, 2502),
+                    Destination(
+                        "Civitas illa Fortis",
+                        1743,
+                        3136,
+                        quests = listOf("quest_childrenofthesun"),
+                    ),
+                    Destination("Aldarin", 1455, 2968, quests = listOf("quest_childrenofthesun")),
+                    Destination(
+                        "Sunset Coast",
+                        1514,
+                        2971,
+                        quests = listOf("quest_childrenofthesun"),
+                    ),
+                    Destination(
+                        "The Pandemonium",
+                        3064,
+                        2999,
+                        quests = listOf("quest_pandemonium"),
+                    ),
+                    Destination(
+                        "The Summer Shore",
+                        3189,
+                        2369,
+                        quests = listOf("quest_troubledtortugans"),
+                    ),
+                    Destination("Red Rock", 2805, 2502, quests = listOf("quest_redreef")),
                     Destination("Deepfin Point", 1943, 2757),
                     Destination("Port Roberts", 1871, 3309),
                 ),
             "carpet_shantay" to
                 listOf(
                     Destination("Shantay Pass", 3311, 3109),
-                    Destination("Uzer", 3467, 3110),
+                    Destination("Uzer", 3467, 3110, quests = listOf("quest_golem")),
                     Destination("Bedabin Camp", 3182, 3043),
                     Destination("Pollnivneach", 3350, 3001),
                 ),
@@ -174,8 +245,18 @@ object TeleportTables {
                 listOf(
                     Destination("Pollnivneach", 3348, 2942),
                     Destination("Nardah", 3401, 2918),
-                    Destination("Sophanem", 3287, 2813),
-                    Destination("Menaphos", 3243, 2813),
+                    Destination(
+                        "Sophanem",
+                        3287,
+                        2813,
+                        quests = listOf("quest_icthlarinslittlehelper"),
+                    ),
+                    Destination(
+                        "Menaphos",
+                        3243,
+                        2813,
+                        quests = listOf("quest_icthlarinslittlehelper"),
+                    ),
                 ),
             "lovakengj_minecart" to
                 listOf(
@@ -194,10 +275,31 @@ object TeleportTables {
                 ),
             "keldagrim_cart" to
                 listOf(
-                    Destination("Keldagrim", 2909, 10174),
-                    Destination("Grand Exchange", 3141, 3504),
-                    Destination("Ice Mountain", 2995, 9835),
-                    Destination("White Wolf Mountain", 2876, 9868),
+                    Destination(
+                        "Keldagrim",
+                        2909,
+                        10174,
+                        questsStarted = listOf("quest_giantdwarf"),
+                    ),
+                    Destination(
+                        "Grand Exchange",
+                        3141,
+                        3504,
+                        questsStarted = listOf("quest_giantdwarf"),
+                    ),
+                    Destination(
+                        "Ice Mountain",
+                        2995,
+                        9835,
+                        questsStarted = listOf("quest_giantdwarf"),
+                    ),
+                    Destination(
+                        "White Wolf Mountain",
+                        2876,
+                        9868,
+                        quests = listOf("quest_fishingcontest"),
+                        questsStarted = listOf("quest_giantdwarf"),
+                    ),
                 ),
             "minigame" to
                 listOf(
@@ -382,6 +484,8 @@ object TeleportTables {
             column("name", DEST_NAME, VarType.STRING)
             column("coords", DEST_COORDS, VarType.COORDGRID)
             column("wilderness", DEST_WILDERNESS, VarType.BOOLEAN)
+            column("quests", DEST_QUESTS, VarType.STRING)
+            column("quests_started", DEST_QUESTS_STARTED, VarType.STRING)
 
             for ((network, stops) in NETWORKS) {
                 stops.forEachIndexed { ordinal, stop ->
@@ -391,6 +495,12 @@ object TeleportTables {
                         column(DEST_NAME, stop.name)
                         columnCoord(DEST_COORDS, CoordGrid(stop.x, stop.z, stop.level))
                         column(DEST_WILDERNESS, stop.wilderness)
+                        if (stop.quests.isNotEmpty()) {
+                            column(DEST_QUESTS, *stop.quests.toTypedArray())
+                        }
+                        if (stop.questsStarted.isNotEmpty()) {
+                            column(DEST_QUESTS_STARTED, *stop.questsStarted.toTypedArray())
+                        }
                     }
                 }
             }

@@ -1,17 +1,12 @@
 package org.rsmod.content.travel.teleports
 
-import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
-import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
-import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.table.QuetzalRow
-import org.rsmod.game.entity.Player
+import org.rsmod.content.travel.teleports.TravelRequirements.checkQuest
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -21,29 +16,19 @@ import org.rsmod.plugin.scripts.ScriptContext
  *
  * `quetzal_menu_draw_locations` draws one icon per row, in table order, as dynamic children of
  * `quetzal_menu:icons`, so an icon's subcomponent is its row's index. Each site's quetzal is a
- * multinpc on `varbit.quetzal_<site>`, invisible until its landing site is built; every site is
- * marked built on login (see docs/quirks.md).
+ * multinpc on `varbit.quetzal_<site>`, which Twilight's Promise and building the site set. A site
+ * can be flown to once it is `auto_unlocked` or its bit of `varp.quetzals_unlocked` is set, the
+ * same test the menu uses to draw its lock.
  */
 class QuetzalScript : PluginScript() {
     private val sites: List<QuetzalRow> by lazy { QuetzalRow.all() }
 
     override fun ScriptContext.startup() {
-        onPlayerLogin { player.buildLandingSites() }
         for (bird in BIRDS) {
             onOpNpc1(bird) { openMenu() }
             onOpNpc3(bird) { lastDestination() }
         }
         onIfModalButton(ICONS) { fly(it.comsub) }
-    }
-
-    private fun Player.buildLandingSites() {
-        for (site in sites) {
-            val varbit = site.varbit()
-            val built = if (varbit == FORTIS) FORTIS_BUILT else BUILT
-            if (vars[varbit] < built) {
-                VarPlayerIntMapSetter.set(this, varbit.varbitType(), built)
-            }
-        }
     }
 
     private fun ProtectedAccess.openMenu() {
@@ -66,6 +51,13 @@ class QuetzalScript : PluginScript() {
             mes("You are already at ${site.name}.")
             return
         }
+        if (!checkQuest(TWILIGHTS_PROMISE)) {
+            return
+        }
+        if (!isUnlocked(site)) {
+            mes("You have not built a landing site at ${site.name} yet.")
+            return
+        }
         if (actionDelay > mapClock) {
             return
         }
@@ -80,19 +72,17 @@ class QuetzalScript : PluginScript() {
         closeFadeOverlay(cycles = 2)
     }
 
-    private fun QuetzalRow.varbit(): String =
-        RSCM.getReverseMapping(RSCMType.DBROW, rowId).replace("dbrow.", "varbit.")
-
-    private fun String.varbitType() =
-        checkNotNull(ServerCacheManager.getVarbit(RSCM.getRSCM(this))) { this }
+    private fun ProtectedAccess.isUnlocked(site: QuetzalRow): Boolean =
+        site.autoUnlocked ||
+            (site.id <= MAX_UNLOCK_BIT && vars[UNLOCKED_SITES] and (1 shl site.id) != 0)
 
     private companion object {
         private const val MENU = "interface.quetzal_menu"
         private const val ICONS = "component.quetzal_menu:icons"
         private const val LAST_DESTINATION = "varbit.quetzal_last_destination"
-        private const val FORTIS = "varbit.quetzal_fortis"
-        private const val FORTIS_BUILT = 2
-        private const val BUILT = 1
+        private const val UNLOCKED_SITES = "varp.quetzals_unlocked"
+        private const val MAX_UNLOCK_BIT = 30
+        private const val TWILIGHTS_PROMISE = "quest_twilightspromise"
         private const val NEARBY = 10
         private const val FLIGHT_TICKS = 4
         private const val FADE_CYCLES = 50

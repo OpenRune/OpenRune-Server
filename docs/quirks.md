@@ -149,8 +149,10 @@ Destinations live in the `teleport_destination` dbtable and the items that use t
 `teleport_item` (`content/travel/teleports`). Teleport jewellery, Xeric's talisman, skill capes,
 spirit trees and fairy rings are their own modules. Known differences from OSRS:
 
-- Every destination is open: quest, diary and unlock requirements (Darkmeyer, Slepe, ...) are not
-  checked.
+- Quest requirements sit on the destination and route rows (`quests`, `quests_started`) and go
+  through the quest requirement policy, so `assume-completed` opens them all. Diary and item
+  unlocks (Slepe's Slepey tablet, memoir pages) are not checked; memoir destinations ask for the
+  quest that gives each page instead.
 - A destination whose map region is missing tells the player so instead of teleporting, and no
   charge is spent.
 - All items use the standard jewellery teleport animation; the ectophial and seed pods do not play
@@ -169,35 +171,38 @@ Wilderness obelisks use the `wilderness_obelisk` rows. `Set Destination` and `Te
 Destination` need no Wilderness diary and do not remember a choice: both open the list and send
 the pad straight to the picked obelisk.
 
-Gnome gliders use the `glider` rows. Every glider, including Feldip Hills and Ape Atoll, is open
-without The Grand Tree, One Small Favour or Monkey Madness II, and pilots skip their dialogue.
-`varbit.pilot_multinpc_var` is set on login so the Feldip and Ape Atoll pilots show their glider
-forms. Captain Errdo's `Talk-to` at the Digsite opens the map, so Lemanto Andra is two-way here
-(it is arrival-only in OSRS).
+Gnome gliders use the `glider` rows: every stop needs The Grand Tree, Feldip Hills One Small Favour
+and Ape Atoll Monkey Madness II, and pilots skip their dialogue. The Feldip and Ape Atoll pilots
+only show their glider forms once those quests set `varbit.pilot_multinpc_var`, which no
+implemented quest does yet. Captain Errdo's `Talk-to` at the Digsite opens the map, so Lemanto
+Andra is two-way here (it is arrival-only in OSRS).
 
-Charter ships use the `charter` rows. They are free, open from a plain list rather than the
-Sailing-era charter map, and land on the dock instead of the ship's deck (gangplanks are not
-usable yet). Tempestus, Crandor and Barracuda HQ from Jagex's `chartering_destinations` are not
-stops.
+Charter ships use the `charter` rows; a port whose quest is not done is left off the list. They
+are free, open from a plain list rather than the Sailing-era charter map, and land on the dock
+instead of the ship's deck (gangplanks are not usable yet). Tempestus, Crandor and Barracuda HQ
+from Jagex's `chartering_destinations` are not stops.
 
-Quetzals read Jagex's own `dbtable.quetzal`. Every landing site is marked built on login (Twilight's
-Promise and the Hunter landing-site builds are not required), and flights are a fade rather than
-the flying cutscene.
+Quetzals read Jagex's own `dbtable.quetzal` and need Twilight's Promise. A site can be flown to
+when it is `auto_unlocked` or its `quetzals_unlocked` bit is set, but building landing sites is not
+implemented, and each quetzal only appears once its `quetzal_<site>` varbit is set by that quest or
+a build, so none show yet. Flights are a fade rather than the flying cutscene.
 
 Teleport scrolls land on the tiles in `enum.teleport_scroll_destinations` (the wiki's map squares,
 all ground level) and need no unlocks; the Revenant cave scroll, which offers three Wilderness
 entrances, is not handled yet.
 
-Magic carpets use the `carpet_shantay` and `carpet_pollnivneach` rows (hub first). Rides are free,
-fly a straight line at 3 tiles a tick with no banking turns or sound, and need no quests (Uzer,
-Sophanem and Menaphos included).
+Magic carpets use the `carpet_shantay` and `carpet_pollnivneach` rows (hub first). Uzer needs The
+Golem, and Sophanem and Menaphos Icthlarin's Little Helper. Rides are free and fly a straight line
+at 3 tiles a tick with no banking turns or sound.
 
 Minecarts use the `lovakengj_minecart` rows (any station to any other, free without The Forsaken
 Tower) and the `keldagrim_cart` rows (Keldagrim first; the Grand Exchange trapdoor and the Ice
-Mountain and White Wolf Mountain carts lead back to it). Rides are a fade with no fare.
+Mountain and White Wolf Mountain carts lead back to it), which need The Giant Dwarf started and,
+for White Wolf Mountain, Fishing Contest. Rides are a fade with no fare.
 
 Boats, ferries and rowboats come from `dbtable.teleport_route`, generated from the shortest-path
-plugin's ship and boat lists (91 routes). They are free, need no quests, and sail with a fade.
+plugin's ship and boat lists (91 routes), with the quests those lists give. They are free and sail
+with a fade.
 Routes whose op did not match the cache (some Rellekka boats, Waterbirth's Jarvald, and a few
 others) are not bound, and the Entrana and Void Knight ferries keep their own scripts.
 

@@ -29,6 +29,7 @@ import org.rsmod.api.script.onOpWorn9
 import org.rsmod.content.travel.teleports.TeleportCharges.checkCharges
 import org.rsmod.content.travel.teleports.TeleportCharges.hasCharge
 import org.rsmod.content.travel.teleports.TeleportCharges.spendCharge
+import org.rsmod.content.travel.teleports.TravelRequirements.checkReach
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.map.collision.isZoneValid
 import org.rsmod.plugin.scripts.PluginScript
@@ -221,6 +222,9 @@ constructor(
         }
         if (!collision.isZoneValid(destination.coords)) {
             mes("${destination.name} is not on this server's map yet.")
+            return
+        }
+        if (!checkReach(destination)) {
             return
         }
         if (!hasCharge(item)) {

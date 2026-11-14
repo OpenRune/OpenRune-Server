@@ -15,6 +15,8 @@ import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.script.onOpNpc5
 import org.rsmod.api.table.TeleportRouteRow
 import org.rsmod.content.travel.teleports.RouteTravel.ride
+import org.rsmod.content.travel.teleports.TravelRequirements.canReach
+import org.rsmod.content.travel.teleports.TravelRequirements.checkReach
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -42,9 +44,17 @@ class BoatRouteScript : PluginScript() {
             mes("Nothing sails from here.")
             return
         }
-        val route = if (here.size == 1) here.single() else choose(here) ?: return
-        ride(TeleportDestination(route.name, route.destination, false), DEPART_MESSAGE)
+        val open = here.filter { player.canReach(it.destination()) }
+        if (open.isEmpty()) {
+            checkReach(here.first().destination())
+            return
+        }
+        val route = if (open.size == 1) open.single() else choose(open) ?: return
+        ride(route.destination(), DEPART_MESSAGE)
     }
+
+    private fun TeleportRouteRow.destination(): TeleportDestination =
+        TeleportDestination(name, destination, wilderness = false, quests = listOfNotNull(quests))
 
     private suspend fun ProtectedAccess.choose(routes: List<TeleportRouteRow>): TeleportRouteRow? {
         val labels =

@@ -12,6 +12,7 @@ import org.rsmod.map.CoordGrid
  *
  * Generated from the shortest-path plugin's ships and boats transport lists, keeping the routes
  * whose op and target resolve against the cache and leaving out the ferries other modules handle.
+ * `quests` are the quest keys a route needs completed, from the same lists.
  */
 object TeleportRouteTable {
     const val NPC = 0
@@ -20,6 +21,7 @@ object TeleportRouteTable {
     const val ORIGIN = 3
     const val NAME = 4
     const val DESTINATION = 5
+    const val QUESTS = 6
 
     class Route(
         val target: String,
@@ -31,16 +33,41 @@ object TeleportRouteTable {
         val dx: Int,
         val dz: Int,
         val dl: Int,
+        val quests: List<String> = emptyList(),
     )
 
     val ROUTES: List<Route> =
         listOf(
             Route("npc.captain_tobias_2op", 3, 3029, 3217, 0, "Musa Point", 2956, 3146, 0),
             Route("npc.customs_officer_2op", 3, 2956, 3146, 0, "Port Sarim", 3029, 3217, 0),
-            Route("npc.captain_tobias_2op", 4, 3029, 3217, 0, "Pandemonium", 3064, 3003, 0),
-            Route("npc.seaman_morris", 3, 3064, 3003, 0, "Port Sarim", 3029, 3217, 0),
-            Route("npc.customs_officer_2op", 4, 2956, 3146, 0, "Pandemonium", 3064, 3003, 0),
-            Route("npc.seaman_morris", 4, 3064, 3003, 0, "Musa Point", 2956, 3146, 0),
+            Route(
+                "npc.captain_tobias_2op",
+                4, 3029, 3217, 0,
+                "Pandemonium",
+                3064, 3003, 0,
+                quests = listOf("quest_pandemonium"),
+            ),
+            Route(
+                "npc.seaman_morris",
+                3, 3064, 3003, 0,
+                "Port Sarim",
+                3029, 3217, 0,
+                quests = listOf("quest_pandemonium"),
+            ),
+            Route(
+                "npc.customs_officer_2op",
+                4, 2956, 3146, 0,
+                "Pandemonium",
+                3064, 3003, 0,
+                quests = listOf("quest_pandemonium"),
+            ),
+            Route(
+                "npc.seaman_morris",
+                4, 3064, 3003, 0,
+                "Musa Point",
+                2956, 3146, 0,
+                quests = listOf("quest_pandemonium"),
+            ),
             Route(
                 "npc.captain_barnaby_ardougne_model",
                 3, 2683, 3271, 0,
@@ -62,41 +89,71 @@ object TeleportRouteTable {
                 3, 2909, 3226, 0,
                 "Rimmington, Corsair Cove",
                 2578, 2840, 0,
+                quests = listOf("quest_corsaircurse"),
             ),
             Route(
                 "npc.corscurs_cabinboy_2ops",
                 3, 2578, 2840, 0,
                 "Rimmington, Corsair Cove",
                 2909, 3226, 0,
+                quests = listOf("quest_corsaircurse"),
             ),
             Route(
                 "npc.fossilquest_barge_guard_port_postquest",
                 4, 3362, 3445, 0,
                 "Digsite, Fossil Island",
                 3724, 3807, 0,
+                quests = listOf("quest_bonevoyage"),
             ),
             Route(
                 "loc.fossil_rowboat_camp",
                 1, 3724, 3807, 0,
                 "Digsite, Fossil Island",
                 3362, 3445, 0,
+                quests = listOf("quest_bonevoyage"),
             ),
-            Route("npc.captain_shanks", 1, 2763, 2960, 1, "Port Khazard", 2680, 3150, 0),
-            Route("npc.captain_shanks", 1, 2763, 2960, 1, "Port Sarim", 3050, 3192, 0),
+            Route(
+                "npc.captain_shanks",
+                1, 2763, 2960, 1,
+                "Port Khazard",
+                2680, 3150, 0,
+                quests = listOf("quest_shilovillage"),
+            ),
+            Route(
+                "npc.captain_shanks",
+                1, 2763, 2960, 1,
+                "Port Sarim",
+                3050, 3192, 0,
+                quests = listOf("quest_shilovillage"),
+            ),
             Route(
                 "npc.fever_harmless_port_ship_teach",
                 3, 3709, 3496, 0,
                 "Port Phasmatys, Mos Le'Harmless",
                 3684, 2953, 0,
+                quests = listOf("quest_cabinfever"),
             ),
             Route(
                 "npc.fever_harmless_port_ship_teach",
                 3, 3684, 2953, 0,
                 "Port Phasmatys, Mos Le'Harmless",
                 3709, 3496, 0,
+                quests = listOf("quest_cabinfever"),
             ),
-            Route("npc.viking_sailor", 3, 2629, 3693, 0, "Rellekka, Miscellania", 2581, 3847, 0),
-            Route("npc.misc_sailor", 3, 2581, 3847, 0, "Rellekka, Miscellania", 2629, 3693, 0),
+            Route(
+                "npc.viking_sailor",
+                3, 2629, 3693, 0,
+                "Rellekka, Miscellania",
+                2581, 3847, 0,
+                quests = listOf("quest_fremenniktrials"),
+            ),
+            Route(
+                "npc.misc_sailor",
+                3, 2581, 3847, 0,
+                "Rellekka, Miscellania",
+                2629, 3693, 0,
+                quests = listOf("quest_fremenniktrials"),
+            ),
             Route(
                 "npc.lunar_pirate_captain_2ops",
                 3, 2222, 3796, 2,
@@ -122,19 +179,33 @@ object TeleportRouteTable {
                 "Sunset Coast",
                 1494, 2985, 0,
             ),
-            Route("npc.holgartlandtravel", 3, 2720, 3301, 0, "Fishing Platform", 2782, 3273, 0),
-            Route("npc.holgartplatform", 3, 2782, 3273, 0, "Fishing Platform", 2720, 3301, 0),
+            Route(
+                "npc.holgartlandtravel",
+                3, 2720, 3301, 0,
+                "Fishing Platform",
+                2782, 3273, 0,
+                quests = listOf("quest_seaslug"),
+            ),
+            Route(
+                "npc.holgartplatform",
+                3, 2782, 3273, 0,
+                "Fishing Platform",
+                2720, 3301, 0,
+                quests = listOf("quest_seaslug"),
+            ),
             Route(
                 "npc.deal_pete",
                 1, 3680, 3536, 0,
                 "Post Phasmatys, Braindeath Island",
                 2162, 5114, 1,
+                quests = listOf("quest_rumdeal"),
             ),
             Route(
                 "npc.deal_island_pete",
                 1, 2162, 5114, 1,
                 "Post Phasmatys, Braindeath Island",
                 3680, 3536, 0,
+                quests = listOf("quest_rumdeal"),
             ),
             Route(
                 "npc.ahoy_ghost_captain_1",
@@ -153,12 +224,14 @@ object TeleportRouteTable {
                 1, 3498, 3380, 0,
                 "Mort Myre, Mort'ton",
                 3522, 3285, 0,
+                quests = listOf("quest_naturespirit"),
             ),
             Route(
                 "loc.route_rowboat_mortton",
                 2, 3522, 3284, 0,
                 "Mort Myre, Mort'ton",
                 3498, 3380, 0,
+                quests = listOf("quest_naturespirit"),
             ),
             Route(
                 "npc.viking_dagganoth_cave_waterbirth_island",
@@ -171,46 +244,77 @@ object TeleportRouteTable {
                 3, 2644, 3709, 0,
                 "Rellekka, Jatizso",
                 2421, 3781, 0,
+                quests = listOf("quest_fremenniktrials"),
             ),
-            Route("npc.fris_r_ferryman_izso", 3, 2421, 3781, 0, "Rellekka, Jatizso", 2644, 3709, 0),
+            Route(
+                "npc.fris_r_ferryman_izso",
+                3, 2421, 3781, 0,
+                "Rellekka, Jatizso",
+                2644, 3709, 0,
+                quests = listOf("quest_fremenniktrials"),
+            ),
             Route(
                 "npc.fris_r_ferry_rellikka",
                 3, 2644, 3710, 0,
                 "Rellekka, Neitiznot",
                 2311, 3781, 0,
+                quests = listOf("quest_fremenniktrials"),
             ),
-            Route("npc.fris_r_ferry_iznot", 3, 2311, 3781, 0, "Rellekka, Neitiznot", 2644, 3710, 0),
+            Route(
+                "npc.fris_r_ferry_iznot",
+                3, 2311, 3781, 0,
+                "Rellekka, Neitiznot",
+                2644, 3710, 0,
+                quests = listOf("quest_fremenniktrials"),
+            ),
             Route(
                 "npc.lunar_fremennik_pirate_by_pirateship",
                 3, 2620, 3693, 0,
                 "Rellekka, Pirates' Cove",
                 2213, 3794, 0,
+                quests = listOf("quest_fremenniktrials"),
             ),
             Route(
                 "npc.lunar_fremennik_pirate_piratecove",
                 3, 2213, 3794, 0,
                 "Rellekka, Pirates' Cove",
                 2620, 3693, 0,
+                quests = listOf("quest_fremenniktrials"),
             ),
             Route(
                 "loc.peng_row_boat_clickzone",
                 1, 2658, 3988, 1,
                 "Rellekka, Iceberg",
                 2706, 3735, 0,
+                quests = listOf("quest_coldwar"),
             ),
-            Route("loc.peng_boat_ice", 1, 2848, 3966, 0, "Rellekka, Weiss", 2706, 3735, 0),
+            Route(
+                "loc.peng_boat_ice",
+                1, 2848, 3966, 0,
+                "Rellekka, Weiss",
+                2706, 3735, 0,
+                quests = listOf("quest_makingfriendswithmyarm"),
+            ),
             Route(
                 "loc.island_of_stone_boat",
                 1, 2472, 3994, 0,
                 "Rellekka, Island of Stone",
                 2621, 3692, 0,
+                quests = listOf("quest_fremennikexiles"),
             ),
-            Route("loc.ungael_boat", 1, 2277, 4034, 0, "Rellekka, Ungael", 2640, 3697, 0),
+            Route(
+                "loc.ungael_boat",
+                1, 2277, 4034, 0,
+                "Rellekka, Ungael",
+                2640, 3697, 0,
+                quests = listOf("quest_dragonslayer2"),
+            ),
             Route(
                 "loc.lithkren_rowboat",
                 1, 3583, 3973, 0,
                 "Fossil Island, Lithkren",
                 3660, 3849, 0,
+                quests = listOf("quest_dragonslayer2"),
             ),
             Route(
                 "loc.fossil_rowboat_camp",
@@ -331,6 +435,7 @@ object TeleportRouteTable {
             column("origin", ORIGIN, VarType.COORDGRID)
             column("name", NAME, VarType.STRING)
             column("destination", DESTINATION, VarType.COORDGRID)
+            column("quests", QUESTS, VarType.STRING)
 
             ROUTES.forEachIndexed { index, route ->
                 row("dbrow.teleport_route_$index") {
@@ -343,6 +448,9 @@ object TeleportRouteTable {
                     columnCoord(ORIGIN, CoordGrid(route.ox, route.oz, route.ol))
                     column(NAME, route.name)
                     columnCoord(DESTINATION, CoordGrid(route.dx, route.dz, route.dl))
+                    if (route.quests.isNotEmpty()) {
+                        column(QUESTS, *route.quests.toTypedArray())
+                    }
                 }
             }
         }
