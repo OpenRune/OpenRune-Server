@@ -4,11 +4,13 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.NpcMode
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
+import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.righthand
@@ -18,7 +20,12 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.content.quest.area.misthalin.SceneCamera
+import org.rsmod.content.quest.area.misthalin.SceneDriftRate
 import org.rsmod.content.quest.area.misthalin.SceneRegion
+import org.rsmod.content.quest.area.misthalin.SceneSnapRate
+import org.rsmod.content.quest.area.misthalin.lockedScene
+import org.rsmod.content.quest.manager.afterQuestScroll
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
@@ -28,6 +35,8 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
+import org.rsmod.game.movement.MoveSpeed
+import org.rsmod.game.movement.RouteRequestCoord
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
@@ -192,9 +201,115 @@ constructor(
         if (npc?.isSlotAssigned == true) {
             npcRepo.del(npc, Int.MAX_VALUE)
         }
+        val interior = scene
+        if (interior == null) {
+            finishGuardianInWorld()
+            return
+        }
+        finishGuardianInScene(quest, interior)
+    }
+
+    private suspend fun ProtectedAccess.finishGuardianInScene(
+        quest: BelowIceMountain,
+        interior: SceneRegion,
+    ) {
+        val cast = mutableListOf<Npc>()
+        try {
+            lockedScene(
+                vantage = interior[BAG_VANTAGE],
+                faceAt = interior[BOSS_TILE],
+                camera = interior.map(AFTERMATH_CAMERA),
+                returnTo = CAMDOZAAL_ARRIVAL,
+                teardown = { cast.forEach(::despawn) },
+            ) {
+                startDialogue {
+                    chatPlayer(
+                        neutral,
+                        "That monster showed up at the perfect time. I would have been toast if " +
+                            "Willow and her gang had their chance to attack.",
+                    )
+                    chatPlayer(
+                        neutral,
+                        "Speaking of which, maybe they left something behind I can salvage some " +
+                            "kind of reward from.",
+                    )
+                    anim(THINK_SEQ)
+                    chatPlayer(
+                        quiz,
+                        "Looks like Willow left a bag behind. Maybe there's something in it I " +
+                            "could take.",
+                    )
+                }
+
+                walkTo(interior[BAG_WALK])
+                dollyBoth(interior, BAG_CREEP, rate = 2)
+                delay(BAG_WALK_TICKS)
+                faceSquare(interior[BAG_TILE])
+
+                startDialogue {
+                    anim(RUMMAGE_SEQ)
+                    say("Hmm...")
+                    mesbox("You rummage through Willow's bag...")
+                    anim(HAUL_SEQ)
+                    mesbox("You find a pile of coins!")
+                }
+                if (player.lootBagCoins()) {
+                    player.bimClaimedReward = 1
+                }
+                startDialogue { chatPlayer(happy, "Those will do nicely!") }
+
+                openSceneDoors(interior)
+                soundSynth(GATE_OPEN)
+                soundSynth(DUNGEON_DOOR_OPEN)
+                camShake(
+                    axis = CamShakeAxis.LEFT_RIGHT,
+                    random = DOOR_SHAKE,
+                    amplitude = 0,
+                    rate = 0,
+                )
+
+                startDialogue {
+                    chatPlayer(
+                        worried,
+                        "What was that noise? Please don't be another rock monster...",
+                    )
+                }
+
+                camShakeResetAll()
+                camReset()
+                frame(interior, BAG_CREEP)
+
+                val ramarno = spawnSceneNpc(RAMARNO_CUTSCENE, interior[BOSS_TILE], Direction.South)
+                cast += ramarno
+                ramarno.faceSquare(interior[BAG_WALK])
+
+                startDialogue { chatPlayer(shocked, "What the!") }
+                dolly(interior, DOOR_REVEAL, rate = 2)
+                lookAt(interior, DOOR_REVEAL, rate = 5)
+                faceSquare(interior[BOSS_TILE])
+
+                startDialogue {
+                    chatNpcSpecific("Ramarno", RAMARNO_CUTSCENE, shocked, "Bless my beard...")
+                }
+            }
+        } finally {
+            releaseScene()
+        }
+
+        delay(COMPLETION_LEAD_TICKS)
+        val ramarno = openDoorsAndRamarno()
+        ensureRuinsSpiders()
+        quest.complete(this)
+        afterQuestScroll {
+            startDialogue(ramarno) { ramarnoEntrance(quest) }
+            if (ramarno.isSlotAssigned) {
+                npcRepo.del(ramarno, Int.MAX_VALUE)
+            }
+        }
+    }
+
+    private suspend fun ProtectedAccess.finishGuardianInWorld() {
         telejump(GUARDIAN_EXIT_TILE)
-        delay(1)
-        releaseScene()
         camReset()
         camMoveToV3(GUARDIAN_CAM, height = 450, rate = SNAP, rate2 = SNAP)
         camLookAtV3(GUARDIAN_EXIT_TILE, height = 300, rate = SNAP, rate2 = SNAP)
@@ -223,7 +338,7 @@ constructor(
     }
 
     suspend fun onBagLooted(access: ProtectedAccess, quest: BelowIceMountain) {
-        access.soundSynth("synth.bim_dungeon_door_open")
+        access.soundSynth(DUNGEON_DOOR_OPEN)
         access.startDialogue {
             chatPlayer(
                 neutral,
@@ -235,17 +350,96 @@ constructor(
             chatPlayer(neutral, "What the!")
             chatNpcSpecific(
                 "Ramarno",
-                "npc.bim_camzodaal_ramarno_cutscene",
+                RAMARNO_CUTSCENE,
                 shocked,
                 "Bless my beard...",
             )
         }
-        access.startDialogue(ramarno) { ramarnoEntrance(quest) }
-        if (ramarno.isSlotAssigned) {
-            npcRepo.del(ramarno, Int.MAX_VALUE)
-        }
         quest.complete(access)
+        access.afterQuestScroll {
+            startDialogue(ramarno) { ramarnoEntrance(quest) }
+            if (ramarno.isSlotAssigned) {
+                npcRepo.del(ramarno, Int.MAX_VALUE)
+            }
+        }
         ensureRuinsSpiders()
+    }
+
+    private fun openSceneDoors(interior: SceneRegion) {
+        locRepo.findExact(interior[RIGHT_TILE], LocShape.CentrepieceStraight)?.let {
+            locRepo.del(it, SCENE_PROP_TICKS)
+        }
+        locRepo.findExact(interior[LEFT_TILE], LocShape.CentrepieceStraight)?.let {
+            locRepo.del(it, SCENE_PROP_TICKS)
+        }
+        locRepo.add(
+            interior[RIGHT_TILE],
+            OPEN_RIGHT,
+            SCENE_PROP_TICKS,
+            LocAngle.West,
+            LocShape.CentrepieceStraight,
+        )
+        locRepo.add(
+            interior[LEFT_TILE],
+            OPEN_LEFT,
+            SCENE_PROP_TICKS,
+            LocAngle.West,
+            LocShape.CentrepieceStraight,
+        )
+    }
+
+    private fun spawnSceneNpc(type: String, coords: CoordGrid, facing: Direction?): Npc {
+        val npc = Npc(type, coords)
+        facing?.let { npc.respawnDir = it }
+        npc.mode = NpcMode.None
+        npcRepo.add(npc, Int.MAX_VALUE)
+        return npc
+    }
+
+    private fun despawn(npc: Npc) {
+        if (npc.isSlotAssigned) {
+            npcRepo.del(npc, Int.MAX_VALUE)
+        }
+    }
+
+    private fun ProtectedAccess.frame(r: SceneRegion, camera: SceneCamera) {
+        val mapped = r.map(camera)
+        camMoveToV3(
+            mapped.eye,
+            height = mapped.eyeHeight,
+            rate = SceneSnapRate,
+            rate2 = SceneSnapRate,
+        )
+        camLookAtV3(
+            mapped.lookAt,
+            height = mapped.lookAtHeight,
+            rate = SceneSnapRate,
+            rate2 = SceneSnapRate,
+        )
+    }
+
+    private fun ProtectedAccess.dolly(
+        r: SceneRegion,
+        camera: SceneCamera,
+        rate: Int = SceneDriftRate,
+    ) {
+        val mapped = r.map(camera)
+        camMoveToV3(mapped.eye, height = mapped.eyeHeight, rate = rate, rate2 = rate)
+    }
+
+    private fun ProtectedAccess.lookAt(r: SceneRegion, camera: SceneCamera, rate: Int) {
+        val mapped = r.map(camera)
+        camLookAtV3(mapped.lookAt, height = mapped.lookAtHeight, rate = rate, rate2 = rate)
+    }
+
+    private fun ProtectedAccess.dollyBoth(r: SceneRegion, camera: SceneCamera, rate: Int) {
+        dolly(r, camera, rate)
+        lookAt(r, camera, rate)
+    }
+
+    private fun ProtectedAccess.walkTo(dest: CoordGrid) {
+        player.routeRequest = RouteRequestCoord(dest)
+        player.tempMoveSpeed = MoveSpeed.Walk
     }
 
     private fun ensureRuinsSpiders() {
@@ -415,7 +609,13 @@ constructor(
         const val RUINS_SPIDER_ID = 10652
         const val GUARDIAN_DEFEATED_VARBIT = 12393
         const val RAMARNO_ENTRANCE = "npc.camdozaal_ramarno_entrance_multi"
+        const val RAMARNO_CUTSCENE = "npc.bim_camzodaal_ramarno_cutscene"
         const val DEFAULT_PICKAXE_ANIM = "seq.human_mining_bronze_pickaxe"
+        const val RUMMAGE_SEQ = "seq.generic_look_and_search"
+        const val HAUL_SEQ = "seq.human_pickupfloor"
+        const val THINK_SEQ = "seq.emote_think"
+        const val GATE_OPEN = "synth.gate_open"
+        const val DUNGEON_DOOR_OPEN = "synth.bim_dungeon_door_open"
 
         val PILLAR_ID = PILLAR.asRSCM(RSCMType.LOC)
         val BROKEN_PILLAR_ID = BROKEN_PILLAR.asRSCM(RSCMType.LOC)
@@ -435,6 +635,10 @@ constructor(
         const val SNAP = 232
         const val FADE_CLEAR = 255
         const val FADE_BLACK = 0
+        const val BAG_WALK_TICKS = 5
+        const val COMPLETION_LEAD_TICKS = 2
+        const val DOOR_SHAKE = 15
+        const val SCENE_PROP_TICKS = 6000
 
         val BOSS_TILE = CoordGrid(2952, 5778)
         val DOOR_TILE = CoordGrid(2951, 5780)
@@ -453,10 +657,17 @@ constructor(
         val RUINS_SPIDERS =
             listOf(
                 CoordGrid(2958, 5777) to Direction.North,
-                CoordGrid(2957, 5779) to Direction.East,
+                CoordGrid(2957, 5779) to Direction.North,
             )
         val GUARDIAN_EXIT_TILE = CoordGrid(2952, 5773)
         val GUARDIAN_CAM = CoordGrid(2957, 5777)
+        val BAG_VANTAGE = CoordGrid(2952, 5773)
+        val BAG_WALK = CoordGrid(2951, 5769)
+        val CAMDOZAAL_ARRIVAL = CoordGrid(2950, 5769)
+        val AFTERMATH_CAMERA =
+            SceneCamera(CoordGrid(2957, 5777), 450, CoordGrid(2952, 5773), 300)
+        val BAG_CREEP = SceneCamera(CoordGrid(2955, 5772), 450, CoordGrid(2951, 5769), 300)
+        val DOOR_REVEAL = SceneCamera(CoordGrid(2955, 5772), 450, CoordGrid(2952, 5778), 250)
 
         val PILLARS =
             listOf(
