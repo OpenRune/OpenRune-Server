@@ -18,7 +18,6 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.stat.miningLvl
-import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
@@ -235,9 +234,6 @@ constructor(
             playerList.filter { it.bimStage == BimStage.GUARDIAN_FIGHT && inRoom(it.coords) }
         for (player in players) {
             player.bimStage = BimStage.GUARDIAN_DEAD
-            ServerCacheManager.getVarbit(GUARDIAN_DEFEATED_VARBIT)?.let {
-                VarPlayerIntMapSetter.set(player, it, 1)
-            }
             queueFinish(player, quest, npc)
         }
         if (hero.bimStage == BimStage.GUARDIAN_DEAD && players.none { it.uuid == hero.uuid }) {
@@ -666,8 +662,7 @@ constructor(
         const val CUTSCENE_EXIT = "loc.bim_exit_cutscene"
         const val BAG = "loc.bim_willows_bag"
         const val BAG_CUTSCENE = "loc.bim_willows_bag_cutscene"
-        const val RUINS_SPIDER_ID = 10652
-        const val GUARDIAN_DEFEATED_VARBIT = 12393
+        const val RUINS_SPIDER = "npc.spider_nocombat2"
         const val RAMARNO_ENTRANCE = "npc.camdozaal_ramarno_entrance_multi"
         const val RAMARNO_CUTSCENE = "npc.bim_camzodaal_ramarno_cutscene"
         const val DEFAULT_PICKAXE_ANIM = "seq.human_mining_bronze_pickaxe"
@@ -687,6 +682,7 @@ constructor(
         val CUTSCENE_EXIT_ID = CUTSCENE_EXIT.asRSCM(RSCMType.LOC)
         val BAG_ID = BAG.asRSCM(RSCMType.LOC)
         val BAG_CUTSCENE_ID = BAG_CUTSCENE.asRSCM(RSCMType.LOC)
+        val RUINS_SPIDER_ID = RUINS_SPIDER.asRSCM(RSCMType.NPC)
 
         const val GUARDIAN_LIFESPAN = 200_000
         const val PILLAR_MINING_LEVEL = 10
