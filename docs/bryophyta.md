@@ -68,6 +68,10 @@ fight, growthlings, lair access, chest loot and the giant bones drop.
   and `seq.tanglefoot_death` for combat. Their `maxRange` is 30 so they keep chasing
   across the lair, and `wanderRange` is 0 so a growthling without a target stands still
   instead of wandering.
+- Summoned growthlings are non-respawning: pruning deletes them instead of scheduling a
+  normal NPC respawn. The boss keeps dead/dying growthlings tracked until they are
+  deleted, so a new set cannot spawn while the previous set is still in its death
+  animation. The 20-tick cooldown is applied when the last tracked growthling is deleted.
 - Left-clicking a growthling with an axe or magic secateurs equipped prunes it instantly:
   it plays `seq.human_dhsword_stab`, the same animation Jagex uses when using an axe or
   secateurs on a growthling, dies without a hitsplat and awards combat XP for the

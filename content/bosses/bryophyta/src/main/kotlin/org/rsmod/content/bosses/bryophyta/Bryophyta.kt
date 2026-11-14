@@ -185,7 +185,7 @@ constructor(
         if (expectedHitpoints > boss.baseHitpointsLvl * 3 / 4) {
             return
         }
-        if (hasLivingGrowthlings(boss)) {
+        if (hasTrackedGrowthlings(boss)) {
             return
         }
         val engagingBoss = (target.interaction as? InteractionNpc)?.target === boss
@@ -209,6 +209,7 @@ constructor(
             val tile = deps.random.pickOrNull(tiles) ?: return@repeat
             tiles.remove(tile)
             val growthling = deps.spawnOwnedNpc(boss, BryophytaGrowthling.NPC, tile) ?: return@repeat
+            growthling.respawns = false
             growthling.mode = NpcMode.OpPlayer2
             spawned += growthling
             growthlingOwner[growthling] = boss
@@ -259,14 +260,19 @@ constructor(
         val boss = growthlingOwner.remove(growthling) ?: return
         val list = growthlings[boss] ?: return
         list.remove(growthling)
-        if (list.none { it.isSlotAssigned && it.hitpoints > 0 } && boss.isSlotAssigned && boss.hitpoints > 0) {
+        if (list.isEmpty() && boss.isSlotAssigned && boss.hitpoints > 0) {
             boss.vars[GROWTHLING_COOLDOWN] = deps.mapClock.cycle + GROWTHLING_COOLDOWN_TICKS
         }
     }
 
     private fun hasLivingGrowthlings(boss: Npc): Boolean {
         val list = growthlings[boss] ?: return false
-        list.removeIf { !it.isSlotAssigned || it.hitpoints <= 0 }
+        return list.any { it.isSlotAssigned && it.hitpoints > 0 }
+    }
+
+    private fun hasTrackedGrowthlings(boss: Npc): Boolean {
+        val list = growthlings[boss] ?: return false
+        list.removeIf { !it.isSlotAssigned }
         return list.isNotEmpty()
     }
 
