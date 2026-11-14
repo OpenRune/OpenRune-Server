@@ -60,9 +60,6 @@ constructor(
             startDialogue(it.npc) { willowEntrance(quest) }
             if (player.bimStage == BimStage.ENTRANCE_CUTSCENE) {
                 cutscene.playEntrance(this, quest)
-                if (player.bimStage == BimStage.INSIDE_CUTSCENE) {
-                    cutscene.playReveal(this, quest) { guardian.ensureSpawned() }
-                }
             }
         }
         onOpNpc1("npc.bim_willow_postquest") {
@@ -246,6 +243,11 @@ constructor(
     internal fun questPoints(player: Player): Int = player.questPoints
 
     private fun recover(player: Player) {
+        val inInstance = isInInstance(player)
+        cutscene.release(player)
+        if (inInstance && player.bimStage >= BimStage.GUARDIAN_FIGHT) {
+            guardian.releaseScene()
+        }
         if (
             player.bimCheckal == BimCheckal.TRAINING &&
                 player.bimStage < BimStage.ENTRANCE_CUTSCENE
@@ -257,7 +259,7 @@ constructor(
         // The workout uses a private copied region. A logout there leaves the player on
         // instance coordinates after the region has been released, so send them back to Atlas
         // and let them restart the training. The same guard covers any other interrupted scene.
-        if (isInInstance(player) && player.bimStage < BimStage.ENTRANCE_CUTSCENE) {
+        if (inInstance && player.bimStage < BimStage.ENTRANCE_CUTSCENE) {
             player.bimCheckal = BimCheckal.SENT_TO_ATLAS
             player.coords = ATLAS_TILE
             return
@@ -269,6 +271,11 @@ constructor(
             }
             BimStage.INSIDE_CUTSCENE -> {
                 player.bimStage = BimStage.GUARDIAN_FIGHT
+                player.coords = GUARDIAN_ROOM_TILE
+            }
+            BimStage.GUARDIAN_FIGHT,
+            BimStage.GUARDIAN_DEAD,
+            -> if (inInstance) {
                 player.coords = GUARDIAN_ROOM_TILE
             }
         }

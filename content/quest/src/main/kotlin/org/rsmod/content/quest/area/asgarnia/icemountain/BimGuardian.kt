@@ -16,7 +16,9 @@ import org.rsmod.api.player.stat.miningLvl
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.content.quest.area.misthalin.SceneRegion
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
@@ -26,6 +28,7 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
+import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
 @Singleton
@@ -34,6 +37,7 @@ class BimGuardian
 constructor(
     private val npcRepo: NpcRepository,
     private val locRepo: LocRepository,
+    private val regionRepo: RegionRepository,
     private val worldRepo: WorldRepository,
     private val playerList: PlayerList,
     private val launcher: ProtectedAccessLauncher,
@@ -41,8 +45,36 @@ constructor(
 ) {
     private var guardian: Npc? = null
     private var dead = false
+    private var scene: SceneRegion? = null
+    private var sceneRegion: Region? = null
+
+    internal fun enterScene(region: Region?, view: SceneRegion) {
+        if (sceneRegion !== region) {
+            releaseScene()
+        }
+        sceneRegion = region
+        scene = view
+    }
+
+    fun releaseScene() {
+        sceneRegion?.let(regionRepo::unprotect)
+        sceneRegion = null
+        scene = null
+        guardian?.let {
+            if (it.isSlotAssigned) {
+                npcRepo.del(it, Int.MAX_VALUE)
+            }
+        }
+        guardian = null
+        dead = false
+    }
+
+    private fun at(coords: CoordGrid): CoordGrid = scene?.let { it[coords] } ?: coords
 
     fun ensureFor(player: Player, stage: Int) {
+        if (scene != null && !inRoom(player.coords)) {
+            releaseScene()
+        }
         if (stage >= BimStage.COMPLETE && inRoom(player.coords)) {
             ensureRuinsSpiders()
         }
@@ -62,7 +94,7 @@ constructor(
         if (guardian?.isSlotAssigned == true) {
             return
         }
-        val npc = Npc(GUARDIAN, BOSS_TILE)
+        val npc = Npc(GUARDIAN, at(BOSS_TILE))
         npc.respawnDir = Direction.South
         npcRepo.add(npc, GUARDIAN_LIFESPAN)
         guardian = npc
@@ -160,6 +192,8 @@ constructor(
             npcRepo.del(npc, Int.MAX_VALUE)
         }
         telejump(GUARDIAN_EXIT_TILE)
+        delay(1)
+        releaseScene()
         camReset()
         camMoveToV3(GUARDIAN_CAM, height = 450, rate = SNAP, rate2 = SNAP)
         camLookAtV3(GUARDIAN_EXIT_TILE, height = 300, rate = SNAP, rate2 = SNAP)
@@ -289,15 +323,16 @@ constructor(
 
     private fun addPillars() {
         for ((coords, angle) in PILLARS) {
+            val tile = at(coords)
             locRepo
-                .findAll(coords)
+                .findAll(tile)
                 .filter {
                     it.id == PILLAR_ID || it.id == BROKEN_PILLAR_ID || it.id == PILLAR_CUTSCENE_ID
                 }
                 .toList()
                 .forEach { locRepo.del(it, Int.MAX_VALUE) }
             locRepo.add(
-                coords,
+                tile,
                 PILLAR,
                 Int.MAX_VALUE,
                 angle,
@@ -307,11 +342,12 @@ constructor(
     }
 
     private fun addDoor() {
-        if (locRepo.findAll(DOOR_TILE).any { it.id == CLOSED_DOOR_ID }) {
+        val tile = at(DOOR_TILE)
+        if (locRepo.findAll(tile).any { it.id == CLOSED_DOOR_ID }) {
             return
         }
         locRepo.add(
-            DOOR_TILE,
+            tile,
             CLOSED_DOOR,
             Int.MAX_VALUE,
             LocAngle[0],
@@ -320,11 +356,12 @@ constructor(
     }
 
     private fun addCutsceneExit() {
-        if (locRepo.findAll(EXIT_TILE).any { it.id == CUTSCENE_EXIT_ID }) {
+        val tile = at(EXIT_TILE)
+        if (locRepo.findAll(tile).any { it.id == CUTSCENE_EXIT_ID }) {
             return
         }
         locRepo.add(
-            EXIT_TILE,
+            tile,
             CUTSCENE_EXIT,
             Int.MAX_VALUE,
             LocAngle[2],
@@ -349,10 +386,18 @@ constructor(
         return RSCM.getReverseMapping(RSCMType.SEQ, seq.id) ?: DEFAULT_PICKAXE_ANIM
     }
 
-    private fun inRoom(coords: CoordGrid): Boolean =
-        coords.level == 0 &&
-            coords.x in ROOM_MIN_X..ROOM_MAX_X &&
-            coords.z in ROOM_MIN_Z..ROOM_MAX_Z
+    private fun inRoom(coords: CoordGrid): Boolean {
+        if (coords.level != 0) {
+            return false
+        }
+        val view = scene
+        if (view != null) {
+            val southWest = view[CoordGrid(ROOM_MIN_X, ROOM_MIN_Z)]
+            val northEast = view[CoordGrid(ROOM_MAX_X, ROOM_MAX_Z)]
+            return coords.x in southWest.x..northEast.x && coords.z in southWest.z..northEast.z
+        }
+        return coords.x in ROOM_MIN_X..ROOM_MAX_X && coords.z in ROOM_MIN_Z..ROOM_MAX_Z
+    }
 
     private companion object {
         const val GUARDIAN = "npc.bim_golem_boss"
