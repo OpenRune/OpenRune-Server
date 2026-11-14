@@ -82,7 +82,7 @@ constructor(
             return
         }
         when (stage) {
-            BimStage.GUARDIAN_FIGHT -> ensureSpawned()
+            BimStage.GUARDIAN_FIGHT -> ensureSpawned(player)
             BimStage.GUARDIAN_DEAD -> {
                 ensureBag()
                 openDoorsAndRamarno()
@@ -90,12 +90,13 @@ constructor(
         }
     }
 
-    fun ensureSpawned() {
+    fun ensureSpawned(player: Player? = null) {
         if (guardian?.isSlotAssigned == true) {
             return
         }
         val npc = Npc(GUARDIAN, at(BOSS_TILE))
         npc.respawnDir = Direction.South
+        player?.let { npc.facePathingEntitySquare(it) }
         npcRepo.add(npc, GUARDIAN_LIFESPAN)
         guardian = npc
         dead = false

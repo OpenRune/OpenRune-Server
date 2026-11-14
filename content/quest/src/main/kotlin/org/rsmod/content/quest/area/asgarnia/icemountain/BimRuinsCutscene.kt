@@ -81,7 +81,7 @@ constructor(
             try {
                 lockedScene(
                     vantage = entrance[ENTRANCE_VANTAGE],
-                    faceAt = entrance[ENTRANCE_FACING],
+                    faceAt = entrance[ENTRANCE_WILLOW],
                     camera = entrance.map(ENTRANCE_OPENING),
                     returnTo = null,
                     underFade = {
@@ -122,7 +122,7 @@ constructor(
                     player.bimMarley = BimMarley.INSIDE
                     player.bimBurntof = BimBurntof.INSIDE
                     guardian.enterScene(cavernRegion, cavern)
-                    guardian.ensureSpawned()
+                    guardian.ensureSpawned(player)
                     armed = true
                 }
                 startDialogue {
@@ -158,6 +158,11 @@ constructor(
         val ladOrLass = if (isBodyTypeA()) "lad" else "lass"
         val sirOrMadam = if (isBodyTypeA()) "sir" else "madam"
 
+        checkal.faceSquare(entrance[ENTRANCE_WILLOW])
+        burntof.faceSquare(entrance[ENTRANCE_WILLOW])
+        willow.faceSquare(entrance[EXCAV_PLAYER_REGROUP_FACING])
+        marley.faceSquare(entrance[ENTRANCE_WILLOW])
+
         startDialogue {
             chatNpcSpecific(
                 "Willow",
@@ -191,6 +196,7 @@ constructor(
         burntof.walk(entrance[EXCAV_BURNOTOF_CHARGE])
         burntof.anim(DWARF_BEND_SEQ)
         delay(CHARGE_WALK_TICKS)
+        burntof.faceSquare(entrance[EXCAV_CHARGE_MARKER])
         burntof.anim(DWARF_BEND_SEQ)
         delay(CHARGE_BEND_TICKS)
 
@@ -200,6 +206,10 @@ constructor(
         checkal.telejump(entrance[EXCAV_CHECKAL_COVER])
         willow.telejump(entrance[EXCAV_WILLOW_COVER])
         marley.telejump(entrance[EXCAV_MARLEY_COVER])
+        checkal.faceSquare(entrance[EXCAV_CHECKAL_COVER_FACING])
+        willow.faceSquare(entrance[EXCAV_CHECKAL_REGROUP])
+        marley.faceSquare(entrance[EXCAV_MARLEY_COVER_FACING])
+        burntof.faceSquare(entrance[ENTRANCE_VANTAGE])
         val marker = spawn(FUSE, entrance[EXCAV_CHARGE_MARKER])
         cast += marker
         frame(entrance, ENTRANCE_COVER)
@@ -347,11 +357,20 @@ constructor(
             )
         }
 
-        for (mark in EXCAV_HAULING) {
+        checkal.faceSquare(entrance[EXCAV_WILLOW_REGROUP])
+        burntof.faceSquare(entrance[EXCAV_RUBBLE])
+        willow.faceSquare(entrance[EXCAV_RUBBLE])
+        marley.faceSquare(entrance[EXCAV_RUBBLE])
+        for ((index, mark) in EXCAV_HAULING.withIndex()) {
             checkal.walk(entrance[mark])
             delay(HAUL_WALK_TICKS)
             checkal.anim(HAUL_SEQ)
             delay(HAUL_REST_TICKS)
+            when (index) {
+                0 -> checkal.faceSquare(entrance[EXCAV_RUBBLE])
+                EXCAV_HAULING.lastIndex ->
+                    checkal.faceSquare(entrance[EXCAV_WILLOW_REGROUP])
+            }
         }
 
         fadeOut(FAST_FADE_DURATION)
@@ -379,6 +398,7 @@ constructor(
                 neutral,
                 "Alright Marley, in you go. Let us know if you find anything.",
             )
+            marley.facePathingEntitySquare(player)
             chatNpcSpecific(
                 "Marley",
                 MARLEY_CUTSCENE,
@@ -435,6 +455,8 @@ constructor(
             )
         }
         walkTo(interior[CORRIDOR_WALK_MID])
+        delay(1)
+        faceSquare(interior[CORRIDOR_DOORWAY])
         dollyBoth(interior, CORRIDOR_SETTLE, rate = 1)
 
         startDialogue { chatNpcSpecific("Marley", MARLEY_CUTSCENE, quiz, "Hmm...") }
@@ -473,7 +495,7 @@ constructor(
         delay(STEP_OVER_TICKS)
 
         startDialogue {
-            faceSquare(interior[CORRIDOR_TRIPWIRES[0]])
+            faceSquare(interior[CORRIDOR_FACE_SOUTH])
             anim(HAUL_SEQ)
             soundSynth(DISARM_FAIL_1)
             chatNpcSpecific("Marley", MARLEY_CUTSCENE, quiz, "Now to disarm it...")
@@ -514,6 +536,7 @@ constructor(
         resetTransmog()
         rebuildAppearance()
         telejump(interior[CAVERN_VANTAGE])
+        faceSquare(interior[CAVERN_PLAYER_FACING])
 
         locRepo.findExact(interior[CAVERN_DOOR_RIGHT], LocShape.CentrepieceStraight)?.let {
             locRepo.del(it, SCENE_PROP_TICKS)
@@ -542,24 +565,27 @@ constructor(
             )
         }
 
-        cast +=
+        val checkal =
             spawn(
                 CHECKAL_CUTSCENE,
                 interior[CAVERN_CHECKAL],
                 Direction.West,
             )
-        cast +=
+        cast += checkal
+        val marley =
             spawn(
                 MARLEY_CUTSCENE,
                 interior[CAVERN_MARLEY],
                 Direction.SouthEast,
             )
-        cast +=
+        cast += marley
+        val willow =
             spawn(
                 WILLOW_CUTSCENE,
                 interior[CAVERN_WILLOW],
                 Direction.South,
             )
+        cast += willow
         val burntof =
             spawn(
                 BURNOTOF_CUTSCENE,
@@ -569,6 +595,11 @@ constructor(
         cast += burntof
         val dormant = spawn(DORMANT_GUARDIAN, interior[CAVERN_GUARDIAN_MARK])
         cast += dormant
+        checkal.faceSquare(interior[CAVERN_WILLOW])
+        marley.faceSquare(interior[CAVERN_FACE_CENTER])
+        willow.faceSquare(interior[CAVERN_FACE_CENTER])
+        burntof.faceSquare(interior[CAVERN_FACE_CENTER])
+        dormant.faceSquare(interior[CAVERN_GUARDIAN_FACING])
 
         frame(interior, CAVERN_OPENING)
         fadeIn()
@@ -587,7 +618,9 @@ constructor(
                 "You're impressed? There's nothing here but dust and fallen rocks.",
             )
             burntof.say("Yaaa*hic*aawn")
-            burntof.walk(interior[CAVERN_BURNOTOF_WANDERS[0]])
+            burntof.walk(interior[CAVERN_BURNOTOF_WANDERS[0]]) {
+                burntof.faceSquare(interior[CAVERN_BURNOTOF_FACE_WEST])
+            }
             chatPlayer(
                 happy,
                 "You don't find it exciting? As an archaeologist, I thought you would be " +
@@ -602,7 +635,9 @@ constructor(
                     "rare gems or piles of lost treasure!",
             )
             burntof.say("Hmm...")
-            burntof.walk(interior[CAVERN_BURNOTOF_WANDERS[1]])
+            burntof.walk(interior[CAVERN_BURNOTOF_WANDERS[1]]) {
+                burntof.faceSquare(interior[CAVERN_BURNOTOF_FACE_SOUTH])
+            }
             chatPlayer(
                 quiz,
                 "It's not about the money though, right? We've potentially discovered the long " +
@@ -654,7 +689,9 @@ constructor(
                     "gang. We're wanted in quite a few large cities across Gielinor.",
             )
             burntof.say("I've sheen thish before...")
-            burntof.walk(interior[CAVERN_BURNOTOF_WANDERS[3]])
+            burntof.walk(interior[CAVERN_BURNOTOF_WANDERS[3]]) {
+                burntof.faceSquare(interior[CAVERN_WILLOW])
+            }
             chatNpcSpecific(
                 "Willow",
                 WILLOW_CUTSCENE,
@@ -663,6 +700,9 @@ constructor(
                     "ruin is about to become your tomb.",
             )
 
+            willow.faceSquare(interior[CAVERN_BURNOTOF_WANDERS[3]])
+            checkal.faceSquare(interior[CAVERN_BURNOTOF_WANDERS[3]])
+            marley.faceSquare(interior[CAVERN_BURNOTOF_WANDERS[3]])
             soundSynth(LEVER_SOUND)
             chatNpcSpecific("Burntof", BURNOTOF_CUTSCENE, drunk, "*hic* Woops...")
             chatNpcSpecific("Willow", WILLOW_CUTSCENE, shocked, "What was that noise?")
@@ -699,6 +739,7 @@ constructor(
         cast.remove(dormant)
         val waking = spawn(GUARDIAN_CUTSCENE, interior[CAVERN_GUARDIAN_MARK])
         cast += waking
+        waking.faceSquare(interior[CAVERN_VANTAGE])
         waking.anim(GUARDIAN_WAKE_SEQ)
         worldRepo.soundArea(
             interior[CAVERN_GUARDIAN_MARK],
@@ -714,6 +755,7 @@ constructor(
         camReset()
         frame(interior, CAVERN_GUARDIAN_SETTLE)
 
+        willow.faceSquare(interior[CAVERN_GUARDIAN_MARK])
         startDialogue {
             chatNpcSpecific(
                 "Willow",
@@ -942,7 +984,6 @@ constructor(
         const val ARENA_SOUND_RADIUS = 10
 
         val ENTRANCE_VANTAGE = CoordGrid(2995, 3495)
-        val ENTRANCE_FACING = CoordGrid(2999, 3493)
         val ENTRANCE_CHECKAL = CoordGrid(2994, 3494)
         val ENTRANCE_BURNOTOF = CoordGrid(2996, 3492)
         val ENTRANCE_WILLOW = CoordGrid(2997, 3494)
@@ -961,8 +1002,10 @@ constructor(
                 CoordGrid(3000, 3494),
             )
         val EXCAV_CHECKAL_COVER = CoordGrid(2993, 3500)
+        val EXCAV_CHECKAL_COVER_FACING = CoordGrid(2993, 3498)
         val EXCAV_WILLOW_COVER = CoordGrid(2997, 3488)
         val EXCAV_MARLEY_COVER = CoordGrid(2996, 3500)
+        val EXCAV_MARLEY_COVER_FACING = CoordGrid(2996, 3499)
         val EXCAV_BURNOTOF_RETREAT = CoordGrid(2994, 3489)
         val EXCAV_PLAYER_COVER = CoordGrid(2991, 3501)
         val EXCAV_BURNOTOF_REGROUP = CoordGrid(2995, 3491)
@@ -995,12 +1038,14 @@ constructor(
         val CORRIDOR_WALK_MID = CoordGrid(2952, 5764)
         val CORRIDOR_WIRE_TILE = CoordGrid(2952, 5766)
         val CORRIDOR_STEP_OVER = CoordGrid(2952, 5767)
+        val CORRIDOR_FACE_SOUTH = CoordGrid(2952, 5768)
         val CORRIDOR_TRIPWIRES = listOf(CoordGrid(2952, 5766), CoordGrid(2953, 5766))
         val CORRIDOR_OPENING = SceneCamera(CoordGrid(2954, 5771), 500, CoordGrid(2952, 5764), 250)
         val CORRIDOR_SETTLE = SceneCamera(CoordGrid(2954, 5772), 500, CoordGrid(2952, 5764), 250)
         val CORRIDOR_FOLLOW = SceneCamera(CoordGrid(2954, 5773), 500, CoordGrid(2952, 5766), 250)
 
         val CAVERN_VANTAGE = CoordGrid(2953, 5769)
+        val CAVERN_PLAYER_FACING = CoordGrid(2953, 5778)
         val CAVERN_CHECKAL = CoordGrid(2956, 5770)
         val CAVERN_MARLEY = CoordGrid(2952, 5772)
         val CAVERN_WILLOW = CoordGrid(2953, 5771)
@@ -1009,6 +1054,10 @@ constructor(
         val CAVERN_DOOR_CLOSED = CoordGrid(2951, 5780)
         val CAVERN_DOOR_RIGHT = CoordGrid(2954, 5780)
         val CAVERN_GUARDIAN_MARK = CoordGrid(2952, 5778)
+        val CAVERN_GUARDIAN_FACING = CoordGrid(2952, 5777)
+        val CAVERN_FACE_CENTER = CoordGrid(2953, 5770)
+        val CAVERN_BURNOTOF_FACE_WEST = CoordGrid(2947, 5775)
+        val CAVERN_BURNOTOF_FACE_SOUTH = CoordGrid(2951, 5779)
         val CAVERN_OPENING = SceneCamera(CoordGrid(2952, 5761), 200, CoordGrid(2952, 5768), 50)
         val CAVERN_RISE = SceneCamera(CoordGrid(2952, 5763), 800, CoordGrid(2952, 5771), 50)
         val CAVERN_DRIFT_EAST = SceneCamera(CoordGrid(2959, 5768), 800, CoordGrid(2952, 5771), 50)
