@@ -1115,6 +1115,5 @@ constructor(private val objRepo: ObjRepository, private val scenes: DemonSlayerS
         private const val SAY_TITLE = "What would you like to say?"
         private const val PRESS_ON = "Well I'd better press on with it."
         private const val PRESS_ON_NO_STOP = "Well I'd better press on with it"
-
     }
 }

@@ -10,9 +10,9 @@ import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.righthand
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
@@ -31,8 +31,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.player.PlayerUid
-import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.entity.player.SessionStateEvent
+import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.region.Region
