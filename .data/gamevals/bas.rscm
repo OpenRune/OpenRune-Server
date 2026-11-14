@@ -1,2 +1,6 @@
 human_default=0
 warguild_balance=10
+waterfall_wading=1
+waterfall_swimming=2
+waterfall_drowning=3
+waterfall_whirlpool=4

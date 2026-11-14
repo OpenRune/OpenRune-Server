@@ -12921,6 +12921,14 @@ inherit = "npc.gb_mossgiant"
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
+"param.npc_poison_severity"=40
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.gb_growthling"
+inherit = "npc.gb_growthling"
+[npc.params]
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.swampcrab"
