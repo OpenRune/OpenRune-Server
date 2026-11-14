@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation(projects.api.bosses)
     implementation(projects.api.combat.combatCommons)
+    implementation(projects.api.combat.combatManager)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
     implementation(projects.api.instances)

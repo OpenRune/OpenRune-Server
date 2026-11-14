@@ -14,13 +14,16 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.spawnOwnedNpc
 import org.rsmod.api.bosses.spec.Condition
+import org.rsmod.api.combat.manager.PlayerAttackManager
+import org.rsmod.api.combat.weapon.styles.AttackStyles
+import org.rsmod.api.combat.weapon.types.AttackTypes
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
-import org.rsmod.api.npc.queueDeath
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onModifyNpcHit
@@ -41,6 +44,9 @@ constructor(
     deps: BossDeps,
     private val aiPlayerInteractions: AiPlayerInteractions,
     private val instances: InstanceManager,
+    private val attackStyles: AttackStyles,
+    private val attackTypes: AttackTypes,
+    private val attackManager: PlayerAttackManager,
 ) : BossPluginScript(deps) {
 
     private var Player.bryophytaKills by intVarp("varp.total_bryophyta_kills")
@@ -69,23 +75,21 @@ constructor(
         }
 
         val growthlingType =
-            ServerCacheManager.getNpc(GROWTHLING.asRSCM(RSCMType.NPC))
-                ?: error("Missing npc type: $GROWTHLING")
-        onOpNpcU(GROWTHLING) {
+            ServerCacheManager.getNpc(BryophytaGrowthling.NPC.asRSCM(RSCMType.NPC))
+                ?: error("Missing npc type: ${BryophytaGrowthling.NPC}")
+        onOpNpcU(BryophytaGrowthling.NPC) {
             val npc = it.npc
-            if (npc.hitpoints <= 0) return@onOpNpcU
-            if (!isAxeOrSecateurs(it.objType)) {
+            val weapon = it.objType ?: return@onOpNpcU
+            if (!BryophytaGrowthling.isAxeOrSecateurs(weapon)) {
                 player.mes(TOO_STRONG_MESSAGE)
                 return@onOpNpcU
             }
-            player.mes(PRUNE_MESSAGE, ChatType.Spam)
-            npc.hitpoints = 0
-            npc.queueDeath()
+            pruneGrowthling(npc, weapon, awardXp = false)
         }
         onModifyNpcHit(growthlingType) { onGrowthlingHit(npc, hit) }
 
         onEvent<NpcStateEvents.Delete> {
-            if (npc.isType(GROWTHLING)) {
+            if (npc.isType(BryophytaGrowthling.NPC)) {
                 onGrowthlingDeleted(npc)
             } else if (npc.isType(BOSS_NPC)) {
                 growthlings.remove(npc)?.forEach { growthlingOwner.remove(it) }
@@ -140,6 +144,25 @@ constructor(
             }
         }
 
+    private suspend fun ProtectedAccess.pruneGrowthling(
+        growthling: Npc,
+        weapon: ItemServerType,
+        awardXp: Boolean,
+    ) {
+        if (growthling.hitpoints <= 0) return
+        player.mes(BryophytaGrowthling.PRUNE_MESSAGE, ChatType.Spam)
+        BryophytaGrowthling.prune(
+            player = player,
+            npc = growthling,
+            weapon = weapon,
+            awardXp = awardXp,
+            attackStyles = attackStyles,
+            attackTypes = attackTypes,
+            attackManager = attackManager,
+        )
+        delay(1)
+    }
+
     private fun onBossHit(npc: Npc, hit: HitBuilder) {
         if (!hit.isFromPlayer) return
         val attacker = hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) } ?: return
@@ -175,7 +198,7 @@ constructor(
         repeat(GROWTHLING_COUNT) {
             val tile = deps.random.pickOrNull(tiles) ?: return@repeat
             tiles.remove(tile)
-            val growthling = deps.spawnOwnedNpc(boss, GROWTHLING, tile) ?: return@repeat
+            val growthling = deps.spawnOwnedNpc(boss, BryophytaGrowthling.NPC, tile) ?: return@repeat
             growthling.mode = NpcMode.OpPlayer2
             spawned += growthling
             growthlingOwner[growthling] = boss
@@ -207,15 +230,15 @@ constructor(
 
     private fun onGrowthlingHit(growthling: Npc, hit: HitBuilder) {
         if (!hit.isFromPlayer) return
-        val attacker = hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) } ?: return
-        if (isAxeOrSecateurs(hit.righthandType())) {
-            hit.damage = growthling.hitpoints
-            attacker.mes(PRUNE_MESSAGE, ChatType.Spam)
+        if (growthling.hitpoints <= 0) {
+            hit.damage = 0
             return
         }
+        val attacker = hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) } ?: return
         if (growthling.hitpoints - hit.damage <= 0) {
             hit.damage = (growthling.hitpoints - 1).coerceAtLeast(0)
         }
+        if (BryophytaGrowthling.isAxeOrSecateurs(hit.righthandType())) return
         if (growthling.vars[GROWTHLING_WARNED] == 0) {
             growthling.vars[GROWTHLING_WARNED] = 1
             attacker.mes(CUT_MESSAGE)
@@ -250,20 +273,8 @@ constructor(
         return deps.playerList.firstOrNull { it.uuid in session.occupants }
     }
 
-    private fun isAxeOrSecateurs(type: ItemServerType?): Boolean {
-        if (type == null) return false
-        if (type.internalName == BLESSED_AXE || type.internalName == ZOMBIE_AXE) return false
-        if (type.isContentType("content.woodcutting_axe")) return true
-        return type.internalName == SECATEURS || type.internalName == MAGIC_SECATEURS
-    }
-
     private companion object {
         private const val BOSS_NPC = "npc.gb_mossgiant"
-        private const val GROWTHLING = "npc.gb_growthling"
-        private const val SECATEURS = "obj.secateurs"
-        private const val MAGIC_SECATEURS = "obj.fairy_enchanted_secateurs"
-        private const val BLESSED_AXE = "obj.blessed_axe"
-        private const val ZOMBIE_AXE = "obj.zombie_axe"
         private const val SMOKE_SPOTANIM = "spotanim.smokepuff_large"
         private const val SUMMON_ROLL = "bryophyta.summon_roll"
         private const val POISON = "bryophyta.poison"
@@ -278,6 +289,5 @@ constructor(
 
         private const val CUT_MESSAGE = "Cut the growthling down with an axe or secateurs."
         private const val TOO_STRONG_MESSAGE = "The Growthling is too strong to be hurt by that!"
-        private const val PRUNE_MESSAGE = "You prune the Growthling."
     }
 }

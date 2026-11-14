@@ -3,9 +3,12 @@ package org.rsmod.content.bosses.bryophyta
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.api.config.refs.params
@@ -41,6 +44,47 @@ class BryophytaDataTest {
             assertNotNull(growthling)
             assertEquals(true, growthling?.hasParam(params.dropped_remains.raw))
             assertNull(growthling?.paramOrNull(params.dropped_remains))
+        }
+    }
+
+    @Test
+    fun `axes and magic secateurs prune in one click`() {
+        withCache {
+            val bronzeAxe = ServerCacheManager.getItem("obj.bronze_axe".asRSCM(RSCMType.OBJ))
+            val magicSecateurs =
+                ServerCacheManager.getItem("obj.fairy_enchanted_secateurs".asRSCM(RSCMType.OBJ))
+            assertNotNull(bronzeAxe)
+            assertNotNull(magicSecateurs)
+            assertTrue(BryophytaGrowthling.isOneClick(bronzeAxe!!))
+            assertTrue(BryophytaGrowthling.isOneClick(magicSecateurs!!))
+        }
+    }
+
+    @Test
+    fun `regular secateurs only prune as a use item`() {
+        withCache {
+            val secateurs = ServerCacheManager.getItem("obj.secateurs".asRSCM(RSCMType.OBJ))
+            assertNotNull(secateurs)
+            assertFalse(BryophytaGrowthling.isOneClick(secateurs!!))
+            assertTrue(BryophytaGrowthling.isAxeOrSecateurs(secateurs))
+        }
+    }
+
+    @Test
+    fun `prune animations resolve in the cache`() {
+        withCache {
+            val weapons =
+                listOf(
+                    "obj.bronze_axe",
+                    "obj.secateurs",
+                    "obj.fairy_enchanted_secateurs",
+                )
+            for (weapon in weapons) {
+                val type = ServerCacheManager.getItem(weapon.asRSCM(RSCMType.OBJ))
+                assertNotNull(type)
+                val seq = BryophytaGrowthling.pruneAnim(type!!)
+                assertDoesNotThrow { ServerCacheManager.getAnim(seq.asRSCM(RSCMType.SEQ)) }
+            }
         }
     }
 
