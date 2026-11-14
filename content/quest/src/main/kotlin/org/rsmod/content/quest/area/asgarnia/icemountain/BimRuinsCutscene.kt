@@ -23,7 +23,8 @@ import org.rsmod.content.quest.area.misthalin.SceneFadeDuration
 import org.rsmod.content.quest.area.misthalin.SceneFadeTicks
 import org.rsmod.content.quest.area.misthalin.SceneRegion
 import org.rsmod.content.quest.area.misthalin.SceneSnapRate
-import org.rsmod.content.quest.area.misthalin.lockedScene
+import org.rsmod.content.quest.area.misthalin.beginScene
+import org.rsmod.content.quest.area.misthalin.endScene
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.PathingEntityCommon
@@ -33,7 +34,10 @@ import org.rsmod.game.map.Direction
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.game.movement.RouteRequestCoord
 import org.rsmod.game.region.Region
+import org.rsmod.game.region.zone.RegionZoneCopy
+import org.rsmod.game.scene.SceneBuildArea
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
 /**
@@ -75,15 +79,16 @@ constructor(
             val entrance = SceneRegion(entranceRegion)
             val corridor = SceneRegion(corridorRegion)
             val cavern = SceneRegion(cavernRegion)
+            val corridorArea = corridorRegion?.let { corridorBuildArea(corridor, it) }
             val cast = mutableListOf<Npc>()
+            var sceneStarted = false
             var armed = false
 
             try {
-                lockedScene(
+                beginScene(
                     vantage = entrance[ENTRANCE_VANTAGE],
                     faceAt = entrance[ENTRANCE_WILLOW],
                     camera = entrance.map(ENTRANCE_OPENING),
-                    returnTo = null,
                     underFade = {
                         player.stopAmbience()
                         cast +=
@@ -111,20 +116,22 @@ constructor(
                                 Direction.SouthEast,
                             )
                     },
-                    teardown = { cast.forEach(::despawn) },
-                ) {
-                    excavation(entrance, cast)
-                    corridor(corridor, cast)
-                    betrayal(cavern, cast)
-                    regions.releaseEntranceAndCorridor(regionRepo)
-                    player.bimStage = BimStage.GUARDIAN_FIGHT
-                    player.bimCheckal = BimCheckal.INSIDE
-                    player.bimMarley = BimMarley.INSIDE
-                    player.bimBurntof = BimBurntof.INSIDE
-                    guardian.enterScene(cavernRegion, cavern)
-                    guardian.ensureSpawned(player)
-                    armed = true
-                }
+                )
+                sceneStarted = true
+
+                excavation(entrance, cast)
+                corridor(corridor, corridorArea, cast)
+                betrayal(cavern, cast)
+                regions.releaseEntranceAndCorridor(regionRepo)
+                player.bimStage = BimStage.GUARDIAN_FIGHT
+                player.bimCheckal = BimCheckal.INSIDE
+                player.bimMarley = BimMarley.INSIDE
+                player.bimBurntof = BimBurntof.INSIDE
+                guardian.enterScene(cavernRegion, cavern)
+                guardian.ensureSpawned(player)
+                armed = true
+                restoreFightPresentation()
+
                 startDialogue {
                     chatPlayer(
                         neutral,
@@ -132,6 +139,11 @@ constructor(
                             "this thing.",
                     )
                 }
+            } catch (t: Throwable) {
+                if (sceneStarted && !armed) {
+                    endScene(returnTo = null, teardown = { cast.forEach(::despawn) })
+                }
+                throw t
             } finally {
                 if (armed) {
                     player.uuid?.let(scenes::remove)
@@ -143,8 +155,47 @@ constructor(
     }
 
     fun release(player: Player) {
+        player.sceneBuildArea = null
         val uuid = player.uuid ?: return
         scenes.remove(uuid)?.release(regionRepo)
+    }
+
+    private fun corridorBuildArea(interior: SceneRegion, region: Region): SceneBuildArea {
+        val regionBase = ZoneKey.from(region.southWest)
+        val center = ZoneKey.from(interior[CORRIDOR_VANTAGE])
+        val centerX = center.x - regionBase.x
+        val centerZ = center.z - regionBase.z
+        val base = region.southWest.translate((centerX - 6) * 8, (centerZ - 6) * 8)
+        val zones = LinkedHashMap<ZoneKey, RegionZoneCopy>()
+        for (level in 0 until CoordGrid.LEVEL_COUNT) {
+            for (x in 0 until INTERIOR_WIDTH) {
+                for (z in 0 until INTERIOR_LENGTH) {
+                    val dest =
+                        ZoneKey(
+                            regionBase.x + INTERIOR_DEST_X + x,
+                            regionBase.z + INTERIOR_DEST_Z + z,
+                            level,
+                        )
+                    val source = ZoneKey(INTERIOR_SOURCE_X + x, INTERIOR_SOURCE_Z + z, level)
+                    zones[dest] = RegionZoneCopy(source, rotation = 0, flag = null)
+                }
+            }
+        }
+        return SceneBuildArea(base, center, reload = false, zones)
+    }
+
+    private fun ProtectedAccess.restoreFightPresentation() {
+        ifClose()
+        showEntityOps()
+        restoreLastAcceptAid()
+        maxDrawDistance(false)
+        minimapReset()
+        camModeReset()
+        showTopLevel()
+        showHealthHud()
+        camReset()
+        openTopLevelTabs()
+        syncDrawDistance()
     }
 
     private suspend fun ProtectedAccess.excavation(
@@ -411,6 +462,7 @@ constructor(
 
     private suspend fun ProtectedAccess.corridor(
         interior: SceneRegion,
+        buildArea: SceneBuildArea?,
         cast: MutableList<Npc>,
     ) {
         fadeOut()
@@ -418,6 +470,11 @@ constructor(
 
         cast.forEach(::despawn)
         cast.clear()
+        if (buildArea != null) {
+            player.sceneBuildArea = buildArea
+            player.buildArea = buildArea.base
+            player.regionRebuildPending = true
+        }
         telejump(interior[CORRIDOR_VANTAGE])
         transmog(MARLEY_CUTSCENE)
         rebuildAppearance()
@@ -535,7 +592,9 @@ constructor(
 
         resetTransmog()
         rebuildAppearance()
+        player.sceneBuildArea = null
         telejump(interior[CAVERN_VANTAGE])
+        player.regionRebuildPending = true
         faceSquare(interior[CAVERN_PLAYER_FACING])
 
         locRepo.findExact(interior[CAVERN_DOOR_RIGHT], LocShape.CentrepieceStraight)?.let {
@@ -783,8 +842,6 @@ constructor(
             )
         }
 
-        fadeOut(FAST_FADE_DURATION)
-        delay(SceneFadeTicks)
         cast.forEach(::despawn)
         cast.clear()
     }
@@ -982,6 +1039,12 @@ constructor(
         const val QUAKE_BEAT = 4
         const val GUARDIAN_WAKE_TICKS = 2
         const val ARENA_SOUND_RADIUS = 10
+        const val INTERIOR_SOURCE_X = 366
+        const val INTERIOR_SOURCE_Z = 719
+        const val INTERIOR_DEST_X = 5
+        const val INTERIOR_DEST_Z = 4
+        const val INTERIOR_WIDTH = 6
+        const val INTERIOR_LENGTH = 6
 
         val ENTRANCE_VANTAGE = CoordGrid(2995, 3495)
         val ENTRANCE_CHECKAL = CoordGrid(2994, 3494)
@@ -1102,11 +1165,11 @@ constructor(
 
         val RUINS_INTERIOR: RegionTemplate =
             RegionTemplate.create {
-                copyAllLevels(366, 719) {
-                    regionZoneX = 5
-                    regionZoneZ = 4
-                    zoneWidth = 6
-                    zoneLength = 6
+                copyAllLevels(INTERIOR_SOURCE_X, INTERIOR_SOURCE_Z) {
+                    regionZoneX = INTERIOR_DEST_X
+                    regionZoneZ = INTERIOR_DEST_Z
+                    zoneWidth = INTERIOR_WIDTH
+                    zoneLength = INTERIOR_LENGTH
                 }
             }
     }

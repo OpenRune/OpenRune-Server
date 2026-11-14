@@ -10,6 +10,7 @@ import jakarta.inject.Singleton
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
+import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -20,6 +21,7 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.api.table.MusicRow
 import org.rsmod.content.quest.area.misthalin.SceneCamera
 import org.rsmod.content.quest.area.misthalin.SceneDriftRate
 import org.rsmod.content.quest.area.misthalin.SceneRegion
@@ -220,6 +222,7 @@ constructor(
                 faceAt = interior[BOSS_TILE],
                 camera = interior.map(AFTERMATH_CAMERA),
                 returnTo = CAMDOZAAL_ARRIVAL,
+                underFade = { playRuinsMusic() },
                 teardown = { cast.forEach(::despawn) },
             ) {
                 startDialogue {
@@ -363,6 +366,11 @@ constructor(
             }
         }
         ensureRuinsSpiders()
+    }
+
+    private fun ProtectedAccess.playRuinsMusic() {
+        val row = MusicRow.all().firstOrNull { it.displayname == RUINS_MUSIC } ?: return
+        player.midiSong(row.midi, fadeOutSpeed = 60, fadeInDelay = 60)
     }
 
     private fun openSceneDoors(interior: SceneRegion) {
@@ -611,6 +619,7 @@ constructor(
         const val RAMARNO_ENTRANCE = "npc.camdozaal_ramarno_entrance_multi"
         const val RAMARNO_CUTSCENE = "npc.bim_camzodaal_ramarno_cutscene"
         const val DEFAULT_PICKAXE_ANIM = "seq.human_mining_bronze_pickaxe"
+        const val RUINS_MUSIC = "The Ruins of Camdozaal"
         const val RUMMAGE_SEQ = "seq.generic_look_and_search"
         const val HAUL_SEQ = "seq.human_pickupfloor"
         const val THINK_SEQ = "seq.emote_think"
