@@ -122,13 +122,19 @@ constructor(
                 excavation(entrance, cast)
                 corridor(corridor, corridorArea, cast)
                 betrayal(cavern, cast)
+
+                fadeOut(duration = FIGHT_FADE_DURATION)
+                delay(FIGHT_FADE_TICKS)
+                cast.forEach(::despawn)
+                cast.clear()
+
                 regions.releaseEntranceAndCorridor(regionRepo)
                 player.bimStage = BimStage.GUARDIAN_FIGHT
                 player.bimCheckal = BimCheckal.INSIDE
                 player.bimMarley = BimMarley.INSIDE
                 player.bimBurntof = BimBurntof.INSIDE
                 guardian.enterScene(cavernRegion, cavern)
-                guardian.ensureSpawned(player)
+                guardian.ensureSpawned(player, attack = false)
                 armed = true
                 restoreFightPresentation()
 
@@ -139,6 +145,8 @@ constructor(
                             "this thing.",
                     )
                 }
+                fadeIn()
+                guardian.armGuardian(player)
             } catch (t: Throwable) {
                 if (sceneStarted && !armed) {
                     endScene(returnTo = null, teardown = { cast.forEach(::despawn) })
@@ -510,7 +518,7 @@ constructor(
         }
         walkTo(interior[CORRIDOR_WALK_MID])
         delay(1)
-        faceSquare(interior[CORRIDOR_DOORWAY])
+        faceSquare(interior[CORRIDOR_TRAP_FACE])
         dollyBoth(interior, CORRIDOR_SETTLE, rate = 1)
 
         startDialogue { chatNpcSpecific("Marley", MARLEY_CUTSCENE, quiz, "Hmm...") }
@@ -657,6 +665,7 @@ constructor(
         burntof.faceSquare(interior[CAVERN_FACE_CENTER])
         dormant.faceSquare(interior[CAVERN_GUARDIAN_FACING])
 
+        delay(CAVERN_REBUILD_TICKS)
         frame(interior, CAVERN_OPENING)
         fadeIn()
 
@@ -838,9 +847,6 @@ constructor(
                 "You're right, Marley. Burntof, we're leaving!",
             )
         }
-
-        cast.forEach(::despawn)
-        cast.clear()
     }
 
     private fun ProtectedAccess.frame(r: SceneRegion, frame: SceneCamera) {
@@ -1030,6 +1036,9 @@ constructor(
         const val STEP_OVER_DELAY_2 = 50
         const val STEP_OVER_FACE_NORTH = 1024
         const val STEP_OVER_TICKS = 3
+        const val CAVERN_REBUILD_TICKS = 3
+        const val FIGHT_FADE_DURATION = 15
+        const val FIGHT_FADE_TICKS = 2
         const val QUAKE_SHAKE_STRONG = 50
         const val QUAKE_SHAKE_MID = 20
         const val QUAKE_SHAKE_SOFT = 5
@@ -1094,6 +1103,7 @@ constructor(
 
         val CORRIDOR_VANTAGE = CoordGrid(2952, 5763)
         val CORRIDOR_DOORWAY = CoordGrid(2951, 5761)
+        val CORRIDOR_TRAP_FACE = CoordGrid(2951, 5765)
         val CORRIDOR_ENTRY_FACING = CoordGrid(2952, 5765)
         val CORRIDOR_WALK_MID = CoordGrid(2952, 5764)
         val CORRIDOR_WIRE_TILE = CoordGrid(2952, 5766)

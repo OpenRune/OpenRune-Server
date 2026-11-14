@@ -37,6 +37,7 @@ constructor(
                     returnTo = RpsScene.Exit,
                     underFade = {
                         cast += spawn(BURNOTOF, scene[RpsScene.Burntof])
+                        cast += spawn(TINA, scene[RpsScene.Tina])
                     },
                     teardown = { cast.forEach(::despawn) },
                 ) {
@@ -134,8 +135,7 @@ constructor(
                             "Tina! Bring me another beer pleash.",
                         )
 
-                        val tina = spawn(TINA, scene[RpsScene.Tina])
-                        cast += tina
+                        val tina = cast.first { it.isType(TINA) }
                         chatNpcSpecific(
                             "Tina",
                             TINA,

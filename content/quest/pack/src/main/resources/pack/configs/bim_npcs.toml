@@ -130,7 +130,7 @@ inherit = "npc.camdozaal_ramarno_entrance_multi"
 moveRestrict = "NoMove"
 defaultMode = "None"
 wanderRange = 0
-respawnDir = "NorthEast"
+respawnDir = "South"
 
 [[npc]]
 id = "npc.camdozaal_ramarno_multi"
@@ -152,6 +152,7 @@ wanderRange = 0
 respawnDir = "South"
 [npc.params]
 "param.headbar" = "headbar.health_30"
+"param.dropped_remains" = -1
 "param.attackrate" = 5
 "param.attack_melee" = 20
 "param.melee_strength" = 50

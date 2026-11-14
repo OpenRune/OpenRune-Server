@@ -8,8 +8,10 @@ import dev.openrune.types.NpcMode
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
+import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -54,6 +56,7 @@ constructor(
     private val playerList: PlayerList,
     private val launcher: ProtectedAccessLauncher,
     private val hitModifier: StandardNpcHitModifier,
+    private val aiPlayerInteractions: AiPlayerInteractions,
 ) {
     private var guardian: Npc? = null
     private var dead = false
@@ -103,7 +106,7 @@ constructor(
         }
     }
 
-    fun ensureSpawned(player: Player? = null) {
+    fun ensureSpawned(player: Player? = null, attack: Boolean = true) {
         if (guardian?.isSlotAssigned == true) {
             return
         }
@@ -111,11 +114,22 @@ constructor(
         npc.respawnDir = Direction.South
         player?.let { npc.facePathingEntitySquare(it) }
         npcRepo.add(npc, GUARDIAN_LIFESPAN)
+        if (attack) {
+            player?.let { npc.apPlayer2(it, aiPlayerInteractions) }
+        }
         guardian = npc
         dead = false
         addPillars()
         addDoor()
         addCutsceneExit()
+    }
+
+    internal fun armGuardian(player: Player) {
+        val npc = guardian ?: return
+        if (!npc.isSlotAssigned) {
+            return
+        }
+        npc.apPlayer2(player, aiPlayerInteractions)
     }
 
     fun onKill(npc: Npc, hero: Player, quest: BelowIceMountain) {
@@ -158,6 +172,7 @@ constructor(
 
         locRepo.change(pillar, BROKEN_PILLAR, Int.MAX_VALUE)
         npc.spotanim("spotanim.rockfall", delay = 20, height = 10)
+        access.statAdvance("stat.mining", PILLAR_XP)
         if (npc.hitpoints <= 0) {
             return
         }
@@ -645,6 +660,7 @@ constructor(
         const val PILLAR_SWING_TICKS = 3
         const val PILLAR_MIN_DAMAGE = 10
         const val PILLAR_DAMAGE_SPREAD = 3
+        const val PILLAR_XP = 10.0
         const val SNAP = 232
         const val FADE_CLEAR = 255
         const val FADE_BLACK = 0
