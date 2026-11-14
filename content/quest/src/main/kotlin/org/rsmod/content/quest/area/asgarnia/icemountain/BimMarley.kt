@@ -82,6 +82,7 @@ private suspend fun Dialogue.marleyHandIn(quest: BelowIceMountain) {
     access.invDel(access.inv, "obj.bim_steak_sandwich", 1)
     objbox("obj.bim_steak_sandwich", "You give the steak sandwich to Marley.")
     player.bimMarley = BimMarley.SANDWICH_GIVEN
+    marleyEats()
     chatNpc(happy, "Aaah... not quite as good as the usual, but it hit the spot.")
     chatPlayer(quiz, "Are you finally done?")
     chatNpc(
@@ -90,8 +91,10 @@ private suspend fun Dialogue.marleyHandIn(quest: BelowIceMountain) {
     )
     chatPlayer(neutral, "Finally! You can find her on the west side of Ice Mountain.")
     chatNpc(happy, "Excellent! I'll be on my way then.")
-    player.bimMarley = BimMarley.RECRUITED
-    quest.markOneRecruited(player)
+    recruitCrewFade {
+        player.bimMarley = BimMarley.RECRUITED
+        quest.markOneRecruited(player)
+    }
     if (quest.hasAllRecruits(player)) {
         quest.markAllRecruited(player)
         chatPlayer(
@@ -139,3 +142,15 @@ internal suspend fun Dialogue.marleyPostquest(quest: BelowIceMountain) = marleyR
 
 private fun Dialogue.hasSandwich(): Boolean =
     access.inv.count("obj.bim_steak_sandwich") > 0
+
+private suspend fun Dialogue.marleyEats() {
+    repeat(EAT_REPEAT) {
+        npc?.anim("seq.human_eat")
+        access.soundSynth("synth.eat")
+        access.delay(EAT_GAP_TICKS)
+    }
+}
+
+private const val EAT_REPEAT = 3
+
+private const val EAT_GAP_TICKS = 2

@@ -6,6 +6,7 @@ quest_scroll_close = 402
 quest_dialogue_close = 403
 cots_tail = 430
 bim_flex = 431
+bim_guardian_aftermath = 432
 
 [gamevals.queue]
 quest_scroll_continue = 64440

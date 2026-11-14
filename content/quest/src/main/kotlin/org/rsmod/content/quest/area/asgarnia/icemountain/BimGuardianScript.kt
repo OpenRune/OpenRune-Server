@@ -4,6 +4,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -19,6 +20,9 @@ constructor(
         onPlayerLogin {
             guardian.ensureFor(player, quest.stage(player))
             cutscene.ensureEntrance(quest.stage(player))
+        }
+        onPlayerSoftTimer(BIM_GUARDIAN_FINISH_TIMER) {
+            guardian.resumeFinish(player, quest)
         }
         onOpLoc1("loc.bim_boss_rock") { guardian.minePillar(this, it.loc, quest) }
         onOpLoc1("loc.bim_door") { enterRuins() }

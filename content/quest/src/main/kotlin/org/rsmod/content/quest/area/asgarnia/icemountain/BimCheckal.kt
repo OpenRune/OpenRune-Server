@@ -120,8 +120,10 @@ internal suspend fun Dialogue.checkalPostFlex(quest: BelowIceMountain) {
         "Fantastic! Willow said she'd meet you by the entrance, on the west side of Ice Mountain.",
     )
     chatNpc(neutral, "Thank you my friend, I will meet you there.")
-    player.bimCheckal = BimCheckal.RECRUITED
-    quest.markOneRecruited(player)
+    recruitCrewFade {
+        player.bimCheckal = BimCheckal.RECRUITED
+        quest.markOneRecruited(player)
+    }
     if (quest.hasAllRecruits(player)) {
         quest.markAllRecruited(player)
         chatPlayer(
@@ -175,3 +177,20 @@ internal suspend fun Dialogue.checkalPostquest(quest: BelowIceMountain) {
 }
 
 internal suspend fun Dialogue.checkalAfterFlex(quest: BelowIceMountain) = checkalPostFlex(quest)
+
+internal suspend fun Dialogue.recruitCrewFade(recruit: () -> Unit) {
+    access.fadeOverlay(0, FADE_CLEAR, 0, FADE_BLACK, RECRUIT_FADE_DURATION)
+    access.delay(RECRUIT_FADE_TICKS)
+    recruit()
+    access.fadeOverlay(0, FADE_BLACK, 0, FADE_CLEAR, RECRUIT_FADE_DURATION)
+    access.delay(RECRUIT_FADE_TICKS)
+    access.closeFadeOverlayNow()
+}
+
+private const val RECRUIT_FADE_DURATION = 50
+
+private const val RECRUIT_FADE_TICKS = 2
+
+private const val FADE_CLEAR = 255
+
+private const val FADE_BLACK = 0

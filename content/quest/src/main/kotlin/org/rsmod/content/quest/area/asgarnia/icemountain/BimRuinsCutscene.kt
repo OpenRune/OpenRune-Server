@@ -412,16 +412,12 @@ constructor(
         burntof.faceSquare(entrance[EXCAV_RUBBLE])
         willow.faceSquare(entrance[EXCAV_RUBBLE])
         marley.faceSquare(entrance[EXCAV_RUBBLE])
-        for ((index, mark) in EXCAV_HAULING.withIndex()) {
+        checkal.faceSquare(entrance[EXCAV_RUBBLE])
+        for (mark in EXCAV_HAULING) {
             checkal.walk(entrance[mark])
             delay(HAUL_WALK_TICKS)
             checkal.anim(HAUL_SEQ)
             delay(HAUL_REST_TICKS)
-            when (index) {
-                0 -> checkal.faceSquare(entrance[EXCAV_RUBBLE])
-                EXCAV_HAULING.lastIndex ->
-                    checkal.faceSquare(entrance[EXCAV_WILLOW_REGROUP])
-            }
         }
 
         fadeOut(FAST_FADE_DURATION)
@@ -430,6 +426,7 @@ constructor(
         locRepo.del(rubble, SCENE_PROP_TICKS)
         fadeIn()
 
+        checkal.faceSquare(entrance[EXCAV_WILLOW_REGROUP])
         startDialogue {
             chatNpcSpecific(
                 "Checkal",
@@ -1101,7 +1098,7 @@ constructor(
         val CORRIDOR_WALK_MID = CoordGrid(2952, 5764)
         val CORRIDOR_WIRE_TILE = CoordGrid(2952, 5766)
         val CORRIDOR_STEP_OVER = CoordGrid(2952, 5767)
-        val CORRIDOR_FACE_SOUTH = CoordGrid(2952, 5768)
+        val CORRIDOR_FACE_SOUTH = CoordGrid(2952, 5766)
         val CORRIDOR_TRIPWIRES = listOf(CoordGrid(2952, 5766), CoordGrid(2953, 5766))
         val CORRIDOR_OPENING = SceneCamera(CoordGrid(2954, 5771), 500, CoordGrid(2952, 5764), 250)
         val CORRIDOR_SETTLE = SceneCamera(CoordGrid(2954, 5772), 500, CoordGrid(2952, 5764), 250)

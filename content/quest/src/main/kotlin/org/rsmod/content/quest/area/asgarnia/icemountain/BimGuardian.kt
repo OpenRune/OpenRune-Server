@@ -41,6 +41,8 @@ import org.rsmod.game.movement.RouteRequestCoord
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
+internal const val BIM_GUARDIAN_FINISH_TIMER = "timer.bim_guardian_aftermath"
+
 @Singleton
 class BimGuardian
 @Inject
@@ -57,6 +59,7 @@ constructor(
     private var dead = false
     private var scene: SceneRegion? = null
     private var sceneRegion: Region? = null
+    private val pendingFinish = mutableMapOf<Long, Npc?>()
 
     internal fun enterScene(region: Region?, view: SceneRegion) {
         if (sceneRegion !== region) {
@@ -154,7 +157,7 @@ constructor(
         }
 
         locRepo.change(pillar, BROKEN_PILLAR, Int.MAX_VALUE)
-        access.spotanim("spotanim.rockfall", delay = 20, height = 10)
+        npc.spotanim("spotanim.rockfall", delay = 20, height = 10)
         if (npc.hitpoints <= 0) {
             return
         }
@@ -167,9 +170,6 @@ constructor(
             radius = 10,
         )
         access.delay(1)
-        if (npc.hitpoints <= 0) {
-            defeat(player, quest)
-        }
     }
 
     private fun defeat(hero: Player, quest: BelowIceMountain) {
@@ -190,11 +190,40 @@ constructor(
             ServerCacheManager.getVarbit(GUARDIAN_DEFEATED_VARBIT)?.let {
                 VarPlayerIntMapSetter.set(player, it, 1)
             }
-            launcher.launch(player) { finishGuardian(quest, npc) }
+            queueFinish(player, quest, npc)
         }
         if (hero.bimStage == BimStage.GUARDIAN_DEAD && players.none { it.uuid == hero.uuid }) {
-            launcher.launch(hero) { finishGuardian(quest, npc) }
+            queueFinish(hero, quest, npc)
         }
+    }
+
+    private fun queueFinish(player: Player, quest: BelowIceMountain, npc: Npc?) {
+        if (launcher.launch(player) { finishGuardian(quest, npc) }) {
+            return
+        }
+        val uuid = player.uuid ?: return
+        pendingFinish[uuid] = npc
+        player.softTimer(BIM_GUARDIAN_FINISH_TIMER, cycles = 1)
+    }
+
+    internal fun resumeFinish(player: Player, quest: BelowIceMountain) {
+        val uuid = player.uuid ?: return
+        if (!pendingFinish.containsKey(uuid)) {
+            player.clearSoftTimer(BIM_GUARDIAN_FINISH_TIMER)
+            return
+        }
+        if (player.bimStage != BimStage.GUARDIAN_DEAD || !inRoom(player.coords)) {
+            pendingFinish.remove(uuid)
+            player.clearSoftTimer(BIM_GUARDIAN_FINISH_TIMER)
+            return
+        }
+        val npc = pendingFinish[uuid]
+        if (launcher.launch(player) { finishGuardian(quest, npc) }) {
+            pendingFinish.remove(uuid)
+            player.clearSoftTimer(BIM_GUARDIAN_FINISH_TIMER)
+            return
+        }
+        player.softTimer(BIM_GUARDIAN_FINISH_TIMER, cycles = 1)
     }
 
     private suspend fun ProtectedAccess.finishGuardian(quest: BelowIceMountain, npc: Npc?) {
