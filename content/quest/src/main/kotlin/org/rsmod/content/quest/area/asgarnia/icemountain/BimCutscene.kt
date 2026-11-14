@@ -40,7 +40,6 @@ constructor(
 
     suspend fun playEntrance(access: ProtectedAccess, quest: BelowIceMountain) {
         removeBaseCrew()
-        removeEntranceRamarno()
         ruins.play(access)
         ensureEntrance(BimStage.INSIDE_CUTSCENE)
     }
@@ -59,14 +58,6 @@ constructor(
                     .forEach { npcRepo.del(it, Int.MAX_VALUE) }
             }
         }
-    }
-
-    private fun removeEntranceRamarno() {
-        npcRepo
-            .findAll(CoordGrid(2951, 5779))
-            .filter { it.isType("npc.camdozaal_ramarno_entrance_multi") }
-            .toList()
-            .forEach { npcRepo.del(it, Int.MAX_VALUE) }
     }
 
     private companion object {

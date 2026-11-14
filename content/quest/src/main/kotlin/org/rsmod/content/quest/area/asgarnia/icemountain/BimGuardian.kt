@@ -464,7 +464,7 @@ constructor(
         )
     }
 
-    private fun openDoorsAndRamarno(): Npc {
+    private fun openDoorsAndRamarno() {
         for (tile in DOOR_SCAN_TILES) {
             locRepo
                 .findAll(tile)
@@ -483,7 +483,6 @@ constructor(
         ensureOpenDoor(OPEN_LEFT, LEFT_TILE)
         ensureOpenDoor(OPEN_RIGHT, RIGHT_TILE)
         ensureNormalExit()
-        return spawnRamarno()
     }
 
     private fun ensureOpenDoor(loc: String, coords: CoordGrid) {
@@ -498,23 +497,6 @@ constructor(
             return
         }
         locRepo.add(EXIT_TILE, EXIT, Int.MAX_VALUE, LocAngle[2], LocShape.CentrepieceStraight)
-    }
-
-    private fun spawnRamarno(): Npc {
-        val existing = npcRepo.findAll(RAMARNO_TILE).firstOrNull { it.isType(RAMARNO_ENTRANCE) }
-        if (existing != null) {
-            return existing
-        }
-        val ramarno = Npc(RAMARNO_ENTRANCE, RAMARNO_TILE)
-        ramarno.respawnDir = Direction.NorthEast
-        npcRepo.add(ramarno, Int.MAX_VALUE)
-        return ramarno
-    }
-
-    fun despawnRamarno(npc: Npc) {
-        if (npc.isSlotAssigned) {
-            npcRepo.del(npc, Int.MAX_VALUE)
-        }
     }
 
     private fun addPillars() {

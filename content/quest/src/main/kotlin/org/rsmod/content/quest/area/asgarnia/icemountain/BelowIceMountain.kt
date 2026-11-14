@@ -14,6 +14,7 @@ import org.rsmod.content.interfaces.emotes.PlayEmote
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.rewards
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.player.SessionStateEvent
@@ -102,14 +103,10 @@ constructor(
             startDialogue(it.npc) { blueMoonCook(quest) }
         }
         onOpNpc1("npc.camdozaal_ramarno_entrance_multi") {
-            if (
-                quest.stage(player) < BimStage.COMPLETE ||
-                    player.bimRamarnoIntro != BimRamarno.AT_ENTRANCE
-            ) {
-                return@onOpNpc1
-            }
-            startDialogue(it.npc) { ramarnoEntrance(quest) }
-            guardian.despawnRamarno(it.npc)
+            talkToRamarno(quest, it.npc)
+        }
+        onOpNpc1("npc.camzodaal_ramarno_entrance") {
+            talkToRamarno(quest, it.npc)
         }
         onOpNpc1("npc.camdozaal_ramarno_multi") {
             startDialogue(it.npc) { ramarnoWorkshop(quest) }
@@ -248,6 +245,16 @@ constructor(
     }
 
     internal fun questPoints(player: Player): Int = player.questPoints
+
+    private suspend fun ProtectedAccess.talkToRamarno(quest: BelowIceMountain, npc: Npc) {
+        if (
+            quest.stage(player) < BimStage.COMPLETE ||
+                player.bimRamarnoIntro != BimRamarno.AT_ENTRANCE
+        ) {
+            return
+        }
+        startDialogue(npc) { ramarnoEntrance(quest) }
+    }
 
     private fun recover(player: Player) {
         val inInstance = isInInstance(player)
