@@ -31,11 +31,12 @@ constructor(
 
             val burntof =
                 spawn(BURNOTOF, CoordGrid(PUB_X, BURNOTOF_Z, PUB_LEVEL), Direction.South, pin = true)
+            playMusic(72)
+            access.delay(1)
             access.camMoveToV3(CoordGrid(2961, 3369, PUB_LEVEL), 400, SNAP, SNAP)
             access.camLookAtV3(CoordGrid(2955, 3369, PUB_LEVEL), 180, SNAP, SNAP)
-            playMusic(72)
             access.fadeOverlay(0, FADE_BLACK, 0, FADE_CLEAR, 50)
-            access.delay(2)
+            access.delay(1)
             access.closeFadeOverlay(cycles = 2)
 
             chatNpcSpecific(
@@ -122,7 +123,16 @@ constructor(
                 "But I think I'll need one more drink before I hitsh the road.",
             )
             chatNpcSpecific("Burntof", BURNOTOF, drunk, "Tina! Bring me another beer pleash.")
-            val tina = spawn(TINA, CoordGrid(PUB_X, TINA_Z, PUB_LEVEL), Direction.South, pin = false)
+            val tina =
+                spawn(TINA, CoordGrid(PUB_X, TINA_Z, PUB_LEVEL), Direction.South, pin = true)
+            chatNpcSpecific(
+                "Tina",
+                TINA,
+                happy,
+                "Sure thing Burntof, I'll be right there!",
+            )
+            tina.mode = NpcMode.None
+            tina.clearInteraction()
             tina.walk(
                 listOf(
                     CoordGrid(2955, 3373, PUB_LEVEL),
@@ -131,13 +141,7 @@ constructor(
                     CoordGrid(2956, 3371, PUB_LEVEL),
                 )
             )
-            chatNpcSpecific(
-                "Tina",
-                TINA,
-                happy,
-                "Sure thing Burntof, I'll be right there!",
-            )
-            access.delay(7)
+            access.delay(3)
             burntof.faceSquare(tina.coords)
             tina.faceSquare(burntof.coords)
             chatNpcSpecific("Tina", TINA, happy, "Here you go.")
@@ -158,7 +162,6 @@ constructor(
             quest.markOneRecruited(player)
             access.delay(3)
             access.fadeOverlay(0, FADE_BLACK, 0, FADE_CLEAR, 50)
-            access.delay(2)
             access.closeFadeOverlay(cycles = 2)
 
             if (quest.hasAllRecruits(player)) {
