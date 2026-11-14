@@ -27,7 +27,6 @@ import org.rsmod.content.quest.area.misthalin.SceneDriftRate
 import org.rsmod.content.quest.area.misthalin.SceneRegion
 import org.rsmod.content.quest.area.misthalin.SceneSnapRate
 import org.rsmod.content.quest.area.misthalin.lockedScene
-import org.rsmod.content.quest.manager.afterQuestScroll
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
@@ -300,15 +299,9 @@ constructor(
         }
 
         delay(COMPLETION_LEAD_TICKS)
-        val ramarno = openDoorsAndRamarno()
+        openDoorsAndRamarno()
         ensureRuinsSpiders()
         quest.complete(this)
-        afterQuestScroll {
-            startDialogue(ramarno) { ramarnoEntrance(quest) }
-            if (ramarno.isSlotAssigned) {
-                npcRepo.del(ramarno, Int.MAX_VALUE)
-            }
-        }
     }
 
     private suspend fun ProtectedAccess.finishGuardianInWorld() {
@@ -348,7 +341,7 @@ constructor(
                 "What was that noise? Please don't be another rock monster...",
             )
         }
-        val ramarno = openDoorsAndRamarno()
+        openDoorsAndRamarno()
         access.startDialogue {
             chatPlayer(neutral, "What the!")
             chatNpcSpecific(
@@ -359,12 +352,6 @@ constructor(
             )
         }
         quest.complete(access)
-        access.afterQuestScroll {
-            startDialogue(ramarno) { ramarnoEntrance(quest) }
-            if (ramarno.isSlotAssigned) {
-                npcRepo.del(ramarno, Int.MAX_VALUE)
-            }
-        }
         ensureRuinsSpiders()
     }
 
@@ -522,6 +509,12 @@ constructor(
         ramarno.respawnDir = Direction.NorthEast
         npcRepo.add(ramarno, Int.MAX_VALUE)
         return ramarno
+    }
+
+    fun despawnRamarno(npc: Npc) {
+        if (npc.isSlotAssigned) {
+            npcRepo.del(npc, Int.MAX_VALUE)
+        }
     }
 
     private fun addPillars() {

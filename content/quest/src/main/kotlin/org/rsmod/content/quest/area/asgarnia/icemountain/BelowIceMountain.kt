@@ -102,7 +102,14 @@ constructor(
             startDialogue(it.npc) { blueMoonCook(quest) }
         }
         onOpNpc1("npc.camdozaal_ramarno_entrance_multi") {
+            if (
+                quest.stage(player) < BimStage.COMPLETE ||
+                    player.bimRamarnoIntro != BimRamarno.AT_ENTRANCE
+            ) {
+                return@onOpNpc1
+            }
             startDialogue(it.npc) { ramarnoEntrance(quest) }
+            guardian.despawnRamarno(it.npc)
         }
         onOpNpc1("npc.camdozaal_ramarno_multi") {
             startDialogue(it.npc) { ramarnoWorkshop(quest) }
