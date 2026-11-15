@@ -1,10 +1,21 @@
+[gamevals.area]
+camdozaal_ruins = 32739
+camdozaal_vault = 32740
+
 [gamevals.clientscript]
 quest_available_set = 45550
+
+[gamevals.dbrow]
+music_modern_camdozaal_ruins = 59047
+music_modern_camdozaal_vault = 59048
 
 [gamevals.timer]
 quest_scroll_close = 402
 quest_dialogue_close = 403
 cots_tail = 430
+bim_flex = 431
+bim_guardian_aftermath = 432
 
 [gamevals.queue]
 quest_scroll_continue = 64440
+

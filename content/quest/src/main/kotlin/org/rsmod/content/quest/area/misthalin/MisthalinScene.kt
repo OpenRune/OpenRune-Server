@@ -1,6 +1,7 @@
 package org.rsmod.content.quest.area.misthalin
 
 import com.github.michaelbull.logging.InlineLogger
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.map.CoordGrid
 
@@ -169,21 +170,29 @@ internal suspend fun ProtectedAccess.endScene(
         )
 
         delay(SceneFadeTicks)
-        closeFadeOverlayNow()
     } catch (cancelled: Throwable) {
         runTeardown()
         if (returnTo != null) {
-            telejump(returnTo)
+            telejump(returnTo, TeleportType.Exempt)
         }
         rebuildAppearance()
-        restoreSceneState()
-        closeFadeOverlayNow()
+        try {
+            restoreSceneState()
+        } catch (t: Throwable) {
+            logger.error(t) { "Scene restore failed after cancellation." }
+        }
         throw cancelled
+    } finally {
+        closeFadeOverlayNow()
     }
 }
 
 private fun ProtectedAccess.restoreSceneState() {
-    ifClose()
+    try {
+        ifClose()
+    } catch (t: Throwable) {
+        logger.error(t) { "Failed to close interfaces while restoring scene state." }
+    }
 
     showEntityOps()
     restoreLastAcceptAid()

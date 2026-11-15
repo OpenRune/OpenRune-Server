@@ -520,6 +520,13 @@ internal fun Player.ifMesbox(text: String, pauseText: String, lineHeight: Int, e
     runClientScript(1508, "0")
 }
 
+internal fun Player.ifMesboxEmpty(eventBus: EventBus) {
+    ifOpenChat("interface.messagebox", constants.modal_infinitewidthandheight, eventBus)
+    ifSetText("component.messagebox:text", "")
+    ifSetPauseText("component.messagebox:continue", "")
+    runClientScript(1508)
+}
+
 internal fun Player.ifObjbox(
     text: String,
     obj: Int,
@@ -688,7 +695,7 @@ internal fun Player.ifOpenChat(interf: String, widthAndHeightMode: Int, eventBus
     openModal(interf, "component.chatbox:chatmodal", eventBus)
 }
 
-private fun Player.ifSetPauseText(component: String, text: String) {
+internal fun Player.ifSetPauseText(component: String, text: String) {
     if (text.isNotBlank()) {
         ifSetEvents(component, -1..-1, IfEvent.PauseButton)
     } else {

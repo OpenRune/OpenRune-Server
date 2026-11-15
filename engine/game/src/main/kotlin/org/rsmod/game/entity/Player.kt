@@ -44,6 +44,7 @@ import org.rsmod.game.queue.EngineQueueList
 import org.rsmod.game.queue.EngineQueueType
 import org.rsmod.game.queue.PlayerQueueList
 import org.rsmod.game.queue.QueueCategory
+import org.rsmod.game.scene.SceneBuildArea
 import org.rsmod.game.seq.EntitySeq
 import org.rsmod.game.shop.Shop
 import org.rsmod.game.spot.EntitySpotanim
@@ -204,6 +205,8 @@ public class Player(
     public var createdAt: LocalDateTime? = null
     public var followCoord: CoordGrid = CoordGrid.NULL
     public var buildArea: CoordGrid = CoordGrid.NULL
+    public var sceneBuildArea: SceneBuildArea? = null
+    public var ignoreModalMovementHalt: Boolean = false
     public val visibleZoneKeys: IntList = IntArrayList()
     public var regionRebuildPending: Boolean = false
     public var lastMapBuildComplete: Int = Int.MIN_VALUE
@@ -357,6 +360,9 @@ public class Player(
         get() = !isHaltMovementRequired()
 
     private fun isHaltMovementRequired(): Boolean {
+        if (ignoreModalMovementHalt) {
+            return false
+        }
         // It seems that only "old" interactions (active for > 1 cycle) will bypass this movement
         // restriction. This can be tested by starting an interaction and opening a modal on the
         // same cycle while having a pending queue. In that case, movement will be stopped until

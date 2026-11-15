@@ -1,0 +1,12 @@
+[[area]]
+name = "Ruins of Camdozaal"
+area_id = "area.camdozaal_ruins"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [2900, 5760],
+    [3045, 5760],
+    [3045, 5823],
+    [2900, 5823],
+]

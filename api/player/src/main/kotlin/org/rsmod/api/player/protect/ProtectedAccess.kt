@@ -26,6 +26,7 @@ import dev.openrune.types.hunt.HuntVis
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.reflect.KClass
+import net.rsprot.protocol.game.outgoing.camera.CamTargetV4
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.done.BaseHitmarkGroups
@@ -117,6 +118,7 @@ import org.rsmod.api.player.ui.ifDoubleobjbox
 import org.rsmod.api.player.ui.ifLevelUpDisplay
 import org.rsmod.api.player.ui.ifMenu
 import org.rsmod.api.player.ui.ifMesbox
+import org.rsmod.api.player.ui.ifMesboxEmpty
 import org.rsmod.api.player.ui.ifObjbox
 import org.rsmod.api.player.ui.ifOpenFullOverlay
 import org.rsmod.api.player.ui.ifOpenMain
@@ -131,6 +133,7 @@ import org.rsmod.api.player.ui.ifSetHide
 import org.rsmod.api.player.ui.ifSetModel
 import org.rsmod.api.player.ui.ifSetNpcHead
 import org.rsmod.api.player.ui.ifSetObj
+import org.rsmod.api.player.ui.ifSetPauseText
 import org.rsmod.api.player.ui.ifSetPlayerHead
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.VarPlayerIntMapDelegate
@@ -159,6 +162,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.player.ProtectedAccessLostException
+import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
@@ -943,6 +947,10 @@ public class ProtectedAccess(
 
     public fun faceDirection(direction: Direction) {
         player.faceDirection(direction)
+    }
+
+    public fun faceAngle(angle: Int) {
+        player.pendingFaceAngle = EntityFaceAngle(angle)
     }
 
     public fun faceLoc(loc: BoundLocInfo) {
@@ -2172,6 +2180,10 @@ public class ProtectedAccess(
         player.ifMesbox(pgText, pauseText = "", lineHeight, context.eventBus)
     }
 
+    public fun mesboxEmpty() {
+        player.ifMesboxEmpty(context.eventBus)
+    }
+
     /**
      * @throws ProtectedAccessLostException if the player could not retain protected access after
      *   the coroutine suspension.
@@ -2627,6 +2639,7 @@ public class ProtectedAccess(
         mesanim: MesAnimType?,
         text: String,
         title: String = player.displayName,
+        continueDelayTicks: Int = 0,
     ) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
@@ -2640,6 +2653,7 @@ public class ProtectedAccess(
                 lineHeight = lineHeight,
                 title = title,
                 pauseText = constants.cm_pausebutton,
+                continueDelayTicks = continueDelayTicks,
                 eventBus = context.eventBus,
             )
         }
@@ -2667,16 +2681,37 @@ public class ProtectedAccess(
         )
     }
 
+    private suspend fun chatPauseText(
+        component: String,
+        pauseText: String,
+        delayTicks: Int,
+    ) {
+        delay(delayTicks)
+        player.ifSetPauseText(component, pauseText)
+    }
+
     private suspend fun chatPlayerPage(
         text: String,
         chatanim: SequenceServerType?,
         lineHeight: Int,
         title: String,
         pauseText: String,
+        continueDelayTicks: Int,
         eventBus: EventBus,
     ) {
-        player.ifChatPlayer(title, text, chatanim, pauseText, lineHeight, eventBus)
+        val delayContinue = continueDelayTicks > 0
+        player.ifChatPlayer(
+            title,
+            text,
+            chatanim,
+            if (delayContinue) "" else pauseText,
+            lineHeight,
+            eventBus,
+        )
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
+        if (delayContinue) {
+            chatPauseText("component.chat_right:continue", pauseText, continueDelayTicks)
+        }
         val input = coroutine.pause(ResumePauseButtonInput::class)
         resumePauseButtonWithProtectedAccess(input, modal, "component.chat_right:continue")
     }
@@ -2818,6 +2853,7 @@ public class ProtectedAccess(
         type: String,
         mesanim: MesAnimType,
         text: String,
+        continueDelayTicks: Int = 0,
     ) {
         val alignment = context.alignment
         val pages = alignment.generateChatPageList(text)
@@ -2833,6 +2869,7 @@ public class ProtectedAccess(
                 chatanim = anim,
                 lineHeight = lineHeight,
                 pauseText = constants.cm_pausebutton,
+                continueDelayTicks = continueDelayTicks,
                 eventBus = context.eventBus,
             )
         }
@@ -2845,10 +2882,23 @@ public class ProtectedAccess(
         chatanim: SequenceServerType,
         lineHeight: Int,
         pauseText: String,
+        continueDelayTicks: Int,
         eventBus: EventBus,
     ) {
-        player.ifChatNpcSpecific(title, type, text, chatanim, pauseText, lineHeight, eventBus)
+        val delayContinue = continueDelayTicks > 0
+        player.ifChatNpcSpecific(
+            title,
+            type,
+            text,
+            chatanim,
+            if (delayContinue) "" else pauseText,
+            lineHeight,
+            eventBus,
+        )
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
+        if (delayContinue) {
+            chatPauseText("component.chat_left:continue", pauseText, continueDelayTicks)
+        }
         val input = coroutine.pause(ResumePauseButtonInput::class)
         resumePauseButtonWithProtectedAccess(input, modal, "component.chat_left:continue")
     }
@@ -3807,6 +3857,10 @@ public class ProtectedAccess(
         heightRelative: Boolean = false,
     ) {
         Camera.camLookAtV3(player, dest, height, rate, rate2, heightRelative)
+    }
+
+    public fun camTarget(target: CamTargetV4.CamTargetType) {
+        Camera.camTarget(player, target)
     }
 
     public fun camShake(axis: CamShakeAxis, random: Int, amplitude: Int, rate: Int) {

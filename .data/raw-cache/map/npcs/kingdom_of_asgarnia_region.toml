@@ -64,15 +64,15 @@ coords = "0_45_54_48_0"
 
 [[spawn]]
 npc = "npc.bim_burntof_temple_outside"
-coords = "0_46_54_51_35"
+coords = "0_46_54_53_33"
 
 [[spawn]]
 npc = "npc.bim_checkal_temple_outside"
-coords = "0_46_54_49_38"
+coords = "0_46_54_50_38"
 
 [[spawn]]
 npc = "npc.bim_marley_temple_outside"
-coords = "0_46_54_50_41"
+coords = "0_46_54_48_41"
 
 [[spawn]]
 npc = "npc.bim_willow_outside"
@@ -80,7 +80,7 @@ coords = "0_46_53_59_43"
 
 [[spawn]]
 npc = "npc.bim_willow_outside_entrace"
-coords = "0_46_54_52_39"
+coords = "0_46_54_53_38"
 
 [[spawn]]
 npc = "npc.bkf_cat"

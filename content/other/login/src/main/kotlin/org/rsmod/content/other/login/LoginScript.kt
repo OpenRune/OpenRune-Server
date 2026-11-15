@@ -9,13 +9,15 @@ import jakarta.inject.Inject
 import net.rsprot.protocol.game.outgoing.misc.client.HideLocOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideNpcOps
 import net.rsprot.protocol.game.outgoing.misc.client.HideObjOps
-import net.rsprot.protocol.game.outgoing.misc.client.MinimapToggle
 import net.rsprot.protocol.game.outgoing.misc.client.ResetAnims
 import net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettings
 import org.rsmod.api.inv.weight.InvWeight
 import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.net.central.writeCentralSocialSnapshot
 import org.rsmod.api.net.central.writeCentralSocialSnapshotEmpty
+import org.rsmod.api.player.cinematic.CameraMode
+import org.rsmod.api.player.cinematic.Cinematic
+import org.rsmod.api.player.cinematic.MinimapState
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.MiscOutput
@@ -61,6 +63,17 @@ constructor(
         sendHighPriority()
         sendLowPriority()
         VarPlayerIntMapSetter.set(this, "varbit.player_in_instance", 0)
+        restoreClientState()
+    }
+
+    private fun Player.restoreClientState() {
+        Cinematic.setHideToplevel(this, false)
+        Cinematic.setHideHealthHud(this, false)
+        Cinematic.setCameraMode(this, CameraMode.Normal)
+        Cinematic.setMaxDrawDistance(this, false)
+        Cinematic.syncDrawDistance(this)
+        Cinematic.setHideEntityOps(this, false)
+        Cinematic.setMinimapState(this, MinimapState.Normal)
     }
 
     private fun Player.sendHighPriority() {
@@ -136,7 +149,6 @@ constructor(
         sendStats()
         sendRun()
         client.write(ResetAnims)
-        client.write(MinimapToggle(0))
     }
 
     private fun Player.sendInvs() {

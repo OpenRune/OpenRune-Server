@@ -15,6 +15,7 @@ public class RegionStaticTemplate internal constructor(private val regionZoneLen
     RegionTemplate() {
     internal val backing: RegionZoneCopyMap = RegionZoneCopyMap()
     internal var largeRegion: Boolean = false
+    override var terrainOnly: Boolean = false
 
     override fun build(southWest: ZoneKey): RegionZoneCopyMap = backing.translate(southWest)
 
@@ -230,7 +231,7 @@ public class RegionStaticTemplate internal constructor(private val regionZoneLen
             for (x in 0 until block.zoneWidth) {
                 for (z in 0 until block.zoneLength) {
                     val zone = ZoneKey(copyZoneX + x, copyZoneZ + z, level)
-                    val copy = zone.rotate(block.rotation)
+                    val copy = RegionZoneCopy(zone, block.rotation, block.flag)
 
                     // When rotating a block of zones, we must ensure that all zones within the
                     // block rotate as a cohesive unit. Each zone's relative position must be
@@ -251,6 +252,7 @@ public class RegionStaticTemplate internal constructor(private val regionZoneLen
         public var zoneWidth: Int = 0
         public var zoneLength: Int = 0
         public var rotation: Int = 0
+        public var flag: RegionZoneFlag? = null
 
         internal fun validate(): BlockBuilder {
             check(zoneWidth > 0) {
@@ -295,6 +297,8 @@ public class RegionStaticTemplate internal constructor(private val regionZoneLen
 }
 
 public sealed class RegionTemplate {
+    public abstract val terrainOnly: Boolean
+
     internal abstract fun build(southWest: ZoneKey): RegionZoneCopyMap
 
     internal abstract fun isLargeRegion(): Boolean

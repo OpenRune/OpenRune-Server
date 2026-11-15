@@ -251,6 +251,13 @@ constructor(
         val normalZone = copyZone.normalZone()
         val normalBase = normalZone.toCoords()
 
+        if (region.terrainOnly) {
+            collision.allocateIfAbsent(regionBase.x, regionBase.z, regionBase.level)
+            zones[regionZone] = copyZone
+            region.registerZone(copyZone, regionZone)
+            return
+        }
+
         val rotation = copyZone.rotation
 
         // Allocate collision flags for the region zone if the normal zone collision flags have

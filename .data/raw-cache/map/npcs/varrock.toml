@@ -432,7 +432,7 @@ coords = "0_50_53_35_9"
 
 [[spawn]]
 npc = "npc.tramppg"
-coords = "0_50_52_8_63"
+coords = "0_50_52_6_63"
 
 [[spawn]]
 npc = "npc.unicorn"
@@ -562,7 +562,7 @@ coords = "0_50_53_33_2"
 
 [[spawn]]
 npc = "npc.fai_varrock_bluemoon_chef"
-coords = "0_50_53_30_9"
+coords = "0_50_53_31_6"
 
 ## Varrock Building Ruins
 

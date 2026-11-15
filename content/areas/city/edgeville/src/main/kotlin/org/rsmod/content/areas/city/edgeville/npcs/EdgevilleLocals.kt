@@ -10,16 +10,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 /** Marley loitering by the graveyard, and Doris, Evil Dave's mum, in the house north of the bank. */
 class EdgevilleLocals : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.bim_marley_edge") { marley(it.npc) }
-        onOpNpc1("npc.bim_marley") { marley(it.npc) }
         onOpNpc1("npc.hundred_dave_mum") { doris(it.npc) }
-    }
-
-    private suspend fun ProtectedAccess.marley(npc: Npc) {
-        startDialogue(npc) {
-            chatPlayer(happy, "Hello there!")
-            mesbox("He doesn't seem too interested in talking to you.")
-        }
     }
 
     private suspend fun ProtectedAccess.doris(npc: Npc) {
