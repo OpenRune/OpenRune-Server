@@ -56,10 +56,7 @@ constructor(
             boss.apPlayer2(player, aiPlayerInteractions)
         }
         onOpLoc2(GATE) {
-            val countMessage =
-                "You have opened Bryophyta's chest a total of ${player.chestsOpened} times."
-            mes(countMessage)
-            mesbox(countMessage)
+            mesbox("You have opened Bryophyta's chest a total of ${player.chestsOpened} times.")
         }
     }
 

@@ -17,6 +17,7 @@ import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.combat.manager.PlayerAttackManager
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
+import org.rsmod.api.death.NpcDeath
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.npc.interact.AiPlayerInteractions
@@ -27,6 +28,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onModifyNpcHit
+import org.rsmod.api.script.onNpcQueue
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -47,6 +49,7 @@ constructor(
     private val attackStyles: AttackStyles,
     private val attackTypes: AttackTypes,
     private val attackManager: PlayerAttackManager,
+    private val npcDeath: NpcDeath,
 ) : BossPluginScript(deps) {
 
     private var Player.bryophytaKills by intVarp("varp.total_bryophyta_kills")
@@ -87,6 +90,9 @@ constructor(
             pruneGrowthling(npc, awardXp = false)
         }
         onModifyNpcHit(growthlingType) { onGrowthlingHit(npc, hit) }
+        onNpcQueue(growthlingType, "queue.death") {
+            npcDeath.deathNoDrops(this, deathDelay = GROWTHLING_DEATH_TICKS)
+        }
 
         onEvent<NpcStateEvents.Delete> {
             if (npc.isType(BryophytaGrowthling.NPC)) {
@@ -105,7 +111,7 @@ constructor(
                 ability("melee") {
                     anim("seq.giant_update_moss_attack")
                     hit {
-                        damage(Accuracy(Roll(0..16)))
+                        damage(Accuracy(Roll(0..16), meleeAttackType = MeleeAttackType.Crush))
                         type(Melee)
                         onHit(external(POISON))
                     }
@@ -149,9 +155,7 @@ constructor(
 
             incoming {
                 rule(growthlingsAlive) {
-                    cap(0, Melee)
-                    cap(0, Ranged)
-                    cap(0, Magic)
+                    cap(0)
                 }
             }
         }
@@ -174,6 +178,10 @@ constructor(
     }
 
     private fun onBossHit(npc: Npc, hit: HitBuilder) {
+        if (hasLivingGrowthlings(npc) && hit.sourceUid != null) {
+            hit.damage = 0
+            return
+        }
         if (!hit.isFromPlayer) return
         val attacker = hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) } ?: return
         if (hit.damage <= 0) return
@@ -302,6 +310,7 @@ constructor(
         private const val GROWTHLING_COUNT = 3
         private const val GROWTHLING_RADIUS = 3
         private const val GROWTHLING_COOLDOWN_TICKS = 20
+        private const val GROWTHLING_DEATH_TICKS = 2
 
         private const val CUT_MESSAGE = "Cut the growthling down with an axe or secateurs."
         private const val TOO_STRONG_MESSAGE = "The Growthling is too strong to be hurt by that!"

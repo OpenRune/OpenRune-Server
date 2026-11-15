@@ -16,7 +16,8 @@ import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.content.drops.isOnQuest
-import org.rsmod.content.drops.tables.shared.SharedDropTables
+import org.rsmod.content.drops.tables.shared.GemTalisman
+import org.rsmod.content.drops.tables.shared.buildGemDropTable
 import org.rsmod.content.slayer.dialogue.SlayerMasters
 import org.rsmod.game.entity.Player
 
@@ -52,7 +53,8 @@ internal fun rollBryophytaDrops(
         Subtable.Herbs -> drops += pick(MEMBERS_HERBS, random)
         Subtable.Seeds -> drops += pick(MEMBERS_SEEDS, random)
         Subtable.Gems -> {
-            val result = SharedDropTables.gem.roll(player, args).flatten()
+            val gemTable = if (player.members) MEMBERS_GEM else FREE_GEM
+            val result = gemTable.roll(player, args).flatten()
             drops +=
                 when (result) {
                     is RollResult.Single -> listOf(result.result)
@@ -81,7 +83,8 @@ internal fun rollBryophytaDrops(
         }
         if (random.nextInt(400) == 0) {
             drops += DropRollItem("obj.dorgesh_construction_bone", 1)
-        } else if (random.nextInt(5013) == 0) {
+        }
+        if (random.nextInt(10025) < 2) {
             drops += DropRollItem("obj.dorgesh_construction_bone_curved", 1)
         }
         if (random.nextInt(5000) == 0) {
@@ -136,6 +139,10 @@ private fun isMossGiantTask(player: Player): Boolean {
 internal fun bryophytaMembersMainWeight(): Int = MEMBERS_MAIN.sumOf { it.weight }
 
 internal fun bryophytaFreeMainWeight(): Int = FREE_MAIN.sumOf { it.weight }
+
+private val MEMBERS_GEM = buildGemDropTable(talisman = GemTalisman.Nature)
+
+private val FREE_GEM = buildGemDropTable(members = false)
 
 private val MEMBERS_MAIN =
     listOf(

@@ -14,6 +14,7 @@ internal object BryophytaChestLoot {
         val weight: Int,
         val drops: List<ChestDrop> = emptyList(),
         val subtable: Subtable? = null,
+        val boosted: Boolean = false,
     )
 
     private val MEMBERS_MAIN =
@@ -49,7 +50,7 @@ internal object BryophytaChestLoot {
             Entry(3, listOf(ChestDrop("obj.cert_steel_bar", 25))),
             Entry(5, listOf(ChestDrop("obj.coins", 10_000))),
             Entry(2, listOf(ChestDrop("obj.coins", 8_000))),
-            Entry(1, listOf(ChestDrop("obj.gb_moss_essence", 1))),
+            Entry(1, listOf(ChestDrop("obj.gb_moss_essence", 1)), boosted = true),
         )
 
     private val FREE_MAIN =
@@ -83,7 +84,7 @@ internal object BryophytaChestLoot {
             Entry(5, listOf(ChestDrop("obj.coins", 10_000))),
             Entry(2, listOf(ChestDrop("obj.coins", 8_000))),
             Entry(5, listOf(ChestDrop("obj.cert_strength4", 15))),
-            Entry(1, listOf(ChestDrop("obj.gb_moss_essence", 1))),
+            Entry(1, listOf(ChestDrop("obj.gb_moss_essence", 1)), boosted = true),
         )
 
     private val HERBS =
@@ -133,10 +134,14 @@ internal object BryophytaChestLoot {
     internal fun mainWeight(members: Boolean): Int =
         (if (members) MEMBERS_MAIN else FREE_MAIN).sumOf { it.weight }
 
-    fun roll(members: Boolean, onMossGiantTask: Boolean, random: GameRandom): List<ChestDrop> {
+    fun roll(
+        members: Boolean,
+        random: GameRandom,
+        dropRateMultiplier: Double = 1.0,
+    ): List<ChestDrop> {
         val drops = mutableListOf(ChestDrop("obj.trail_clue_beginner", 1))
         val table = if (members) MEMBERS_MAIN else FREE_MAIN
-        val entry = pick(table, random)
+        val entry = pick(table, random, dropRateMultiplier)
         if (entry.subtable != null) {
             val subtable = if (entry.subtable == Subtable.Herbs) HERBS else SEEDS
             val (_, obj) = pick(subtable, random)
@@ -144,11 +149,31 @@ internal object BryophytaChestLoot {
         } else {
             drops += entry.drops
         }
-        val keyDenominator = if (onMossGiantTask) 8 else 16
-        if (random.randomBoolean(keyDenominator)) {
+        if (random.randomBoolean(KEY_DENOMINATOR)) {
             drops += ChestDrop("obj.mossy_key", 1)
         }
         return drops
+    }
+
+    private fun pick(
+        table: List<Entry>,
+        random: GameRandom,
+        dropRateMultiplier: Double,
+    ): Entry {
+        val boosted = table.filter { it.boosted }
+        if (boosted.isNotEmpty() && dropRateMultiplier != 1.0) {
+            val total = table.sumOf { it.weight }
+            var roll = random.randomDouble()
+            for (entry in boosted) {
+                val boostedWeight =
+                    (total / (entry.weight * dropRateMultiplier)).toInt().coerceAtLeast(1)
+                val chance = 1.0 / boostedWeight
+                if (roll < chance) return entry
+                roll -= chance
+            }
+            return pick(table.filterNot { it.boosted }, random)
+        }
+        return pick(table, random)
     }
 
     private fun pick(table: List<Entry>, random: GameRandom): Entry {
@@ -168,4 +193,6 @@ internal object BryophytaChestLoot {
         }
         error("Bryophyta chest subtable weight out of range")
     }
+
+    private const val KEY_DENOMINATOR = 16
 }

@@ -35,15 +35,16 @@ constructor(
     private val deathKillHooks = deathKillHooks.sortedByDescending { it.priority }
     private var lootTrackerEventId: Int = 0
 
-    public suspend fun deathNoDrops(access: StandardNpcAccess) {
-        access.death(npcRepo, players)
+    public suspend fun deathNoDrops(access: StandardNpcAccess, deathDelay: Int? = null) {
+        access.death(npcRepo, players, deathDelay)
     }
 
     public suspend fun deathWithDrops(
         access: StandardNpcAccess,
         dropCoords: CoordGrid = access.coords,
+        deathDelay: Int? = null,
     ) {
-        access.death(npcRepo, players)
+        access.death(npcRepo, players, deathDelay)
         access.npc.spawnDeathDrops(dropCoords)
     }
 
@@ -132,8 +133,14 @@ private var Npc.aggressivePlayer by typePlayerUidVarn("varn.aggressive_player")
  *   for queued deaths by default. However, if you override death queues for specific npc types
  *   (`onNpcQueue(npc_type, queues.death)`), you must explicitly handle drop spawns in the script by
  *   injecting `NpcDeath` and calling either [NpcDeath.deathWithDrops] or [NpcDeath.spawnDrops].
+ * - [deathDelay] overrides the number of ticks to wait after starting the death animation before
+ *   removing the npc.
  */
-public suspend fun StandardNpcAccess.death(npcRepo: NpcRepository, players: PlayerList) {
+public suspend fun StandardNpcAccess.death(
+    npcRepo: NpcRepository,
+    players: PlayerList,
+    deathDelay: Int? = null,
+) {
     walk(coords)
     noneMode()
     hideAllOps()
@@ -158,7 +165,11 @@ public suspend fun StandardNpcAccess.death(npcRepo: NpcRepository, players: Play
 
     val deathAnim = param(params.death_anim)
     anim(RSCM.getReverseMapping(RSCMType.SEQ, deathAnim.id))
-    delay(deathAnim)
+    if (deathDelay != null) {
+        delay(deathDelay)
+    } else {
+        delay(deathAnim)
+    }
 
     if (npc.respawns) {
         npcRepo.despawn(npc, npc.type.respawnRate)

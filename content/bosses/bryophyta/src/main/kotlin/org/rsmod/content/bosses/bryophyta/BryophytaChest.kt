@@ -5,7 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.runtime.BossDeps
-import org.rsmod.api.config.SlayerTaskCredit
+import org.rsmod.api.droptable.DropRateModifiers
 import org.rsmod.api.instances.InstanceId
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.instances.InstanceSession
@@ -19,7 +19,6 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.content.drops.clueScrollTransformObj
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
-import org.rsmod.content.slayer.dialogue.SlayerMasters
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
@@ -89,8 +88,12 @@ constructor(
     }
 
     private fun ProtectedAccess.awardLoot() {
-        val onTask = isMossGiantTask(player)
-        val drops = BryophytaChestLoot.roll(player.members, onTask, deps.random)
+        val drops =
+            BryophytaChestLoot.roll(
+                members = player.members,
+                random = deps.random,
+                dropRateMultiplier = DropRateModifiers.multiplierFor(player),
+            )
         for (drop in drops) {
             val spawnObj = if (drop.obj == CLUE) player.clueScrollTransformObj(CLUE) ?: CLUE else drop.obj
             val logObj = if (drop.obj == CLUE) CLUE else drop.obj
@@ -100,16 +103,6 @@ constructor(
             val duration = if (drop.obj == CLUE) CLUE_DESPAWN_TICKS else LOOT_DESPAWN_TICKS
             objRepo.add(spawnObj, player.coords, duration, receiver = player, count = drop.count)
         }
-    }
-
-    private fun isMossGiantTask(player: Player): Boolean {
-        if (player.vars["varbit.slayer_master"] == SlayerMasters.TASK_WILDERNESS) {
-            return false
-        }
-        val taskKey = SlayerTaskCredit.taskKey(player)
-        if (taskKey <= 0) return false
-        val bossType = ServerCacheManager.getNpc(BOSS_NPC.asRSCM(RSCMType.NPC)) ?: return false
-        return SlayerTaskCredit.counts(bossType, taskKey)
     }
 
     private fun scheduleBossRespawn(session: InstanceSession) {

@@ -92,11 +92,40 @@ class BryophytaDataTest {
             assertEquals(1, growthling?.ranged)
             assertEquals(37, growthling?.combatLevel)
             assertEquals(4, growthling?.param(params.attackrate))
-            assertEquals("seq.tanglefoot_attack".asRSCM(RSCMType.SEQ), growthling?.paramOrNull(params.attack_anim)?.id)
-            assertEquals("seq.tanglefoot_block".asRSCM(RSCMType.SEQ), growthling?.paramOrNull(params.defend_anim)?.id)
-            assertEquals("seq.tanglefoot_death".asRSCM(RSCMType.SEQ), growthling?.paramOrNull(params.death_anim)?.id)
+            assertEquals(1, growthling?.paramOrNull(params.poison_immunity))
+            assertEquals(2, growthling?.paramOrNull(params.venom_immunity))
+            assertTrue(
+                growthling?.paramOrNull(params.npc_attack_type)
+                    ?.isType("category.attacktype_slash") == true
+            )
+            assertEquals(
+                "seq.tanglefoot_attack".asRSCM(RSCMType.SEQ),
+                growthling?.paramOrNull(params.attack_anim)?.id,
+            )
+            assertEquals(
+                "seq.tanglefoot_block".asRSCM(RSCMType.SEQ),
+                growthling?.paramOrNull(params.defend_anim)?.id,
+            )
+            assertEquals(
+                "seq.tanglefoot_death".asRSCM(RSCMType.SEQ),
+                growthling?.paramOrNull(params.death_anim)?.id,
+            )
             assertEquals(30, growthling?.maxRange)
             assertEquals(0, growthling?.wanderRange)
+        }
+    }
+
+    @Test
+    fun `boss uses crush accuracy and osrs experience bonus`() {
+        withCache {
+            val boss = ServerCacheManager.getNpc(BOSS.asRSCM(RSCMType.NPC))
+            assertNotNull(boss)
+            assertEquals(33, boss?.paramOrNull(params.attack_melee))
+            assertEquals(1025, boss?.paramOrNull(params.npc_com_xp_multiplier))
+            assertTrue(
+                boss?.paramOrNull(params.npc_attack_type)
+                    ?.isType("category.attacktype_crush") == true
+            )
         }
     }
 
