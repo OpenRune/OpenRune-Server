@@ -1,9 +1,12 @@
 package org.rsmod.content.skills.farming
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM
+import dev.openrune.definition.type.VarBitType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.varp.VarpServerType
+import dev.openrune.types.varp.baseVar
+import dev.openrune.types.varp.bits
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.enums.FarmingEnums
@@ -18,8 +21,11 @@ import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.generic.locs.water.WateringCans
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
+import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.type.getInvObj
+import org.rsmod.game.vars.VarPlayerIntMap
 import org.rsmod.map.CoordGrid
+import org.rsmod.utils.bits.withBits
 
 /**
  * Owns every patch state transition. Non-suspend operations revalidate the stored state, run the
@@ -37,15 +43,20 @@ constructor(
     private val equipment: FarmingEquipment,
     private val siteAccess: FarmingSiteAccess,
 ) {
-    private class Part(val patch: PatchDef, val varbit: String, val coord: CoordGrid)
+    private class Part(val patch: PatchDef, val varbit: VarBitType, val coord: CoordGrid) {
+        val bits = varbit.bits
+    }
 
-    private val parts: List<Part> by lazy {
+    private class SelectorGroup(val varp: VarpServerType, val parts: List<Part>) {
+        val clearMask = parts.fold(-1) { mask, part -> mask.withBits(part.bits, 0) }
+    }
+
+    private val selectors: List<SelectorGroup> =
         FarmingPatches.all.flatMap { patch ->
             patch.locs.indices.mapNotNull { i ->
                 transmitVarbit(patch.locs[i])?.let { Part(patch, it, patch.coords[i]) }
             }
-        }
-    }
+        }.groupBy { it.varbit.baseVar }.map { (varp, parts) -> SelectorGroup(varp, parts) }
 
     fun refresh(player: Player, millis: Long = System.currentTimeMillis()) {
         grow(player, millis)
@@ -81,7 +92,6 @@ constructor(
             HarvestModel.CHOP, HarvestModel.NONE -> null
         }
     }
-
     fun cure(
         player: Player,
         patch: PatchDef,
@@ -217,7 +227,6 @@ constructor(
         store(player, patch, next)
         return true
     }
-
     suspend fun ProtectedAccess.inspect(patch: PatchDef) {
         val state = state(player, patch)
         val crop = state.crop
@@ -233,26 +242,36 @@ constructor(
         mes("This is ${article(patch.kind.label)}. ${soil(state.compost)} $status")
     }
 
-    suspend fun ProtectedAccess.rake(patch: PatchDef) {
+    /**
+     * One rake stroke per call. The weed lands when [actionDelay] is reached and the next stroke is
+     * re-triggered, so walking away or clicking elsewhere cancels the rest.
+     */
+    fun ProtectedAccess.rake(patch: PatchDef, bound: BoundLocInfo) {
+        val active = actionDelay >= mapClock
+        val state = state(player, patch)
         if (!inv.contains(RAKE)) {
-            mes("You need a rake to clear this patch.")
-            return
+            if (!active) mes("You need a rake to clear this patch.")
+            return resetAnim()
         }
-        while (true) {
-            val before = state(player, patch)
-            if (before.cleared || before.crop != null || !inv.contains(RAKE)) break
-            anim(ANIM_RAKE)
-            delay(RAKE_TICKS)
-            val current = state(player, patch)
-            if (current.cleared || current.crop != null || !inv.contains(RAKE)) break
-            if (invAdd(inv, WEEDS, 1, strict = true).failure) {
-                mes("You don't have enough inventory space to hold any more weeds.")
-                break
+        if (state.cleared || state.crop != null) return resetAnim()
+        if (actionDelay != mapClock) {
+            if (!active) {
+                actionDelay = mapClock + RAKE_TICKS
+                anim(ANIM_RAKE)
             }
-            store(player, patch, current.copy(weeds = current.weeds + 1))
-            award(patch, RAKE_XP)
+            return opLoc1(bound)
         }
-        resetAnim()
+        if (invAdd(inv, WEEDS, 1, strict = true).failure) {
+            mes("You don't have enough inventory space to hold any more weeds.")
+            return resetAnim()
+        }
+        val next = state.copy(weeds = state.weeds + 1)
+        store(player, patch, next)
+        award(patch, RAKE_XP)
+        if (next.cleared) return resetAnim()
+        actionDelay = mapClock + RAKE_TICKS
+        anim(ANIM_RAKE)
+        opLoc1(bound)
     }
 
     suspend fun ProtectedAccess.plant(patch: PatchDef, seed: String, fromSeedBox: Boolean = false) {
@@ -263,7 +282,7 @@ constructor(
         val state = state(player, patch)
         when {
             crop.kind != patch.kind ->
-                mes("You can only plant ${crop.name} ${if (sapling) "saplings" else "seeds"} in ${article(patch.kind.label)}.")
+                mes("You can only plant ${crop.name} ${if (sapling) "saplings" else "seeds"} in ${article(crop.kind.label)}.")
             !state.cleared && patch.kind != PatchKind.GRAPE_VINE -> mes("This patch needs weeding first.")
             state.crop != null || state.scarecrow -> mes("There is already something growing in this patch.")
             crop.kind == PatchKind.GRAPE_VINE && !state.grapePrepared ->
@@ -387,71 +406,86 @@ constructor(
         eventBus.publish(FarmingCheckHealthEvent(player, patch, crop))
     }
 
-    /** Returns false when this crop's harvest is not shipped, so the caller can fall through. */
-    suspend fun ProtectedAccess.harvest(patch: PatchDef): Boolean {
-        val start = state(player, patch)
-        val crop = start.crop ?: return false
+    /**
+     * One pick per call, re-triggered like woodcutting so walking away or clicking elsewhere
+     * cancels the rest. Returns false when this crop's harvest is not shipped, so the caller can
+     * fall through.
+     */
+    fun ProtectedAccess.harvest(patch: PatchDef, bound: BoundLocInfo): Boolean {
+        val active = actionDelay >= mapClock
+        val current = state(player, patch)
+        val crop = current.crop ?: return active
         if (!crop.harvestShipped) return false
         val spade = crop.kind == PatchKind.ALLOTMENT
-        if (spade && !inv.contains(SPADE)) {
-            mes("You need a spade to harvest this patch.")
+        val recorded = spade || crop.kind == PatchKind.HERB
+        fun stop(): Boolean {
+            if (!recorded) resetAnim()
             return true
         }
-        if (crop.harvest == HarvestModel.LIVES) spam("You begin to harvest the ${patch.kind.label}.")
-        val recorded = spade || crop.kind == PatchKind.HERB
-        while (true) {
-            if (!harvestable(state(player, patch), start.cropIndex, crop)) break
-            anim(if (spade) ANIM_DIG else ANIM_HARVEST)
-            if (spade) soundSynth(SOUND_DIG)
-            delay(if (recorded) 1 else HARVEST_TICKS)
-            val current = state(player, patch)
-            if (!harvestable(current, start.cropIndex, crop) || (spade && !inv.contains(SPADE))) break
-            if (crop.kind == PatchKind.BELLADONNA &&
-                player.hands?.let { FarmingEnums.farming_belladonna_gloves[getInvObj(it)] } != 1
-            ) {
-                PlayerPoison.incidentalPoisonHit(player, 2)
-                mes("You need protective gloves to pick belladonna.")
-                break
-            }
-            val secateurs = equipment.magicSecateurs(player, crop)
-            val attas = attasAlive(player)
-            val grape = if (crop.kind == PatchKind.GRAPE_VINE) FarmingGrapes.prepare(player, current, secateurs, attas) else null
-            val produce = grape?.produce ?: checkNotNull(crop.produce)
-            val amount =
-                if (crop.harvest == HarvestModel.BATCH) {
-                    crop.harvestAmount(player.farmingLvl, secateurs, attas) { random.of(it) }
-                } else {
-                    1
-                }
-            val transaction = if (grape == null) FarmingHarvestStorage.prepareHarvest(player, produce, amount)
-                else FarmingGrapes.prepareHarvest(player, grape)
-            if (!transaction.success) {
-                mes("You don't have enough inventory space to hold any more produce.")
-                break
-            }
-            val next = nextAfterHarvest(current, crop, patch, attas, grape)
-            val final = next.cropIndex == 0 || next.health == Health.DEAD
-            val reward = if (final && !crop.checksHealth) rewards.prepare(player, crop) else FarmingRewardRoll.NONE
-            transaction.commitAll()
-            store(player, patch, next)
-            if (crop.kind == PatchKind.HERB) soundSynth(SOUND_PICK)
-            val plantXp = if (final && !crop.checksHealth && crop.kind != PatchKind.ANIMA) crop.plantXp else 0.0
-            award(patch, crop.harvestXp + plantXp)
-            rewards.complete(player, reward)
-            eventBus.publish(FarmingHarvestEvent(player, patch, crop, produce, amount, final))
-            if (final) {
-                if (next.cropIndex == 0) mes("The ${patch.kind.label} is now empty.")
-                break
-            }
-            if (!recorded) continue
-            if (!FarmingHarvestStorage.prepareHarvest(player, produce, 1).success) {
-                spam("You have run out of inventory space.")
-                break
-            }
-            delay(2)
+        if (spade && !inv.contains(SPADE)) {
+            if (!active) mes("You need a spade to harvest this patch.")
+            return stop()
         }
-        if (!recorded) resetAnim()
+        if (!harvestable(current, crop)) return stop()
+        if (actionDelay != mapClock) {
+            if (!active) {
+                if (crop.harvest == HarvestModel.LIVES) spam("You begin to harvest the ${patch.kind.label}.")
+                actionDelay = mapClock + if (recorded) 1 else HARVEST_TICKS
+                pickAnim(spade)
+            }
+            opLoc1(bound)
+            return true
+        }
+        if (crop.kind == PatchKind.BELLADONNA &&
+            player.hands?.let { FarmingEnums.farming_belladonna_gloves[getInvObj(it)] } != 1
+        ) {
+            PlayerPoison.incidentalPoisonHit(player, 2)
+            mes("You need protective gloves to pick belladonna.")
+            return stop()
+        }
+        val secateurs = equipment.magicSecateurs(player, crop)
+        val attas = attasAlive(player)
+        val grape = if (crop.kind == PatchKind.GRAPE_VINE) FarmingGrapes.prepare(player, current, secateurs, attas) else null
+        val produce = grape?.produce ?: checkNotNull(crop.produce)
+        val amount =
+            if (crop.harvest == HarvestModel.BATCH) {
+                crop.harvestAmount(player.farmingLvl, secateurs, attas) { random.of(it) }
+            } else {
+                1
+            }
+        val transaction = if (grape == null) FarmingHarvestStorage.prepareHarvest(player, produce, amount)
+            else FarmingGrapes.prepareHarvest(player, grape)
+        if (!transaction.success) {
+            mes("You don't have enough inventory space to hold any more produce.")
+            return stop()
+        }
+        val next = nextAfterHarvest(current, crop, patch, attas, grape)
+        val final = next.cropIndex == 0 || next.health == Health.DEAD
+        val reward = if (final && !crop.checksHealth) rewards.prepare(player, crop) else FarmingRewardRoll.NONE
+        transaction.commitAll()
+        store(player, patch, next)
+        if (crop.kind == PatchKind.HERB) soundSynth(SOUND_PICK)
+        val plantXp = if (final && !crop.checksHealth && crop.kind != PatchKind.ANIMA) crop.plantXp else 0.0
+        award(patch, crop.harvestXp + plantXp)
+        rewards.complete(player, reward)
+        eventBus.publish(FarmingHarvestEvent(player, patch, crop, produce, amount, final))
+        if (final) {
+            if (next.cropIndex == 0) mes("The ${patch.kind.label} is now empty.")
+            return stop()
+        }
+        if (recorded && !FarmingHarvestStorage.prepareHarvest(player, produce, 1).success) {
+            spam("You have run out of inventory space.")
+            return stop()
+        }
+        actionDelay = mapClock + HARVEST_TICKS
+        pickAnim(spade)
+        opLoc1(bound)
         return true
+    }
+
+    private fun ProtectedAccess.pickAnim(spade: Boolean) {
+        anim(if (spade) ANIM_DIG else ANIM_HARVEST)
+        if (spade) soundSynth(SOUND_DIG)
     }
 
     private fun ProtectedAccess.nextAfterHarvest(
@@ -480,9 +514,8 @@ constructor(
                 state(player, patch).let { it.crop?.seed == ATTAS_SEED && it.health != Health.DEAD }
         }
 
-    private fun harvestable(state: PatchState, cropIndex: Int, crop: Crop): Boolean =
-        state.cropIndex == cropIndex &&
-            state.health == Health.HEALTHY &&
+    private fun harvestable(state: PatchState, crop: Crop): Boolean =
+        state.health == Health.HEALTHY &&
             state.grown(crop) &&
             state.produce > 0 &&
             (state.phase == Phase.CHECKED || !crop.checksHealth)
@@ -540,7 +573,7 @@ constructor(
             return digStump(patch, state)
         }
         val dead = state.health == Health.DEAD
-        val digUp = state.health == Health.HEALTHY && !state.grown(crop) && multiCrop(patch.kind)
+        val digUp = !state.grown(crop) && multiCrop(patch.kind)
         val clearMature = (crop.kind == PatchKind.CACTUS || crop.kind == PatchKind.CALQUAT) &&
             state.health == Health.HEALTHY && state.grown(crop) && state.phase == Phase.CHECKED
         if (!dead && !digUp && !clearMature) return false
@@ -548,13 +581,29 @@ constructor(
             mes("You need a spade to do that.")
             return true
         }
-        if (digUp && crop.kind == PatchKind.ANIMA) {
+        if (!dead && digUp && crop.kind == PatchKind.ANIMA) {
             val confirmed = choice2(
                 "Yes, dig it up.", true, "No, leave it.", false, "Dig up this living anima plant?",
             )
             ifClose()
             if (!confirmed) return true
+        } else if (!dead && digUp && player.vars[DIG_WARNING_DISABLED] == 0) {
+            when (
+                choice3(
+                    "Yes, I want to clear it for new crops.",
+                    1,
+                    "Yes, clear the patch and don't ask me again.",
+                    2,
+                    "No, I want to leave it as it is.",
+                    3,
+                    title = "Are you sure you want to dig up this patch?",
+                )
+            ) {
+                2 -> VarPlayerIntMapSetter.set(player, DIG_WARNING_DISABLED, 1)
+                3 -> return true
+            }
         }
+        if (state(player, patch) != state || !inv.contains(SPADE)) return true
         spam("You start digging the farming patch...")
         // UNVERIFIED: live often digs more 4-tick cycles before clearing, more at low Farming; odds unknown (recording tallies)
         anim(ANIM_DIG)
@@ -601,7 +650,6 @@ constructor(
         if (!fromSeedBox) inv.count(seed)
         else if (FarmingBags.seedBox.held(player) != null) FarmingBags.seedBox.count(player, seed)
         else 0
-
     private fun multiCrop(kind: PatchKind): Boolean = FarmingCrops.all.count { it.kind == kind } > 1
 
     internal fun stored(player: Player, patch: PatchDef): PatchState = PatchState.unpack(player.vars[patch.varp])
@@ -615,7 +663,7 @@ constructor(
     }
 
     private fun grow(player: Player, millis: Long) {
-        val now = Math.floorDiv(millis, FarmingClock.MINUTE_MILLIS)
+        val now = Math.floorDiv(FarmingClock.millis(player, millis), FarmingClock.MINUTE_MILLIS)
         val last = player.vars[VARP_CLOCK].toLong()
         if (now <= last) return
         VarPlayerIntMapSetter.set(player, VARP_CLOCK, now.toInt())
@@ -632,28 +680,35 @@ constructor(
         if (!before.contentEquals(after)) eventBus.publish(FarmingRefreshEvent(player, before, after))
     }
 
-    /** Patches sharing a transmit varbit are sent farthest first so the nearest one wins. */
+    /** Grape nibble selectors overlap regular patch bytes; nearer patches must win. */
     fun transmitNearby(player: Player) {
         val here = player.coords
-        parts
-            .filter { it.coord.level == here.level && it.coord.chebyshevDistance(here) <= TRANSMIT_RADIUS }
-            .sortedByDescending { it.coord.chebyshevDistance(here) }
-            .forEach { part ->
+        for (selector in selectors) {
+            var value = player.vars[selector.varp] and selector.clearMask
+            val nearby = selector.parts.asSequence()
+                .filter { it.coord.level == here.level && it.coord.chebyshevDistance(here) <= TRANSMIT_RADIUS }
+                .sortedByDescending { it.coord.chebyshevDistance(here) }
+            for (part in nearby) {
                 val state = stored(player, part.patch)
-                VarPlayerIntMapSetter.set(player, part.varbit, state.transmit(state.crop, part.patch.kind))
+                val transmit = state.transmit(state.crop, part.patch.kind)
+                VarPlayerIntMap.assertVarBitBounds(part.varbit, transmit)
+                value = value.withBits(part.bits, transmit)
             }
+            VarPlayerIntMapSetter.set(player, selector.varp, value)
+        }
         val hespori = FarmingPatches.all.first { it.kind == PatchKind.HESPORI }
         FarmingHesporiSignals.transmit(player, stored(player, hespori))
     }
 
-    private fun transmitVarbit(loc: String): String? {
+    private fun transmitVarbit(loc: String): VarBitType? {
         val type = ServerCacheManager.getObject(loc.asRSCM(RSCMType.LOC)) ?: return null
         if (type.multiVarBit <= 0) return null
-        return RSCM.getReverseMapping(RSCMType.VARBIT, type.multiVarBit).takeIf { it.isNotBlank() }
+        return checkNotNull(ServerCacheManager.getVarbit(type.multiVarBit)) { "Missing transmit varbit for $loc" }
     }
 
     private companion object {
         const val VARP_CLOCK = "varp.farming_clock"
+        const val DIG_WARNING_DISABLED = "varbit.settings_farming_dig_disable_warning"
         const val PLANT_POT = "obj.plantpot_empty"
         const val FILLED_POT = "obj.plantpot_compost"
         const val TROWEL = "obj.gardening_trowel"

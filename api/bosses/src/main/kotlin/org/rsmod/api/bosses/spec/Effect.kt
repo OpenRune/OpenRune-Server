@@ -116,6 +116,16 @@ sealed interface Effect {
         val react: Boolean = true,
     ) : Effect
 
+    data class HitNpcs(
+        val on: List<TargetExpr.Single>,
+        val damage: DamageExpr,
+        val type: HitType = HitType.Typeless,
+        val delay: Int = 1,
+        val selfDamage: DamageExpr? = null,
+        val includeSelf: Boolean = true,
+        val npcTypes: List<String>? = null,
+    ) : Effect
+
     data class Projectile(
         val spotanim: String,
         val travel: String? = null,
@@ -239,6 +249,9 @@ sealed interface Effect {
     data class FaceTile(val at: TargetExpr.Single) : Effect
 
     data class Poison(val damage: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
+
+    /** Envenoms the current target with probability [chance]/[outOf], unless they are immune. */
+    data class Venom(val chance: Int = 1, val outOf: Int = 1) : Effect
     data class Freeze(val ticks: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
     data class DisablePrayers(val overheadsOnly: Boolean = false) : Effect
     data class StatDrain(val entries: List<StatDrainEntry>) : Effect {

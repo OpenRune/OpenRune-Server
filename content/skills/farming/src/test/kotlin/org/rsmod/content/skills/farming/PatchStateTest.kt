@@ -56,6 +56,25 @@ class PatchStateTest {
     }
 
     @Test
+    fun `packed layout is stable`() {
+        val state =
+            PatchState(
+                weeds = 2,
+                cropIndex = 29,
+                stage = 3,
+                watered = true,
+                health = Health.DISEASED,
+                compost = Compost.SUPER,
+                produce = 6,
+                phase = Phase.CHECKED,
+            )
+        val expected =
+            (1 shl 31) or (2 shl 28) or (1 shl 20) or (6 shl 16) or (2 shl 14) or (1 shl 12) or (1 shl 11) or
+                (3 shl 7) or 29
+        assertEquals(expected, state.pack())
+    }
+
+    @Test
     fun `legacy values keep their fields and drop the old minute countdown`() {
         val legacy =
             (2 shl 28) or (255 shl 20) or (6 shl 16) or (Compost.SUPER.ordinal shl 14) or

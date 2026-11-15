@@ -38,7 +38,7 @@ class FarmingScript @Inject constructor(
                 onOpLoc3(loc) { op(patch, loc, 3, it.loc) }
                 onOpLoc4(loc) { op(patch, loc, 4, it.loc) }
                 onOpLoc5(loc) { op(patch, loc, 5, it.loc) }
-                onOpLocU(loc) { useItem(patch, it.objType.internalName, it.invSlot) }
+                onOpLocU(loc) { useItem(patch, it.objType.internalName, it.invSlot, it.loc) }
             }
         }
 
@@ -70,7 +70,7 @@ class FarmingScript @Inject constructor(
         }
         with(farming) {
             when {
-                action == "rake" -> rake(patch)
+                action == "rake" -> rake(patch, bound)
                 action == "inspect" -> inspect(patch)
                 action == "cure" -> plantCure(patch)
                 action == "check-health" -> checkHealth(patch)
@@ -78,13 +78,13 @@ class FarmingScript @Inject constructor(
                     if (!with(treeChop) { chop(patch, bound, state) }) mes(NOTHING)
                 action == "clear" -> if (!dig(patch)) mes(NOTHING)
                 action in HARVEST_OPS || action?.startsWith("pick") == true ->
-                    if (!harvest(patch)) mes(NOTHING)
+                    if (!harvest(patch, bound)) mes(NOTHING)
                 else -> mes(NOTHING)
             }
         }
     }
 
-    internal suspend fun ProtectedAccess.useItem(patch: PatchDef, obj: String, slot: Int) {
+    internal suspend fun ProtectedAccess.useItem(patch: PatchDef, obj: String, slot: Int, bound: BoundLocInfo) {
         if (patch.kind == PatchKind.GRAPE_VINE &&
             (obj == FarmingGrapes.SALTPETRE || obj == FarmingGrapes.FERTILISER)
         ) {
@@ -115,7 +115,7 @@ class FarmingScript @Inject constructor(
         with(farming) {
             when {
                 obj == SPADE -> if (!dig(patch)) mes(NOTHING)
-                obj == RAKE -> rake(patch)
+                obj == RAKE -> rake(patch, bound)
                 obj == PLANT_CURE -> plantCure(patch)
                 obj == EMPTY_POT -> fillPot(patch)
                 WateringCans.isCan(obj) -> water(patch, obj, slot)

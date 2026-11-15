@@ -964,19 +964,23 @@ each. After `windup` ticks it plays `impact` on each tile and hits every living 
 Notes: every in-range player is always targeted even if that exceeds `count`; scatter tiles are not
 checked for walkability; the windup does not hold attacks.
 
-#### `poison`, `freeze`
+#### `poison`, `venom`, `freeze`
 
 ```kotlin
 fun poison(damage: Int, chance: Int = 1, outOf: Int = 1): Effect
 fun poison(damage: Int, odds: Odds): Effect
+fun venom(chance: Int = 1, outOf: Int = 1): Effect
+fun venom(odds: Odds): Effect
 fun freeze(ticks: Int, chance: Int = 1, outOf: Int = 1): Effect
 fun freeze(ticks: Int, odds: Odds): Effect
-// AbilityBuilder has all four.
+// AbilityBuilder has all six.
 ```
 
 Rolls `random.of(outOf) < chance` and applies `CombatEffects.poison(target, damage)` /
-`CombatEffects.freeze(target, ticks)` to the interpreter's current target, same tick. `Odds` is
-`chance chancesIn outOf`, e.g. `poison(6, 1 chancesIn 4)`.
+`CombatEffects.venom(target)` / `CombatEffects.freeze(target, ticks)` to the interpreter's current
+target, same tick. `Odds` is `chance chancesIn outOf`, e.g. `poison(6, 1 chancesIn 4)`. Venom
+respects toxin immunity and does nothing to an already-envenomed player. To roll it only when an
+attack lands, put it in the hit's `onHit(venom(1, 3))`.
 
 #### `disablePrayers`
 
@@ -1033,6 +1037,26 @@ Pushes the current target one tile to a random free neighbour (8 directions, shu
 inside `within`, walkable and not holding an encounter-owned loc. Plays `anim` on the player,
 teleports them, and sends an exact-move so the client slides them over 30 cycles. Does nothing if
 no neighbour is free. Usually wrapped in `onEach(playersOn(tile), knockback(...))`.
+
+#### `hitNpcs`
+
+```kotlin
+fun hitNpcs(
+    on: List<TargetExpr.Single>,
+    damage: DamageExpr,
+    type: HitType = Typeless,
+    delay: Int = 1,
+    selfDamage: DamageExpr? = null,
+    includeSelf: Boolean = true,
+    npcTypes: List<String>? = null,
+): Effect
+```
+
+Hits every npc owned by the encounter (see `summon(owned = true)`) whose body overlaps any tile of
+`on`, once each, `delay` ticks from now. The caster counts too when `includeSelf` is set, and takes
+`selfDamage` when given. `npcTypes` narrows which owned npcs qualify; it never excludes the caster.
+Damage is rolled per victim, so it must be a `Roll` or `Fixed` (validated); the victims are npcs, not
+players. This is how Araxxor's cleave hits his own araxytes. Players are still hit with `hit { }`.
 
 ### Visuals and audio
 

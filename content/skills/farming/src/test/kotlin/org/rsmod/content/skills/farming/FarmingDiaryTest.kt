@@ -2,6 +2,9 @@ package org.rsmod.content.skills.farming
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import io.mockk.every
+import io.mockk.mockk
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
@@ -15,6 +18,7 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -31,6 +35,8 @@ import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
+import org.rsmod.game.loc.BoundLocInfo
+import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -83,14 +89,12 @@ class FarmingDiaryTest {
         val grown = PatchState(weeds = 3, cropIndex = strawberry.index, stage = strawberry.stages, produce = 3)
         set(f.player, patch.varp, grown.pack())
         for (slot in f.player.inv.indices) f.player.inv[slot] = InvObj(SPADE)
-        f.start { with(f.service) { harvest(patch) } }
-        f.finish()
+        f.pick(patch)
         assertEquals(grown, PatchState.unpack(f.player.vars[patch.varp]))
         assertEquals(0, f.player.vars["varp.ardounge_achievement_diary"])
         assertEquals(0, f.player.inv.count("obj.strawberry"))
         f.player.inv[1] = null
-        f.start { with(f.service) { harvest(patch) } }
-        f.finish()
+        f.pick(patch)
         assertEquals(1, f.player.inv.count("obj.strawberry"))
         assertEquals(1 shl 15, f.player.vars["varp.ardounge_achievement_diary"])
     }
@@ -108,6 +112,11 @@ class FarmingDiaryTest {
             FarmingRewardTestSupport.rewards(random, events), FarmingEquipment(random), access)
         private val coroutine = GameCoroutine("farming-diary-test")
         private var result: Result<Unit>? = null
+        private var retriggered = false
+        private lateinit var lastStep: suspend ProtectedAccess.() -> Unit
+        private val locInteractions = mockk<LocInteractions>().also {
+            every { it.interact(any(), any(), any(), any()) } answers { retriggered = true }
+        }
 
         @OptIn(InternalApi::class)
         val player = Player().apply {
@@ -129,10 +138,22 @@ class FarmingDiaryTest {
         fun harvest(patch: PatchDef, crop: Crop, count: Int = 1, final: Boolean = false, obj: String = checkNotNull(crop.produce)) {
             events.publish(FarmingHarvestEvent(player, patch, crop, obj, count, final))
         }
-        fun start(body: suspend ProtectedAccess.() -> Unit) {
+        fun pick(patch: PatchDef) {
+            val type = checkNotNull(ServerCacheManager.getObject(patch.locs.first().asRSCM(RSCMType.LOC)))
+            val loc = BoundLocInfo(player.coords, LocEntity(type.id, 10, 0), 2, 1, 1, 0)
+            start { with(service) { harvest(patch, loc) } }
+            finish()
+        }
+        private fun start(body: suspend ProtectedAccess.() -> Unit) {
+            lastStep = body
+            retriggered = false
+            player.currentMapClock++
+            player.processedMapClock = player.currentMapClock
             result = null
             player.activeCoroutine = coroutine
-            val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { events }, getRandom = { random })
+            val context = ProtectedAccessContextFactory.empty().copy(
+                getEventBus = { events }, getRandom = { random }, getLocInteractions = { locInteractions },
+            )
             val protectedAccess = ProtectedAccess(player, coroutine, context)
             val block: suspend () -> Unit = { protectedAccess.body() }
             block.startCoroutine(object : Continuation<Unit> {
@@ -141,9 +162,16 @@ class FarmingDiaryTest {
             })
             result?.getOrThrow()
         }
-        fun finish() {
-            repeat(20) {
-                if (coroutine.isIdle) { result?.getOrThrow(); return }
+
+        /** Drains the coroutine, then replays the step one tick later for each re-trigger, like the engine. */
+        private fun finish() {
+            repeat(40) {
+                if (coroutine.isIdle) {
+                    result?.getOrThrow()
+                    if (!retriggered) return
+                    start(lastStep)
+                    return@repeat
+                }
                 player.currentMapClock++
                 player.processedMapClock = player.currentMapClock
                 coroutine.advance()

@@ -118,6 +118,12 @@ defaultInt = 0
 isMembers = true
 
 [[params]]
+id = "param.slayer_no_task_credit"
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
 id = "param.slayer_superior"
 type = "NPC"
 isMembers = true

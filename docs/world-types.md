@@ -73,6 +73,62 @@ A world listing one mode is locked to it: `::worldtype` has nothing to offer. A 
 several is a *mixed world* — see
 [the mixed-world limit](world-type-plugins.md#the-mixed-world-limit).
 
+### Farming growth speed
+
+`gameplay.farming-growth-rate` in `game.yml` sets the server's Farming growth speed.
+It is an integer from `1` to `100`: `1` (the default) preserves normal timing; `5` advances five
+growth minutes per real minute. Patches, weeds and inventory/banked saplings share
+this clock. It changes growth timing, not XP, yields, level requirements or disease rules.
+Restart the server after changing the configuration.
+
+Content can set `player.farmingGrowthRate` (import
+`org.rsmod.content.skills.farming.farmingGrowthRate`) to override the server rate.
+Set it to `0` to inherit the default again. The override and clock progress persist
+in the player's per-mode save, including logout and offline growth.
+
+Rate changes preserve accumulated progress: elapsed time is settled using the
+previously recorded rate before the new rate takes effect. An offline player adopts
+a changed server default on their next clock update, not retroactively. Existing
+saves without virtual-clock state catch up at normal timing on their first update.
+
+Administrators can test their own character with:
+
+| Command | Effect |
+|---|---|
+| `::farmrate` | Show effective, server and player growth rates |
+| `::farmrate 5` | Set a persistent 5× player override |
+| `::farmrate reset` | Remove the player override |
+| `::farmadvance 20` | Advance 20 growth minutes through normal growth/disease checks |
+
+Advancing updates supported patches and inventory/banked saplings immediately.
+It neither harvests crops nor grants XP. These commands do not affect other players.
+Rate overrides use the same `1`–`100` range. An advance is rejected if it would leave
+less than ten years of clock range at the maximum supported rate.
+
+### Farming continuation preview saves
+
+Rebuild the continuation's cache with `OPENRUNE_FULL_REBUILD=true` before deployment.
+The merged growth clock keeps varps `64449`–`64454`; published core patch and sapling
+identities are unchanged. Older continuation preview saves need these value moves:
+
+| State | Old varp | New varp |
+|---|---|---|
+| `farming_patch_66`–`farming_patch_71` | `64449`–`64454`, respectively | `64509`–`64514`, respectively |
+| `farming_nature_status` | `64483` | `64515` |
+| `farming_bounty_uses` | `64484` | `64516` |
+| `farming_tithe_session` | `64485` | `64517` |
+
+The six patches are the second seaweed plot, both coral plots and the first three
+Vinery plots. If `farming_nature_patch` holds one of their old varp IDs, update that
+binding value to the corresponding new ID too. Do not leave the moved values in
+their old slots: those slots now belong to the growth clock or Araxxor.
+
+This migration applies to saves from the older continuation, not saves already
+using upstream's growth clock or Araxxor. No automatic migration is provided;
+do not load an unmigrated preview save. Earlier continuation migrations remain
+separate requirements.
+
+
 ## Switching mode
 
 `::worldtype` opens a menu of the modes this world serves, current one marked. Picking one swaps the

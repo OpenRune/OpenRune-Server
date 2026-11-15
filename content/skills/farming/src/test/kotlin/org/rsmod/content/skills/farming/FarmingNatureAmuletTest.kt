@@ -236,6 +236,10 @@ class FarmingNatureAmuletTest {
         }
 
         fun replay(from: Long, to: Long) {
+            // Bind and cure read wall time; replay uses an independent synthetic clock.
+            set("varp.farming_growth_applied_rate", 0)
+            set("varp.farming_growth_real_minute", 0)
+            set("varp.farming_growth_real_millis", 0)
             set("varp.farming_clock", from.toInt())
             service.refresh(player, to * FarmingClock.MINUTE_MILLIS)
             set("varp.farming_clock", Int.MAX_VALUE)

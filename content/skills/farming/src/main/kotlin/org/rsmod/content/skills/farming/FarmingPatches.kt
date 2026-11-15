@@ -27,7 +27,7 @@ object FarmingPatches {
         val access: Map<String, List<SiteAccess>>,
     )
 
-    private val kinds: Map<PatchKind, Kind> by lazy {
+    private val kinds: Map<PatchKind, Kind> =
         FarmingPatchRow.all().associate { row ->
             val kind = PatchKind.of(row.kind)
             val patches =
@@ -51,15 +51,13 @@ object FarmingPatches {
                     access = row.access.map { SiteAccess(it.t0, it.t1, it.t2, it.t3, it.t4) }.groupBy(SiteAccess::site),
                 )
         }
-    }
 
-    val all: List<PatchDef> by lazy { kinds.values.flatMap(Kind::patches) }
+    val all: List<PatchDef> = kinds.values.flatMap(Kind::patches)
 
-    private val byLoc: Map<String, PatchDef> by lazy {
+    private val byLoc: Map<String, PatchDef> =
         all.flatMap { patch -> patch.locs.map { it to patch } }.toMap()
-    }
 
-    private val bySite: Map<String, List<PatchDef>> by lazy { all.groupBy(PatchDef::site) }
+    private val bySite: Map<String, List<PatchDef>> = all.groupBy(PatchDef::site)
 
     fun byLoc(loc: String): PatchDef? = byLoc[loc]
 

@@ -1759,46 +1759,73 @@ inherit = "npc.ancient_wyvern"
 [[npc]]
 id = "npc.araxxor"
 inherit = "npc.araxxor"
+maxRange = 40
+blockWalk = "None"
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.total_araxxor_kills"
+"param.death_anim"="seq.npc_araxxor_01_death_01"
 
 [[npc]]
 id = "npc.araxyte_large"
 inherit = "npc.araxyte_large"
+huntMode = 1
+huntRange = 8
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_araxyte"
 "param.killcount_notify"=false
+"param.attack_anim"="seq.npc_araxyte01_attack"
+"param.death_anim"="seq.npc_araxyte01_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.araxyte_large_bigwander"
 inherit = "npc.araxyte_large_bigwander"
+huntMode = 1
+huntRange = 8
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_araxyte"
 "param.killcount_notify"=false
+"param.attack_anim"="seq.npc_araxyte01_attack"
+"param.death_anim"="seq.npc_araxyte01_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.araxyte_normal"
 inherit = "npc.araxyte_normal"
+huntMode = 1
+huntRange = 8
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_araxyte"
 "param.killcount_notify"=false
+"param.attack_anim"="seq.npc_araxyte01_attack"
+"param.death_anim"="seq.npc_araxyte01_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.araxyte_normal_bigwander"
 inherit = "npc.araxyte_normal_bigwander"
+huntMode = 1
+huntRange = 8
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_araxyte"
 "param.killcount_notify"=false
+"param.attack_anim"="seq.npc_araxyte01_attack"
+"param.death_anim"="seq.npc_araxyte01_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.arceuus_reanimated_bloodveld"
@@ -3752,11 +3779,17 @@ inherit = "npc.superior_aquanite"
 [[npc]]
 id = "npc.superior_araxyte"
 inherit = "npc.superior_araxyte"
+huntMode = 1
+huntRange = 8
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
 "param.killcount_varp"="varp.kc_superior_monster"
 "param.killcount_notify"=false
+"param.attack_anim"="seq.npc_araxyte01_attack"
+"param.death_anim"="seq.npc_araxyte01_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.superior_banshee"
@@ -15281,23 +15314,53 @@ inherit = "npc.araxxor_dead"
 [[npc]]
 id = "npc.araxxor_minion_mirrorback"
 inherit = "npc.araxxor_minion_mirrorback"
+maxRange = 40
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
+"param.death_anim"="seq.npc_araxyte_mirror_back_death"
+"param.slayer_no_task_credit"=true
 
 [[npc]]
 id = "npc.araxxor_minion_explode"
 inherit = "npc.araxxor_minion_explode"
+maxRange = 40
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
+"param.death_anim"="seq.npc_araxyte02_death"
+"param.slayer_no_task_credit"=true
 
 [[npc]]
 id = "npc.araxxor_minion_venom"
 inherit = "npc.araxxor_minion_venom"
+maxRange = 40
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
+"param.death_anim"="seq.npc_araxyte_explode"
+"param.slayer_no_task_credit"=true
+
+[[npc]]
+id = "npc.araxxor_minion_egg_venom"
+inherit = "npc.araxxor_minion_egg_venom"
+[npc.params]
+"param.death_anim"="seq.egg_araxyte_death_01"
+"param.slayer_no_task_credit"=true
+
+[[npc]]
+id = "npc.araxxor_minion_egg_mirrorback"
+inherit = "npc.araxxor_minion_egg_mirrorback"
+[npc.params]
+"param.death_anim"="seq.egg_araxyte_death_01"
+"param.slayer_no_task_credit"=true
+
+[[npc]]
+id = "npc.araxxor_minion_egg_explode"
+inherit = "npc.araxxor_minion_egg_explode"
+[npc.params]
+"param.death_anim"="seq.egg_araxyte_death_01"
+"param.slayer_no_task_credit"=true
 
 [[npc]]
 id = "npc.amoxliatl_quest"

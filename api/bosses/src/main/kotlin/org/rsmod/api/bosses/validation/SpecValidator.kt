@@ -415,6 +415,16 @@ object SpecValidator {
                     if (effect.angle !in 0..3) error("${scope.prefix}SpawnLoc angle '${effect.angle}' must be 0..3.")
                 }
                 is Effect.Knockback -> area(effect.within, scope, name)
+                is Effect.HitNpcs -> {
+                    effect.on.forEach { target(it, scope, name) }
+                    if (effect.on.isEmpty()) error("${scope.prefix}HitNpcs needs at least one tile.")
+                    if (effect.delay < 1) error("${scope.prefix}HitNpcs delay '${effect.delay}' must be at least 1.")
+                    for (damage in listOfNotNull(effect.damage, effect.selfDamage)) {
+                        if (damage !is DamageExpr.Roll && damage !is DamageExpr.Fixed) {
+                            error("${scope.prefix}HitNpcs damage must be a Roll or Fixed; victims are not players.")
+                        }
+                    }
+                }
                 is Effect.Message -> target(effect.target, scope, name)
                 is Effect.SoundTo -> target(effect.target, scope, name)
                 is Effect.Sound -> effect.at?.let { target(it, scope, name) }

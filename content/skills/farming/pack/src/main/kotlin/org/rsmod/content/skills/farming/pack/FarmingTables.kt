@@ -293,8 +293,9 @@ object FarmingTables {
             if (!includeRows) return@productionTable
             val transforms = patchTransforms()
             val specs = CROPS.sortedBy(CropSpec::index)
-            check(specs.map(CropSpec::index) == (1..specs.size).toList()) {
-                "Crop indices must run 1..${specs.size} without gaps"
+            val indices = specs.map(CropSpec::index)
+            check(indices.distinct().size == indices.size && indices.all { it in 1..MAX_CROP_INDEX }) {
+                "Crop indices must be unique and within 1..$MAX_CROP_INDEX"
             }
 
             fun resolve(spec: CropSpec, symbol: String): Int {
@@ -460,4 +461,6 @@ object FarmingTables {
                 }
             }
         }
+
+    private const val MAX_CROP_INDEX = 127
 }

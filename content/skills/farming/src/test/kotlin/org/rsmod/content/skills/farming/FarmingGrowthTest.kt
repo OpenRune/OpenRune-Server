@@ -1,6 +1,7 @@
 package org.rsmod.content.skills.farming
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -12,6 +13,14 @@ import org.rsmod.api.random.GameRandom
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class FarmingGrowthTest {
+    @Test
+    fun `crops resolve by their persisted index`() {
+        assertEquals(FarmingCrops.all.sortedBy(Crop::index), FarmingCrops.all)
+        for (crop in FarmingCrops.all) assertSame(crop, FarmingCrops.byIndex(crop.index))
+        assertEquals(null, FarmingCrops.byIndex(0))
+        assertEquals(null, FarmingCrops.byIndex(127))
+    }
+
     @Test
     fun `a 640 minute crop advances exactly on its offset boundaries`() {
         val crop = immune(640)
@@ -25,6 +34,47 @@ class FarmingGrowthTest {
             assertEquals(2, replay(patch, planted, boundary - 1, boundary + 640, offset).stage)
             assertEquals(planted, replay(patch, planted, boundary, boundary + 639, offset))
         }
+    }
+
+    @Test
+    fun `a 20 minute crop advances exactly on its offset boundaries`() {
+        val crop = crop("obj.guam_seed")
+        val patch = patchFor(crop)
+        val cycle = crop.cycleMinutes.toLong()
+        for (offset in listOf(0, 7, 19)) {
+            val boundary = cycle * 10 - offset
+            val planted = planted(crop)
+            assertEquals(planted, replay(patch, planted, boundary - cycle, boundary - 1, offset))
+            assertEquals(1, replay(patch, planted, boundary - 1, boundary, offset).stage)
+            assertEquals(1, replay(patch, planted, boundary - 1, boundary + cycle - 1, offset).stage)
+            assertEquals(2, replay(patch, planted, boundary - 1, boundary + cycle, offset).stage)
+            assertEquals(planted, replay(patch, planted, boundary, boundary + cycle - 1, offset))
+        }
+    }
+
+    @Test
+    fun `guam disease chance is floor of max over compost divisor plus one in 128`() {
+        val guam = crop("obj.guam_seed")
+        val patch = patchFor(guam)
+        val minute = guam.cycleMinutes.toLong()
+        for ((compost, highest) in listOf(Compost.NONE to 26, Compost.NORMAL to 13, Compost.SUPER to 5, Compost.ULTRA to 2)) {
+            val growing = planted(guam).copy(stage = 1, compost = compost)
+            assertEquals(Health.DISEASED, replay(patch, growing, minute - 1, minute, 0, FixedRandom(highest)).health)
+            assertEquals(Health.HEALTHY, replay(patch, growing, minute - 1, minute, 0, FixedRandom(highest + 1)).health)
+        }
+    }
+
+    @Test
+    fun `disease-free patches skip the roll`() {
+        val guam = crop("obj.guam_seed")
+        val patch = patchFor(guam)
+        val minute = guam.cycleMinutes.toLong()
+        val growing = planted(guam).copy(stage = 1)
+        val random = FixedRandom(roll = 0)
+        val free = arrayOf(growing)
+        FarmingGrowth(listOf(patch), booleanArrayOf(true), random).replay(free, minute - 1, minute, 0)
+        assertEquals(growing.copy(stage = 2), free[0])
+        assertEquals(0, random.rolls)
     }
 
     @Test
