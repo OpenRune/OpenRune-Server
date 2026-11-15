@@ -4,7 +4,7 @@ pmoon_blue_arena = 32446
 pmoon_eclipse_arena = 32447
 
 [gamevals.varp]
-pmoon_inside = 64500
+pmoon_inside = 64481
 pmoon_trap_first_rock = 64501
 pmoon_unique_mask = 64502
 pmoon_fight_state = 64503
