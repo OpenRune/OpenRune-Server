@@ -1,0 +1,19 @@
+[[varp]]
+isServerOnly = true
+id = "varp.fletching_cape_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.fletching_cape_uses"
+varp = "varp.fletching_cape_state"
+startBit = 0
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.fletching_cape_day"
+varp = "varp.fletching_cape_state"
+startBit = 2
+endBit = 17
