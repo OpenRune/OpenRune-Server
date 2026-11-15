@@ -37,13 +37,29 @@ internal suspend fun ProtectedAccess.lockedScene(
     fadeInDuration: Int = SceneFadeDuration,
     reveal: (suspend ProtectedAccess.() -> Unit)? = null,
     exitCut: Boolean = false,
+    afterPositioning: suspend () -> Unit = {},
     body: suspend ProtectedAccess.() -> Unit,
 ) {
+    var finished = false
     try {
-        beginScene(vantage, faceAt, camera, underFade, fadeOutDuration, fadeInDuration, reveal)
+        beginScene(vantage, faceAt, camera, underFade, fadeOutDuration, fadeInDuration, reveal, afterPositioning)
         body()
+        finished = true
     } finally {
-        endScene(returnTo, teardown, fadeOutDuration, fadeInDuration, exitCut)
+        if (finished) {
+            endScene(returnTo, teardown, fadeOutDuration, fadeInDuration, exitCut)
+        } else {
+            try {
+                teardown()
+            } catch (t: Throwable) {
+                logger.error(t) { "Scene teardown failed; continuing with scene restore." }
+            }
+            if (returnTo != null) telejump(returnTo)
+            rebuildAppearance()
+            restoreSceneState()
+            closeFadeOverlayNow()
+            player.delay = player.processedMapClock
+        }
     }
 }
 
@@ -55,6 +71,7 @@ internal suspend fun ProtectedAccess.beginScene(
     fadeOutDuration: Int = SceneFadeDuration,
     fadeInDuration: Int = SceneFadeDuration,
     reveal: (suspend ProtectedAccess.() -> Unit)? = null,
+    afterPositioning: suspend () -> Unit = {},
 ) {
     fadeOverlay(
         startColour = 0,
@@ -85,6 +102,7 @@ internal suspend fun ProtectedAccess.beginScene(
 
     telejump(vantage)
     rebuildAppearance()
+    afterPositioning()
 
     camMoveToV3(camera.eye, height = camera.eyeHeight, rate = camera.rate, rate2 = camera.rate2)
     camLookAtV3(
@@ -178,6 +196,7 @@ internal suspend fun ProtectedAccess.endScene(
         rebuildAppearance()
         restoreSceneState()
         closeFadeOverlayNow()
+        player.delay = player.processedMapClock
         throw cancelled
     }
 }
