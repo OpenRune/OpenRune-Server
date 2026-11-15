@@ -3,6 +3,7 @@ package org.rsmod.content.quest.area.varlamore.perilousmoons
 import dev.openrune.types.MoveRestrict
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import java.util.IdentityHashMap
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.hook.TeleportType
@@ -27,7 +28,6 @@ import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
-import java.util.IdentityHashMap
 
 private const val ZONE_SIZE = 8
 private const val ZONES = 8
