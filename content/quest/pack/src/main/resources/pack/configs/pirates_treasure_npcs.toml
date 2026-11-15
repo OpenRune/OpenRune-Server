@@ -1,0 +1,15 @@
+[[npc]]
+isServerOnly = true
+id = "npc.pirate_irate_gardener"
+inherit = "npc.pirate_irate_gardener"
+timer = 1
+respawnRate = 0
+[npc.params]
+"param.attack_anim" = "seq.human_farmersfork_stab"
+"param.defend_anim" = "seq.human_farmersfork_def"
+"param.death_anim" = "seq.human_death"
+"param.attack_sound" = "synth.farmersfork_stab"
+"param.defend_sound" = "synth.human_hit"
+"param.death_sound" = "synth.human_death"
+"param.npc_attack_type" = "category.attacktype_stab"
+"param.attackrate" = 4

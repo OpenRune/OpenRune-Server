@@ -1,6 +1,7 @@
 package org.rsmod.content.quest.manager
 
 import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
+import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.player.hook.SpadeDigHook
 import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
@@ -10,6 +11,10 @@ import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
 import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureDig
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureGardenerAttackHook
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureQuest
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureSmuggling
 import org.rsmod.content.quest.area.rimmington.WitchsPotionRatTail
 import org.rsmod.content.quest.area.varrock.daddyshome.DaddysHomeQuest
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest
@@ -25,9 +30,14 @@ public class QuestModule : PluginModule() {
         bindInstance<DoricsQuest>()
         bindInstance<IdesOfMilkQuest>()
         bindInstance<KnightsSwordQuest>()
+        bindInstance<PiratesTreasureQuest>()
+        bindInstance<PiratesTreasureSmuggling>()
+        bindInstance<PiratesTreasureDig>()
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)
         addSetBinding<BookcaseSearchHook>(TouristCentreBookcases::class.java)
         addSetBinding<SpadeDigHook>(XMarksTheSpotQuest::class.java)
+        addSetBinding<SpadeDigHook>(PiratesTreasureDig::class.java)
         addSetBinding<NpcDeathKillHook>(WitchsPotionRatTail::class.java)
+        addSetBinding<NpcAttackValidateHook>(PiratesTreasureGardenerAttackHook::class.java)
     }
 }

@@ -10,6 +10,7 @@ gertrudes_cat_state = 63711
 daddyshome_state = 64064
 waterfall_state = 64310
 sheep_shearer_state = 65472
+pirates_treasure_state = 64620
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -34,6 +35,14 @@ waterfall_met_golrie = 64312
 waterfall_pillar_runes = 64313
 sheep_shearer_progress = 65449
 sheep_shearer_saw_thing = 65448
+pirates_treasure_luthas_job = 64620
+pirates_treasure_crate_bananas = 64621
+pirates_treasure_crate_rum = 64622
+pirates_treasure_wydin_rum = 64623
+pirates_treasure_wydin_job = 64624
+pirates_treasure_chest_opened = 64625
+pirates_treasure_gardener = 64626
+pirates_treasure_progress = 64627
 
 [gamevals.bas]
 waterfall_wading = 1
