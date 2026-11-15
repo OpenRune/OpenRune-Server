@@ -2,8 +2,8 @@ package org.rsmod.content.quest.manager
 
 import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
 import org.rsmod.api.death.NpcDeathKillHook
-import org.rsmod.api.player.hook.NeypotzliHook
 import org.rsmod.api.player.hook.SpadeDigHook
+import org.rsmod.content.bosses.moons.neypotzli.NeypotzliHook
 import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.TouristCentreBookcases
 import org.rsmod.content.quest.area.falador.doricsquest.DoricsQuest

@@ -1,7 +1,7 @@
 package org.rsmod.content.bosses.moons
 
-import org.rsmod.api.player.hook.NeypotzliMoon
 import org.rsmod.api.table.PmoonMoonsRow
+import org.rsmod.content.bosses.moons.neypotzli.NeypotzliMoon
 import org.rsmod.map.CoordGrid
 
 enum class Moon(rowName: String, val hook: NeypotzliMoon, val selfDamage: SelfDamage) {

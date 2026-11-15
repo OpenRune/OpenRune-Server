@@ -2,7 +2,6 @@ package org.rsmod.content.bosses.moons.neypotzli
 
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
-import org.rsmod.api.player.hook.NeypotzliHook
 import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1

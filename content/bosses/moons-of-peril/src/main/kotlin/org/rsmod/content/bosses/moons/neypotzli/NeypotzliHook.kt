@@ -1,4 +1,4 @@
-package org.rsmod.api.player.hook
+package org.rsmod.content.bosses.moons.neypotzli
 
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.game.entity.Player

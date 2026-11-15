@@ -3,13 +3,8 @@ package org.rsmod.content.quest.area.varlamore.perilousmoons
 import dev.openrune.types.MoveRestrict
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import java.util.IdentityHashMap
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.config.Constants
-import org.rsmod.api.player.hook.NeypotzliHook
-import org.rsmod.api.player.hook.NeypotzliMoon
-import org.rsmod.api.player.hook.NeypotzliPassage
-import org.rsmod.api.player.hook.NeypotzliPassageKind
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -21,6 +16,10 @@ import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.api.table.PmoonRuinsPartsRow
 import org.rsmod.api.table.PmoonRuinsSpawnsRow
+import org.rsmod.content.bosses.moons.neypotzli.NeypotzliHook
+import org.rsmod.content.bosses.moons.neypotzli.NeypotzliMoon
+import org.rsmod.content.bosses.moons.neypotzli.NeypotzliPassage
+import org.rsmod.content.bosses.moons.neypotzli.NeypotzliPassageKind
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
@@ -28,6 +27,7 @@ import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
+import java.util.IdentityHashMap
 
 private const val ZONE_SIZE = 8
 private const val ZONES = 8

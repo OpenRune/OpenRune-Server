@@ -5,7 +5,6 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.runtime.BossDeps
-import org.rsmod.api.player.hook.NeypotzliHook
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -27,6 +26,7 @@ import org.rsmod.content.bosses.moons.blue.BlueFights
 import org.rsmod.content.bosses.moons.blue.BlueStorms
 import org.rsmod.content.bosses.moons.eclipse.EclipseFights
 import org.rsmod.content.bosses.moons.eclipse.Side
+import org.rsmod.content.bosses.moons.neypotzli.NeypotzliHook
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcStateEvents

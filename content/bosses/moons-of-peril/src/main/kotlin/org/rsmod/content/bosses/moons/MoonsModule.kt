@@ -4,7 +4,6 @@ import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.PlayerDeathHook
 import org.rsmod.api.death.PlayerDeathPreDropHook
 import org.rsmod.api.player.hook.HeldEquipValidateHook
-import org.rsmod.api.player.hook.NeypotzliHook
 import org.rsmod.api.player.hook.PlayerPostTickHook
 import org.rsmod.content.bosses.moons.blue.BlueWearPreventHook
 import org.rsmod.content.bosses.moons.blue.FrozenWeaponDeathHook
@@ -12,6 +11,7 @@ import org.rsmod.content.bosses.moons.blue.IcicleAttackHook
 import org.rsmod.content.bosses.moons.neypotzli.MoonsConsumableGate
 import org.rsmod.content.bosses.moons.neypotzli.MoonsHerbloreHook
 import org.rsmod.content.bosses.moons.neypotzli.NeypotzliFizzleHook
+import org.rsmod.content.bosses.moons.neypotzli.NeypotzliHook
 import org.rsmod.content.other.consumables.ConsumableActivityGate
 import org.rsmod.content.skills.herblore.HerbloreHook
 import org.rsmod.plugin.module.PluginModule

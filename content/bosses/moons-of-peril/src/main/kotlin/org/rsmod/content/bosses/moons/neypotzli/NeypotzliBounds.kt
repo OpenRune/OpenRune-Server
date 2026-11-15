@@ -1,7 +1,6 @@
 package org.rsmod.content.bosses.moons.neypotzli
 
 import jakarta.inject.Inject
-import org.rsmod.api.player.hook.NeypotzliHook
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 

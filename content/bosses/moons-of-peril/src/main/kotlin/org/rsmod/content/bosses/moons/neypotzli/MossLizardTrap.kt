@@ -5,7 +5,6 @@ import jakarta.inject.Inject
 import java.util.Collections
 import java.util.IdentityHashMap
 import kotlin.math.abs
-import org.rsmod.api.player.hook.NeypotzliHook
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.stat.statBase
