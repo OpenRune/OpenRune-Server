@@ -12,6 +12,7 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.headbar.Headbar
 import org.rsmod.map.CoordGrid
 
 class BossEncounter(
@@ -28,6 +29,24 @@ class BossEncounter(
     var invulnerable: Boolean = false
     var damageScale: Double = 1.0
     var lethalHandled: Boolean = false
+
+    val personalHp: PersonalHpTracker? =
+        spec.personalHp?.let { personal ->
+            PersonalHpTracker(personal, showHeadbar = { player, hitpoints ->
+                showPersonalHeadbar(personal, player, hitpoints)
+            })
+        }
+
+    private fun showPersonalHeadbar(personal: PersonalHpSpec, player: Player, hitpoints: Int) {
+        val name = personal.headbar ?: return
+        val bar = ServerCacheManager.getHealthBar(name.asRSCM(RSCMType.HEADBAR)) ?: return
+        val fill = if (hitpoints <= 0) 0 else (hitpoints * bar.segments).ceilDiv(personal.maxHitpoints)
+        npc.showHeadbar(
+            Headbar.fromPlayerSource(bar.id, null, fill, fill, 0, 0, player.slotId)
+        )
+    }
+
+    private fun Int.ceilDiv(other: Int): Int = (this + other - 1) / other
 
     /** Tick until which multi-tick effects are still running; nothing new may start before it. */
     var busyUntil: Int = 0

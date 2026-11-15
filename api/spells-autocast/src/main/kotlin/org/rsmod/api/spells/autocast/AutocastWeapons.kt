@@ -119,7 +119,7 @@ public class AutocastWeapons @Inject constructor(private val spells: AutocastSpe
                     "varbit.saved_defensive_casting_staff",
                 )
 
-            WeaponCategory.BladedStaff ->
+            WeaponCategory.BladedStaff, WeaponCategory.Spellblade ->
                 StaffVarBits(
                     "varbit.saved_autocast_spell_bladed_staff",
                     "varbit.saved_defensive_casting_bladed_staff",

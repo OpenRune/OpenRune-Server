@@ -58,3 +58,4 @@ araxxor_pattern=97
 araxxor_hatch_in=98
 araxxor_spawn_tick=99
 araxxor_engage_at=100
+burn_stacks=101

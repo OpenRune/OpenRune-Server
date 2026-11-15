@@ -18,6 +18,7 @@ public enum class CombatRangedAttributes {
     SalveAmuletEi,
     BlackMaskI,
     TwistedBow,
+    EclipseAtlatl,
     RatBoneWeapon,
     CorpBaneWeapon,
 }

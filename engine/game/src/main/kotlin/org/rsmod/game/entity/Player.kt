@@ -294,6 +294,11 @@ public class Player(
     public val isFrozen: Boolean
         get() = frozen
 
+    /** Held in place like [frozen], but a walk click turns the player to face it instead. */
+    public var bound: Boolean = false
+
+    public var boundFacing: CoordGrid = CoordGrid.NULL
+
     public var lootDropDuration: Int? = null
 
     public val appearance: Appearance = Appearance()

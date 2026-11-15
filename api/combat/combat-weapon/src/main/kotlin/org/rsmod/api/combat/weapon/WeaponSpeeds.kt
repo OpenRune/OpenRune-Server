@@ -6,6 +6,8 @@ import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.player.worn.EquipmentChecks
+import org.rsmod.api.player.worn.MoonSet
 import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getInvObj
 
@@ -22,6 +24,17 @@ public class WeaponSpeeds @Inject constructor(private val styles: AttackStyles) 
         } else {
             baseSpeed
         }
+    }
+
+    /**
+     * The Eclipse atlatl is a tick slower against players unless the full Eclipse set is worn.
+     */
+    public fun actualVsPlayer(player: Player): Int {
+        val speed = actual(player)
+        val slowed =
+            EquipmentChecks.isEclipseAtlatl(player.righthand) &&
+                !MoonSet.Eclipse.wearsSetEffect(player)
+        return if (slowed) speed + 1 else speed
     }
 
     // Avoids needing the [AttackStyle] dependency when calling `actual` unless explicitly required.

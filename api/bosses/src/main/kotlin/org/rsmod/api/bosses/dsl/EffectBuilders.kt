@@ -208,6 +208,17 @@ fun addVarn(varn: String, delta: Int, max: Int? = null): Effect {
     return Effect.SetVarn(varn, if (max != null) sum atMost max else sum)
 }
 
+/** The current target's [varbit], for use in a [VarExpr]. */
+fun playerVar(varbit: String): VarExpr = VarExpr.PlayerVar(varbit)
+
+fun setPlayerVar(varbit: String, value: Int): Effect = Effect.SetPlayerVar(varbit, VarExpr.Const(value))
+
+fun setPlayerVar(varbit: String, value: VarExpr): Effect = Effect.SetPlayerVar(varbit, value)
+
+/** Adds [delta] to the target's [varbit], clamped to [min]..[max]. */
+fun addPlayerVar(varbit: String, delta: Int, min: Int = 0, max: Int = Int.MAX_VALUE): Effect =
+    Effect.SetPlayerVar(varbit, ((playerVar(varbit) + delta) atMost max) atLeast min)
+
 fun switch(varn: String, vararg cases: Pair<Int, Effect>, otherwise: Effect = Effect.NoOp): Effect =
     Effect.Switch(varn, cases.toMap(), otherwise)
 
@@ -231,6 +242,10 @@ fun clearHeadIcon(slot: Int): Effect = Effect.ClearHeadIcon(slot)
 fun lockMovement(): Effect = Effect.LockMovement(true)
 
 fun unlockMovement(): Effect = Effect.LockMovement(false)
+
+fun invulnerable(): Effect = Effect.Invulnerable(true)
+
+fun vulnerable(): Effect = Effect.Invulnerable(false)
 
 fun healSelf(amount: Int): Effect = Effect.HealSelf(amount)
 
@@ -285,8 +300,17 @@ fun hitDamageAtLeast(damage: Int): Condition = Condition.HitDamageAtLeast(damage
 fun after(ticks: Int, effect: Effect, requireAlive: Boolean = true): Effect =
     Effect.After(ticks, effect, requireAlive)
 
-fun spawnLoc(loc: String, at: TargetExpr.Single, angle: Int = 0, blockPlayersOnly: Boolean = false): Effect =
-    Effect.SpawnLoc(loc, at, angle, blockPlayersOnly)
+fun spawnLoc(
+    loc: String,
+    at: TargetExpr.Single,
+    angle: Int = 0,
+    blockPlayersOnly: Boolean = false,
+    onStand: Effect? = null,
+): Effect = Effect.SpawnLoc(loc, at, angle, blockPlayersOnly, onStand)
+
+fun removeLoc(at: TargetExpr.Single): Effect = Effect.RemoveLoc(at)
+
+fun locAnim(at: TargetExpr.Single, anim: String): Effect = Effect.LocAnim(at, anim)
 
 fun knockback(anim: String, within: Area): Effect = Effect.Knockback(anim, within)
 

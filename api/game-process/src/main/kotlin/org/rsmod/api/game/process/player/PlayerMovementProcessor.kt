@@ -56,6 +56,10 @@ constructor(
     }
 
     private fun Player.processMoveSpeed() {
+        if (bound) {
+            faceRouteEnd()
+            return
+        }
         if (routeDestination.isEmpty() || !canProcessMovement || isFrozen) {
             return
         }
@@ -72,6 +76,14 @@ constructor(
         if (forceWalk) {
             moveSpeed = MoveSpeed.Walk
         }
+    }
+
+    private fun Player.faceRouteEnd() {
+        val end = routeDestination.lastOrNull() ?: return
+        routeDestination.clear()
+        clearMapFlag()
+        boundFacing = end
+        faceSquare(end)
     }
 
     private fun Player.move(steps: Int) {

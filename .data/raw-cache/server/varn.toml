@@ -312,3 +312,6 @@ id = "varn.araxxor_spawn_tick"
 
 [[varn]]
 id = "varn.araxxor_engage_at"
+
+[[varn]]
+id = "varn.burn_stacks"

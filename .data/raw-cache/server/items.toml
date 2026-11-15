@@ -23518,7 +23518,7 @@ tradeable = false
 [[item]]
 id = "obj.frostmoon_spear"
 inherit = "obj.frostmoon_spear"
-weaponCategory="BladedStaff"
+weaponCategory="Spellblade"
 [item.params]
 "param.bas_walk_l"="seq.human_zamorakspear_walkleft"
 "param.bas_walk_r"="seq.human_zamorakspear_walkright"
@@ -23562,12 +23562,13 @@ id = "obj.eclipse_atlatl"
 inherit = "obj.eclipse_atlatl"
 weaponCategory="Bow"
 [item.params]
+"param.required_ammo"="category.atlatl_dart"
 "param.bas_walk_l"="seq.human_halberdwalk_l"
 "param.proj_type"="projanim.arrow"
 "param.bas_walk_r"="seq.human_halberdwalk_r"
 "param.bas_running"="seq.human_halberdrunning"
 "param.equipment_sound"=2247
-"param.attack_range"=5
+"param.attack_range"=6
 "param.attack_anim_stance1"="seq.human_atlatl_attack_ranged_01"
 "param.attack_sound_stance1"=2699
 "param.attack_anim_stance2"="seq.human_atlatl_attack_ranged_01"
@@ -23624,7 +23625,7 @@ weaponCategory="Polearm"
 [[item]]
 id = "obj.br_frostmoon_spear"
 inherit = "obj.br_frostmoon_spear"
-weaponCategory="BladedStaff"
+weaponCategory="Spellblade"
 tradeable = false
 [item.params]
 "param.bas_walk_l"="seq.human_zamorakspear_walkleft"
@@ -23653,12 +23654,13 @@ inherit = "obj.br_eclipse_atlatl"
 weaponCategory="Bow"
 tradeable = false
 [item.params]
+"param.required_ammo"="category.atlatl_dart"
 "param.bas_walk_l"="seq.human_halberdwalk_l"
 "param.proj_type"="projanim.arrow"
 "param.bas_walk_r"="seq.human_halberdwalk_r"
 "param.bas_running"="seq.human_halberdrunning"
 "param.equipment_sound"=2247
-"param.attack_range"=5
+"param.attack_range"=6
 "param.attack_anim_stance1"="seq.human_atlatl_attack_ranged_01"
 "param.attack_sound_stance1"=2699
 "param.attack_anim_stance2"="seq.human_atlatl_attack_ranged_01"
@@ -35494,6 +35496,7 @@ tradeable = false
 id = "obj.atlatl_dart"
 inherit = "obj.atlatl_dart"
 [item.params]
+"param.proj_travel"="spotanim.vfx_atlatl_projectile_01"
 "param.equipment_sound"=2244
 
 
@@ -50376,6 +50379,7 @@ inherit = "obj.br_atlatl_dart"
 weaponCategory="Bow"
 tradeable = false
 [item.params]
+"param.proj_travel"="spotanim.vfx_atlatl_projectile_01"
 "param.proj_type"="projanim.arrow"
 "param.attack_range"=5
 

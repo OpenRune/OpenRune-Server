@@ -12,6 +12,7 @@ dependencies {
     implementation(projects.api.attr)
     implementation(projects.api.config)
     implementation(projects.api.market)
+    implementation(projects.api.mechanics.burn)
     implementation(projects.api.mechanics.toxins)
     implementation(projects.api.npc)
     implementation(projects.api.player)
