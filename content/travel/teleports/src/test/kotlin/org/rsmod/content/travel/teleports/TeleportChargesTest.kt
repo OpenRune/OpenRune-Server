@@ -108,6 +108,73 @@ class TeleportChargesTest {
         assertEquals(0, f.player.inv.count(SCROLL))
     }
 
+    @Test
+    fun `adding a memoirs page takes that page once and adds its charges`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj(MEMOIRS)
+        f.player.inv[1] = InvObj(HOS_PAGE)
+        f.player.inv[2] = InvObj(HOS_PAGE)
+        assertTrue(f.run { with(Memoirs) { addPage(Memoirs.PAGES[0], MEMOIRS, 1) } })
+        assertNull(f.player.inv[1])
+        assertEquals(Memoirs.CHARGES_PER_PAGE, f.charges())
+        assertFalse(f.run { with(Memoirs) { addPage(Memoirs.PAGES[0], MEMOIRS, 2) } })
+        assertTrue(f.player.inv[2].isType(HOS_PAGE))
+        assertEquals(Memoirs.CHARGES_PER_PAGE, f.charges())
+    }
+
+    @Test
+    fun `a page that left its slot is not added`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj(MEMOIRS)
+        f.player.inv[3] = InvObj("obj.coins", 5)
+        assertFalse(f.run { with(Memoirs) { addPage(Memoirs.PAGES[1], MEMOIRS, 3) } })
+        assertEquals(5, f.player.inv.count("obj.coins"))
+        assertEquals(0, f.charges())
+        assertFalse(f.run { with(Memoirs) { addPage(Memoirs.PAGES[1], MEMOIRS, 4) } })
+        assertEquals(0, f.charges())
+    }
+
+    @Test
+    fun `recharging takes one of each rune per charge up to the page cap`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj(MEMOIRS)
+        f.player.inv[1] = InvObj(HOS_PAGE)
+        f.run { with(Memoirs) { addPage(Memoirs.PAGES[0], MEMOIRS, 1) } }
+        f.vars(5)
+        Memoirs.RUNES.forEachIndexed { i, rune -> f.player.inv[2 + i] = InvObj(rune, 100) }
+        f.player.inv[2] = InvObj(Memoirs.RUNES[0], 8)
+        assertEquals(8, f.run { with(Memoirs) { recharge(MEMOIRS) } })
+        assertEquals(13, f.charges())
+        assertEquals(0, f.player.inv.count(Memoirs.RUNES[0]))
+        for (rune in Memoirs.RUNES.drop(1)) {
+            assertEquals(92, f.player.inv.count(rune))
+        }
+
+        f.player.inv[2] = InvObj(Memoirs.RUNES[0], 100)
+        assertEquals(7, f.run { with(Memoirs) { recharge(MEMOIRS) } })
+        assertEquals(Memoirs.CHARGES_PER_PAGE, f.charges())
+        assertEquals(93, f.player.inv.count(Memoirs.RUNES[0]))
+        assertEquals(-1, f.run { with(Memoirs) { recharge(MEMOIRS) } })
+        assertEquals(93, f.player.inv.count(Memoirs.RUNES[0]))
+    }
+
+    @Test
+    fun `recharging with a rune missing takes nothing`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj(MEMOIRS)
+        f.player.inv[1] = InvObj(HOS_PAGE)
+        f.run { with(Memoirs) { addPage(Memoirs.PAGES[0], MEMOIRS, 1) } }
+        f.vars(0)
+        Memoirs.RUNES.dropLast(1).forEachIndexed { i, rune ->
+            f.player.inv[2 + i] = InvObj(rune, 50)
+        }
+        assertEquals(0, f.run { with(Memoirs) { recharge(MEMOIRS) } })
+        assertEquals(0, f.charges())
+        for (rune in Memoirs.RUNES.dropLast(1)) {
+            assertEquals(50, f.player.inv.count(rune))
+        }
+    }
+
     private class Fixture {
         private val coroutine = GameCoroutine("teleport-charges-test")
         private val context =
@@ -177,6 +244,7 @@ class TeleportChargesTest {
         private const val MEMOIRS = "obj.veos_kharedsts_memoirs"
         private const val CHARGES = "varbit.veos_memoir_charges"
         private const val SCROLL = "obj.teleportscroll_zulandra"
+        private const val HOS_PAGE = "obj.veos_memoirs_hos_page"
         private val restored = mutableListOf<() -> Unit>()
 
         private fun invType(name: String) =

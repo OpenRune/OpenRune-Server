@@ -26,6 +26,28 @@ constructor(
             val name = RSCM.getReverseMapping(RSCMType.OBJ, scroll.id)
             onOpHeld1(name) { read(name, it.slot, dest) }
         }
+        onOpHeld1(REVENANT_SCROLL) { readRevenant(it.slot) }
+    }
+
+    /** The Revenant cave scroll lets the player pick one of the caves' three entrances. */
+    private suspend fun ProtectedAccess.readRevenant(slot: Int) {
+        val entrances = TeleportNetworks.of(REVENANT_NETWORK)
+        val labels = entrances.map { it.name } + CANCEL
+        val entrance = entrances.getOrNull(menu(REVENANT_TITLE, hotkeys = true, choices = labels))
+        if (entrance == null) {
+            return
+        }
+        val confirmed =
+            choice2(
+                "Yes, teleport me into the Wilderness.",
+                true,
+                "No, I will stay here.",
+                false,
+                title = "The ${entrance.name} is in the Wilderness. Teleport anyway?",
+            )
+        if (confirmed) {
+            read(REVENANT_SCROLL, slot, entrance.coords)
+        }
     }
 
     private suspend fun ProtectedAccess.read(scroll: String, slot: Int, dest: CoordGrid) {
@@ -53,6 +75,10 @@ constructor(
         private const val READ_ANIM = "seq.teleport_scroll_open"
         private const val READ_SPOTANIM = "spotanim.telescroll_teleport"
         private const val CAST_TICKS = 3
+        private const val REVENANT_SCROLL = "obj.teleportscroll_revenants"
+        private const val REVENANT_NETWORK = "revenant_cave"
+        private const val REVENANT_TITLE = "Which entrance of the Revenant Caves?"
+        private const val CANCEL = "Cancel"
     }
 }
 

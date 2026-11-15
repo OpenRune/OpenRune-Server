@@ -6,6 +6,8 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpLoc1
@@ -26,9 +28,10 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
  * `wilderness_obelisk` rows of `teleport_destination`.
  *
  * Touching a pillar lights all four. A few ticks later everyone standing on the pad is sent to the
- * same spot on another obelisk's pad: a random one for `Activate`, or the one picked from the list
- * for `Teleport to Destination` and `Set Destination`. The countdown runs on the world queue, so
- * the player who touched the pillar is free to step onto the pad meanwhile.
+ * same spot on another obelisk's pad: a random one for `Activate`, or the one saved in
+ * `varbit.wilderness_portal_choice` for `Teleport to Destination`. `Set Destination` only saves
+ * that choice. Both of those need the Hard Wilderness Diary reward, as in OSRS. The countdown runs
+ * on the world queue, so the player who touched the pillar is free to step onto the pad meanwhile.
  */
 class WildernessObeliskScript
 @Inject
@@ -41,6 +44,8 @@ constructor(
 ) : PluginScript() {
     private val obelisks: List<TeleportDestination> by lazy { TeleportNetworks.of(NETWORK) }
     private val active = mutableSetOf<Int>()
+    private val Player.hasHardDiary by boolVarBit("varbit.wilderness_hard_reward")
+    private var Player.savedDestination by intVarBit("varbit.wilderness_portal_choice")
     private val pillarIds: Set<Int> by lazy { PILLARS.map { it.asRSCM(RSCMType.LOC) }.toSet() }
     private val glowing: ObjectServerType by lazy {
         ServerCacheManager.getObject(GLOWING.asRSCM(RSCMType.LOC)) ?: error("Missing $GLOWING")
@@ -49,19 +54,49 @@ constructor(
     override fun ScriptContext.startup() {
         for (pillar in PILLARS) {
             onOpLoc1(pillar) { activate(it.loc, destination = null) }
-            onOpLoc2(pillar) { chooseAndActivate(it.loc) }
-            onOpLoc3(pillar) { chooseAndActivate(it.loc) }
+            onOpLoc2(pillar) { teleportToDestination(it.loc) }
+            onOpLoc3(pillar) { setDestination(it.loc) }
         }
     }
 
-    private suspend fun ProtectedAccess.chooseAndActivate(pillar: BoundLocInfo) {
-        val from = obeliskAt(pillar.coords) ?: return
-        val choices = obelisks.indices.filter { it != from }
-        val labels = choices.map { obelisks[it].name } + CANCEL
+    private suspend fun ProtectedAccess.setDestination(pillar: BoundLocInfo) {
+        if (!checkHardDiary() || obeliskAt(pillar.coords) == null) {
+            return
+        }
+        val labels = obelisks.map { it.name } + CANCEL
         val picked = menu(MENU_TITLE, hotkeys = true, choices = labels)
-        val destination = choices.getOrNull(picked) ?: return
-        ifClose()
+        val destination = obelisks.getOrNull(picked) ?: return
+        player.savedDestination = picked + 1
+        // UNVERIFIED: confirmation wording
+        mes("The obelisks will now send you to ${destination.name}.")
+    }
+
+    private fun ProtectedAccess.teleportToDestination(pillar: BoundLocInfo) {
+        if (!checkHardDiary()) {
+            return
+        }
+        val from = obeliskAt(pillar.coords) ?: return
+        val destination = player.savedDestination - 1
+        if (destination !in obelisks.indices) {
+            // UNVERIFIED: wording when no destination has been set
+            mes("You need to set a destination for the obelisks first.")
+            return
+        }
+        if (destination == from) {
+            // UNVERIFIED: wording when the saved destination is this obelisk
+            mes("The obelisk you are standing at is already set as your destination.")
+            return
+        }
         activate(pillar, destination)
+    }
+
+    private fun ProtectedAccess.checkHardDiary(): Boolean {
+        if (player.hasHardDiary) {
+            return true
+        }
+        // UNVERIFIED: wording for players without the Hard Wilderness Diary reward
+        mes("You need to complete the Hard Wilderness Diary to choose an obelisk's destination.")
+        return false
     }
 
     private fun ProtectedAccess.activate(pillar: BoundLocInfo, destination: Int?) {

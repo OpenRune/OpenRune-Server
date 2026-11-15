@@ -16,9 +16,10 @@ import org.rsmod.plugin.scripts.ScriptContext
 /**
  * The gnome glider network. Its stops are the `glider` rows of `teleport_destination`, numbered
  * the way the cache numbers them: `varp.pilot_journey` holds the trip as a coord whose x is the
- * origin and z the destination (0 written as 9, 6 as 8), which `glidermap_fly` reads to animate
- * the glider across the map, and `varbit.pilot_previous_destination` picks which form each pilot
- * shows.
+ * origin and z the destination, which `glidermap_fly` reads to animate the glider across the map,
+ * and `varbit.pilot_previous_destination` picks which form each pilot shows. The fade, teleport
+ * and landing follow a live capture: the screen fades the tick the stop is picked, the player
+ * moves a tick later and the fade lifts two ticks after that.
  *
  * Every pilot form with a `Glider` op opens the map. Each stop needs the quests on its
  * `teleport_destination` row; the Feldip Hills and Ape Atoll buttons are shown once One Small
@@ -77,19 +78,19 @@ class GliderScript : PluginScript() {
         if (actionDelay > mapClock) {
             return
         }
-        actionDelay = mapClock + FLIGHT_TICKS + FADE_TICKS
-        vars[JOURNEY] = CoordGrid(journeyIndex(origin), journeyIndex(destination), 0).packed
-        delay(FLIGHT_TICKS)
-        fadeOverlay(0, 255, 0, 0, FADE_CYCLES)
-        delay(FADE_TICKS)
-        ifClose()
-        vars[JOURNEY] = NO_JOURNEY
-        player.previousDestination = destination
-        player.followQuestPilots()
+        actionDelay = mapClock + FLIGHT_TICKS
+        vars[JOURNEY] = CoordGrid(origin, destination, 0).packed
+        fadeOverlay(FADE_COLOUR, 255, FADE_COLOUR, 0, FADE_CYCLES)
+        delay(TELEPORT_TICKS)
         telejump(stops[destination].coords)
-        fadeOverlay(0, 0, 0, 255, FADE_CYCLES)
-        closeFadeOverlay(cycles = FADE_TICKS)
-        mes("You arrive at ${stops[destination].name}.")
+        delay(LANDED_TICKS)
+        player.previousDestination = destination
+        fadeOverlay(FADE_COLOUR, 0, FADE_COLOUR, 255, FADE_CYCLES)
+        delay(1)
+        vars[JOURNEY] = NO_JOURNEY
+        player.followQuestPilots()
+        ifClose()
+        closeFadeOverlay(cycles = 1)
     }
 
     /**
@@ -103,13 +104,6 @@ class GliderScript : PluginScript() {
         }
     }
 
-    private fun journeyIndex(stop: Int): Int =
-        when (stop) {
-            0 -> 9
-            6 -> 8
-            else -> stop
-        }
-
     private companion object {
         private const val NETWORK = "glider"
         private const val MAP = "interface.glidermap"
@@ -121,9 +115,11 @@ class GliderScript : PluginScript() {
         private const val MONKEY_MADNESS_II = "quest_monkeymadness2"
         private const val DIGSITE_PILOT = "npc.pilot_digsite"
         private const val NEARBY = 20
-        private const val FLIGHT_TICKS = 8
-        private const val FADE_TICKS = 2
-        private const val FADE_CYCLES = 50
+        private const val TELEPORT_TICKS = 1
+        private const val LANDED_TICKS = 2
+        private const val FLIGHT_TICKS = TELEPORT_TICKS + LANDED_TICKS + 1
+        private const val FADE_CYCLES = 20
+        private const val FADE_COLOUR = 1512708
 
         /** The map's buttons, in the same order as the network's stops. */
         private val BUTTONS =

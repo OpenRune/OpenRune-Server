@@ -44,7 +44,7 @@ class BoatRouteScript : PluginScript() {
             mes("Nothing sails from here.")
             return
         }
-        val open = here.filter { player.canReach(it.destination()) }
+        val open = here.filter { canReach(it.destination()) }
         if (open.isEmpty()) {
             checkReach(here.first().destination())
             return

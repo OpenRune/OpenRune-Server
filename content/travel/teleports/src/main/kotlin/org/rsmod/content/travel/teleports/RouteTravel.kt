@@ -58,7 +58,7 @@ object RouteTravel {
         depart: (String) -> String,
         travel: Travel,
     ) {
-        val open = choices.filter { player.canReach(stops[it]) }
+        val open = choices.filter { canReach(stops[it]) }
         if (open.isEmpty()) {
             choices.firstOrNull()?.let { checkReach(stops[it]) }
             return

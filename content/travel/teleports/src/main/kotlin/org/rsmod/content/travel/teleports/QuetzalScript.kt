@@ -3,8 +3,8 @@ package org.rsmod.content.travel.teleports
 import dev.openrune.definition.type.widget.IfEvent
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onIfModalButton
-import org.rsmod.api.script.onOpNpc1
-import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.script.onApNpc1
+import org.rsmod.api.script.onApNpc3
 import org.rsmod.api.table.QuetzalRow
 import org.rsmod.content.travel.teleports.TravelRequirements.checkQuest
 import org.rsmod.plugin.scripts.PluginScript
@@ -18,15 +18,18 @@ import org.rsmod.plugin.scripts.ScriptContext
  * `quetzal_menu:icons`, so an icon's subcomponent is its row's index. Each site's quetzal is a
  * multinpc on `varbit.quetzal_<site>`, which Twilight's Promise and building the site set. A site
  * can be flown to once it is `auto_unlocked` or its bit of `varp.quetzals_unlocked` is set, the
- * same test the menu uses to draw its lock.
+ * same test the menu uses to draw its lock. The quetzals sit in their nests, so they answer from
+ * [AP_RANGE] tiles away rather than making the player path beside them, and a flight follows a
+ * live capture: the screen fades as the menu closes, the minimap goes a tick later, the player
+ * lands on the fourth tick and the fade lifts on the fifth.
  */
 class QuetzalScript : PluginScript() {
     private val sites: List<QuetzalRow> by lazy { QuetzalRow.all() }
 
     override fun ScriptContext.startup() {
         for (bird in BIRDS) {
-            onOpNpc1(bird) { openMenu() }
-            onOpNpc3(bird) { lastDestination() }
+            onApNpc1(bird) { if (isWithinApRange(it.npc, AP_RANGE)) openMenu() }
+            onApNpc3(bird) { if (isWithinApRange(it.npc, AP_RANGE)) lastDestination() }
         }
         onIfModalButton(ICONS) { fly(it.comsub) }
     }
@@ -62,14 +65,17 @@ class QuetzalScript : PluginScript() {
             return
         }
         ifClose()
-        actionDelay = mapClock + FLIGHT_TICKS + 2
-        mes("You climb onto the quetzal and fly to ${site.name}.")
+        actionDelay = mapClock + MINIMAP_TICKS + FLIGHT_TICKS + LANDED_TICKS
+        vars[LAST_DESTINATION] = site.id
         fadeOverlay(0, 255, 0, 0, FADE_CYCLES)
+        delay(MINIMAP_TICKS)
+        minimapHideMap()
         delay(FLIGHT_TICKS)
         telejump(site.coord)
-        vars[LAST_DESTINATION] = site.id
+        delay(1)
+        minimapReset()
         fadeOverlay(0, 0, 0, 255, FADE_CYCLES)
-        closeFadeOverlay(cycles = 2)
+        closeFadeOverlay(cycles = LANDED_TICKS)
     }
 
     private fun ProtectedAccess.isUnlocked(site: QuetzalRow): Boolean =
@@ -84,7 +90,10 @@ class QuetzalScript : PluginScript() {
         private const val MAX_UNLOCK_BIT = 30
         private const val TWILIGHTS_PROMISE = "quest_twilightspromise"
         private const val NEARBY = 10
-        private const val FLIGHT_TICKS = 4
+        private const val AP_RANGE = 2
+        private const val MINIMAP_TICKS = 1
+        private const val FLIGHT_TICKS = 3
+        private const val LANDED_TICKS = 2
         private const val FADE_CYCLES = 50
 
         /** The rideable quetzal forms; each site's multinpc shows one once its site is built. */

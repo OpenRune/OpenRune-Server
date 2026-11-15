@@ -22,6 +22,7 @@ import org.rsmod.map.CoordGrid
  * Coordinates come from the OSRS wiki teleport tables. `quests` are quest keys a destination needs
  * completed and `quests_started` ones it needs at least started, checked through the server's quest
  * requirement policy; the requirements come from the wiki and the shortest-path transport lists.
+ * `unlock_varbit` is a player varbit that must be set first, such as a memoirs page.
  */
 object TeleportTables {
     const val DEST_NETWORK = 0
@@ -31,6 +32,7 @@ object TeleportTables {
     const val DEST_WILDERNESS = 4
     const val DEST_QUESTS = 5
     const val DEST_QUESTS_STARTED = 6
+    const val DEST_UNLOCK_VARBIT = 7
 
     const val ITEM_OBJS = 0
     const val ITEM_NETWORK = 1
@@ -51,6 +53,7 @@ object TeleportTables {
         val wilderness: Boolean = false,
         val quests: List<String> = emptyList(),
         val questsStarted: List<String> = emptyList(),
+        val unlockVarbit: String? = null,
     )
 
     class Item(
@@ -78,31 +81,31 @@ object TeleportTables {
                         "Lunch by the Lancalliums",
                         1713,
                         3612,
-                        quests = listOf("quest_depthsofdespair"),
+                        unlockVarbit = "varbit.hosidius_page",
                     ),
                     Destination(
                         "The Fisher's Flute",
                         1804,
                         3748,
-                        quests = listOf("quest_queenofthieves"),
+                        unlockVarbit = "varbit.piscarilius_page",
                     ),
                     Destination(
                         "History and Hearsay",
                         1478,
                         3576,
-                        quests = listOf("quest_taleoftherighteous"),
+                        unlockVarbit = "varbit.shayzien_page",
                     ),
                     Destination(
                         "Jewellery of Jubilation",
                         1545,
                         3761,
-                        quests = listOf("quest_forsakentower"),
+                        unlockVarbit = "varbit.lovakengj_page",
                     ),
                     Destination(
                         "A Dark Disposition",
                         1681,
                         3747,
-                        quests = listOf("quest_ascentofarceuus"),
+                        unlockVarbit = "varbit.arceuus_page",
                     ),
                 ),
             "drakans_medallion" to
@@ -149,6 +152,12 @@ object TeleportTables {
                 listOf(
                     Destination("Kourend Woodland", 1554, 3461),
                     Destination("Mount Karuulm", 1310, 3796),
+                ),
+            "revenant_cave" to
+                listOf(
+                    Destination("Level 17 entrance", 3073, 3653, wilderness = true),
+                    Destination("Level 26 entrance", 3067, 3739, wilderness = true),
+                    Destination("Level 40 entrance", 3128, 3832, wilderness = true),
                 ),
             "wilderness_obelisk" to
                 listOf(
@@ -199,7 +208,12 @@ object TeleportTables {
                         3503,
                         quests = listOf("quest_priestinperil"),
                     ),
-                    Destination("Shipyard", 3001, 3032, quests = listOf("quest_monkeymadness1")),
+                    Destination(
+                        "Karamja Shipyard",
+                        3001,
+                        3032,
+                        quests = listOf("quest_monkeymadness1"),
+                    ),
                     Destination("Port Tyras", 2142, 3122, quests = listOf("quest_regicide")),
                     Destination("Corsair Cove", 2589, 2851),
                     Destination("Prifddinas", 2157, 3330, quests = listOf("quest_songoftheelves")),
@@ -486,6 +500,7 @@ object TeleportTables {
             column("wilderness", DEST_WILDERNESS, VarType.BOOLEAN)
             column("quests", DEST_QUESTS, VarType.STRING)
             column("quests_started", DEST_QUESTS_STARTED, VarType.STRING)
+            column("unlock_varbit", DEST_UNLOCK_VARBIT, VarType.INT)
 
             for ((network, stops) in NETWORKS) {
                 stops.forEachIndexed { ordinal, stop ->
@@ -501,6 +516,7 @@ object TeleportTables {
                         if (stop.questsStarted.isNotEmpty()) {
                             column(DEST_QUESTS_STARTED, *stop.questsStarted.toTypedArray())
                         }
+                        stop.unlockVarbit?.let { columnRSCM(DEST_UNLOCK_VARBIT, it) }
                     }
                 }
             }

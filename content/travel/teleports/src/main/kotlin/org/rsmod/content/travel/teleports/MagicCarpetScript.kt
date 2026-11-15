@@ -3,6 +3,7 @@ package org.rsmod.content.travel.teleports
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.BasType
+import dev.openrune.types.aconverted.interf.IfSubType
 import kotlin.math.atan2
 import kotlin.math.roundToInt
 import org.rsmod.api.player.hook.TeleportType
@@ -69,6 +70,8 @@ class MagicCarpetScript : PluginScript() {
         val hops = maxOf(1, (start.chebyshevDistance(dest) + TILES_PER_HOP - 1) / TILES_PER_HOP)
         val facing = facing(dx, dz)
         try {
+            closeLockedTabs()
+            vars[HIDE_CARPETS] = 1
             player.bas = flyingBas
             anim(FLYING)
             for (hop in 1..hops) {
@@ -85,10 +88,25 @@ class MagicCarpetScript : PluginScript() {
             }
         } finally {
             player.bas = null
+            vars[HIDE_CARPETS] = 0
+            reopenLockedTabs()
         }
         anim(LAND)
         delay(LAND_TICKS)
         resetAnim()
+    }
+
+    /** As in a live capture, these tabs close while the carpet flies; friends, account, music stay. */
+    private fun ProtectedAccess.closeLockedTabs() {
+        for ((interf, _) in LOCKED_TABS) {
+            ifCloseSub(interf)
+        }
+    }
+
+    private fun ProtectedAccess.reopenLockedTabs() {
+        for ((interf, target) in LOCKED_TABS) {
+            ifOpenSub(interf, target, IfSubType.Overlay)
+        }
     }
 
     /** Client facing: 0 south, 512 west, 1024 north, 1536 east. */
@@ -110,5 +128,19 @@ class MagicCarpetScript : PluginScript() {
         private const val TILES_PER_HOP = 3
         private const val HOP_CYCLES = 30
         private const val FULL_TURN = 2048
+        private const val HIDE_CARPETS = "varbit.magic_carpet_hidecarpets"
+
+        private val LOCKED_TABS =
+            listOf(
+                "interface.combat_interface" to "component.toplevel_osrs_stretch:side0",
+                "interface.stats" to "component.toplevel_osrs_stretch:side1",
+                "interface.side_journal" to "component.toplevel_osrs_stretch:side2",
+                "interface.inventory" to "component.toplevel_osrs_stretch:side3",
+                "interface.wornitems" to "component.toplevel_osrs_stretch:side4",
+                "interface.prayerbook" to "component.toplevel_osrs_stretch:side5",
+                "interface.magic_spellbook" to "component.toplevel_osrs_stretch:side6",
+                "interface.settings_side" to "component.toplevel_osrs_stretch:side11",
+                "interface.emote" to "component.toplevel_osrs_stretch:side12",
+            )
     }
 }

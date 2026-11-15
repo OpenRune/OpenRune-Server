@@ -3,19 +3,20 @@ package org.rsmod.content.travel.teleports
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.table.QuestRow
 import org.rsmod.content.quest.manager.QuestRequirements
-import org.rsmod.game.entity.Player
 
 /**
  * Quest gates on travel. Each check goes through [QuestRequirements], so it follows the server's
  * quest requirement policy: `assume-completed` lets everything through, `respect-progress` reads
- * the player's real quest state.
+ * the player's real quest state. A destination's unlock varbit (a memoirs page) must be set too.
  */
 object TravelRequirements {
-    fun Player.canReach(destination: TeleportDestination): Boolean =
-        destination.quests.all { QuestRequirements.hasCompleted(this, it) } &&
+    fun ProtectedAccess.canReach(destination: TeleportDestination): Boolean =
+        destination.quests.all { QuestRequirements.hasCompleted(player, it) } &&
             destination.questsStarted.all {
-                QuestRequirements.hasCompleted(this, it) || QuestRequirements.isOnQuest(this, it)
-            }
+                QuestRequirements.hasCompleted(player, it) ||
+                    QuestRequirements.isOnQuest(player, it)
+            } &&
+            destination.unlockVarbit.let { it == null || vars[it] != 0 }
 
     /** Tells the player which quest stands in the way and returns `false` when one does. */
     fun ProtectedAccess.checkReach(destination: TeleportDestination): Boolean {
@@ -32,6 +33,12 @@ object TravelRequirements {
             }
         if (unstarted != null) {
             mes("You need to have started ${unstarted.questName()} to travel there.")
+            return false
+        }
+        val unlock = destination.unlockVarbit
+        if (unlock != null && vars[unlock] == 0) {
+            // UNVERIFIED: wording for a memoirs page that has not been added
+            mes("You need to add the page for ${destination.name} to your book first.")
             return false
         }
         return true

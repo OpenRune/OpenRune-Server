@@ -14,6 +14,7 @@ data class TeleportDestination(
     val wilderness: Boolean,
     val quests: List<String> = emptyList(),
     val questsStarted: List<String> = emptyList(),
+    val unlockVarbit: String? = null,
 )
 
 /**
@@ -100,6 +101,10 @@ object TeleportNetworks {
                         it.wilderness,
                         quests = it.quests,
                         questsStarted = listOfNotNull(it.questsStarted),
+                        unlockVarbit =
+                            it.unlockVarbit?.let { id ->
+                                RSCM.getReverseMapping(RSCMType.VARBIT, id)
+                            },
                     )
                 }
             }

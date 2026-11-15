@@ -1,10 +1,12 @@
 package org.rsmod.content.travel.teleports
 
 import jakarta.inject.Inject
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onGameStartup
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
+import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.travel.teleports.RouteTravel.travelAnywhere
 import org.rsmod.content.travel.teleports.RouteTravel.travelFromHub
 import org.rsmod.game.loc.LocAngle
@@ -31,8 +33,9 @@ class MinecartScript @Inject constructor(private val locRepo: LocRepository) : P
                 locRepo.add(tile, KELDAGRIM_CART, Int.MAX_VALUE, LocAngle.West, shape)
             }
         }
-        onOpLoc1(KOUREND_CART) {
-            travelAnywhere(kourend, KOUREND_TITLE) { "You ride the minecart to $it." }
+        onOpLoc1(KOUREND_CART) { rideKourend() }
+        for (dwarf in KOUREND_DWARVES) {
+            onOpNpc3(dwarf) { rideKourend() }
         }
         for (cart in KELDAGRIM_CARTS) {
             onOpLoc1(cart) { travelFromHub(keldagrim, TRAIN_TITLE) { "You ride the cart to $it." } }
@@ -42,6 +45,9 @@ class MinecartScript @Inject constructor(private val locRepo: LocRepository) : P
         }
     }
 
+    private suspend fun ProtectedAccess.rideKourend() =
+        travelAnywhere(kourend, KOUREND_TITLE) { "You ride the minecart to $it." }
+
     private companion object {
         private const val KOUREND = "lovakengj_minecart"
         private const val KELDAGRIM = "keldagrim_cart"
@@ -49,6 +55,23 @@ class MinecartScript @Inject constructor(private val locRepo: LocRepository) : P
         private const val GE_TRAPDOOR = "loc.ge_keldagrim_trapdoor"
         private const val KOUREND_TITLE = "Where would you like to travel to?"
         private const val TRAIN_TITLE = "Where would you like to go?"
+
+        /** The dwarf who runs each Lovakengj station; their `Travel` op works like the cart. */
+        private val KOUREND_DWARVES =
+            listOf(
+                "npc.lovakengj_minecart_lovakengj",
+                "npc.lovakengj_minecart_hosidius",
+                "npc.lovakengj_minecart_piscarilius",
+                "npc.lovakengj_minecart_shayzien",
+                "npc.lovakengj_minecart_arceuus",
+                "npc.lovakengj_minecart_quidamortem",
+                "npc.lovakengj_minecart_farming_guild",
+                "npc.lovakengj_minecart_tithe_farm",
+                "npc.lovakengj_minecart_kingstown",
+                "npc.lovakengj_minecart_kourend_woodland",
+                "npc.lovakengj_minecart_northern_tundras",
+                "npc.lovakengj_minecart_shayzien_wall",
+            )
 
         private const val KELDAGRIM_CART = "loc.keldagrim_train_cart"
 

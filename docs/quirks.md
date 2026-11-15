@@ -150,9 +150,8 @@ Destinations live in the `teleport_destination` dbtable and the items that use t
 spirit trees and fairy rings are their own modules. Known differences from OSRS:
 
 - Quest requirements sit on the destination and route rows (`quests`, `quests_started`) and go
-  through the quest requirement policy, so `assume-completed` opens them all. Diary and item
-  unlocks (Slepe's Slepey tablet, memoir pages) are not checked; memoir destinations ask for the
-  quest that gives each page instead.
+  through the quest requirement policy, so `assume-completed` opens them all. An `unlock_varbit`
+  (a memoirs page) must be set too. Slepe's Slepey tablet unlock is not checked.
 - A destination whose map region is missing tells the player so instead of teleporting, and no
   charge is spent.
 - All items use the standard jewellery teleport animation; the ectophial and seed pods do not play
@@ -161,39 +160,48 @@ spirit trees and fairy rings are their own modules. Known differences from OSRS:
   Fremennik sea boots, Kandarin headgear, wilderness sword, western banner, Explorer's ring, Rada's
   blessing) teleport without their daily limits. Tiers that cannot teleport in OSRS (desert amulet
   1, western banner 1 and 2, and so on) still cannot.
-- Kharedst's memoirs and the Book of the Dead spend `veos_memoir_charges`, but recharging at the
-  Old Memorial and adding pages are not implemented.
-- Memoir charges sit in a player varbit, so every copy a player owns shares one pool.
+- Kharedst's memoirs and the Book of the Dead spend `veos_memoir_charges`, shared by every copy a
+  player owns. Using a torn page on the book sets its `*_page` varbit, unlocks that Reminisce
+  destination and adds 20 charges (the cap is 20 per page, 250 for the Book of the Dead). The Old
+  Memorial fills the book as far as the runes in the inventory allow, one law, body, mind and soul
+  rune and 10 Magic xp per charge, without asking how many; runes in a rune pouch are not used. The
+  secret page is not implemented.
 - The camulet has unlimited charges, as if Lazim had upgraded it, and both destinations are open.
   The grand seed pod is used up by `Squash`; its `Launch` op is not implemented.
 
-Wilderness obelisks use the `wilderness_obelisk` rows. `Set Destination` and `Teleport to
-Destination` need no Wilderness diary and do not remember a choice: both open the list and send
-the pad straight to the picked obelisk.
+Wilderness obelisks use the `wilderness_obelisk` rows. `Activate` sends the pad to a random
+obelisk. `Set Destination` saves a choice in `varbit.wilderness_portal_choice` and `Teleport to
+Destination` sends the pad there; both need the Hard Wilderness Diary reward, which no content
+grants yet. Riders get a spot animation rather than live's graphic on each pad tile.
 
-Gnome gliders use the `glider` rows: every stop needs The Grand Tree, Feldip Hills One Small Favour
+Gnome gliders use the `glider` rows, with live's timing: the screen fades as the stop is picked,
+the player moves a tick later and the fade lifts two ticks after that. Every stop needs The Grand
+Tree, Feldip Hills One Small Favour
 and Ape Atoll Monkey Madness II, and pilots skip their dialogue. The Feldip and Ape Atoll pilots
 only show their glider forms once those quests set `varbit.pilot_multinpc_var`, which no
 implemented quest does yet. Captain Errdo's `Talk-to` at the Digsite opens the map, so Lemanto
 Andra is two-way here (it is arrival-only in OSRS).
 
-Charter ships use the `charter` rows; a port whose quest is not done is left off the list. They
-are free, open from a plain list rather than the Sailing-era charter map, and land on the dock
-instead of the ship's deck (gangplanks are not usable yet). Tempestus, Crandor and Barracuda HQ
-from Jagex's `chartering_destinations` are not stops.
+Charter ships open live's sea map (`sailing_menu`) and port list (`chartering_menu_side`), drawn
+from Jagex's `chartering_destinations`; the client hides the ports it rules out, and the server
+checks the quests on the matching `charter` row. Charters are free, so the fare question becomes
+"Sail to X?", and they land on the dock instead of the ship's deck (gangplanks are not usable
+yet). Tempestus, Crandor and Barracuda HQ have no `charter` row and are refused.
 
 Quetzals read Jagex's own `dbtable.quetzal` and need Twilight's Promise. A site can be flown to
 when it is `auto_unlocked` or its `quetzals_unlocked` bit is set, but building landing sites is not
 implemented, and each quetzal only appears once its `quetzal_<site>` varbit is set by that quest or
-a build, so none show yet. Flights are a fade rather than the flying cutscene.
+a build, so none show yet. A quetzal answers from two tiles away, so the player need not reach its
+nest, and flights are a fade with live's timing rather than the flying cutscene.
 
 Teleport scrolls land on the tiles in `enum.teleport_scroll_destinations` (the wiki's map squares,
-all ground level) and need no unlocks; the Revenant cave scroll, which offers three Wilderness
-entrances, is not handled yet.
+all ground level) and need no unlocks. The Revenant cave scroll offers the three entrances in the
+`revenant_cave` rows and asks before entering the Wilderness; its `Config` op is not implemented.
 
 Magic carpets use the `carpet_shantay` and `carpet_pollnivneach` rows (hub first). Uzer needs The
 Golem, and Sophanem and Menaphos Icthlarin's Little Helper. Rides are free and fly a straight line
-at 3 tiles a tick with no banking turns or sound.
+at 3 tiles a tick with no banking turns or sound; as on live, the combat, stats, journal,
+inventory, equipment, prayer, magic, settings and emote tabs close until landing.
 
 Minecarts use the `lovakengj_minecart` rows (any station to any other, free without The Forsaken
 Tower) and the `keldagrim_cart` rows (Keldagrim first; the Grand Exchange trapdoor and the Ice
