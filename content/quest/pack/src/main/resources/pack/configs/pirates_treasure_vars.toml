@@ -59,3 +59,10 @@ id = "varbit.pirates_treasure_gardener"
 varp = "varp.pirates_treasure_state"
 startBit = 9
 endBit = 9
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.pirates_treasure_rum_retrieved"
+varp = "varp.pirates_treasure_state"
+startBit = 10
+endBit = 10

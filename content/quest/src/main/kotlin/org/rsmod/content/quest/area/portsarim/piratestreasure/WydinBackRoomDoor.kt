@@ -93,6 +93,6 @@ constructor(
             "Hey, you can't go in there. Only employees of the grocery store can go in."
         const val DOOR_OPEN_SOUND = "synth.door_open"
         const val INVISIBLE_WALL = "loc.inviswall"
-        const val DOOR_TICKS = 2
+        const val DOOR_TICKS = 3
     }
 }

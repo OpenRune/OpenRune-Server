@@ -32,6 +32,7 @@ constructor(
     private var Player.crateBananas by intVarBit("varbit.pirates_treasure_crate_bananas")
     private var Player.crateRum by intVarBit("varbit.pirates_treasure_crate_rum")
     private var Player.wydinRum by intVarBit("varbit.pirates_treasure_wydin_rum")
+    private var Player.rumRetrieved by intVarBit("varbit.pirates_treasure_rum_retrieved")
     private var Player.wydinJob by intVarBit("varbit.pirates_treasure_wydin_job")
 
     override fun ScriptContext.startup() {
@@ -171,6 +172,13 @@ constructor(
 
     private fun ProtectedAccess.searchBananaCrate() {
         val bananas = player.crateBananas
+        if (bananas == 0 && player.crateRum == 1) {
+            mes(
+                "There is some rum in here, although with no bananas to cover it. It is a " +
+                    "little obvious."
+            )
+            return
+        }
         when {
             bananas >= CRATE_CAPACITY -> mes("The crate is full of bananas.")
             bananas == 0 -> mes("The crate is completely empty.")
@@ -241,8 +249,12 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.stashRumInCrate() {
-        if (quest.stage(player) != STAGE_STARTED || player.wydinRum == 1) {
+        if (quest.stage(player) != STAGE_STARTED) {
             mes(NO_REASON)
+            return
+        }
+        if (player.wydinRum == 1) {
+            mes("There is already some rum in Wydin's store, I should go and get that first.")
             return
         }
         if (player.luthasJob == 0) {
@@ -287,6 +299,7 @@ constructor(
             return false
         }
         player.crateRum = 1
+        player.rumRetrieved = 0
         return true
     }
 
@@ -399,6 +412,7 @@ constructor(
             return false
         }
         player.wydinRum = 0
+        player.rumRetrieved = 1
         return true
     }
 

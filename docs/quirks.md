@@ -159,7 +159,9 @@ the Falador park gardener (rev 235) and Hector's chest (rev 232). Known differen
   Her "Pay-Fare" option with rum in the pack confiscates it and does not sail; how live OSRS
   handles that case is not documented.
 - The quest journal text is written from the quest's steps; no capture of the live journal
-  was available.
+  was available. The rum smuggling lines keep the phrases RuneLite's Quest Helper reads to
+  sync ("I need to go to", "I have taken employment", "I have hidden my", "the crate has been
+  shipped", "I have taken a job at", "I should take it to", "I seem to have lost it.").
 - Hector's chest uses up the key when it opens. The live drop trick that yields extra
   pirate messages is not reproduced: once opened, "Open" says the chest is locked, and only
   using a key on it during the key stage opens it again.

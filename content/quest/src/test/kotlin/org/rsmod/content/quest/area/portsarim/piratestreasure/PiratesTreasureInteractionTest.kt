@@ -39,8 +39,11 @@ import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureQue
 import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureQuest.Companion.LUTHAS_JOB
 import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureQuest.Companion.MESSAGE
 import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureQuest.Companion.RUM
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureQuest.Companion.RUM_RETRIEVED
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureQuest.Companion.WYDIN_JOB
 import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureQuest.Companion.WYDIN_RUM
 import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureSmuggling.Companion.BANANA
+import org.rsmod.content.quest.manager.journalLines
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -62,6 +65,39 @@ class PiratesTreasureInteractionTest {
     fun `the quest ends at stage four of the hunt varp`() {
         val f = Fixture(stage = 0)
         assertEquals(PiratesTreasureQuest.STAGE_COMPLETE, f.quest.quest.maxSteps)
+    }
+
+    @Test
+    fun `each rum smuggling state shows the journal line Quest Helper syncs from`() {
+        assertJournalHas("I need to go to") {}
+        assertJournalHas("I have taken employment") { employ() }
+        assertJournalHas("I have hidden my") {
+            employ()
+            set(CRATE_RUM, 1)
+        }
+        assertJournalHas("I have hidden my", "in the crate and filled it with") {
+            employ()
+            set(CRATE_RUM, 1)
+            set(CRATE_BANANAS, 10)
+        }
+        assertJournalHas("I have hidden my", "the crate has been shipped") { set(WYDIN_RUM, 1) }
+        assertJournalHas("the crate has been shipped", "I have taken a job at") {
+            set(WYDIN_RUM, 1)
+            set(WYDIN_JOB, 1)
+        }
+        assertJournalHas("I should take it to") { give(RUM to 1) }
+        assertJournalHas("I seem to have lost it.", "I need to go to") { set(RUM_RETRIEVED, 1) }
+    }
+
+    @Test
+    fun `taking the rum from Wydin's crate marks it retrieved until new rum is stashed`() {
+        val f = Fixture(stage = 1)
+        f.set(WYDIN_RUM, 1)
+        assertTrue(f.smuggling.takeRumFromGroceryCrate(f.access()))
+        assertEquals(1, f.player.vars[RUM_RETRIEVED])
+        f.employ()
+        assertTrue(f.smuggling.stashRum(f.access()))
+        assertEquals(0, f.player.vars[RUM_RETRIEVED])
     }
 
     @Test
@@ -362,6 +398,15 @@ class PiratesTreasureInteractionTest {
         assertEquals(1, f.player.inv.count(BANANA_RUM))
     }
 
+    private fun assertJournalHas(vararg phrases: String, setup: Fixture.() -> Unit) {
+        val f = Fixture(stage = 1)
+        f.setup()
+        val lines = journalLines(f.quest.questLog(f.access()))
+        for (phrase in phrases) {
+            assertTrue(lines.any { phrase in it }, "No journal line holds '$phrase': $lines")
+        }
+    }
+
     private class Fixture(stage: Int) {
         val events = EventBus()
         private val client = RecordingClient()
@@ -415,6 +460,8 @@ class PiratesTreasureInteractionTest {
         fun access() = ProtectedAccess(player, coroutine, context)
 
         fun employ() = VarPlayerIntMapSetter.set(player, LUTHAS_JOB, 1)
+
+        fun set(varbit: String, value: Int) = VarPlayerIntMapSetter.set(player, varbit, value)
 
         fun give(vararg objs: Pair<String, Int>) {
             for ((obj, count) in objs) {

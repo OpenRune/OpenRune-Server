@@ -3,12 +3,15 @@ package org.rsmod.content.quest.area.portsarim.piratestreasure
 import jakarta.inject.Inject
 import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcAttackValidateResult
+import org.rsmod.api.death.NpcDeathKillContext
+import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.npc.owner.assignSpawnOwner
 import org.rsmod.api.npc.owner.isSpawnOwnedBy
 import org.rsmod.api.npc.owner.isSpawnOwnedByOther
 import org.rsmod.api.player.hook.SpadeDigHook
+import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.repo.npc.NpcRepository
@@ -66,6 +69,7 @@ constructor(
         npcRepo.add(gardener, LIFESPAN)
         gardener.assignSpawnOwner(player, mapClock.cycle)
         gardener.say(SHOUT)
+        MiscOutput.hintArrowNpc(player, gardener.slotId)
         gardener.opPlayer2(player, aiPlayerInteractions)
     }
 
@@ -81,6 +85,7 @@ constructor(
                 owner.coords.level != gardener.coords.level ||
                 owner.coords.chebyshevDistance(gardener.coords) > LEASH
         if (away && gardener.isSlotAssigned) {
+            owner?.let(MiscOutput::hintArrowReset)
             npcRepo.del(gardener, Int.MAX_VALUE)
         }
     }
@@ -106,5 +111,14 @@ class PiratesTreasureGardenerAttackHook : NpcAttackValidateHook {
 
     private companion object {
         const val NOT_YOUR_TARGET_MESSAGE = "This is not your target."
+    }
+}
+
+class PiratesTreasureGardenerKillHook : NpcDeathKillHook {
+    override fun onKill(context: NpcDeathKillContext) {
+        val npc = context.npc
+        if (npc.isType(PiratesTreasureDig.GARDENER) && npc.isSpawnOwnedBy(context.hero)) {
+            MiscOutput.hintArrowReset(context.hero)
+        }
     }
 }

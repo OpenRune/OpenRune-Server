@@ -14,6 +14,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureSmuggling.Companion.CRATE_CAPACITY
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.QuestScript
@@ -58,8 +59,11 @@ class PiratesTreasureQuest @Inject constructor() :
             val p = player.player
             val stage = stage(p)
             if (stage == STAGE_STARTED) {
-                line("I have spoken to <red>Redbeard Frank</red>. He has agreed to tell me")
-                line("the location of some <red>treasure</red> for some <red>Karamjan rum</red>.")
+                line(
+                    "I have spoken to <red>Redbeard Frank</red>. He has agreed to tell me the " +
+                        "location of some <red>treasure</red> for some <red>Karamjan rum</red>."
+                )
+                line("")
                 rumProgress(p).forEach(::line)
                 return@questJournal
             }
@@ -91,26 +95,56 @@ class PiratesTreasureQuest @Inject constructor() :
     private fun rumProgress(player: Player): List<String> =
         when {
             player.inv.count(RUM) > 0 ->
-                listOf("I have some <red>Karamjan rum</red>. I should take it to <red>Redbeard Frank</red>.")
+                listOf(
+                    "I have the <red>Karamjan rum</red>. I should take it to " +
+                        "<red>Redbeard Frank</red>."
+                )
+            player.vars[WYDIN_RUM] == 1 && player.vars[WYDIN_JOB] == 1 ->
+                listOf(
+                    "I have hidden my <red>rum</red> in a crate of <red>bananas</red>, and",
+                    "the crate has been shipped to <red>Wydin's</red> food store in " +
+                        "<red>Port Sarim</red>.",
+                    "",
+                    "I have taken a job at <red>Wydin's</red> food store, so I can get into " +
+                        "the back room where the crate is kept.",
+                )
             player.vars[WYDIN_RUM] == 1 ->
                 listOf(
-                    "My <red>rum</red> was shipped in a crate of <red>bananas</red> to",
-                    "<red>Wydin's</red> food store in <red>Port Sarim</red>. I should get it back.",
+                    "I have hidden my <red>rum</red> in a crate of <red>bananas</red>, and",
+                    "the crate has been shipped to <red>Wydin's</red> food store in " +
+                        "<red>Port Sarim</red>. I need to get into his back room to fetch it.",
+                )
+            player.vars[CRATE_RUM] == 1 && player.vars[CRATE_BANANAS] >= CRATE_CAPACITY ->
+                listOf(
+                    "I have hidden my <red>rum</red> in the crate and filled it with " +
+                        "<red>bananas</red>. I should ask <red>Luthas</red> to pay me for my work."
                 )
             player.vars[CRATE_RUM] == 1 ->
                 listOf(
-                    "I have hidden some <red>rum</red> in a crate of <red>bananas</red> bound for",
-                    "<red>Wydin's</red> store. I should fill it and ask <red>Luthas</red> for my pay.",
+                    "I have taken employment on the <red>banana plantation</red>.",
+                    "",
+                    "I have hidden my <red>rum</red> in the crate, and now I need to fill it " +
+                        "with <red>bananas</red>.",
                 )
             player.vars[LUTHAS_JOB] == 1 ->
                 listOf(
-                    "I have taken a job on the <red>banana plantation</red>. The <red>Customs</red>",
-                    "<red>Officers</red> might not notice some <red>rum</red> covered in <red>bananas</red>.",
+                    "I have taken employment on the <red>banana plantation</red>, as the " +
+                        "<red>Customs Officers</red> might not notice the <red>rum</red> if it " +
+                        "is covered in <red>bananas</red>.",
+                    "",
+                    "Now all I need is some <red>rum</red> to hide in the next crate destined " +
+                        "for <red>Wydin's</red> store.",
+                )
+            player.vars[RUM_RETRIEVED] == 1 ->
+                listOf(
+                    "I smuggled some <red>Karamjan rum</red> off the island, but",
+                    "I seem to have lost it. I need to go to <red>Karamja</red> and get some more.",
                 )
             else ->
                 listOf(
-                    "The <red>Customs Officers</red> on <red>Karamja</red> confiscate any rum they",
-                    "find, so I will need to find a way to smuggle it off the island.",
+                    "I need to go to <red>Karamja</red> and get some <red>Karamjan rum</red>. " +
+                        "The <red>Customs Officers</red> confiscate any rum they find, so I " +
+                        "will need to smuggle it off the island."
                 )
         }
 
@@ -183,10 +217,10 @@ class PiratesTreasureQuest @Inject constructor() :
             )
             return
         }
-        chatPlayer(happy, "Ok, I will bring you some rum.")
         if (stage(player) == 0) {
             setStage(access, STAGE_STARTED)
         }
+        chatPlayer(happy, "Ok, I will bring you some rum.")
         chatNpc(happy, "Yer a saint, although it'll take a miracle to get it off Karamja.")
         chatPlayer(quiz, "What do you mean?")
         chatNpc(neutral, customsWarning())
@@ -486,6 +520,8 @@ class PiratesTreasureQuest @Inject constructor() :
         const val CRATE_BANANAS = "varbit.pirates_treasure_crate_bananas"
         const val CRATE_RUM = "varbit.pirates_treasure_crate_rum"
         const val WYDIN_RUM = "varbit.pirates_treasure_wydin_rum"
+        const val WYDIN_JOB = "varbit.pirates_treasure_wydin_job"
+        const val RUM_RETRIEVED = "varbit.pirates_treasure_rum_retrieved"
 
         const val COOKING_XP = 800.0
         const val NOTHING_INTERESTING = "Nothing interesting happens."

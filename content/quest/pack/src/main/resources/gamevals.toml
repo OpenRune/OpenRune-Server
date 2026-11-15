@@ -43,6 +43,7 @@ pirates_treasure_wydin_job = 64624
 pirates_treasure_chest_opened = 64625
 pirates_treasure_gardener = 64626
 pirates_treasure_progress = 64627
+pirates_treasure_rum_retrieved = 64628
 
 [gamevals.bas]
 waterfall_wading = 1
