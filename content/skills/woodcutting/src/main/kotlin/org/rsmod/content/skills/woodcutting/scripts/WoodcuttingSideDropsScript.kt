@@ -67,9 +67,8 @@ constructor(
         val tile = if (tiles.isEmpty()) player.coords else random.pick(tiles)
         objRepo.add(nest.internalName, tile, duration = NEST_DESPAWN, receiver = player)
         player.mes("<col=ff0000>A bird's nest falls out of the tree.</col>")
-        // TODO: 1/250 of drops play the Armadyl crossbow special attack sound instead; it has no
-        //  synth gameval.
-        player.soundSynth("synth.woodcutting_birdsnest")
+        val armadyl = random.randomBoolean(ARMADYL_SYNTH_CHANCE)
+        player.soundSynth(if (armadyl) ARMADYL_SYNTH else NEST_SYNTH)
         player.runClientScript(
             "clientscript.[clientscript,local_notification]".asRSCM(),
             "A bird's nest has spawned!",
@@ -86,6 +85,9 @@ constructor(
 
     companion object {
         private const val NEST_DESPAWN = 200
+        private const val NEST_SYNTH = "synth.woodcutting_birdsnest"
+        private const val ARMADYL_SYNTH = "synth.godwars_armadyl_avatar_attack"
+        private const val ARMADYL_SYNTH_CHANCE = 250
 
         internal fun nestFor(weights: Map<ItemServerType, Int>, random: GameRandom): ItemServerType {
             var roll = random.of(weights.values.sum())
