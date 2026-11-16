@@ -51,7 +51,8 @@ class MemoirsScript : PluginScript() {
             added > 0 -> {
                 statAdvance(STAT_MAGIC, XP_PER_CHARGE * added)
                 // UNVERIFIED: recharge message wording
-                mes("You recharge the book with $added charges.")
+                val unit = if (added == 1) "charge" else "charges"
+                mes("You recharge the book with $added $unit.")
             }
             added == 0 ->
                 mes("You need a law, body, mind and soul rune for each charge you want to add.")

@@ -10,6 +10,7 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpHeld1
+import org.rsmod.api.script.onOpHeld3
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -26,10 +27,10 @@ constructor(
             val name = RSCM.getReverseMapping(RSCMType.OBJ, scroll.id)
             onOpHeld1(name) { read(name, it.slot, dest) }
         }
-        onOpHeld1(REVENANT_SCROLL) { readRevenant(it.slot) }
+        onOpHeld3(REVENANT_SCROLL) { readRevenant(it.slot) }
     }
 
-    /** The Revenant cave scroll lets the player pick one of the caves' three entrances. */
+    /** The Revenant cave scroll (`Teleport` is its third op) offers the caves' three entrances. */
     private suspend fun ProtectedAccess.readRevenant(slot: Int) {
         val entrances = TeleportNetworks.of(REVENANT_NETWORK)
         val labels = entrances.map { it.name } + CANCEL
