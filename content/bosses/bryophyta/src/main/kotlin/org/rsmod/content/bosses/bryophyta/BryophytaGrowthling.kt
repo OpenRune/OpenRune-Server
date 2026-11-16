@@ -9,6 +9,7 @@ import org.rsmod.api.combat.manager.PlayerAttackManager
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
 import org.rsmod.api.npc.queueDeath
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.righthand
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -17,6 +18,7 @@ internal object BryophytaGrowthling {
     public const val NPC: String = "npc.gb_growthling"
     public const val PRUNE_MESSAGE: String = "You prune the Growthling."
     public const val PRUNE_ANIM: String = "seq.human_dhsword_stab"
+    public const val PRUNE_SOUND: String = "synth.warhammer_crush"
 
     private const val SECATEURS = "obj.secateurs"
     private const val MAGIC_SECATEURS = "obj.fairy_enchanted_secateurs"
@@ -48,6 +50,7 @@ internal object BryophytaGrowthling {
         attackManager: PlayerAttackManager,
     ) {
         player.anim(PRUNE_ANIM)
+        player.soundSynth(PRUNE_SOUND)
         if (awardXp) {
             val attack = meleeAttack(player, attackStyles, attackTypes)
             val xpDamage = npc.baseHitpointsLvl
