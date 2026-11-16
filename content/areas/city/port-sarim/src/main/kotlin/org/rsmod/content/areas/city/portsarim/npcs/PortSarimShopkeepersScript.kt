@@ -5,7 +5,9 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureSmuggling
 import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -26,7 +28,9 @@ private enum class PortSarimShop(
     Battleaxes("npc.brian", "Brian's Battleaxe Bazaar.", "inv.battleaxeshop", 100.0, 55.0, 1.0),
 }
 
-class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
+class PortSarimShopkeepersScript
+@Inject
+constructor(private val shops: Shops, private val piratesTreasure: PiratesTreasureSmuggling) :
     PluginScript() {
     override fun ScriptContext.startup() {
         for (shop in PortSarimShop.entries - PortSarimShop.Jewellery) {
@@ -55,14 +59,27 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
     }
 
     private suspend fun Dialogue.wydin() {
+        if (piratesTreasure.isHiredByWydin(player)) {
+            with(piratesTreasure) { wydinHired { player.openShop(PortSarimShop.Food) } }
+            return
+        }
         chatNpc(happy, "Welcome to my food store! Would you like to buy anything?")
-        when (choice3("Yes please.", 1, "No, thank you.", 2, "What can you recommend?", 3)) {
-            1 -> {
+        val options = buildList {
+            add("Yes please." to WydinTopic.Buy)
+            add("No, thank you." to WydinTopic.Decline)
+            add("What can you recommend?" to WydinTopic.Recommend)
+            if (piratesTreasure.canAskWydinForJob(player)) {
+                add("Can I get a job here?" to WydinTopic.Job)
+            }
+        }
+        when (menu(options)) {
+            WydinTopic.Buy -> {
                 chatPlayer(happy, "Yes please.")
                 player.openShop(PortSarimShop.Food)
             }
-            2 -> chatPlayer(neutral, "No, thank you.")
-            else -> {
+            WydinTopic.Decline -> chatPlayer(neutral, "No, thank you.")
+            WydinTopic.Job -> with(piratesTreasure) { askWydinForJob() }
+            WydinTopic.Recommend -> {
                 chatPlayer(quiz, "What can you recommend?")
                 chatNpc(
                     happy,
@@ -171,6 +188,13 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
             chatPlayer(happy, "'Ello.")
             chatNpc(happy, "'Ello!")
         }
+    }
+
+    private enum class WydinTopic {
+        Buy,
+        Decline,
+        Recommend,
+        Job,
     }
 
     private fun Player.openShop(shop: PortSarimShop) {
