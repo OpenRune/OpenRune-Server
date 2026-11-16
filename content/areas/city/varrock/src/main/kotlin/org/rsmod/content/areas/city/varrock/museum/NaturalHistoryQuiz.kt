@@ -10,6 +10,8 @@ import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.table.VmNathisDisplayModelsRow
+import org.rsmod.api.table.VmNathisDisplaysRow
 import org.rsmod.api.table.VmNathisQuestionsRow
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -17,12 +19,16 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class NaturalHistoryQuiz @Inject constructor(private val eventBus: EventBus) : PluginScript() {
+    private lateinit var displays: List<VmNathisDisplaysRow>
+    private lateinit var models: Map<Int, List<VmNathisDisplayModelsRow>>
     private lateinit var questions: List<List<VmNathisQuestionsRow>>
 
     override fun ScriptContext.startup() {
+        displays = VmNathisDisplaysRow.all().sortedBy { it.number }
+        models = VmNathisDisplayModelsRow.all().sortedBy { it.rowId }.groupBy { it.display }
         val byDisplay = VmNathisQuestionsRow.all().sortedBy { it.rowId }.groupBy { it.display }
-        questions = NaturalHistoryDisplays.map { byDisplay.getValue(it.number) }
-        NaturalHistoryDisplays.forEachIndexed { index, display ->
+        questions = displays.map { byDisplay.getValue(it.number) }
+        displays.forEachIndexed { index, display ->
             onOpLoc1(display.plaque) { studyPlaque(index) }
         }
         AnswerComponents.forEachIndexed { choice, component ->
@@ -35,7 +41,7 @@ class NaturalHistoryQuiz @Inject constructor(private val eventBus: EventBus) : P
             mes("This looks like some sort of quiz. I wonder if I can take part...")
             return
         }
-        val display = NaturalHistoryDisplays[index]
+        val display = displays[index]
         if (vars[display.varbit] >= QUESTIONS_PER_DISPLAY) {
             openCreatureInfo(display)
             return
@@ -43,7 +49,7 @@ class NaturalHistoryQuiz @Inject constructor(private val eventBus: EventBus) : P
         openQuestion(index, random.of(questions[index].size))
     }
 
-    private fun ProtectedAccess.openCreatureInfo(display: NaturalHistoryDisplay) {
+    private fun ProtectedAccess.openCreatureInfo(display: VmNathisDisplaysRow) {
         clearQuizState()
         setDisplayHeader(display)
         ifSetHide("component.vm_natural_history:vm_nathis_creature_text", false)
@@ -51,7 +57,7 @@ class NaturalHistoryQuiz @Inject constructor(private val eventBus: EventBus) : P
     }
 
     private fun ProtectedAccess.openQuestion(index: Int, questionIndex: Int) {
-        val display = NaturalHistoryDisplays[index]
+        val display = displays[index]
         val question = questions[index][questionIndex]
         val answers = listOf(question.answer1, question.answer2, question.answer3)
         quizDisplay = index + 1
@@ -66,10 +72,10 @@ class NaturalHistoryQuiz @Inject constructor(private val eventBus: EventBus) : P
         ifOpenMainModal("interface.vm_natural_history")
     }
 
-    private fun ProtectedAccess.setDisplayHeader(display: NaturalHistoryDisplay) {
+    private fun ProtectedAccess.setDisplayHeader(display: VmNathisDisplaysRow) {
         ifSetText("component.vm_natural_history:vm_nathis_text", display.title)
         ifSetText("component.vm_natural_history:vm_nathis_display_num", display.number.toString())
-        for (model in display.models) {
+        for (model in models.getValue(display.number)) {
             ifSetModel(model.component, model.model.asRSCM())
             if (display.rotates) {
                 ifSetRotateSpeed(model.component, 0, MODEL_ROTATE_SPEED)
@@ -79,10 +85,10 @@ class NaturalHistoryQuiz @Inject constructor(private val eventBus: EventBus) : P
 
     private suspend fun ProtectedAccess.answer(choice: Int) {
         val index = quizDisplay - 1
-        if (index !in NaturalHistoryDisplays.indices) {
+        if (index !in displays.indices) {
             return
         }
-        val display = NaturalHistoryDisplays[index]
+        val display = displays[index]
         val questionIndex = quizQuestion
         val question = questions[index][questionIndex]
         ifCloseSub("interface.vm_natural_history")

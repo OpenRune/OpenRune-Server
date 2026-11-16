@@ -11,6 +11,16 @@ object VarrockMuseumTables {
     const val ANSWER_3 = 4
     const val CORRECT = 5
 
+    const val DISPLAY_NUMBER = 0
+    const val DISPLAY_PLAQUE = 1
+    const val DISPLAY_VARBIT = 2
+    const val DISPLAY_TITLE = 3
+    const val DISPLAY_ROTATES = 4
+
+    const val MODEL_DISPLAY = 0
+    const val MODEL_COMPONENT = 1
+    const val MODEL_MODEL = 2
+
     fun nathisQuestions() =
         dbTable("dbtable.vm_nathis_questions", serverOnly = true) {
             column("display", DISPLAY, VarType.INT)
@@ -690,6 +700,215 @@ object VarrockMuseumTables {
                 column(ANSWER_2, "A caldarium.")
                 column(ANSWER_3, "A tavernium.")
                 column(CORRECT, 0)
+            }
+        }
+
+    fun nathisDisplays() =
+        dbTable("dbtable.vm_nathis_displays", serverOnly = true) {
+            column("number", DISPLAY_NUMBER, VarType.INT)
+            column("plaque", DISPLAY_PLAQUE, VarType.LOC)
+            column("varbit", DISPLAY_VARBIT, VarType.STRING)
+            column("title", DISPLAY_TITLE, VarType.STRING)
+            column("rotates", DISPLAY_ROTATES, VarType.BOOLEAN)
+            row("dbrow.vm_nathis_display_dragon") {
+                column(DISPLAY_NUMBER, 1)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_dragon")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_dragon_display")
+                column(DISPLAY_TITLE, "The Dragon (Draconis Rex)")
+                column(DISPLAY_ROTATES, false)
+            }
+            row("dbrow.vm_nathis_display_wyvern") {
+                column(DISPLAY_NUMBER, 2)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_wyvern")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_wyvern_display")
+                column(DISPLAY_TITLE, "The Wyvern (Draconis Ossis)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_tortoise") {
+                column(DISPLAY_NUMBER, 3)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_battle_tortoise")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_tortoise_display")
+                column(DISPLAY_TITLE, "The Giant Tortoise (Testudines Giganteus)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_lizard") {
+                column(DISPLAY_NUMBER, 4)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_lizard")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_lizard_display")
+                column(DISPLAY_TITLE, "The Giant Lizard (Lacertilia Giganteus)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_leech") {
+                column(DISPLAY_NUMBER, 5)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_leech")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_leech_display")
+                column(DISPLAY_TITLE, "The Giant Leech (Hirudinea Acidia)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_camel") {
+                column(DISPLAY_NUMBER, 6)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_camel")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_camel_display")
+                column(DISPLAY_TITLE, "The Camel (Camelus Bactrian)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_mole") {
+                column(DISPLAY_NUMBER, 7)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_mole")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_mole_display")
+                column(DISPLAY_TITLE, "The Giant Mole (Talpidae Wysonian)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_penguin") {
+                column(DISPLAY_NUMBER, 8)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_penguine")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_penguin_display")
+                column(DISPLAY_TITLE, "The Penguin (Spheniscidae Callidus)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_terrorbird") {
+                column(DISPLAY_NUMBER, 9)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_terrorbird")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_terrorbird_display")
+                column(DISPLAY_TITLE, "The Terrorbird (Aves Terror)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_kalphite") {
+                column(DISPLAY_NUMBER, 10)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_kalphite_queen")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_kalphite_display")
+                column(DISPLAY_TITLE, "The Kalphite Queen (Kalphiscarabeinae Pasha)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_monkey") {
+                column(DISPLAY_NUMBER, 11)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_monkey")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_monkey_display")
+                column(DISPLAY_TITLE, "The Monkey (Simiiformes Karamjan)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_seaslug") {
+                column(DISPLAY_NUMBER, 12)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_seaslug")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_seaslug_display")
+                column(DISPLAY_TITLE, "The Sea Slug (Opisthobranchia Alucinor)")
+                column(DISPLAY_ROTATES, false)
+            }
+            row("dbrow.vm_nathis_display_snake") {
+                column(DISPLAY_NUMBER, 13)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_snake")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_snake_display")
+                column(DISPLAY_TITLE, "The Snake (Serpentes Fellis)")
+                column(DISPLAY_ROTATES, true)
+            }
+            row("dbrow.vm_nathis_display_snail") {
+                column(DISPLAY_NUMBER, 14)
+                columnRSCM(DISPLAY_PLAQUE, "loc.vm_plaque_snail")
+                column(DISPLAY_VARBIT, "varbit.vm_nathis_snail_display")
+                column(DISPLAY_TITLE, "The Giant Snail (Achatina Acidia Giganteus)")
+                column(DISPLAY_ROTATES, true)
+            }
+        }
+
+    fun nathisDisplayModels() =
+        dbTable("dbtable.vm_nathis_display_models", serverOnly = true) {
+            column("display", MODEL_DISPLAY, VarType.INT)
+            column("component", MODEL_COMPONENT, VarType.STRING)
+            column("model", MODEL_MODEL, VarType.STRING)
+            row("dbrow.vm_nathis_model_dragon_01") {
+                column(MODEL_DISPLAY, 1)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_dragon_01")
+                column(MODEL_MODEL, "models.vm_nathis_dragon_01")
+            }
+            row("dbrow.vm_nathis_model_dragon_02") {
+                column(MODEL_DISPLAY, 1)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_dragon_02")
+                column(MODEL_MODEL, "models.vm_nathis_dragon_02")
+            }
+            row("dbrow.vm_nathis_model_dragon_03") {
+                column(MODEL_DISPLAY, 1)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_dragon_03")
+                column(MODEL_MODEL, "models.vm_nathis_dragon_03")
+            }
+            row("dbrow.vm_nathis_model_wyvern") {
+                column(MODEL_DISPLAY, 2)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_wyvern")
+                column(MODEL_MODEL, "models.vm_nathis_wyvern")
+            }
+            row("dbrow.vm_nathis_model_battle_tortoise") {
+                column(MODEL_DISPLAY, 3)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_battle_tortoise")
+                column(MODEL_MODEL, "models.vm_nathis_battle_tortoise")
+            }
+            row("dbrow.vm_nathis_model_lizard") {
+                column(MODEL_DISPLAY, 4)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_lizard")
+                column(MODEL_MODEL, "models.vm_nathis_lizard")
+            }
+            row("dbrow.vm_nathis_model_leech") {
+                column(MODEL_DISPLAY, 5)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_leech")
+                column(MODEL_MODEL, "models.vm_nathis_leech")
+            }
+            row("dbrow.vm_nathis_model_camel") {
+                column(MODEL_DISPLAY, 6)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_camel")
+                column(MODEL_MODEL, "models.vm_nathis_camel")
+            }
+            row("dbrow.vm_nathis_model_mole") {
+                column(MODEL_DISPLAY, 7)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_mole")
+                column(MODEL_MODEL, "models.vm_nathis_mole")
+            }
+            row("dbrow.vm_nathis_model_penguine") {
+                column(MODEL_DISPLAY, 8)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_penguine")
+                column(MODEL_MODEL, "models.vm_nathis_penguine")
+            }
+            row("dbrow.vm_nathis_model_terrorbird") {
+                column(MODEL_DISPLAY, 9)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_terrorbird")
+                column(MODEL_MODEL, "models.vm_nathis_terrorbird")
+            }
+            row("dbrow.vm_nathis_model_kalphite_queen") {
+                column(MODEL_DISPLAY, 10)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_kalphite_queen")
+                column(MODEL_MODEL, "models.vm_nathis_kalphite_queen")
+            }
+            row("dbrow.vm_nathis_model_monkey") {
+                column(MODEL_DISPLAY, 11)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_monkey")
+                column(MODEL_MODEL, "models.vm_nathis_monkey")
+            }
+            row("dbrow.vm_nathis_model_seaslugs_1") {
+                column(MODEL_DISPLAY, 12)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_seaslugs_1")
+                column(MODEL_MODEL, "models.vm_nathis_seaslugs_1")
+            }
+            row("dbrow.vm_nathis_model_seaslugs_2") {
+                column(MODEL_DISPLAY, 12)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_seaslugs_2")
+                column(MODEL_MODEL, "models.vm_nathis_seaslugs_2")
+            }
+            row("dbrow.vm_nathis_model_seaslugs_3") {
+                column(MODEL_DISPLAY, 12)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_seaslugs_3")
+                column(MODEL_MODEL, "models.vm_nathis_seaslugs_3")
+            }
+            row("dbrow.vm_nathis_model_seaslugs_4") {
+                column(MODEL_DISPLAY, 12)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_seaslugs_4")
+                column(MODEL_MODEL, "models.vm_nathis_seaslugs_4")
+            }
+            row("dbrow.vm_nathis_model_snake") {
+                column(MODEL_DISPLAY, 13)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_snake")
+                column(MODEL_MODEL, "models.vm_nathis_snake")
+            }
+            row("dbrow.vm_nathis_model_snail") {
+                column(MODEL_DISPLAY, 14)
+                column(MODEL_COMPONENT, "component.vm_natural_history:vm_nathis_snail")
+                column(MODEL_MODEL, "models.vm_nathis_snail")
             }
         }
 }

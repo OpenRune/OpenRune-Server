@@ -21,3 +21,5 @@ pmoon_moons=64800
 pmoon_ruins_parts=64801
 pmoon_ruins_spawns=64802
 vm_nathis_questions=64956
+vm_nathis_displays=64957
+vm_nathis_display_models=64958
