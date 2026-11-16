@@ -14,7 +14,12 @@ import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) : PluginScript() {
+class FinishedPotionsEvents
+@Inject
+constructor(
+    private val random: GameRandom,
+    private val hooks: Set<@JvmSuppressWildcards HerbloreHook>,
+) : PluginScript() {
 
     override fun ScriptContext.startup() {
         HerbloreDefinitions.itemToPotions.keys.filter { it !in heldUExclude }.forEach { item ->
@@ -112,7 +117,13 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
             return
         }
 
-        val brewResult = AmuletOfChemistry.rollBrewOutput(player, random, potion)
+        val bonus = hooks.firstNotNullOfOrNull { it.brewBonus(player, potion) }
+        val brewResult =
+            if (bonus != null) {
+                AmuletOfChemistry.BrewResult(bonus.output, extraDoseApplied = false, crumbled = false)
+            } else {
+                AmuletOfChemistry.rollBrewOutput(player, random, potion)
+            }
         val savedSecondaries = HerbloreGoggles.rollSavedSecondaryCounts(player, random, potion)
         if (!potion.brew(player, brewResult.output, savedSecondaries)) {
             mes("You don't have enough inventory space to make this potion.")
@@ -132,6 +143,8 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
             potion.secondaries.firstOrNull() ?: potion.unfPot
         }
         mes("You mix the ${itemForMessage.name.lowercase()} into your potion.")
+
+        bonus?.let { mes(it.message) }
 
         if (brewResult.extraDoseApplied) {
             mes("Your amulet of chemistry helps you create an extra dose.")

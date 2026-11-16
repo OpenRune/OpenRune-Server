@@ -98,8 +98,11 @@ constructor(
         rangeAttributes: EnumSet<CombatRangedAttributes>,
         npcAttributes: EnumSet<CombatNpcAttributes>,
     ): Int {
-        val effectiveRanged = RangedMaxHitOperations.calculateEffectiveRanged(source, attackStyle)
-        val rangedBonus = bonuses.rangedStrengthBonus(source)
+        val atlatl = CombatRangedAttributes.EclipseAtlatl in rangeAttributes
+        val effectiveRanged =
+            RangedMaxHitOperations.calculateEffectiveRanged(source, attackStyle, atlatl)
+        val rangedBonus =
+            if (atlatl) bonuses.strengthBonus(source) else bonuses.rangedStrengthBonus(source)
         val baseDamage = PlayerRangedMaxHit.calculateBaseDamage(effectiveRanged, rangedBonus)
         return RangedMaxHitOperations.modifyBaseDamage(
             baseDamage = baseDamage,

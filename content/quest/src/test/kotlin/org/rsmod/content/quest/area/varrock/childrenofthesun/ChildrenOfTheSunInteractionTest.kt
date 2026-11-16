@@ -2,6 +2,8 @@ package org.rsmod.content.quest.area.varrock.childrenofthesun
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.types.MoveRestrict
+import dev.openrune.types.NpcMode
 import jakarta.inject.Inject
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
@@ -20,6 +22,7 @@ import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.NpcEvents
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.NpcInteractions
+import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
@@ -27,6 +30,7 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.route.RayCastValidator
+import org.rsmod.api.table.MusicRow
 import org.rsmod.content.quest.manager.QuestProgressState
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
@@ -36,6 +40,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
+import org.rsmod.game.map.Direction
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
@@ -393,7 +398,7 @@ class ChildrenOfTheSunInteractionTest {
         assertTrue(out.contains("Teokan"), out)
         assertTrue(out.contains("big bag") || out.contains("that bag"), out)
         assertTrue(out.contains("You're late."), out)
-        assertTrue(out.contains("Kuaini!"), out)
+        assertTrue(out.contains("Kuani!"), out)
         assertTrue(out.contains("What are you up to in there...?"), out)
         assertTrue(out.contains("a spot of bother."), out)
         assertTrue(out.contains("what are your thoughts on chicken?"), out)
@@ -409,12 +414,59 @@ class ChildrenOfTheSunInteractionTest {
                 "furia_cutscene",
                 "ennius_cutscene",
                 "guard_sergeant_cutscene",
-                "bag_guard",
+                "bag_guard_vis",
+                "guard_10_noop",
+                "guard_7_noop",
             ) + (1..6).map { "knight_$it" }
         for (name in names) {
             assertNotNull(ServerCacheManager.getNpc("npc.vmq1_$name".asRSCM()), name)
         }
-        assertNotNull(ServerCacheManager.getNpc("npc.fai_varrock_guard02".asRSCM()))
+        assertNotNull(ServerCacheManager.getNpc("npc.vmq1_bag_guard".asRSCM()))
+    }
+
+    @Test fun `static quest npcs keep the recorded facing and wander`() {
+        fun type(name: String) =
+            checkNotNull(ServerCacheManager.getNpc("npc.vmq1_$name".asRSCM())) { name }
+        assertEquals(Direction.North, type("alina").respawnDir)
+        assertEquals(Direction.East, type("noah").respawnDir)
+        assertEquals(Direction.South, type("guard_sergeant").respawnDir)
+        val directions =
+            listOf(
+                Direction.East,
+                Direction.East,
+                Direction.SouthWest,
+                Direction.North,
+                Direction.North,
+                Direction.South,
+                Direction.South,
+                Direction.NorthWest,
+                Direction.East,
+                Direction.East,
+            )
+        val wandering = setOf(2, 5, 6, 7, 8, 9, 10)
+        for (guard in 1..10) {
+            val npc = type("guard_$guard")
+            assertEquals(directions[guard - 1], npc.respawnDir, "guard_$guard facing")
+            if (guard in wandering) {
+                assertEquals(5, npc.wanderRange, "guard_$guard wander")
+                assertEquals(NpcMode.Wander, npc.defaultMode, "guard_$guard mode")
+                assertEquals(MoveRestrict.Normal, npc.moveRestrict, "guard_$guard move")
+            } else {
+                assertEquals(0, npc.wanderRange, "guard_$guard wander")
+                assertEquals(NpcMode.None, npc.defaultMode, "guard_$guard mode")
+                assertEquals(MoveRestrict.NoMove, npc.moveRestrict, "guard_$guard move")
+            }
+        }
+        val bandit = type("bandit_4_cell")
+        assertEquals(5, bandit.wanderRange)
+        assertEquals(NpcMode.Wander, bandit.defaultMode)
+        assertEquals(MoveRestrict.Normal, bandit.moveRestrict)
+    }
+
+    @Test fun `the quest music rows exist`() {
+        assertNotNull(MusicRow.getRow("dbrow.music_children_of_the_sun"))
+        assertNotNull(MusicRow.getRow("dbrow.music_plots_and_plans"))
+        assertNotNull(MusicRow.getRow("dbrow.music_the_burning_sun"))
     }
 
     @Test fun `the server can construct the quest through a single injectable constructor`() {
@@ -429,6 +481,7 @@ class ChildrenOfTheSunInteractionTest {
                 LocRepository::class.java,
                 CollisionFlagMap::class.java,
                 RayCastValidator::class.java,
+                MusicPlayer::class.java,
             ),
             injectable.single().parameterTypes.toList(),
         )

@@ -1,6 +1,7 @@
 package org.rsmod.api.combat.commons
 
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
+import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.statSub
@@ -12,6 +13,8 @@ public object CombatEffects {
     public fun poison(target: Player, damage: Int) {
         PlayerPoison.tryPoison(target, initialDamage = damage)
     }
+
+    public fun venom(target: Player): Boolean = PlayerVenom.tryVenom(target)
 
     private const val FREEZE_IMMUNITY_TICKS = 5
 
@@ -36,8 +39,18 @@ public object CombatEffects {
         target.freezeImmune = false
     }
 
+    public fun frozenTicks(target: Player): Int =
+        if (target.isFrozen) {
+            target.timerMap.remainingCycles("timer.combat_freeze", target.currentMapClock)
+        } else {
+            0
+        }
+
     public fun isFrozen(target: Npc): Boolean =
         target.vars["varn.freeze_end_clock"] > target.currentMapClock
+
+    public fun frozenTicks(target: Npc): Int =
+        maxOf(0, target.vars["varn.freeze_end_clock"] - target.currentMapClock)
 
     public fun freeze(target: Npc, ticks: Int, ignoreImmunity: Boolean = false): Boolean {
         val clock = target.currentMapClock

@@ -46,7 +46,7 @@ internal object ProjectGamevalNames {
                 }
         }
 
-        for (table in baseTables + packs.flatMap { it.dbTables() }) {
+        for (table in baseTables + packs.flatMap { it.dbTableSchemas() }) {
             val parent = table.rscmName ?: "table_${table.tableId}"
             val children = table.columns.map { (id, column) ->
                 (column.rscmName ?: "col_$id") to ((table.tableId shl 16) or id)

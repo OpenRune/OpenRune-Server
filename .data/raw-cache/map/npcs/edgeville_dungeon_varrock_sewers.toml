@@ -828,5 +828,9 @@ coords = "0_50_154_59_35"
 npc = "npc.zombie_unarmed_sewer4"
 coords = "0_50_154_43_37"
 
+[[spawn]]
+npc = "npc.rat_boss_biologist"
+coords = "0_51_154_11_15"
+
 ## Varrock Sewers End
 

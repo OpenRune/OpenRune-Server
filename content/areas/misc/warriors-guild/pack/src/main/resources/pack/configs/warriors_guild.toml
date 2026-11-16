@@ -314,3 +314,207 @@ respawnRate = 15
 id = "npc.warguild_banker"
 inherit = "npc.warguild_banker"
 contentGroup = "content.banker"
+
+[[item]]
+id = "obj.bronze_parryingdagger"
+inherit = "obj.bronze_parryingdagger"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.iron_parryingdagger"
+inherit = "obj.iron_parryingdagger"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.steel_parryingdagger"
+inherit = "obj.steel_parryingdagger"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.black_parryingdagger"
+inherit = "obj.black_parryingdagger"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.mithril_parryingdagger"
+inherit = "obj.mithril_parryingdagger"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.adamant_parryingdagger"
+inherit = "obj.adamant_parryingdagger"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.rune_parryingdagger"
+inherit = "obj.rune_parryingdagger"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.dragon_parryingdagger"
+inherit = "obj.dragon_parryingdagger"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.dragon_parryingdagger_t"
+inherit = "obj.dragon_parryingdagger_t"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.rune_parryingdagger_t"
+inherit = "obj.rune_parryingdagger_t"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.br_dragon_parryingdagger"
+inherit = "obj.br_dragon_parryingdagger"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.br_rune_parryingdagger"
+inherit = "obj.br_rune_parryingdagger"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.bronze_parryingdagger_trouver"
+inherit = "obj.bronze_parryingdagger_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.iron_parryingdagger_trouver"
+inherit = "obj.iron_parryingdagger_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.steel_parryingdagger_trouver"
+inherit = "obj.steel_parryingdagger_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.black_parryingdagger_trouver"
+inherit = "obj.black_parryingdagger_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.mithril_parryingdagger_trouver"
+inherit = "obj.mithril_parryingdagger_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.adamant_parryingdagger_trouver"
+inherit = "obj.adamant_parryingdagger_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.rune_parryingdagger_trouver"
+inherit = "obj.rune_parryingdagger_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.dragon_parryingdagger_trouver"
+inherit = "obj.dragon_parryingdagger_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.dragon_parryingdagger_t_trouver"
+inherit = "obj.dragon_parryingdagger_t_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.rune_parryingdagger_t_trouver"
+inherit = "obj.rune_parryingdagger_t_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.infernal_defender"
+inherit = "obj.infernal_defender"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.infernal_defender_trouver"
+inherit = "obj.infernal_defender_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.infernal_defender_ghommal_5"
+inherit = "obj.infernal_defender_ghommal_5"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.infernal_defender_ghommal_5_trouver"
+inherit = "obj.infernal_defender_ghommal_5_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.infernal_defender_ghommal_6"
+inherit = "obj.infernal_defender_ghommal_6"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.infernal_defender_ghommal_6_trouver"
+inherit = "obj.infernal_defender_ghommal_6_trouver"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.ca_offhand_easy"
+inherit = "obj.ca_offhand_easy"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.ca_offhand_medium"
+inherit = "obj.ca_offhand_medium"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.ca_offhand_hard"
+inherit = "obj.ca_offhand_hard"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.ca_offhand_elite"
+inherit = "obj.ca_offhand_elite"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.ca_offhand_master"
+inherit = "obj.ca_offhand_master"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"
+
+[[item]]
+id = "obj.ca_offhand_grandmaster"
+inherit = "obj.ca_offhand_grandmaster"
+[item.params]
+"param.defend_anim"="seq.warguild_parry_defend"

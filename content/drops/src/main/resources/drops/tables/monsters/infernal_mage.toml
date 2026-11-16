@@ -124,3 +124,13 @@ count = 29
 [[main.entries]]
 weight = 16
 nothing = true
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 64
+boosted = true
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.fire_ruby"
+count = 1

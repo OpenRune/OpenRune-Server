@@ -87,6 +87,21 @@ public class CombatMagicAttributeCollector {
             attributes += CombatSpellAttributes.ChaosGauntlets
         }
 
+        val matchingElementalAmulet =
+            when (spellAttribute) {
+                CombatSpellAttributes.WindSpell -> "obj.amulet_of_air"
+                CombatSpellAttributes.WaterSpell -> "obj.amulet_of_water"
+                CombatSpellAttributes.EarthSpell -> "obj.amulet_of_earth"
+                CombatSpellAttributes.FireSpell -> "obj.amulet_of_fire"
+                else -> null
+            }
+        if (
+            matchingElementalAmulet != null &&
+                (amulet.isType(matchingElementalAmulet) || amulet.isType("obj.elemental_amulet"))
+        ) {
+            attributes += CombatSpellAttributes.ElementalAmulet
+        }
+
         if (MagicSpellChecks.isBoltSpell(spell)) {
             attributes += CombatSpellAttributes.BoltSpell
         }

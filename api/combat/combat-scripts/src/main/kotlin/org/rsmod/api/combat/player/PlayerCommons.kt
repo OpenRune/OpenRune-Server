@@ -18,6 +18,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
 import org.rsmod.api.specials.SpecialAttack
 import org.rsmod.api.specials.SpecialAttackRegistry
+import org.rsmod.api.specials.SpecialAttackType
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
@@ -48,6 +49,15 @@ internal fun ProtectedAccess.weaponAttackRange(style: AttackStyle?): Int {
     }
 
     return min(MAX_ATTACK_RANGE, attackRange)
+}
+
+internal fun ProtectedAccess.armedSpecialAtMeleeDistance(specials: SpecialAttackRegistry): Boolean {
+    if (specialAttackType != SpecialAttackType.Weapon) {
+        return false
+    }
+    val weapon = player.righthand ?: return false
+    val special = specials[weapon] as? SpecialAttack.Ranged ?: return false
+    return special.special.meleeDistance
 }
 
 internal fun ProtectedAccess.resolveCombatAttack(

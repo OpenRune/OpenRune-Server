@@ -964,19 +964,23 @@ each. After `windup` ticks it plays `impact` on each tile and hits every living 
 Notes: every in-range player is always targeted even if that exceeds `count`; scatter tiles are not
 checked for walkability; the windup does not hold attacks.
 
-#### `poison`, `freeze`
+#### `poison`, `venom`, `freeze`
 
 ```kotlin
 fun poison(damage: Int, chance: Int = 1, outOf: Int = 1): Effect
 fun poison(damage: Int, odds: Odds): Effect
+fun venom(chance: Int = 1, outOf: Int = 1): Effect
+fun venom(odds: Odds): Effect
 fun freeze(ticks: Int, chance: Int = 1, outOf: Int = 1): Effect
 fun freeze(ticks: Int, odds: Odds): Effect
-// AbilityBuilder has all four.
+// AbilityBuilder has all six.
 ```
 
 Rolls `random.of(outOf) < chance` and applies `CombatEffects.poison(target, damage)` /
-`CombatEffects.freeze(target, ticks)` to the interpreter's current target, same tick. `Odds` is
-`chance chancesIn outOf`, e.g. `poison(6, 1 chancesIn 4)`.
+`CombatEffects.venom(target)` / `CombatEffects.freeze(target, ticks)` to the interpreter's current
+target, same tick. `Odds` is `chance chancesIn outOf`, e.g. `poison(6, 1 chancesIn 4)`. Venom
+respects toxin immunity and does nothing to an already-envenomed player. To roll it only when an
+attack lands, put it in the hit's `onHit(venom(1, 3))`.
 
 #### `disablePrayers`
 
@@ -1033,6 +1037,26 @@ Pushes the current target one tile to a random free neighbour (8 directions, shu
 inside `within`, walkable and not holding an encounter-owned loc. Plays `anim` on the player,
 teleports them, and sends an exact-move so the client slides them over 30 cycles. Does nothing if
 no neighbour is free. Usually wrapped in `onEach(playersOn(tile), knockback(...))`.
+
+#### `hitNpcs`
+
+```kotlin
+fun hitNpcs(
+    on: List<TargetExpr.Single>,
+    damage: DamageExpr,
+    type: HitType = Typeless,
+    delay: Int = 1,
+    selfDamage: DamageExpr? = null,
+    includeSelf: Boolean = true,
+    npcTypes: List<String>? = null,
+): Effect
+```
+
+Hits every npc owned by the encounter (see `summon(owned = true)`) whose body overlaps any tile of
+`on`, once each, `delay` ticks from now. The caster counts too when `includeSelf` is set, and takes
+`selfDamage` when given. `npcTypes` narrows which owned npcs qualify; it never excludes the caster.
+Damage is rolled per victim, so it must be a `Roll` or `Fixed` (validated); the victims are npcs, not
+players. This is how Araxxor's cleave hits his own araxytes. Players are still hit with `hit { }`.
 
 ### Visuals and audio
 
@@ -2034,7 +2058,30 @@ if one is evaluated without a hit.
 
 `BossEncounter.invulnerable` / `damageScale` are per-encounter fields set from Kotlin (for
 example the Whisperer sets `invulnerable` around its shield). They apply to all hits in the
-Modify hook, as above. There is no DSL effect for them; use an `external()` handler.
+Modify hook, as above. `invulnerable()` / `vulnerable()` set the first from a spec; `damageScale`
+has no DSL effect, so use an `external()` handler.
+
+#### Personal HP
+
+For a boss that is one shared npc but has a separate hp pool per player (the Moons of Peril):
+
+```kotlin
+val subdued = ability("subdued", external("moon_subdued"))
+personalHp(maxHitpoints = 500, hpVarbit = "varbit.pmoon_boss_hp", onDeath = subdued)
+```
+
+- Give the npc `param.hitpoints_locked = true`. Its own hp then never moves, it never dies and
+  `onLethal` never fires; hits still grant xp and show hitmarks as normal.
+- Content decides who is in the fight: `deps.encounter(npc).personalHp?.add(player)` on entry and
+  `remove(player)` on exit. A hit from a player without a pool changes nothing.
+- Each player hit takes its final damage (after `invulnerable`, `damageScale`, incoming rules and
+  `onModifyHit`) from the attacker's pool and writes `hpVarbit`.
+- `onDeath` runs once for the player whose pool reaches 0, without npc access (like a hit
+  reaction), so its `external()` handler must work from the player and `deps`.
+- `PersonalHpTracker` also has `heal`, `set`, `of`, `players` and `reset` for specials that move a
+  player's pool directly.
+- `HpBelow` conditions and `entryHp` phases read the npc's own hp, which is locked; do not use them
+  on a personal-hp boss.
 
 ### Registering a boss
 

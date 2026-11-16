@@ -1,0 +1,18 @@
+[gamevals.dbtable]
+spirit_tree_destinations = 64952
+
+[gamevals.dbrow]
+spirit_tree_tree_gnome_village = 59060
+spirit_tree_gnome_stronghold = 59061
+spirit_tree_battlefield_of_khazard = 59062
+spirit_tree_grand_exchange = 59063
+spirit_tree_feldip_hills = 59064
+spirit_tree_prifddinas = 59100
+spirit_tree_port_sarim = 59101
+spirit_tree_etceteria = 59102
+spirit_tree_brimhaven = 59103
+spirit_tree_hosidius = 59104
+spirit_tree_farming_guild = 59105
+spirit_tree_house = 59106
+spirit_tree_poison_waste = 59107
+spirit_tree_laguna_aurorae = 59108

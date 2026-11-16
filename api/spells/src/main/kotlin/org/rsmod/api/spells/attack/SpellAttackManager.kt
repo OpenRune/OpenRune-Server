@@ -1,8 +1,6 @@
 package org.rsmod.api.spells.attack
 
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.magic.MagicSpell
@@ -19,7 +17,11 @@ import org.rsmod.game.proj.ProjAnim
 
 public class SpellAttackManager
 @Inject
-constructor(private val manager: PlayerAttackManager, private val runes: MagicRuneManager) {
+constructor(
+    private val manager: PlayerAttackManager,
+    private val runes: MagicRuneManager,
+    private val castHooks: Set<SpellCastHook>,
+) {
     private val ProtectedAccess.autocastEnabled by boolVarBit("varbit.autocast_set")
 
     /**
@@ -52,6 +54,15 @@ constructor(private val manager: PlayerAttackManager, private val runes: MagicRu
      * @see [MagicRuneManager.attemptCast]
      * @see [stopCombat]
      */
+    /** Runs the registered [SpellCastHook.afterSpell] hooks. */
+    public suspend fun afterSpell(
+        access: ProtectedAccess,
+        target: PathingEntity,
+        attack: CombatAttack.Spell,
+    ) {
+        castHooks.forEach { it.afterSpell(access, target, attack) }
+    }
+
     public fun attemptCast(
         source: ProtectedAccess,
         attack: CombatAttack.Spell,
@@ -64,6 +75,7 @@ constructor(private val manager: PlayerAttackManager, private val runes: MagicRu
         }
 
         giveCastXp(source, attack)
+        castHooks.forEach { it.onCast(source, attack) }
         return castResult
     }
 

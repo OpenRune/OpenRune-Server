@@ -1,0 +1,52 @@
+[[varp]]
+id = "varp.pmoon_inside"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.pmoon_trap_first_rock"
+scope = "Temp"
+transmit = "Never"
+
+[[inventory]]
+id = "inv.pmoon_frozen_weapon"
+size = 1
+scope = "Perm"
+stack = "Normal"
+protect = false
+
+
+[[varp]]
+id = "varp.pmoon_fight_state"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.pmoon_fight_burn"
+varp = "varp.pmoon_fight_state"
+startBit = 0
+endBit = 4
+
+[[varbit]]
+id = "varbit.pmoon_fight_subdued"
+varp = "varp.pmoon_fight_state"
+startBit = 5
+endBit = 5
+
+[[varbit]]
+id = "varbit.pmoon_fight_cold_locked"
+varp = "varp.pmoon_fight_state"
+startBit = 6
+endBit = 6
+
+[[varbit]]
+id = "varbit.pmoon_fight_relight_side"
+varp = "varp.pmoon_fight_state"
+startBit = 7
+endBit = 8
+
+[[varbit]]
+id = "varbit.pmoon_fight_freeze_target"
+varp = "varp.pmoon_fight_state"
+startBit = 9
+endBit = 10
