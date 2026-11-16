@@ -97,9 +97,9 @@ class NaturalHistoryQuiz @Inject constructor(private val eventBus: EventBus) : P
             player.openKudosOverlay(eventBus)
             mes("You have earned Kudos with the Museum!", ChatType.Spam)
         }
-        soundSynth("synth.vm_nathis_correct")
+        soundSynth("synth.vm_correct")
         if (displayDone) {
-            soundSynth("synth.vm_kudos_gain")
+            soundSynth("synth.vm_gain_kudos")
         }
         startDialogue {
             chatOrlando(happy, "Nice job, mate. That looks about right.")
@@ -111,7 +111,7 @@ class NaturalHistoryQuiz @Inject constructor(private val eventBus: EventBus) : P
         }
 
         clearQuizState()
-        soundSynth("synth.vm_nathis_display_done")
+        soundSynth("synth.vm_all_correct")
         startDialogue {
             chatOrlando(happy, "Bonza, mate! I think that's all of them.")
         }
