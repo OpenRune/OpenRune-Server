@@ -129,10 +129,10 @@ import org.rsmod.api.player.ui.ifSetAnim
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.ui.ifSetHide
 import org.rsmod.api.player.ui.ifSetModel
-import org.rsmod.api.player.ui.ifSetRotateSpeed
 import org.rsmod.api.player.ui.ifSetNpcHead
 import org.rsmod.api.player.ui.ifSetObj
 import org.rsmod.api.player.ui.ifSetPlayerHead
+import org.rsmod.api.player.ui.ifSetRotateSpeed
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.VarPlayerIntMapDelegate
 import org.rsmod.api.player.vars.disarmRunAutoEnable
