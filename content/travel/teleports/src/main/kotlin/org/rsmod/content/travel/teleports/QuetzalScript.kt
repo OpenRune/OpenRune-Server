@@ -2,9 +2,9 @@ package org.rsmod.content.travel.teleports
 
 import dev.openrune.definition.type.widget.IfEvent
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onApNpc1
 import org.rsmod.api.script.onApNpc3
+import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.table.QuetzalRow
 import org.rsmod.content.travel.teleports.TravelRequirements.checkQuest
 import org.rsmod.plugin.scripts.PluginScript
