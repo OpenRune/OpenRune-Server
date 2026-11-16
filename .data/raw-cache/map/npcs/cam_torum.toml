@@ -18,3 +18,438 @@ coords = "1_23_149_37_3"
 npc = "npc.varlamore_buffalo_gear_unattackable"
 coords = "1_22_149_17_42"
 
+[[spawn]]
+npc = "npc.moth_sunlight"
+coords = "1_22_150_26_32"
+
+[[spawn]]
+npc = "npc.moth_sunlight"
+coords = "1_22_150_29_37"
+
+[[spawn]]
+npc = "npc.moth_sunlight"
+coords = "1_22_150_36_26"
+
+[[spawn]]
+npc = "npc.moth_sunlight"
+coords = "1_22_150_37_33"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "1_23_148_4_30"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "1_23_148_6_34"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "1_23_148_8_28"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "1_23_148_12_30"
+
+[[spawn]]
+npc = "npc.direwolf"
+coords = "1_23_148_12_34"
+
+[[spawn]]
+npc = "npc.cam_torum_child_m_1"
+coords = "1_23_149_3_32"
+
+[[spawn]]
+npc = "npc.cam_torum_child_m_1"
+coords = "1_23_149_3_18"
+
+[[spawn]]
+npc = "npc.cam_torum_child_m_1"
+coords = "1_22_149_4_18"
+
+[[spawn]]
+npc = "npc.cam_torum_child_m_2"
+coords = "1_22_149_26_25"
+
+[[spawn]]
+npc = "npc.cam_torum_child_f_1"
+coords = "1_22_149_61_40"
+
+[[spawn]]
+npc = "npc.cam_torum_child_f_1"
+coords = "1_22_149_60_41"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_m_1"
+coords = "1_22_149_18_50"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_22_149_53_16"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_m_2"
+coords = "1_22_149_9_31"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_m_3"
+coords = "1_22_149_7_41"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_m_3"
+coords = "1_22_149_29_19"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_f_1"
+coords = "1_22_149_26_47"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_f_1"
+coords = "1_22_149_31_29"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_f_2"
+coords = "1_22_149_47_26"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_22_149_9_13"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_m_5"
+coords = "1_22_149_28_40"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_22_149_60_18"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_f_4"
+coords = "1_22_149_31_10"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_f_4"
+coords = "1_22_149_56_41"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_22_149_55_20"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_22_149_59_34"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_m_3"
+coords = "1_22_149_2_19"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_m_4"
+coords = "1_22_149_32_34"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_f_3"
+coords = "1_22_149_33_41"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_1"
+coords = "1_22_149_4_33"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_1"
+coords = "1_22_149_41_41"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_22_149_60_32"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_3"
+coords = "1_22_149_33_20"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_4"
+coords = "1_22_149_36_26"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_22_149_22_41"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_23_149_6_26"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_23_149_10_36"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_23_149_5_34"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_23_149_3_11"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_23_149_2_17"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_21_149_55_25"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_21_149_60_32"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_21_149_59_35"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_21_149_58_16"
+
+[[spawn]]
+npc = "npc.cam_torum_citizen_rich_f_5"
+coords = "1_21_149_59_18"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1"
+coords = "1_23_149_4_23"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1"
+coords = "1_23_149_4_28"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_north"
+coords = "1_22_148_33_62"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_north"
+coords = "1_22_148_30_62"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_south"
+coords = "1_22_148_33_44"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_south"
+coords = "1_22_148_30_44"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_east"
+coords = "1_22_148_30_49"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_3_west"
+coords = "1_22_148_33_49"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1"
+coords = "1_22_149_1_23"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_north"
+coords = "1_22_149_26_39"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_north"
+coords = "1_22_149_19_39"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_north"
+coords = "1_22_149_44_39"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1"
+coords = "1_22_149_54_14"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_3_north"
+coords = "1_22_149_37_39"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_south"
+coords = "1_22_149_33_36"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1"
+coords = "1_22_149_59_45"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1"
+coords = "1_22_149_1_28"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_south"
+coords = "1_22_149_7_45"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1"
+coords = "1_22_149_56_45"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_3_south"
+coords = "1_22_149_4_45"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_3_south"
+coords = "1_22_149_30_36"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_east"
+coords = "1_22_149_27_18"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_east"
+coords = "1_22_149_29_8"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_east"
+coords = "1_22_149_29_57"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1"
+coords = "1_22_149_52_19"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_east"
+coords = "1_22_149_27_21"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_east"
+coords = "1_22_149_27_33"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_east"
+coords = "1_22_149_29_13"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_east"
+coords = "1_22_149_30_46"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_east"
+coords = "1_22_149_52_32"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_3_east"
+coords = "1_22_149_27_30"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_west"
+coords = "1_22_149_33_46"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_west"
+coords = "1_22_149_34_13"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_west"
+coords = "1_22_149_36_21"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1_west"
+coords = "1_22_149_36_30"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_west"
+coords = "1_22_149_11_19"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_west"
+coords = "1_22_149_36_18"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_2_west"
+coords = "1_22_149_46_32"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_3_west"
+coords = "1_22_149_11_32"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_3_west"
+coords = "1_22_149_34_8"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_3_west"
+coords = "1_22_149_34_57"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_3_west"
+coords = "1_22_149_36_33"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_3_west"
+coords = "1_22_149_46_31"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1"
+coords = "1_21_149_51_23"
+
+[[spawn]]
+npc = "npc.cam_torum_guard_1"
+coords = "1_21_149_51_28"
+
+[[spawn]]
+npc = "npc.cam_torum_shop_baker"
+coords = "1_22_149_33_24"
+
+[[spawn]]
+npc = "npc.cam_torum_shop_jewellery"
+coords = "1_22_149_29_24"
+
+[[spawn]]
+npc = "npc.cam_torum_shop_herbalist"
+coords = "1_22_149_28_15"
+
+[[spawn]]
+npc = "npc.cam_torum_shop_mining"
+coords = "1_22_149_34_18"
+
+[[spawn]]
+npc = "npc.cam_torum_shop_barber"
+coords = "1_22_149_47_20"
+
+[[spawn]]
+npc = "npc.cam_torum_shop_general"
+coords = "1_22_149_17_19"
+
+[[spawn]]
+npc = "npc.cam_torum_bartender"
+coords = "1_22_149_23_49"
+
+[[spawn]]
+npc = "npc.cam_torum_worker_m_1"
+coords = "1_22_149_42_50"
+
+[[spawn]]
+npc = "npc.cam_torum_worker_m_1"
+coords = "1_22_149_38_48"
+
+[[spawn]]
+npc = "npc.cam_torum_seer"
+coords = "1_22_149_15_33"
+
+[[spawn]]
+npc = "npc.cam_torum_banker_1"
+coords = "1_22_149_43_34"
+
+[[spawn]]
+npc = "npc.cam_torum_banker_2"
+coords = "1_22_149_48_33"
+
+[[spawn]]
+npc = "npc.cam_torum_banker_3"
+coords = "1_22_149_48_30"
+
+[[spawn]]
+npc = "npc.cam_torum_banker_4"
+coords = "1_22_149_43_29"
+
+[[spawn]]
+npc = "npc.cam_torum_worker_f_2"
+coords = "1_22_149_39_47"

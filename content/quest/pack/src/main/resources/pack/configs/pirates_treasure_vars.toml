@@ -1,0 +1,68 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.pirates_treasure_progress"
+varp = "varp.hunt"
+startBit = 0
+endBit = 2
+
+[[varp]]
+isServerOnly = true
+id = "varp.pirates_treasure_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.pirates_treasure_luthas_job"
+varp = "varp.pirates_treasure_state"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.pirates_treasure_crate_bananas"
+varp = "varp.pirates_treasure_state"
+startBit = 1
+endBit = 4
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.pirates_treasure_crate_rum"
+varp = "varp.pirates_treasure_state"
+startBit = 5
+endBit = 5
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.pirates_treasure_wydin_rum"
+varp = "varp.pirates_treasure_state"
+startBit = 6
+endBit = 6
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.pirates_treasure_wydin_job"
+varp = "varp.pirates_treasure_state"
+startBit = 7
+endBit = 7
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.pirates_treasure_chest_opened"
+varp = "varp.pirates_treasure_state"
+startBit = 8
+endBit = 8
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.pirates_treasure_gardener"
+varp = "varp.pirates_treasure_state"
+startBit = 9
+endBit = 9
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.pirates_treasure_rum_retrieved"
+varp = "varp.pirates_treasure_state"
+startBit = 10
+endBit = 10

@@ -75,6 +75,9 @@ internal constructor(
     private fun Player.openLoginGameframe() {
         val gameframe = gameframes[gameframeTopLevel]
         if (gameframe != null && gameframe.isGameplay && gameframe.resizable == ui.frameResizable) {
+            if (gameframe.resizable) {
+                stoneArrangements = gameframe.stoneArrangement
+            }
             ifOpenTop(gameframe.topLevel)
             openGameframe(gameframe, eventBus)
             sendAllStoneEvents()

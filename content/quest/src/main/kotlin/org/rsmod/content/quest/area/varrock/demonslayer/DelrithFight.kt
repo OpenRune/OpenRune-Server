@@ -33,6 +33,7 @@ import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.game.hit.HitBuilder
+import org.rsmod.game.inv.isType
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.region.Region
@@ -72,7 +73,7 @@ constructor(
 
         val delrith = npcType(DELRITH)
         onModifyNpcHit(delrith) {
-            if (hit.attacker()?.righthand?.id == SILVERLIGHT_ID) {
+            if (hit.attacker()?.righthand.isType(SILVERLIGHT) == true) {
                 hit.damage *= 2
             }
         }
@@ -99,7 +100,7 @@ constructor(
         if (!quest.isReadyForDelrith(player) || !inTriggerRing(player.coords)) {
             return
         }
-        if (player.inv.count(SILVERLIGHT) == 0 && player.righthand?.id != SILVERLIGHT_ID) {
+        if (player.inv.count(SILVERLIGHT) == 0 && !player.righthand.isType(SILVERLIGHT)) {
             return
         }
         launcher.launch(player) { summon() }
@@ -350,12 +351,10 @@ constructor(
     }
 }
 
-private val SILVERLIGHT_ID: Int by lazy { SILVERLIGHT.asRSCM(RSCMType.OBJ) }
-
 /** Delrith can only be fought with Silverlight wielded. */
 class DelrithAttackHook : NpcAttackValidateHook {
     override fun validate(player: Player, npc: Npc): NpcAttackValidateResult {
-        if (!npc.isType("npc.delrith") || player.righthand?.id == SILVERLIGHT_ID) {
+        if (!npc.isType("npc.delrith") || player.righthand.isType(SILVERLIGHT)) {
             return NpcAttackValidateResult.Pass
         }
         return NpcAttackValidateResult.Deny("I'd better wield Silverlight first.")

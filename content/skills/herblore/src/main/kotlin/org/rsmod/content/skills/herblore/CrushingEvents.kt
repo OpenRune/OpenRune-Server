@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.herblore
 
+import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpHeldU
@@ -8,7 +9,8 @@ import org.rsmod.api.table.herblore.HerbloreCrushingRow
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class CrushingEvents : PluginScript() {
+class CrushingEvents @Inject constructor(private val hooks: Set<@JvmSuppressWildcards HerbloreHook>) :
+    PluginScript() {
 
     override fun ScriptContext.startup() {
         HerbloreDefinitions.crushingRecipes.forEach { recipe ->
@@ -54,17 +56,22 @@ class CrushingEvents : PluginScript() {
 
         anim("seq.human_herbing_grind")
 
-        if (invDel(inv, recipe.item.internalName, 1).failure) {
+        val bonus = hooks.firstNotNullOfOrNull { it.crushBonus(player, recipe) }
+        val count = 1 + (bonus?.extra ?: 0)
+
+        if (invDel(inv, recipe.item.internalName, count).failure) {
             resetAnim()
             return
         }
 
-        if (invAdd(inv, recipe.crushedItem.internalName, 1).failure) {
-            invAdd(inv, recipe.item.internalName, 1)
+        if (invAdd(inv, recipe.crushedItem.internalName, count).failure) {
+            invAdd(inv, recipe.item.internalName, count)
             mes("You don't have enough inventory space.")
             resetAnim()
             return
         }
+
+        bonus?.let { mes(it.message) }
 
         if (recipe.xp > 0) {
             statAdvance("stat.herblore", recipe.xp.toDouble())
@@ -81,5 +88,4 @@ class CrushingEvents : PluginScript() {
     }
 
     private data class CrushTask(val recipe: HerbloreCrushingRow)
-
 }

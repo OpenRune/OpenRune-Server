@@ -20,6 +20,9 @@ world: 255
 world-types: ["main"]
 
 gameplay:
+  # Farming growth speed: integer 1-100. 1 is normal, 5 is five times faster.
+  # Applies to patches, weeds and saplings, including offline growth.
+  farming-growth-rate: 1
   drop-rates:
     # Server-wide multiplier for drops flagged `boosted` (2.0 turns 1/512 into 1/256). Stacks with
     # each player's own multiplier (varp.drop_rate_multiplier, percent; 0 = unset).
