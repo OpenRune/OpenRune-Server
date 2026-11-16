@@ -116,6 +116,16 @@ sealed interface Effect {
         val react: Boolean = true,
     ) : Effect
 
+    data class HitNpcs(
+        val on: List<TargetExpr.Single>,
+        val damage: DamageExpr,
+        val type: HitType = HitType.Typeless,
+        val delay: Int = 1,
+        val selfDamage: DamageExpr? = null,
+        val includeSelf: Boolean = true,
+        val npcTypes: List<String>? = null,
+    ) : Effect
+
     data class Projectile(
         val spotanim: String,
         val travel: String? = null,
@@ -231,6 +241,9 @@ sealed interface Effect {
      */
     data class LockMovement(val locked: Boolean) : Effect
 
+    /** Sets [org.rsmod.api.bosses.runtime.BossEncounter.invulnerable]. */
+    data class Invulnerable(val invulnerable: Boolean) : Effect
+
     /** Heals the caster by [amount], capped at its max hp, with a heal hitsplat. */
     data class HealSelf(val amount: Int) : Effect
 
@@ -239,6 +252,9 @@ sealed interface Effect {
     data class FaceTile(val at: TargetExpr.Single) : Effect
 
     data class Poison(val damage: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
+
+    /** Envenoms the current target with probability [chance]/[outOf], unless they are immune. */
+    data class Venom(val chance: Int = 1, val outOf: Int = 1) : Effect
     data class Freeze(val ticks: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
     data class DisablePrayers(val overheadsOnly: Boolean = false) : Effect
     data class StatDrain(val entries: List<StatDrainEntry>) : Effect {
@@ -277,6 +293,9 @@ sealed interface Effect {
 
     data class SetVarn(val varn: String, val value: VarExpr) : Effect
 
+    /** Writes [value] to the current target's [varbit]; needs a target. */
+    data class SetPlayerVar(val varbit: String, val value: VarExpr) : Effect
+
     /** Runs the case matching [varn]'s current value, or [otherwise] if none does. */
     data class Switch(val varn: String, val cases: Map<Int, Effect>, val otherwise: Effect = NoOp) : Effect
 
@@ -307,13 +326,22 @@ sealed interface Effect {
      * Spawns [loc] at [at], owned by the encounter: the tile stops counting as free for
      * [TileSet]s and the loc is removed when the encounter ends. Skipped if the encounter already
      * owns a loc there. [blockPlayersOnly] swaps the loc's collision for a player-only block.
+     * [onStand] runs every tick against each player standing on the loc, from the tick after it
+     * was placed.
      */
     data class SpawnLoc(
         val loc: String,
         val at: TargetExpr.Single,
         val angle: Int = 0,
         val blockPlayersOnly: Boolean = false,
+        val onStand: Effect? = null,
     ) : Effect
+
+    /** Removes the encounter-owned loc at [at], if there is one. */
+    data class RemoveLoc(val at: TargetExpr.Single) : Effect
+
+    /** Plays [anim] on the encounter-owned loc at [at], if there is one. */
+    data class LocAnim(val at: TargetExpr.Single, val anim: String) : Effect
 
     /** Shoves the target one tile to a random free neighbour inside [within], playing [anim]. */
     data class Knockback(val anim: String, val within: Area) : Effect

@@ -30,15 +30,11 @@ public class StandardNpcHitModifier @Inject constructor(private val eventBus: Ev
 
     private fun Npc.applyFlatArmour(hit: HitBuilder) {
         val armour = vars["varn.flat_armour"]
+        if (hit.damage <= 0) return
 
         if (armour > 0) {
-            val capped = min(armour.absoluteValue, hit.damage)
-            vars["varn.flat_armour"] -= capped
-            hit.damage -= capped
-        }
-
-        if (armour < 0) {
-            vars["varn.flat_armour"] = 0
+            hit.damage -= min(armour, hit.damage)
+        } else if (armour < 0) {
             hit.damage += armour.absoluteValue
         }
     }

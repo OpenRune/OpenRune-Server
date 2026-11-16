@@ -1,0 +1,16 @@
+[gamevals.varn]
+araxxor_pattern = 97
+araxxor_hatch_in = 98
+araxxor_spawn_tick = 99
+araxxor_engage_at = 100
+
+[gamevals.varp]
+araxxor_state = 64483
+araxxor_boots_ranged = 64484
+araxxor_boots_cleave = 64485
+
+[gamevals.varbit]
+araxxor_skip_destroy_prompt = 64480
+
+[gamevals.dbrow]
+instance_araxxor = 63226

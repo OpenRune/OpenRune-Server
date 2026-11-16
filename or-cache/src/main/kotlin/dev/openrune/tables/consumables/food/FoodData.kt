@@ -558,6 +558,12 @@ internal enum class FoodData(
         heal = 8,
         effect = "fat_snail_meat",
     ),
+    ARAXYTE_VENOM_SAC(
+        row = "dbrow.araxyte_venom_sac",
+        items = listOf("obj.araxyte_venom_sack"),
+        heal = 0,
+        effect = "araxyte_venom_sac",
+    ),
     SPIDER_ON_STICK(
         row = "dbrow.spider_on_stick",
         items = listOf("obj.tbw_spider_on_stick_cooked"),
@@ -653,6 +659,18 @@ internal enum class FoodData(
         items = listOf("obj.antelopemoon_cooked"),
         heal = 14,
         effect = "cooked_moonlight_antelope",
+    ),
+    NEYPOTZLI_BREAM(
+        row = "dbrow.neypotzli_bream",
+        items = listOf("obj.bream_fish_cooked"),
+        heal = 1,
+        effect = "neypotzli_bream",
+    ),
+    NEYPOTZLI_MOSS_LIZARD(
+        row = "dbrow.neypotzli_moss_lizard",
+        items = listOf("obj.cooked_lizard"),
+        heal = 1,
+        effect = "neypotzli_moss_lizard",
     ),
     POTATO_WITH_CHEESE(
         row = "dbrow.potato_with_cheese",

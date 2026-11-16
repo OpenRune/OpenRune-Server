@@ -155,7 +155,8 @@ constructor(
     private fun Npc.updateFaceAngle() {
         facing.process(this)
         if (pendingFaceAngle != EntityFaceAngle.NULL) {
-            infoProtocol.setFaceAngle(pendingFaceAngle.intValue, instant = false)
+            infoProtocol.setFaceAngle(pendingFaceAngle.intValue, instant = pendingFaceInstant)
+            pendingFaceInstant = false
             PathingEntityCommon.resetFaceEntity(this)
         }
     }

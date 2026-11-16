@@ -12,6 +12,7 @@ import org.rsmod.api.invtx.select
 import org.rsmod.api.invtx.swap
 import org.rsmod.api.invtx.transfer
 import org.rsmod.api.player.events.interact.HeldEquipEvents
+import org.rsmod.api.player.hook.HeldEquipValidateHook
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.utils.format.addArticle
@@ -23,7 +24,12 @@ import org.rsmod.game.type.getInvObj
 import org.rsmod.objtx.TransactionResult
 import org.rsmod.objtx.isErr
 
-public class HeldEquipOp @Inject constructor(private val eventBus: EventBus) {
+public class HeldEquipOp
+@Inject
+constructor(
+    private val eventBus: EventBus,
+    private val hooks: Set<@JvmSuppressWildcards HeldEquipValidateHook>,
+) {
     public fun equip(player: Player, invSlot: Int, inventory: Inventory): HeldEquipResult {
         val obj = inventory[invSlot] ?: return HeldEquipResult.Fail.InvalidObj
         val objType = getInvObj(obj)
@@ -113,8 +119,12 @@ public class HeldEquipOp @Inject constructor(private val eventBus: EventBus) {
     }
 
     private fun equip(player: Player, type: ItemServerType): HeldEquipResult {
+        for (hook in hooks) {
+            val refusal = hook.validate(player, type) ?: continue
+            return HeldEquipResult.Fail.Prevented(refusal)
+        }
         val statRequirements =
-            type.statRequirements().filter { player.statBase(RSCM.getReverseMapping(RSCMType.STAT,it.stat.id)) < it.level }
+            type.statRequirements().filter { player.statBase(RSCM.getReverseMapping(RSCMType.STAT, it.stat.id)) < it.level }
         if (statRequirements.isNotEmpty()) {
             val messages = type.toMessages(statRequirements)
             return HeldEquipResult.Fail.StatRequirements(messages)

@@ -36,6 +36,7 @@ available_in_wilderness=65522
 slayer_variant=63801
 slayer_level=63800
 slayer_superior_form=63802
+slayer_no_task_credit=63803
 
 [gamevals.varbit]
 slayer_combat_check=65471

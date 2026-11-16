@@ -48,9 +48,7 @@ enum class RSCMType(val prefix: String) {
     companion object {
         val RSCM_PREFIXES = entries.map { it.prefix }.toSet()
     }
-
 }
-
 
 object RSCM {
 

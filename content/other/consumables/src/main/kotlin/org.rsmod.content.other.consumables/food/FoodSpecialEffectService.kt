@@ -2,16 +2,24 @@ package org.rsmod.content.other.consumables.food
 
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.config.refs.done.hitmark_groups
+import org.rsmod.api.mechanics.toxins.ToxinImmunity
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
+import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
+import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.baseCookingLvl
+import org.rsmod.api.player.stat.baseFishingLvl
 import org.rsmod.api.player.stat.baseHitpointsLvl
+import org.rsmod.api.player.stat.baseHunterLvl
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.content.other.consumables.food.kebab.KebabEffect
 import org.rsmod.content.other.consumables.food.kebab.KebabOutcome
 import org.rsmod.content.other.consumables.food.stew.SpicyStewEffect
 import org.rsmod.content.other.consumables.food.stew.SpicyStewState
 import org.rsmod.content.other.consumables.restoreRunEnergy
+import org.rsmod.game.hit.HitType
 
 @Singleton
 class FoodSpecialEffectService
@@ -173,6 +181,26 @@ constructor(
                         delayedAmount = 9,
                     )
 
+                NEYPOTZLI_BREAM ->
+                    normalHeal(
+                        amount =
+                            (
+                                minOf(
+                                    player.baseCookingLvl,
+                                    player.baseFishingLvl,
+                                ) + 1
+                                ) / 3,
+                    )
+
+                NEYPOTZLI_MOSS_LIZARD ->
+                    normalHeal(
+                        amount =
+                            minOf(
+                                player.baseCookingLvl / 3,
+                                player.baseHunterLvl / 2,
+                            ),
+                    )
+
                 COOKED_MOONLIGHT_ANTELOPE ->
                     delayedHeal(
                         immediateAmount = 14,
@@ -253,6 +281,9 @@ constructor(
                                 ?: SpicyStewState.EMPTY,
                     )
 
+                ARAXYTE_VENOM_SAC ->
+                    eatVenomSac()
+
                 HADDOCK,
                 STRAWBERRY,
                 WATERMELON_SLICE,
@@ -274,6 +305,8 @@ constructor(
                 COOKED_DASHING_KEBBIT,
                 COOKED_SUNLIGHT_ANTELOPE,
                 COOKED_MOONLIGHT_ANTELOPE,
+                NEYPOTZLI_BREAM,
+                NEYPOTZLI_MOSS_LIZARD,
                     -> Unit
 
                 else ->
@@ -430,6 +463,23 @@ constructor(
         }
     }
 
+    private fun ProtectedAccess.eatVenomSac() {
+        PlayerVenom.clear(player)
+        PlayerPoison.clear(player)
+        ToxinImmunity.grantImmunity(
+            player = player,
+            poisonDuration = VENOM_SAC_POISON_IMMUNITY,
+            venomDuration = VENOM_SAC_VENOM_IMMUNITY,
+        )
+        player.queueHit(
+            delay = 1,
+            type = HitType.Typeless,
+            damage = VENOM_SAC_DAMAGE,
+            hitmark = hitmark_groups.venom,
+            modifier = NoopPlayerHitModifier,
+        )
+    }
+
     private fun ceilPercent(
         value: Int,
         percent: Int,
@@ -446,6 +496,12 @@ constructor(
 
         private const val DELAYED_HEAL_DELAY: Int = 7
         private const val DASHING_RUN_ENERGY: Int = 10
+        private const val VENOM_SAC_POISON_IMMUNITY: Int = 1170
+        private const val VENOM_SAC_VENOM_IMMUNITY: Int = 30
+        private const val VENOM_SAC_DAMAGE: Int = 4
+
+        private const val ARAXYTE_VENOM_SAC: String =
+            "araxyte_venom_sac"
 
         private const val HADDOCK: String =
             "haddock"
@@ -510,6 +566,12 @@ constructor(
         private const val COOKED_MOONLIGHT_ANTELOPE: String =
             "cooked_moonlight_antelope"
 
+        private const val NEYPOTZLI_BREAM: String =
+            "neypotzli_bream"
+
+        private const val NEYPOTZLI_MOSS_LIZARD: String =
+            "neypotzli_moss_lizard"
+
         private const val KEBAB: String =
             "kebab"
 
@@ -539,8 +601,11 @@ constructor(
                 COOKED_DASHING_KEBBIT,
                 COOKED_SUNLIGHT_ANTELOPE,
                 COOKED_MOONLIGHT_ANTELOPE,
+                NEYPOTZLI_BREAM,
+                NEYPOTZLI_MOSS_LIZARD,
                 KEBAB,
                 SPICY_STEW,
+                ARAXYTE_VENOM_SAC,
             )
     }
 }
