@@ -613,7 +613,7 @@ internal val NaturalHistoryDisplays: List<NaturalHistoryDisplay> =
                     question(
                         "What are the two fangs presumed to be used for?",
                         0,
-                        "Defence or display.",
+                        "Defense or display.",
                         "Attacking prey.",
                         "Latching on to objects.",
                     ),
