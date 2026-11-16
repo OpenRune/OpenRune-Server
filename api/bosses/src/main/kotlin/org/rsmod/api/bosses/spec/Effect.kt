@@ -251,7 +251,27 @@ sealed interface Effect {
     data object FaceTarget : Effect
     data class FaceTile(val at: TargetExpr.Single) : Effect
 
-    data class Poison(val damage: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
+    /**
+     * Poisons the current target with [chance]/[outOf] odds.
+     *
+     * [damage] is the OSRS "starting at" damage (five hits per damage step); [severity] sets the
+     * internal severity directly. With neither, the caster's `npc_poison_severity` param is used.
+     * [damage] and [severity] are mutually exclusive.
+     */
+    data class Poison(
+        val damage: Int = 0,
+        val chance: Int = 1,
+        val outOf: Int = 1,
+        val severity: Int = 0,
+    ) : Effect {
+        init {
+            require(damage >= 0) { "Poison damage must be >= 0, got $damage." }
+            require(severity >= 0) { "Poison severity must be >= 0, got $severity." }
+            require(damage == 0 || severity == 0) {
+                "Poison takes a starting damage or a severity, not both."
+            }
+        }
+    }
 
     /** Envenoms the current target with probability [chance]/[outOf], unless they are immune. */
     data class Venom(val chance: Int = 1, val outOf: Int = 1) : Effect
