@@ -32,11 +32,14 @@ private val LampStats =
         "stat.sailing",
     )
 
-private val AllLampSkillsMask = LampStats.indices.fold(0) { mask, index -> mask or (1 shl (index + 1)) }
-
-suspend fun ProtectedAccess.chooseLampSkill(title: String, minLevel: Int = 0): String? {
+suspend fun ProtectedAccess.chooseLampSkill(
+    title: String,
+    minLevel: Int = 0,
+    stats: Collection<String> = LampStats,
+): String? {
+    val allowed = LampStats.indices.filter { LampStats[it] in stats }
     VarPlayerIntMapSetter.set(player, "varp.if1", minLevel)
-    VarPlayerIntMapSetter.set(player, "varp.if2", AllLampSkillsMask)
+    VarPlayerIntMapSetter.set(player, "varp.if2", allowed.fold(0) { mask, i -> mask or (1 shl (i + 1)) })
     ifOpenMainModal("interface.xpreward")
     ifSetText("component.xpreward:title", title)
     ifSetEvents("component.xpreward:universe", LampStats.indices, IfEvent.PauseButton)
@@ -45,5 +48,5 @@ suspend fun ProtectedAccess.chooseLampSkill(title: String, minLevel: Int = 0): S
     if (!input.isComponentType("component.xpreward:universe")) {
         return null
     }
-    return LampStats.getOrNull(input.subcomponent)
+    return LampStats.getOrNull(input.subcomponent)?.takeIf { it in stats }
 }

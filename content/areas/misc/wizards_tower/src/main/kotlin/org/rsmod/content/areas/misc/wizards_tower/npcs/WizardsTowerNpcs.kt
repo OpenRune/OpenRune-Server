@@ -1,15 +1,18 @@
 package org.rsmod.content.areas.misc.wizards_tower.npcs
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerQuest
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class WizardsTowerNpcs : PluginScript() {
+class WizardsTowerNpcs @Inject constructor(private val demonSlayer: DemonSlayerQuest) :
+    PluginScript() {
     private var Player.rickOpenedShop by intVarBit("varbit.rick_has_opened_shop")
 
     override fun ScriptContext.startup() {
@@ -23,6 +26,9 @@ class WizardsTowerNpcs : PluginScript() {
 
     private suspend fun Dialogue.traiborn() {
         chatNpc(confused, "Ello young thingummywut.")
+        if (with(demonSlayer) { traibornDemonSlayer() }) {
+            return
+        }
         val topic =
             menu(
                 "What's a thingummywut?" to 0,

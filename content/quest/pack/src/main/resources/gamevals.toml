@@ -10,6 +10,8 @@ gertrudes_cat_state = 63711
 daddyshome_state = 64064
 waterfall_state = 64310
 sheep_shearer_state = 65472
+demon_slayer_state = 64610
+demon_slayer_return_tile = 64611
 pirates_treasure_state = 64620
 
 [gamevals.varbit]
@@ -35,6 +37,9 @@ waterfall_met_golrie = 64312
 waterfall_pillar_runes = 64313
 sheep_shearer_progress = 65449
 sheep_shearer_saw_thing = 65448
+demon_slayer_traiborn_bones = 64610
+demon_slayer_traiborn_asked = 64611
+demon_slayer_lamps_given = 64612
 pirates_treasure_luthas_job = 64620
 pirates_treasure_crate_bananas = 64621
 pirates_treasure_crate_rum = 64622
