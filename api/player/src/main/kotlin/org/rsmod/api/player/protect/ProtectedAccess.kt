@@ -132,6 +132,7 @@ import org.rsmod.api.player.ui.ifSetModel
 import org.rsmod.api.player.ui.ifSetNpcHead
 import org.rsmod.api.player.ui.ifSetObj
 import org.rsmod.api.player.ui.ifSetPlayerHead
+import org.rsmod.api.player.ui.ifSetRotateSpeed
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.VarPlayerIntMapDelegate
 import org.rsmod.api.player.vars.disarmRunAutoEnable
@@ -3839,6 +3840,10 @@ public class ProtectedAccess(
 
     public fun ifSetModel(target: String, model: Int) {
         player.ifSetModel(target, model)
+    }
+
+    public fun ifSetRotateSpeed(target: String, xSpeed: Int, ySpeed: Int) {
+        player.ifSetRotateSpeed(target, xSpeed, ySpeed)
     }
 }
 
