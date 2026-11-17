@@ -72,3 +72,5 @@ pmoon_fight_subdued=64501
 pmoon_fight_cold_locked=64502
 pmoon_fight_relight_side=64503
 pmoon_fight_freeze_target=64504
+vm_nathis_quiz_display=64910
+vm_nathis_quiz_question=64911
