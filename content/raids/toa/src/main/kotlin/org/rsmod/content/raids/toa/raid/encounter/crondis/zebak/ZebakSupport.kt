@@ -49,13 +49,21 @@ internal class ZebakLandings {
     }
 }
 
-internal fun Npc.isBeside(player: Player): Boolean {
-    val c = player.coords
-    if (c.level != coords.level) return false
-    val maxX = coords.x + size - 1
-    val maxZ = coords.z + size - 1
-    return (c.x in coords.x..maxX && (c.z == coords.z - 1 || c.z == maxZ + 1)) ||
-        (c.z in coords.z..maxZ && (c.x == coords.x - 1 || c.x == maxX + 1))
+/**
+ * Whether [player] is melee-adjacent to this npc: any of the tiles ringing its footprint, corners
+ * included (all eight surrounding tiles for a 1x1, the full outer ring for larger bodies). A corner
+ * is not safe from a melee auto. The footprint itself is not "beside".
+ */
+internal fun Npc.isBeside(player: Player): Boolean = isBeside(coords, size, player.coords)
+
+/** Pure form of [isBeside] on raw coordinates, so the adjacency rule can be tested directly. */
+internal fun isBeside(npc: CoordGrid, size: Int, target: CoordGrid): Boolean {
+    if (target.level != npc.level) return false
+    val maxX = npc.x + size - 1
+    val maxZ = npc.z + size - 1
+    val inRing = target.x in npc.x - 1..maxX + 1 && target.z in npc.z - 1..maxZ + 1
+    val inFootprint = target.x in npc.x..maxX && target.z in npc.z..maxZ
+    return inRing && !inFootprint
 }
 
 internal fun Npc.besideTile(player: Player): CoordGrid {
