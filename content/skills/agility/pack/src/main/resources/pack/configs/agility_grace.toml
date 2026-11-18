@@ -1,0 +1,17 @@
+[[varp]]
+id = "varp.agility_settings"
+scope = "Perm"
+transmit = "Never"
+
+# Set once Grace turns the lap count message off; unset, the default, sends it.
+[[varbit]]
+id = "varbit.agility_lap_counter_off"
+varp = "varp.agility_settings"
+startBit = 0
+endBit = 0
+
+# TODO(content): a finished Skullball game does not count a lap yet.
+[[varp]]
+id = "varp.agility_laps_skullball"
+scope = "Perm"
+transmit = "Never"

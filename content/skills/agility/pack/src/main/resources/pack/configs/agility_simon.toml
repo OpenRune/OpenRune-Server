@@ -1,0 +1,38 @@
+# What Simon Templeton pays for each Pyramid Plunder artefact.
+[[enum]]
+isServerOnly = true
+id = "enum.agility_pyramid_artefact_prices"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.ntk_ivory_comb" = 50
+"obj.ntk_scarab_pottery" = 75
+"obj.ntk_statuette_pottery" = 100
+"obj.ntk_seal_stone" = 150
+"obj.ntk_scarab_stone" = 175
+"obj.ntk_statuette_stone" = 200
+"obj.ntk_seal_gold" = 750
+"obj.ntk_scarab_gold" = 1000
+"obj.ntk_statuette_gold" = 1250
+
+# What Simon offers for a pharaoh's sceptre, which the player always turns down.
+[[enum]]
+isServerOnly = true
+id = "enum.agility_pyramid_sceptre_offers"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.ntk_jewelled_sceptre_0" = 100
+"obj.ntk_jewelled_sceptre_1" = 100
+"obj.ntk_jewelled_sceptre_2" = 100
+"obj.ntk_jewelled_sceptre_3" = 100
+"obj.ntk_jewelled_sceptre_4" = 100
+"obj.ntk_jewelled_sceptre_5" = 100
+"obj.ntk_jewelled_sceptre_6" = 100
+"obj.ntk_jewelled_sceptre_7" = 100
+"obj.ntk_jewelled_sceptre_8" = 100
+"obj.pharaohs_sceptre" = 100
+"obj.pharaohs_sceptre_charged" = 100
+"obj.pharaohs_sceptre_charged_initial" = 100

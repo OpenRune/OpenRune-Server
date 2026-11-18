@@ -1,0 +1,48 @@
+[[varp]]
+id = "varp.fossil_underwater_state"
+scope = "Temp"
+transmit = "Never"
+
+# The player has found an open chest or clam on this dive, so the mermaids reward them.
+[[varbit]]
+id = "varbit.fossil_underwater_found"
+varp = "varp.fossil_underwater_state"
+startBit = 0
+endBit = 0
+
+# The window in fossil_underwater_window is the one the player found, which pays nothing.
+[[varbit]]
+id = "varbit.fossil_underwater_found_window"
+varp = "varp.fossil_underwater_state"
+startBit = 1
+endBit = 1
+
+# The last window, counted round in ten bits, whose open chest or clam the player searched.
+[[varbit]]
+id = "varbit.fossil_underwater_window"
+varp = "varp.fossil_underwater_state"
+startBit = 2
+endBit = 11
+
+[[varbit]]
+id = "varbit.fossil_underwater_drowning"
+varp = "varp.fossil_underwater_state"
+startBit = 12
+endBit = 12
+
+[[varbit]]
+id = "varbit.fossil_underwater_in_current"
+varp = "varp.fossil_underwater_state"
+startBit = 13
+endBit = 13
+
+# The open loc each closed chest and clam turns into while it is the one open.
+[[enum]]
+isServerOnly = true
+id = "enum.fossil_underwater_open_locs"
+keyType = "LOC"
+valueType = "LOC"
+
+[enum.values]
+"loc.fossil_chest_closed" = "loc.fossil_chest_open"
+"loc.fossil_clam_closed" = "loc.fossil_clam_open"

@@ -45,5 +45,26 @@ object ShopCurrencyTable {
             column(PLURAL_NAME, "unidentified minerals")
             columnRSCM(OBJ, "obj.mguild_minerals")
         }
+
+        row("dbrow.shop_currency_marks_of_grace") {
+            column(KEY, "currency.marks_of_grace")
+            column(SINGULAR_NAME, "mark of grace")
+            column(PLURAL_NAME, "marks of grace")
+            columnRSCM(OBJ, "obj.grace")
+        }
+
+        row("dbrow.shop_currency_hallowed_marks") {
+            column(KEY, "currency.hallowed_marks")
+            column(SINGULAR_NAME, "Hallowed mark")
+            column(PLURAL_NAME, "Hallowed marks")
+            columnRSCM(OBJ, "obj.hallowed_mark")
+        }
+
+        row("dbrow.shop_currency_mermaid_tears") {
+            column(KEY, "currency.mermaid_tears")
+            column(SINGULAR_NAME, "mermaid tear")
+            column(PLURAL_NAME, "mermaid tears")
+            columnRSCM(OBJ, "obj.fossil_mermaid_tear")
+        }
     }
 }
