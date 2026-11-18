@@ -1,0 +1,5 @@
+[[npc]]
+isServerOnly = true
+id = "npc.count_draynor"
+inherit = "npc.count_draynor"
+regenRate = 5
