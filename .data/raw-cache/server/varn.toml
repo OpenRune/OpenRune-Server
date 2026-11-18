@@ -315,3 +315,9 @@ id = "varn.araxxor_engage_at"
 
 [[varn]]
 id = "varn.burn_stacks"
+
+[[varn]]
+id = "varn.bryophyta_growthling_cooldown"
+
+[[varn]]
+id = "varn.bryophyta_growthling_warned"

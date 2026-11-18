@@ -967,8 +967,8 @@ checked for walkability; the windup does not hold attacks.
 #### `poison`, `venom`, `freeze`
 
 ```kotlin
-fun poison(damage: Int, chance: Int = 1, outOf: Int = 1): Effect
-fun poison(damage: Int, odds: Odds): Effect
+fun poison(damage: Int = 0, chance: Int = 1, outOf: Int = 1, severity: Int = 0): Effect
+fun poison(damage: Int = 0, odds: Odds, severity: Int = 0): Effect
 fun venom(chance: Int = 1, outOf: Int = 1): Effect
 fun venom(odds: Odds): Effect
 fun freeze(ticks: Int, chance: Int = 1, outOf: Int = 1): Effect
@@ -976,11 +976,18 @@ fun freeze(ticks: Int, odds: Odds): Effect
 // AbilityBuilder has all six.
 ```
 
-Rolls `random.of(outOf) < chance` and applies `CombatEffects.poison(target, damage)` /
-`CombatEffects.venom(target)` / `CombatEffects.freeze(target, ticks)` to the interpreter's current
-target, same tick. `Odds` is `chance chancesIn outOf`, e.g. `poison(6, 1 chancesIn 4)`. Venom
-respects toxin immunity and does nothing to an already-envenomed player. To roll it only when an
-attack lands, put it in the hit's `onHit(venom(1, 3))`.
+Rolls `random.of(outOf) < chance` and applies poison / `CombatEffects.venom(target)` /
+`CombatEffects.freeze(target, ticks)` to the interpreter's current target, same tick. `Odds` is
+`chance chancesIn outOf`, e.g. `poison(6, 1 chancesIn 4)`. Venom respects toxin immunity and does
+nothing to an already-envenomed player. To roll it only when an attack lands, put it in the hit's
+`onHit(...)`.
+
+`poison(damage = 8)` is the OSRS "starting at 8" poison: severity 40, five hits at each damage
+step, 180 total. `poison(severity = 40)` sets the severity directly, and `poison()` reads the
+caster's `npc_poison_severity` param (natural NPC poison), doing nothing if it is unset. `damage`
+and `severity` are mutually exclusive. Natural NPC poison applies regardless of damage, so build
+`poison()` outside the ability block (or use `Effect.Poison()`) and pass it to
+`onHit(..., evenOnMiss = true)` rather than gating it on a positive damage roll.
 
 #### `disablePrayers`
 

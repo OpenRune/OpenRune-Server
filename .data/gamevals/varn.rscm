@@ -59,3 +59,5 @@ araxxor_hatch_in=98
 araxxor_spawn_tick=99
 araxxor_engage_at=100
 burn_stacks=101
+bryophyta_growthling_cooldown=64690
+bryophyta_growthling_warned=64691

@@ -1,0 +1,12 @@
+[[area]]
+name = "Roots and Flutes"
+area_id = "area.roots_and_flutes"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [3200, 9920],
+    [3264, 9920],
+    [3264, 9984],
+    [3200, 9984],
+]

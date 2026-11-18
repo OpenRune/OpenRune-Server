@@ -938,6 +938,12 @@ transmit = "Never"
 
 [[varp]]
 isServerOnly = true
+id = "varp.bryophyta_lair"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
 id = "varp.burn_stacks"
 scope = "Temp"
 transmit = "Never"
@@ -946,4 +952,10 @@ transmit = "Never"
 isServerOnly = true
 id = "varp.frostweaver_pending"
 scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.bryophyta_chests_opened"
+scope = "Perm"
 transmit = "Never"

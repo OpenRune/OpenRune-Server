@@ -10,8 +10,16 @@ import org.rsmod.game.entity.Player
 
 public object CombatEffects {
 
-    public fun poison(target: Player, damage: Int) {
-        PlayerPoison.tryPoison(target, initialDamage = damage)
+    public fun poison(target: Player, damage: Int = 0, severity: Int = 0) {
+        if (severity > 0) {
+            PlayerPoison.tryPoison(target, severity = severity)
+        } else {
+            PlayerPoison.tryPoison(target, initialDamage = damage)
+        }
+    }
+
+    public fun poisonFromNpc(target: Player, source: Npc) {
+        PlayerPoison.tryPoison(target, source = source)
     }
 
     public fun venom(target: Player): Boolean = PlayerVenom.tryVenom(target)

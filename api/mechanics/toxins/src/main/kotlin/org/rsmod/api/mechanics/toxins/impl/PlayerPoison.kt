@@ -22,8 +22,9 @@ public object PlayerPoison {
 
     public fun damageForSeverity(severity: Int): Int = (severity + 4) / 5
 
+    /** The severity of an OSRS poison that starts at [initialDamage] (five hits per damage step). */
     public fun severityForInitialDamage(initialDamage: Int): Int =
-        if (initialDamage <= 0) 0 else 5 * initialDamage - 4
+        if (initialDamage <= 0) 0 else 5 * initialDamage
 
     public fun reduceSeverity(
         player: Player,

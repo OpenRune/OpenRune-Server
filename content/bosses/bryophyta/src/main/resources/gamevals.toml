@@ -1,0 +1,10 @@
+[gamevals.varp]
+bryophyta_lair = 63601
+bryophyta_chests_opened = 63227
+
+[gamevals.varbit]
+bryophyta_lair_unlocked = 63601
+
+[gamevals.varn]
+bryophyta_growthling_cooldown = 64690
+bryophyta_growthling_warned = 64691

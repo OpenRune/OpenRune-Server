@@ -669,3 +669,10 @@ id = "varbit.gauntlet_spoken_to_bryn"
 varp = "varp.gauntlet_flags"
 startBit = 0
 endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.bryophyta_lair_unlocked"
+varp = "varp.bryophyta_lair"
+startBit = 0
+endBit = 0

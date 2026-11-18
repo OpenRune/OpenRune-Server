@@ -55,6 +55,13 @@ object PrayerTable {
             column(3, 2)
         }
 
+        row("dbrow.giantbones") {
+            columnRSCM(0, "obj.giant_bones")
+            column(1, 150)
+            column(2, false)
+            column(3, 2)
+        }
+
         row("dbrow.jogrebones") {
             columnRSCM(0, "obj.tbwt_jogre_bones")
             column(1, 15)
