@@ -22,7 +22,7 @@ internal object BryophytaGrowthling {
 
     private const val SECATEURS = "obj.secateurs"
     private const val MAGIC_SECATEURS = "obj.fairy_enchanted_secateurs"
-    private const val BLESSED_AXE = "obj.blessed_axe"
+    private const val BLESSED_AXE = "obj.anma_axe"
     private const val ZOMBIE_AXE = "obj.zombie_axe"
     private const val WOODCUTTING_AXE = "content.woodcutting_axe"
 
