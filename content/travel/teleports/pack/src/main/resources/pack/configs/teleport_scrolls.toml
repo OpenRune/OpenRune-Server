@@ -1,0 +1,29 @@
+# Landing tile of each teleport scroll (oldschool.runescape.wiki maps, all ground level).
+# The Revenant cave scroll offers three Wilderness entrances and is not listed.
+
+[[enum]]
+isServerOnly = true
+id = "enum.teleport_scroll_destinations"
+keyType = "OBJ"
+valueType = "COORDGRID"
+
+[enum.values]
+"obj.teleportscroll_nardah" = 56019813
+"obj.teleportscroll_digsite" = 54480212
+"obj.teleportscroll_feldip" = 41634669
+"obj.teleportscroll_lunarisle" = 34312009
+"obj.teleportscroll_mortton" = 57150680
+"obj.teleportscroll_pestcontrol" = 43551331
+"obj.teleportscroll_piscatoris" = 38325825
+"obj.teleportscroll_taibwo" = 45698042
+"obj.teleportscroll_elf" = 35949754
+"obj.teleportscroll_mosles" = 60640180
+"obj.teleportscroll_lumberyard" = 54103455
+"obj.teleportscroll_zulandra" = 35982320
+"obj.teleportscroll_cerberus" = 21464290
+"obj.teleportscroll_watson" = 26955260
+"obj.teleportscroll_guthixian_temple" = 66572749
+"obj.teleportscroll_spidercave" = 59936075
+"obj.teleportscroll_colossal_wyrm" = 26889065
+"obj.teleportscroll_chasmoffire" = 23586652
+"obj.teleportscroll_ardeaglais" = 41650345
