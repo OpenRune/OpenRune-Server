@@ -50,6 +50,10 @@ private const val LEAGUE_TUTORIAL = "varbit.league_tutorial_completed"
 private const val LEAGUE_TUTORIAL_DONE = 63
 private const val CLIENT_LEAGUE_POINTS = "varp.league_points_claimed"
 private const val CLIENT_LEAGUE_CURRENCY = "varp.league_points_currency"
+private const val WORLD_FLAGS_VARP = "varp.map_flags_cached"
+
+/** Members and seasonal (league) world flags; the client reads the league bit from here. */
+const val LEAGUE_WORLD_FLAGS: Int = 0x1 or 0x40000000
 private const val REGIONS = "varp.dp_regions"
 private const val TOTAL_KILLS = "varp.dp_total_kills"
 
@@ -178,6 +182,7 @@ fun Player.clearLegacyPacts(): Boolean {
 /** Sends the league state the client's league interfaces read. */
 fun Player.syncLeagueClientVars() {
     val settings = DemonicPactsData.settings
+    setIfChanged(WORLD_FLAGS_VARP, LEAGUE_WORLD_FLAGS)
     setIfChanged(LEAGUE_TYPE, LEAGUE_TYPE_DEMONIC_PACTS)
     if (vars[LEAGUE_TUTORIAL] < LEAGUE_TUTORIAL_DONE) {
         setIfChanged(LEAGUE_TUTORIAL, LEAGUE_TUTORIAL_DONE)

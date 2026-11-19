@@ -139,9 +139,7 @@ class LeagueWebScript @Inject constructor(private val config: ServerConfig) : Pl
         const val TEXT = "text/plain; charset=ISO-8859-1"
         const val BINARY = "application/octet-stream"
 
-        const val MEMBERS_FLAG = 0x1
-        const val SEASONAL_FLAG = 0x40000000
-        const val WORLD_FLAGS = MEMBERS_FLAG or SEASONAL_FLAG
+        const val WORLD_FLAGS = LEAGUE_WORLD_FLAGS
 
         const val MEMBERS_PARAM = 3
         const val WORLD_PROPERTIES_PARAM = 5
