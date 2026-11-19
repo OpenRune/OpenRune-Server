@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.misc.tutorialisland
 
+import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
@@ -16,6 +17,9 @@ internal var Player.transmitPronouns by intVarBit("varbit.settings_transmit_pron
 internal var Player.tutorialFreeStuffCheck by intVarBit("varbit.tutorial_freestuff_check")
 internal var Player.adventurePaths by intVarBit("varbit.adventurepath_player_participating")
 internal var Player.usedHomeTeleport by intVarBit("varbit.steam_used_home_teleport")
+
+internal val RUN_TOGGLED = AttributeKey<Boolean>(temp = true)
+internal val LAST_RUN_STATE = AttributeKey<Int>(temp = true)
 
 internal val Player.inTutorial: Boolean
     get() = tutorialStage in TutorialStage.START until TutorialStage.LEFT_ISLAND

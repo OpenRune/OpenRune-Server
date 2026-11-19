@@ -35,6 +35,11 @@ constructor(
     }
 
     fun show(player: Player, stage: Int) {
+        if (stage == TutorialStage.QUEST_HOUSE_ENTERED && player.attr[RUN_TOGGLED] == true) {
+            player.runClientScript(MESOVERLAY, MOVING_ON_RUN_TEXT)
+            clearArrow(player)
+            return
+        }
         val hint = HINTS[stage] ?: return
         hint.text?.let { text ->
             player.runClientScript(MESOVERLAY, text)
@@ -118,6 +123,10 @@ constructor(
             "clientscript.[clientscript,tutorial_overlay_hint]".asRSCM(RSCMType.CLIENTSCRIPT)
         private val TUTORIAL_END =
             "clientscript.[clientscript,tutorial_end]".asRSCM(RSCMType.CLIENTSCRIPT)
+        private const val MOVING_ON_RUN_TEXT =
+            "<col=0000ff>Moving on</col><br>Follow the path to the next guide. When you get " +
+                "there, click on the door to pass through it. Remember, you can use your arrow " +
+                "keys to rotate the camera."
 
         private val HINTS: Map<Int, Hint> =
             mapOf(

@@ -8,6 +8,8 @@ import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.player.ironman.PlayerGamemode
+import org.rsmod.api.player.ironman.isAnyIronman
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -93,6 +95,10 @@ constructor(
             player.advanceIf(TutorialStage.GATE_OPENED, TutorialStage.KITCHEN_ENTERED)
         }
         onOpLoc1(TutorialLoc.DOOR_3) {
+            if (player.tutorialStage < TutorialStage.BREAD_BAKED) {
+                mesbox("You need to finish the Master Chef's tasks first.")
+                return@onOpLoc1
+            }
             player.openDoor(it.loc)
             player.advanceIf(TutorialStage.BREAD_BAKED, TutorialStage.QUEST_PATH)
             player.advanceIf(TutorialStage.QUEST_PATH, TutorialStage.QUEST_HOUSE_ENTERED)
@@ -118,6 +124,7 @@ constructor(
                 CoordGrid(3088, 9520, 0),
                 TutorialStage.QUEST_GUIDE_DONE,
                 TutorialStage.LADDER_DOWN,
+                "I don't think you're ready to go down there yet.",
             )
         }
         onOpLoc1(TutorialLoc.LADDER_DOWN_2) {
@@ -125,6 +132,7 @@ constructor(
                 CoordGrid(3111, 9526, 0),
                 TutorialStage.QUEST_GUIDE_DONE,
                 TutorialStage.LADDER_DOWN,
+                "I don't think you're ready to go down there yet.",
             )
         }
         onOpLoc1(TutorialLoc.LADDER_UP) {
@@ -132,6 +140,7 @@ constructor(
                 CoordGrid(3088, 3120, 0),
                 TutorialStage.COMBAT_GUIDE_DONE,
                 TutorialStage.LADDER_UP,
+                "You need to finish the combat tutorial first.",
             )
         }
         onOpLoc1(TutorialLoc.LADDER_UP_2) {
@@ -139,6 +148,7 @@ constructor(
                 CoordGrid(3111, 3125, 0),
                 TutorialStage.COMBAT_GUIDE_DONE,
                 TutorialStage.LADDER_UP,
+                "You need to finish the combat tutorial first.",
             )
         }
         onOpLoc1(TutorialLoc.COMBAT_GATE_LEFT) {
@@ -186,6 +196,8 @@ constructor(
         onOpLoc1(TutorialLoc.RANGE) {
             if (player.tutorialStage == TutorialStage.DOUGH_MADE) {
                 bakeBread()
+            } else {
+                mes("You haven't got anything suitable for cooking! The master chef can help you out with that.")
             }
         }
         onOpNpc1(TutorialNpc.FISHING_SPOT) { catchShrimp() }
@@ -209,7 +221,16 @@ constructor(
         }
     }
 
-    private suspend fun ProtectedAccess.climb(destination: CoordGrid, from: Int, to: Int) {
+    private suspend fun ProtectedAccess.climb(
+        destination: CoordGrid,
+        from: Int,
+        to: Int,
+        denial: String,
+    ) {
+        if (player.tutorialStage < from) {
+            mesbox(denial)
+            return
+        }
         if (player.tutorialStage != from) {
             return
         }
@@ -235,11 +256,28 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.useRatGate(loc: BoundLocInfo, otherName: String) {
+        if (player.tutorialStage < TutorialStage.COMBAT_TAB_OPENED) {
+            sayCombatInstructor("Oi! Get away from there. Only enter the rat cage when I say so.")
+            return
+        }
         if (player.tutorialStage in TutorialStage.RANGED_GIVEN until TutorialStage.RAT_ENGAGED_RANGED) {
-            mesbox("No, don't enter the pit. Range the rats from outside the cage.")
+            sayCombatInstructor("No, don't enter the pit. Range the rats from outside the cage.")
             return
         }
         player.openGate(loc, otherName)
+    }
+
+    private suspend fun ProtectedAccess.sayCombatInstructor(line: String) {
+        val instructor =
+            npcRepo.findAll(ZoneKey.from(player.coords), 2).firstOrNull {
+                it.visType.internalName == TutorialNpc.COMBAT_INSTRUCTOR ||
+                    it.type.internalName == TutorialNpc.COMBAT_INSTRUCTOR
+            }
+        if (instructor != null) {
+            startDialogue(instructor) { chatNpc(neutral, line) }
+        } else {
+            mesbox(line)
+        }
     }
 
     private fun findNearbyLoc(origin: CoordGrid, name: String): LocInfo? {
@@ -336,6 +374,9 @@ constructor(
 
     private suspend fun ProtectedAccess.catchShrimp() {
         if (player.tutorialStage != TutorialStage.INVENTORY_VIEWED) {
+            if (player.tutorialStage < TutorialStage.INVENTORY_VIEWED) {
+                mes("You cannot fish here yet. You must progress further in the tutorial.")
+            }
             return
         }
         if (!player.inv.contains(TutorialObj.NET)) {
@@ -355,6 +396,12 @@ constructor(
 
     private suspend fun ProtectedAccess.chopTree() {
         if (player.tutorialStage != TutorialStage.AXE_GIVEN) {
+            when {
+                player.tutorialStage < TutorialStage.AXE_GIVEN ->
+                    mes("You cannot cut down this tree yet. You must progress further in the tutorial.")
+                player.tutorialStage >= TutorialStage.LOGS_CUT ->
+                    mes("Perhaps you've done enough woodcutting now.")
+            }
             return
         }
         if (!player.inv.contains(TutorialObj.BRONZE_AXE)) {
@@ -376,6 +423,9 @@ constructor(
 
     private suspend fun ProtectedAccess.mineTin() {
         if (player.tutorialStage != TutorialStage.MINING_GUIDE_TALKED) {
+            if (player.tutorialStage < TutorialStage.MINING_GUIDE_TALKED) {
+                mes("You are not ready to mine yet. Please follow the tutorial and you'll be mining in no time.")
+            }
             return
         }
         if (!player.inv.contains(TutorialObj.BRONZE_PICKAXE)) {
@@ -392,6 +442,9 @@ constructor(
 
     private suspend fun ProtectedAccess.mineCopper() {
         if (player.tutorialStage != TutorialStage.TIN_MINED) {
+            if (player.tutorialStage < TutorialStage.TIN_MINED) {
+                mes("You are not ready to mine yet. Please follow the tutorial and you'll be mining in no time.")
+            }
             return
         }
         if (!player.inv.contains(TutorialObj.BRONZE_PICKAXE)) {
@@ -408,6 +461,9 @@ constructor(
 
     private suspend fun ProtectedAccess.smeltBar() {
         if (player.tutorialStage != TutorialStage.COPPER_MINED) {
+            if (player.tutorialStage < TutorialStage.COPPER_MINED) {
+                mes("This is a furnace for smelting metal. You'll learn how to use it soon.")
+            }
             return
         }
         if (!player.inv.contains(TutorialObj.TIN_ORE) ||
@@ -469,11 +525,23 @@ constructor(
                 chatNpc(happy, "Anyway, I'd say it's time for you to go and meet your first instructor!")
                 guide.advance(player, TutorialStage.GUIDE_DONE)
             }
-            else ->
+            else -> {
+                chatNpc(
+                    neutral,
+                    "Welcome back. You have already learnt the first thing needed to succeed in " +
+                        "this world: talking to other people!",
+                )
+                chatNpc(
+                    neutral,
+                    "You will find many inhabitants of this world have useful things to say to " +
+                        "you. By clicking on them, you can talk to them.",
+                )
                 chatNpc(
                     happy,
-                    "You're making good progress. Talk to your instructors to continue your training.",
+                    "To continue the tutorial go through that door over there and speak to your " +
+                        "first instructor!",
                 )
+            }
         }
     }
 
@@ -495,9 +563,16 @@ constructor(
                     guide.advance(player, TutorialStage.NET_GIVEN)
                 }
             }
-            TutorialStage.NET_GIVEN, TutorialStage.INVENTORY_VIEWED, TutorialStage.SHRIMP_CAUGHT ->
+            TutorialStage.NET_GIVEN, TutorialStage.INVENTORY_VIEWED ->
+                chatNpc(
+                    neutral,
+                    "Hello again. First up, we're going to do some fishing. There's some shrimp " +
+                        "in this pond here. Let's try and catch some.",
+                )
+            TutorialStage.SHRIMP_CAUGHT ->
                 chatNpc(neutral, "Hello again. You should take a look at that menu before we continue.")
             TutorialStage.SKILLS_VIEWED -> {
+                chatPlayer(happy, "I've managed to catch some shrimp.")
                 chatNpc(
                     happy,
                     "Excellent work. Next you'll want to cook those shrimp. To do that, you'll " +
@@ -511,6 +586,24 @@ constructor(
                     guide.advance(player, TutorialStage.AXE_GIVEN)
                 }
             }
+            TutorialStage.AXE_GIVEN ->
+                chatNpc(
+                    happy,
+                    "Next up you need to make a fire. First, you'll need to cut down a tree to get " +
+                        "some logs.",
+                )
+            TutorialStage.LOGS_CUT ->
+                chatNpc(
+                    happy,
+                    "Now that you have some shrimp, you're going to want to cook them. To do " +
+                        "that, you'll need a fire.",
+                )
+            TutorialStage.FIRE_LIT ->
+                chatNpc(
+                    happy,
+                    "Now that you have some shrimp, you're going to want to cook them. All you " +
+                        "need to do is use them on a fire.",
+                )
             else -> survivalRecap()
         }
     }
@@ -585,8 +678,117 @@ constructor(
                 )
                 guide.advance(player, TutorialStage.CHEF_TALKED)
             }
+        } else if (player.tutorialStage < TutorialStage.BREAD_BAKED) {
+            chatNpc(neutral, "Time for you to learn the fine art of cooking bread.")
+            giveFlourAndWater()
         } else {
-            chatNpc(happy, "Hello again. How is your cooking coming along?")
+            chatNpc(neutral, "Do you need something?")
+            when (choice3("Tell me about making dough again.", 1, "Tell me about range cooking again.", 2, "Nothing thanks.", 3)) {
+                1 -> {
+                    chatPlayer(quiz, "Tell me about making dough again.")
+                    chatNpc(
+                        neutral,
+                        "It's quite simple. Just use a pot of flour on a bucket of water, or vice " +
+                            "versa, and you'll make dough. You can fill a bucket with water at any sink.",
+                    )
+                }
+                2 -> {
+                    chatPlayer(quiz, "Tell me about range cooking again.")
+                    chatNpc(
+                        neutral,
+                        "The range is the only place you can cook a lot of the more complex foods " +
+                            "in Gielinor. To cook on a range, all you need to do is click on it. " +
+                            "You'll need to make sure you have the required items in your " +
+                            "inventory though.",
+                    )
+                }
+                else -> chatPlayer(neutral, "Nothing thanks.")
+            }
+        }
+    }
+
+    private fun Player.hasItem(obj: String): Boolean =
+        inv.contains(obj) || worn.contains(obj)
+
+    private suspend fun Dialogue.giveCombatGear(): Boolean {
+        val items = buildList {
+            if (!player.hasItem(TutorialObj.BRONZE_SWORD)) add(TutorialObj.BRONZE_SWORD to 1)
+            if (!player.hasItem(TutorialObj.WOODEN_SHIELD)) add(TutorialObj.WOODEN_SHIELD to 1)
+        }
+        if (items.isEmpty()) {
+            return true
+        }
+        if (!access.giveTutorialItems(*items.toTypedArray())) {
+            mesbox(
+                "You need some new weapons for this section of the tutorial but you don't have " +
+                    "enough inventory room. You'll need to drop something. To do so, right-click " +
+                    "on an item you don't want and select drop. Once you've done that, speak to " +
+                    "the combat instructor again.",
+            )
+            return false
+        }
+        mesbox(
+            "The combat instructor gives you a <col=000080>bronze sword<col=000000> and a " +
+                "<col=000000><col=000080>wooden shield<col=000000>.",
+        )
+        return true
+    }
+
+    private suspend fun Dialogue.giveRangedGear(): Boolean {
+        val items = buildList {
+            if (!player.hasItem(TutorialObj.SHORTBOW)) add(TutorialObj.SHORTBOW to 1)
+            val arrows = player.inv.count(TutorialObj.BRONZE_ARROW) +
+                player.worn.count(TutorialObj.BRONZE_ARROW)
+            val missingArrows = (50 - arrows).coerceAtLeast(0)
+            if (missingArrows > 0) add(TutorialObj.BRONZE_ARROW to missingArrows)
+        }
+        if (items.isEmpty()) {
+            return true
+        }
+        if (!access.giveTutorialItems(*items.toTypedArray())) {
+            mesbox(
+                "You need some new weapons for this section of the tutorial but you don't have " +
+                    "enough inventory room. You'll need to drop something. To do so, right-click " +
+                    "on an item you don't want and select drop. Once you've done that, speak to " +
+                    "the combat instructor again.",
+            )
+            return false
+        }
+        mesbox(
+            "The combat instructor gives you a <col=000080>shortbow<col=000000> and some " +
+                "<col=000000><col=000080>bronze arrows<col=000000>.",
+        )
+        return true
+    }
+
+    private suspend fun Dialogue.giveFlourAndWater() {
+        val hasFlour = player.inv.contains(TutorialObj.POT_FLOUR)
+        val hasWater = player.inv.contains(TutorialObj.BUCKET_WATER)
+        if (hasFlour && hasWater) {
+            return
+        }
+        if (!hasFlour && !hasWater &&
+            access.giveTutorialItems(
+                TutorialObj.POT_FLOUR to 1,
+                TutorialObj.BUCKET_WATER to 1,
+            )
+        ) {
+            doubleobjbox(
+                TutorialObj.POT_FLOUR,
+                TutorialObj.BUCKET_WATER,
+                "The master chef gives you some <col=000080>flour<col=000000> and some " +
+                    "<col=000080>water<col=000000>.",
+            )
+        } else if (!hasFlour && access.giveTutorialItems(TutorialObj.POT_FLOUR to 1)) {
+            objbox(
+                TutorialObj.POT_FLOUR,
+                "The master chef gives you some <col=000080>flour<col=000000>.",
+            )
+        } else if (!hasWater && access.giveTutorialItems(TutorialObj.BUCKET_WATER to 1)) {
+            objbox(
+                TutorialObj.BUCKET_WATER,
+                "The master chef gives you some <col=000080>water<col=000000>.",
+            )
         }
     }
 
@@ -601,7 +803,7 @@ constructor(
                 guide.advance(player, TutorialStage.QUEST_GUIDE_TALKED)
             }
             TutorialStage.QUEST_GUIDE_TALKED ->
-                chatNpc(neutral, "You should take a look at your quest list before we continue.")
+                chatNpc(neutral, "Have you not opened that menu yet?")
             TutorialStage.QUEST_LIST_OPENED -> {
                 chatNpc(
                     neutral,
@@ -638,11 +840,29 @@ constructor(
                 )
                 guide.advance(player, TutorialStage.QUEST_GUIDE_DONE)
             }
-            else ->
-                chatNpc(
-                    neutral,
-                    "The quest list and journal are useful tools. Talk to your next instructor to continue.",
-                )
+            else -> {
+                chatNpc(neutral, "Would you like to hear about quests again?")
+                when (choice2("Yes!", 1, "Nope, I'm ready to move on!", 2)) {
+                    1 -> {
+                        chatPlayer(quiz, "Yes!")
+                        chatNpc(
+                            neutral,
+                            "Within your quest list, you'll unsurprisingly find a list of quests. " +
+                                "Opening a quest's journal will provide you with more information on it.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "If you haven't started the quest, it will tell you where to begin " +
+                                "and what requirements you need. If the quest is in progress, it " +
+                                "will remind you what to do next.",
+                        )
+                    }
+                    else -> {
+                        chatPlayer(neutral, "Nope, I'm ready to move on!")
+                        chatNpc(neutral, "Okay then.")
+                    }
+                }
+            }
         }
     }
 
@@ -684,7 +904,58 @@ constructor(
                     guide.advance(player, TutorialStage.MINING_GUIDE_BAR)
                 }
             }
-            else -> chatNpc(neutral, "Keep practising your mining and smithing.")
+            TutorialStage.MINING_GUIDE_BAR, TutorialStage.ANVIL_OPENED -> {
+                chatNpc(neutral, "See if you can use the anvil here to make a bronze dagger.")
+                if (!player.inv.contains(TutorialObj.HAMMER) &&
+                    access.giveTutorialItems(TutorialObj.HAMMER to 1)
+                ) {
+                    mesbox("The mining instructor gives you a <col=000080>hammer<col=000000>.")
+                }
+            }
+            else -> miningRecap()
+        }
+    }
+
+    private suspend fun Dialogue.miningRecap() {
+        if (!player.inv.contains(TutorialObj.HAMMER) &&
+            access.giveTutorialItems(TutorialObj.HAMMER to 1)
+        ) {
+            mesbox("The mining instructor gives you a <col=000080>hammer<col=000000>.")
+        }
+        chatNpc(neutral, "Would you like me to recap anything?")
+        when (choice3("Tell me about Mining again.", 1, "Tell me about Smithing again.", 2, "Nothing thanks.", 3)) {
+            1 -> {
+                chatPlayer(quiz, "Tell me about Mining again.")
+                chatNpc(
+                    neutral,
+                    "Certainly. To mine you need a pickaxe. Different pickaxes let you mine more " +
+                        "efficiently.",
+                )
+                chatNpc(
+                    neutral,
+                    "Earlier I gave you a bronze pickaxe. It's the most inefficient pickaxe " +
+                        "available, but it's perfect for a beginner.",
+                )
+                chatNpc(
+                    neutral,
+                    "To mine, simply click on a rock that contains ore while you have a pickaxe " +
+                        "with you, and you will keep mining the rock until you manage to get some " +
+                        "ore, or until it is empty.",
+                )
+            }
+            2 -> {
+                chatPlayer(quiz, "Tell me about Smithing again.")
+                chatNpc(
+                    neutral,
+                    "Smithing is the art of turning metal bars into weapons and armour. Use a " +
+                        "hammer on an anvil while you have some bars in your inventory.",
+                )
+                chatNpc(
+                    neutral,
+                    "You can smelt ore into bars at a furnace. Bronze is made from tin and copper.",
+                )
+            }
+            else -> chatPlayer(neutral, "Nothing thanks.")
         }
     }
 
@@ -706,6 +977,8 @@ constructor(
                 chatNpc(neutral, "Let's get started by teaching you to wield a weapon.")
                 guide.advance(player, TutorialStage.DAGGER_EQUIP_TASK)
             }
+            TutorialStage.DAGGER_EQUIP_TASK ->
+                chatNpc(neutral, "Let's get started by teaching you to wield a weapon.")
             TutorialStage.DAGGER_EQUIPPED -> {
                 chatNpc(
                     neutral,
@@ -713,14 +986,22 @@ constructor(
                         "Let's get you something a bit better. Once you're properly equipped we " +
                         "can move on to some actual combat.",
                 )
-                if (access.giveTutorialItems(TutorialObj.BRONZE_SWORD to 1, TutorialObj.WOODEN_SHIELD to 1)) {
-                    mesbox(
-                        "The combat instructor gives you a <col=000080>bronze sword<col=000000> " +
-                            "and a <col=000000><col=000080>wooden shield<col=000000>.",
-                    )
+                if (giveCombatGear()) {
                     guide.advance(player, TutorialStage.COMBAT_GUIDE_SWORD)
                 }
             }
+            TutorialStage.COMBAT_GUIDE_SWORD -> {
+                chatNpc(neutral, "Let's get you equipped.")
+                giveCombatGear()
+            }
+            TutorialStage.SWORD_EQUIPPED ->
+                chatNpc(neutral, "You should check out the combat interface.")
+            TutorialStage.COMBAT_TAB_OPENED, TutorialStage.COMBAT_TAB_CLOSED ->
+                chatNpc(
+                    neutral,
+                    "Time for some actual combat! Head into the pen through the nearby gate and " +
+                        "kill one of those rats.",
+                )
             TutorialStage.RAT_KILLED_MELEE -> {
                 chatPlayer(happy, "I did it! I killed a giant rat!")
                 chatNpc(
@@ -734,15 +1015,38 @@ constructor(
                         "With ranged, you'll be able to attack the rats without entering the pit " +
                         "meaning they won't be able to fight back.",
                 )
-                if (access.giveTutorialItems(TutorialObj.SHORTBOW to 1, TutorialObj.BRONZE_ARROW to 50)) {
-                    mesbox(
-                        "The combat instructor gives you a <col=000080>shortbow<col=000000> and " +
-                            "some <col=000000><col=000080>bronze arrows<col=000000>.",
-                    )
+                if (giveRangedGear()) {
                     guide.advance(player, TutorialStage.RANGED_GIVEN)
                 }
             }
-            else -> chatNpc(neutral, "Keep practising your combat skills.")
+            TutorialStage.RANGED_GIVEN -> {
+                chatNpc(
+                    neutral,
+                    "Use your bow and arrows to kill one of those rats from outside the pen.",
+                )
+                giveRangedGear()
+            }
+            else -> combatRecap()
+        }
+    }
+
+    private suspend fun Dialogue.combatRecap() {
+        chatNpc(neutral, "Would you like me to recap anything?")
+        when (choice2("Tell me about melee combat again.", 1, "Nothing thanks.", 2)) {
+            1 -> {
+                chatPlayer(quiz, "Tell me about melee combat again.")
+                chatNpc(
+                    neutral,
+                    "To attack a monster with melee, click on it while you have a weapon equipped. " +
+                        "You will walk over to it and start attacking.",
+                )
+                chatNpc(
+                    neutral,
+                    "Different attack styles give experience in different skills. You can choose " +
+                        "your attack style in the combat interface.",
+                )
+            }
+            else -> chatPlayer(neutral, "Nothing thanks.")
         }
     }
 
@@ -765,7 +1069,7 @@ constructor(
                 guide.advance(player, TutorialStage.ACCOUNT_GUIDE_TALKED)
             }
             TutorialStage.ACCOUNT_GUIDE_TALKED ->
-                chatNpc(neutral, "You should take a look at your Account Management menu before we continue.")
+                chatNpc(neutral, "Before we go any further, you should have a look at the Account Management menu.")
             TutorialStage.ACCOUNT_MENU_OPENED -> {
                 chatNpc(happy, "As you can see, there's a few things you can do with your account.")
                 chatNpc(
@@ -837,7 +1141,23 @@ constructor(
                 )
                 guide.advance(player, TutorialStage.ACCOUNT_GUIDE_DONE)
             }
-            else -> chatNpc(happy, "Ask me about your account whenever you like.")
+            else -> {
+                chatNpc(happy, "Hello. Would you like to hear about your account again?")
+                when (choice2("Yes!", 1, "No thanks.", 2)) {
+                    1 -> {
+                        chatPlayer(quiz, "Yes!")
+                        chatNpc(happy, "Excellent. Well there's a few things you can do with your account.")
+                        chatNpc(
+                            happy,
+                            "First, you have membership. All accounts are free to play by " +
+                                "default but if you desire, you can buy membership to unlock " +
+                                "members' worlds. These worlds give you access to extra skills, " +
+                                "areas, quests, and more!",
+                        )
+                    }
+                    else -> chatPlayer(neutral, "No thanks.")
+                }
+            }
         }
     }
 
@@ -848,6 +1168,8 @@ constructor(
                 chatNpc(happy, "Hello, I'm Brother Brace.<br>I'm here to tell you all about Prayer.")
                 guide.advance(player, TutorialStage.PRAYER_GUIDE_TALKED)
             }
+            TutorialStage.PRAYER_GUIDE_TALKED ->
+                chatNpc(neutral, "You should open the indicated menu to continue.")
             TutorialStage.PRAYER_BOOK_OPENED -> {
                 chatNpc(
                     neutral,
@@ -871,7 +1193,32 @@ constructor(
                 )
                 guide.advance(player, TutorialStage.PRAYER_GUIDE_DONE)
             }
-            else -> chatNpc(happy, "Prayer is a useful skill. Keep it in mind.")
+            else -> {
+                chatNpc(happy, "Peace be with you, my child. Can I help you?")
+                when (choice2("Tell me about Prayers again.", 1, "I'm fine, thanks.", 2)) {
+                    1 -> {
+                        chatPlayer(quiz, "Tell me about Prayers again.")
+                        chatNpc(
+                            neutral,
+                            "Ah, yes, your prayer list. Prayers can help a lot in combat. Click " +
+                                "on the prayer you wish to use to activate it, and click it again " +
+                                "to deactivate it.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "Active prayers will drain your Prayer Points, which you can recharge " +
+                                "by finding an altar or other holy spot and praying there.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "As you noticed, most enemies will drop bones when defeated. Burying " +
+                                "bones, by clicking them in your inventory, will gain you Prayer " +
+                                "experience.",
+                        )
+                    }
+                    else -> chatPlayer(neutral, "I'm fine, thanks.")
+                }
+            }
         }
     }
 
@@ -887,7 +1234,10 @@ constructor(
                 guide.advance(player, TutorialStage.MAGIC_GUIDE_TALKED)
             }
             player.tutorialStage == TutorialStage.MAGIC_GUIDE_TALKED ->
-                chatNpc(neutral, "Open up your magic interface by clicking on the flashing icon.")
+                chatNpc(
+                    neutral,
+                    "All you have to do is open the magic interface by clicking on the flashing icon.",
+                )
             player.tutorialStage == TutorialStage.MAGIC_BOOK_OPENED -> {
                 chatNpc(
                     neutral,
@@ -902,8 +1252,26 @@ constructor(
                     guide.advance(player, TutorialStage.RUNES_GIVEN)
                 }
             }
-            player.tutorialStage == TutorialStage.RUNES_GIVEN ->
-                chatNpc(neutral, "You should try casting Wind Strike on one of those chickens.")
+            player.tutorialStage == TutorialStage.RUNES_GIVEN -> {
+                val hasRunes =
+                    player.inv.count(TutorialObj.AIR_RUNE) >= 1 &&
+                        player.inv.count(TutorialObj.MIND_RUNE) >= 1
+                if (hasRunes) {
+                    chatNpc(
+                        neutral,
+                        "Sorry, I don't have any more runes just now. But I see you have plenty.",
+                    )
+                } else if (access.giveTutorialItems(
+                        TutorialObj.AIR_RUNE to 5,
+                        TutorialObj.MIND_RUNE to 5,
+                    )
+                ) {
+                    mesbox(
+                        "Terrova gives you some <col=000080>air runes<col=000000> and " +
+                            "<col=000080>mind runes<col=000000>.",
+                    )
+                }
+            }
             player.tutorialStage == TutorialStage.COMPLETE -> finalMagicDialogue()
             player.tutorialStage >= TutorialStage.READY_TO_LEAVE ->
                 chatNpc(
@@ -936,16 +1304,18 @@ constructor(
                 chatPlayer(quiz, "What's an Ironman?")
                 chatNpc(
                     neutral,
-                    "An Ironman is a player who is entirely self-sufficient. Ironmen cannot trade " +
-                        "with other players, use the Grand Exchange, or take items from other " +
-                        "players' drops.",
+                    "If you're interested in that, you should go and ask the Ironman tutor before " +
+                        "you leave this island. He's standing outside my house.",
                 )
-                finalMagicDialogue()
                 return
             }
             2 -> {
                 chatPlayer(happy, "Yes, I do want to become an Ironman.")
-                access.ifOpenMainModal("interface.ironman_setup")
+                chatNpc(
+                    neutral,
+                    "If you're interested in that, you should go and ask the Ironman tutor before " +
+                        "you leave this island. He's standing outside my house.",
+                )
                 return
             }
             else -> chatPlayer(neutral, "No, I'm not planning to do that.")
@@ -970,26 +1340,128 @@ constructor(
     }
 
     private suspend fun Dialogue.ironmanTutor() {
-        chatNpc(
-            happy,
-            "Hello, ${player.displayName}. I'm the Ironman tutor. You can choose to become an " +
-                "Ironman while you're on Tutorial Island. Some things can't be changed later.",
-        )
-        when (choice3("Tell me about Ironmen.", 1, "I'd like to become an Ironman.", 2, "I'm fine, thanks.", 3)) {
-            1 ->
-                chatNpc(
-                    neutral,
-                    "An Ironman is a player who is entirely self-sufficient. Ironmen cannot trade " +
-                        "with other players, use the Grand Exchange, or take items from other " +
-                        "players' drops.",
+        if (player.isAnyIronman) {
+            chatPlayer(happy, "Hey there Paul.")
+            chatNpc(happy, "Hail, ${player.ironmanName()}! What can I do for you?")
+        } else {
+            chatNpc(
+                happy,
+                "Hello, ${player.displayName}. I'm Paul, the Ironman tutor. What can I do for you?",
+            )
+        }
+        while (true) {
+            when (
+                choice3(
+                    "Tell me about Ironman.",
+                    1,
+                    "I'd like to change my Ironman mode.",
+                    2,
+                    "I'm fine, thanks.",
+                    3,
                 )
-            2 -> {
-                chatPlayer(happy, "I'd like to become an Ironman.")
-                access.ifOpenMainModal("interface.ironman_setup")
+            ) {
+                1 -> aboutIronman()
+                2 -> {
+                    changeIronmanMode()
+                    return
+                }
+                else -> {
+                    chatPlayer(neutral, "I'm fine, thanks.")
+                    return
+                }
             }
-            else -> chatPlayer(neutral, "I'm fine, thanks.")
         }
     }
+
+    private suspend fun Dialogue.aboutIronman() {
+        chatPlayer(quiz, "Tell me about Ironmen.")
+        chatNpc(
+            neutral,
+            "When you play as an Ironman, you do everything for yourself. You don't trade with " +
+                "other players, or take their items, or accept their help.",
+        )
+        chatNpc(
+            neutral,
+            "As an Ironman, you choose to have these restrictions imposed on you, so everyone " +
+                "knows you're doing it properly.",
+        )
+        chatNpc(neutral, "If you think you have what it takes, you can choose to become a Hardcore Ironman.")
+        chatNpc(
+            neutral,
+            "In addition to the standard restrictions, Hardcore Ironmen only have one life. In " +
+                "the event of a dangerous death, your Hardcore Ironman status will be downgraded " +
+                "to that of a standard Ironman, and your stats will be frozen on the Hardcore " +
+                "Ironman hiscores.",
+        )
+        chatNpc(
+            neutral,
+            "If you have some friends, you could stand alone... Together, as Group Ironmen. Group " +
+                "Ironmen have the same restrictions as regular Ironmen except you can trade your " +
+                "items with each other!",
+        )
+        chatNpc(
+            neutral,
+            "If you are a daring bunch, you could even try Hardcore Group Ironmen. With Hardcore " +
+                "Group Ironmen you have a set number of lives, when they reach zero, you will " +
+                "become regular Group Ironmen.",
+        )
+        chatNpc(
+            neutral,
+            "If you ever decided to invite experienced players to your group, you would become " +
+                "Unranked Group Ironmen, which are no longer shown on the Group Ironman hiscores.",
+        )
+        chatNpc(
+            neutral,
+            "For the ultimate challenge, you can choose to become an Ultimate Ironman, a game " +
+                "mode inspired by the player IronNoBank.",
+        )
+        chatNpc(
+            neutral,
+            "In addition to the standard restrictions, Ultimate Ironmen are blocked from using " +
+                "the bank, and they drop all their items when they die.",
+        )
+        chatNpc(
+            neutral,
+            "While you're on Tutorial Island, you can switch freely between being a standard " +
+                "Ironman, an Ultimate Ironman, a Hardcore Ironman, a Group Ironman, a Hardcore " +
+                "Group Ironman or a regular character.",
+        )
+        chatNpc(
+            neutral,
+            "Once you've left this island, you'll be able to find my colleague Adam in Lumbridge, " +
+                "but he'll only let you switch your restrictions downwards, not upwards.",
+        )
+        chatNpc(
+            neutral,
+            "So he will let Hardcore Ironmen or Ultimate Ironmen downgrade to standard Ironmen, " +
+                "and he'll let all types of Ironman become normal players.",
+        )
+        chatNpc(
+            neutral,
+            "I must warn you that Ironman mode is not recommended for new players. You can still " +
+                "give it a go if you think you're up for the challenge though.",
+        )
+    }
+
+    private suspend fun Dialogue.changeIronmanMode() {
+        chatPlayer(quiz, "I'd like to change my Ironman mode.")
+        access.ifOpenMainModal("interface.ironman_setup")
+        chatNpc(
+            neutral,
+            "Make sure you've got your Ironman settings all sorted before you leave Tutorial " +
+                "Island. Some things can't be changed later.",
+        )
+    }
+
+    private fun Player.ironmanName(): String =
+        when (gamemode) {
+            PlayerGamemode.ULTIMATE_IRONMAN -> "Ultimate Ironman"
+            PlayerGamemode.HARDCORE_IRONMAN -> "Hardcore Ironman"
+            PlayerGamemode.GROUP_IRONMAN -> "Group Ironman"
+            PlayerGamemode.HARDCORE_GROUP_IRONMAN -> "Hardcore Group Ironman"
+            PlayerGamemode.UNRANKED_GROUP_IRONMAN -> "Unranked Group Ironman"
+            else -> "Ironman"
+        }
 
     private companion object {
         private const val FIRE_DURATION = 200

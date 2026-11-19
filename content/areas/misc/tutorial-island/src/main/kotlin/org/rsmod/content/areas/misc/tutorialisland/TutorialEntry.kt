@@ -82,6 +82,7 @@ constructor(
             player.beginName()
         } else {
             guide.apply(player, player.tutorialStage)
+            player.attr[LAST_RUN_STATE] = player.vars["varp.option_run"]
             player.softTimer(TUTORIAL_TIMER, 1)
         }
     }
@@ -282,6 +283,7 @@ constructor(
         if (!player.inTutorial) {
             return
         }
+        checkRunToggle(player)
         reconcileInterfaces(player)
         rules.nextStage(player)?.let { guide.advance(player, it) }
         if (player.tutorialStage == TutorialStage.WIND_STRIKE_RESOLVED) {
@@ -301,6 +303,23 @@ constructor(
             player.attr[HINT_TICKS] = ticks
         }
         player.softTimer(TUTORIAL_TIMER, 1)
+    }
+
+    private fun checkRunToggle(player: Player) {
+        val run = player.vars["varp.option_run"]
+        val last = player.attr[LAST_RUN_STATE]
+        if (last == null) {
+            player.attr[LAST_RUN_STATE] = run
+            return
+        }
+        if (run == last) {
+            return
+        }
+        player.attr[LAST_RUN_STATE] = run
+        if (player.tutorialStage == TutorialStage.QUEST_HOUSE_ENTERED) {
+            player.attr[RUN_TOGGLED] = true
+            guide.show(player, player.tutorialStage)
+        }
     }
 
     private fun reconcileInterfaces(player: Player) {
