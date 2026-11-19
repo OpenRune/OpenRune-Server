@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.herblore
 
+import org.rsmod.api.player.stat.SkillActivity
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.events.interact.HeldUDefaultEvents
@@ -136,6 +137,7 @@ constructor(
         if (potion.xp > 0) {
             statAdvance("stat.herblore", potion.xp / 10.0)
         }
+        SkillActivity.record(player, "make", potion.outputPotion.internalName)
 
         val itemForMessage = if (potion.secondaries.size > 1) {
             potion.unfPot

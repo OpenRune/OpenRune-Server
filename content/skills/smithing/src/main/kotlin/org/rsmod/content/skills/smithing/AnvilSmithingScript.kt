@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.smithing
 
+import org.rsmod.api.player.stat.SkillActivity
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -219,6 +220,7 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
             spam(forgedMessage(meta))
             val xp = meta.barCount * meta.bar.smithxp / 10.0 * xpMods.get(player, "stat.smithing")
             statAdvance("stat.smithing", xp)
+            SkillActivity.record(player, "smith", meta.product.internalName, count = meta.numProduced)
         }
     }
 

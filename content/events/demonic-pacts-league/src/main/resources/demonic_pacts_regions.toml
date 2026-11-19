@@ -9,6 +9,8 @@
 # underground tiles (z >= 6400) folded up onto the surface above them.
 #
 # `bit` is the save slot for the region. Never renumber an existing region.
+# `area` is the region's id in the client's League Areas map, and `teleport` [x, z, level] is where
+# its Teleport button lands (both from dbtable region_data).
 
 [[region]]
 key = "always"
@@ -22,12 +24,16 @@ raw_boxes = [
 
 [[region]]
 key = "varlamore"
+area = 21
+teleport = [1666, 3136, 0]
 name = "Varlamore"
 bit = 0
 boxes = [[1150, 2780, 1920, 3330]]
 
 [[region]]
 key = "karamja"
+area = 2
+teleport = [2777, 3173, 0]
 name = "Karamja"
 bit = 1
 raw_boxes = [
@@ -43,6 +49,8 @@ boxes = [
 
 [[region]]
 key = "asgarnia"
+area = 3
+teleport = [2967, 3383, 0]
 name = "Asgarnia"
 bit = 2
 unlockable = true
@@ -56,6 +64,8 @@ boxes = [
 
 [[region]]
 key = "desert"
+area = 6
+teleport = [3290, 3181, 0]
 name = "Kharidian Desert"
 bit = 3
 unlockable = true
@@ -66,6 +76,8 @@ boxes = [
 
 [[region]]
 key = "fremennik"
+area = 8
+teleport = [2661, 3657, 0]
 name = "Fremennik Provinces"
 bit = 4
 unlockable = true
@@ -79,6 +91,8 @@ boxes = [
 
 [[region]]
 key = "kandarin"
+area = 4
+teleport = [2682, 3305, 0]
 name = "Kandarin"
 bit = 5
 unlockable = true
@@ -89,6 +103,8 @@ boxes = [
 
 [[region]]
 key = "kourend"
+area = 20
+teleport = [1645, 3673, 0]
 name = "Kourend & Kebos"
 bit = 6
 unlockable = true
@@ -96,6 +112,8 @@ boxes = [[1150, 3331, 1950, 4100]]
 
 [[region]]
 key = "morytania"
+area = 5
+teleport = [3495, 3491, 0]
 name = "Morytania"
 bit = 7
 unlockable = true
@@ -107,6 +125,8 @@ boxes = [
 
 [[region]]
 key = "tirannwn"
+area = 7
+teleport = [3264, 6065, 0]
 name = "Tirannwn"
 bit = 8
 unlockable = true
@@ -115,6 +135,8 @@ boxes = [[2100, 2950, 2389, 3450]]
 
 [[region]]
 key = "wilderness"
+area = 11
+teleport = [3149, 3628, 0]
 name = "Wilderness"
 bit = 9
 unlockable = true
@@ -122,6 +144,8 @@ boxes = [[2940, 3521, 3400, 3970]]
 
 [[region]]
 key = "misthalin"
+area = 1
+teleport = [3234, 3213, 0]
 name = "Misthalin"
 bit = 10
 unlockable = false

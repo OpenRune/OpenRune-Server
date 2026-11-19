@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.runecrafting.action
 
+import org.rsmod.api.player.stat.SkillActivity
 import dev.openrune.types.ItemServerType
 import kotlin.math.floor
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -434,6 +435,7 @@ object RunecraftAction {
         }
 
         invAdd(inv, output.internalName, finalCount)
+        SkillActivity.record(player, "craft", output.internalName, count = finalCount)
         advanceRunecraftingXp(finalCount * (xp.toDouble() / 10.0), xpMods)
 
         if (wearingBinding) {

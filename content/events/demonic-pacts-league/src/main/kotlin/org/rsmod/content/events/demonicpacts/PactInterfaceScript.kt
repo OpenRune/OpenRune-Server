@@ -46,12 +46,6 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
         onIfOverlayButton(JOURNAL_LEAGUE_BUTTON) { player.openSidePanel() }
         onIfOverlayButton(SIDE_PANEL_PACTS_BUTTON) { player.openPactTree() }
         onIfOverlayButton(SIDE_PANEL_RELICS_BUTTON) { player.openRelics() }
-        onIfOverlayButton(SIDE_PANEL_TASKS_BUTTON) {
-            player.mes("Type ::tasks to list your league tasks.")
-        }
-        onIfOverlayButton(SIDE_PANEL_AREAS_BUTTON) {
-            player.mes("Type ::regions to see and unlock league regions.")
-        }
 
         onCommand("pacts") {
             desc = "Open the Demonic Pacts tree"
@@ -77,6 +71,7 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
 
     private fun Player.openSidePanel() {
         syncLeagueClientVars()
+        LeagueTasks.onEvent(this, "open_league_menu")
         ifOpenOverlay(SIDE_PANEL, JOURNAL_CONTAINER, eventBus)
     }
 
@@ -213,8 +208,6 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
         const val RESET_COMPONENT = "component.talent_tree:perm_floating_panel_content"
         const val SIDE_PANEL_PACTS_BUTTON = "component.league_side_panel:mastery_button"
         const val SIDE_PANEL_RELICS_BUTTON = "component.league_side_panel:relics_button"
-        const val SIDE_PANEL_TASKS_BUTTON = "component.league_side_panel:tasks_button"
-        const val SIDE_PANEL_AREAS_BUTTON = "component.league_side_panel:areas_button"
 
         /** talent_tree_init(int): 1 centres the tree, 0 keeps the current scroll position. */
         const val TALENT_TREE_INIT = 7892

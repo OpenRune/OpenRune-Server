@@ -13,9 +13,9 @@ type. Turn it on with `world-types: ["demonic_pacts_league"]` in `game.yml`.
 | Drops | Boosted drops 2×, rising to 5× at tier 4 (through the server's `boosted` drop flag). |
 | Run energy | Never drains. |
 | Relic tiers | Reached at 0, 600, 1,200, 2,600, 5,200, 8,500, 16,500 and 28,000 league points. Pick relics in Journal > Leagues > Relics. See "Relics that work" below. |
-| Regions | Varlamore from the start, Karamja at 80 tasks, then one chosen region at each of 200, 300 and 450 tasks. Misthalin is closed. Zanaris and the Abyss are always open. Walking or teleporting into a locked region bounces you back. |
-| Tasks | 210 starter tasks: region boss and monster kills, skill levels, total level, combat level, kill counts, and pact milestones. 10/30/80/200/400 points by difficulty. |
-| Pact points | 2 to start, 1 per pact task, plus 1 every 10 tasks (configurable). 44 can be earned, 40 can be held at once. 6 full resets. |
+| Regions | Varlamore from the start, Karamja at 80 tasks, then one chosen region at each of 200, 300 and 450 tasks, picked in Journal > Leagues > Areas (which also teleports to unlocked areas). Misthalin is closed. Zanaris and the Abyss are always open. Walking or teleporting into a locked region bounces you back. |
+| Tasks | The official 1,592-task list from the cache, shown in Journal > Leagues > Tasks. About 900 are detected automatically (levels, XP, kills and kill counts, equipping and owning items, gathering, cooking, smelting, smithing, crafting, runecrafting, herblore, thieving, firemaking, burying, implemented quests). The rest need `::taskdone <number>`. 10/30/80/200/400 points by difficulty. Tasks in locked areas can't be completed. |
+| Pact points | 2 to start, plus 1 every 10 tasks (configurable). 44 can be earned, 40 can be held at once. 6 full resets. |
 | Pact tree | All 132 nodes with their real connections. A node can be bought when it touches one you hold; the tree starts from `AA`. |
 
 ### Pact effects that work (52 of 132 nodes)
@@ -60,7 +60,7 @@ Harvest, Culling Spree, Flow State and Minion. Their items are still handed out.
 
 - The real pact tree and leagues interfaces. Everything runs through chat commands for now.
 - The relics listed as not in yet, echo bosses and echo orbs, the reward shop,
-  boosted minigame points, and the official task list.
+  and boosted minigame points.
 - Jagex's exact region borders; `demonic_pacts_regions.toml` uses hand-drawn boxes.
 
 ## Commands
@@ -72,7 +72,8 @@ Harvest, Culling Spree, Flow State and Minion. Their items are still handed out.
 | `::pact <id>` | One pact's effect and connections. |
 | `::pactbuy <id>` | Spend a pact point. |
 | `::pactreset confirm` | Clear every pact (uses a reset). |
-| `::tasks [todo\|done\|all\|<region>] [page]` | Task list. |
+| `::tasks [todo\|done\|all\|manual\|<region>\|<words>] [page]` | Task list in chat, with each task's number. |
+| `::taskdone <number>` | Admin: complete a task the server can't detect. |
 | `::regions` | Region status and free choices. |
 | `::unlockregion <key>` | Use a region choice. |
 | `::dpregion` | Which region the tile you stand on belongs to. |
@@ -88,7 +89,7 @@ Harvest, Culling Spree, Flow State and Minion. Their items are still handed out.
 | `src/main/resources/demonic_pacts.toml` | Settings: start tile, thresholds, points, pact limits, region lock switch. |
 | `src/main/resources/demonic_pacts_tree.toml` | The pact tree. |
 | `src/main/resources/demonic_pacts_regions.toml` | Region boxes. |
-| `src/main/resources/demonic_pacts_tasks.toml` | Tasks. |
+| `src/main/resources/demonic_pacts_league_tasks.toml` | The official task list with how each is tracked, generated from the cache (enum_5950, dbtable action). |
 | `pack/src/main/resources/pack/configs/demonic_pacts.toml` | Save varps. |
 
 Every node, region and task has a `bit`, its save slot. Add new entries with new bits; never

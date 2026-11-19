@@ -42,15 +42,6 @@ data class LeagueSettings(
             x in minX until minX + 64 + VIEW_MARGIN * 2 && z in minZ until minZ + 64 + VIEW_MARGIN * 2
         }
 
-    fun pointsFor(tier: String): Int =
-        when (tier.lowercase()) {
-            "easy" -> easyPoints
-            "medium" -> mediumPoints
-            "hard" -> hardPoints
-            "elite" -> elitePoints
-            "master" -> masterPoints
-            else -> 0
-        }
 }
 
 private const val VIEW_MARGIN = 56
@@ -82,22 +73,10 @@ data class LeagueRegion(
     @param:JsonProperty("name") val name: String,
     @param:JsonProperty("bit") val bit: Int,
     @param:JsonProperty("unlockable") val unlockable: Boolean = false,
+    @param:JsonProperty("area") val area: Int = -1,
+    @param:JsonProperty("teleport") val teleport: List<Int> = emptyList(),
     @param:JsonProperty("boxes") val boxes: List<List<Int>> = emptyList(),
     @param:JsonProperty("raw_boxes") val rawBoxes: List<List<Int>> = emptyList(),
-)
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class LeagueTask(
-    @param:JsonProperty("bit") val bit: Int,
-    @param:JsonProperty("id") val id: String,
-    @param:JsonProperty("name") val name: String,
-    @param:JsonProperty("tier") val tier: String,
-    @param:JsonProperty("region") val region: String = "general",
-    @param:JsonProperty("type") val type: String,
-    @param:JsonProperty("npc") val npc: String? = null,
-    @param:JsonProperty("stat") val stat: String? = null,
-    @param:JsonProperty("value") val value: Int = 0,
-    @param:JsonProperty("pact") val pact: Boolean = false,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -113,12 +92,9 @@ internal data class RegionFile(
     @param:JsonProperty("region") val regions: List<LeagueRegion> = emptyList()
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-internal data class TaskFile(@param:JsonProperty("task") val tasks: List<LeagueTask> = emptyList())
 
 object DemonicPactsData {
     const val MAX_PACT_BITS: Int = 192
-    const val MAX_TASK_BITS: Int = 256
 
     private val mapper: ObjectMapper = ObjectMapper(TomlFactory()).registerKotlinModule()
 
@@ -162,9 +138,6 @@ object DemonicPactsData {
 
     val regionsByKey: Map<String, LeagueRegion> by lazy { regions.associateBy { it.key } }
 
-    val tasks: List<LeagueTask> by lazy {
-        read<TaskFile>("demonic_pacts_tasks.toml").tasks.also { validateTasks(it) }
-    }
 
     private fun validateNodes(nodes: List<PactNode>) {
         require(nodes.isNotEmpty()) { "Demonic pact tree is empty." }
@@ -192,13 +165,6 @@ object DemonicPactsData {
         }
     }
 
-    private fun validateTasks(tasks: List<LeagueTask>) {
-        val bits = tasks.map { it.bit }
-        require(bits.size == bits.toSet().size) { "Duplicate task bits." }
-        require(bits.all { it in 0 until MAX_TASK_BITS }) { "Task bits must be 0-255." }
-        val ids = tasks.map { it.id }
-        require(ids.size == ids.toSet().size) { "Duplicate task ids." }
-    }
 
     private inline fun <reified T> read(resource: String): T {
         val stream =

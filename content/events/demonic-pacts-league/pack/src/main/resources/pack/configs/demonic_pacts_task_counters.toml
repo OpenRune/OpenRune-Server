@@ -1,0 +1,1067 @@
+# Progress counters for league tasks that need several kills or actions; see
+# demonic_pacts_league_tasks.toml for which task uses which counter.
+
+[[varp]]
+id = "varp.dp_task_count_0"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_1"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_2"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_3"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_4"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_5"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_6"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_7"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_8"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_9"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_10"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_11"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_12"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_13"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_14"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_15"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_16"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_17"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_18"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_19"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_20"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_21"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_22"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_23"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_24"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_25"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_26"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_27"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_28"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_29"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_30"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_31"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_32"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_33"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_34"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_35"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_36"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_37"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_38"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_39"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_40"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_41"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_42"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_43"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_44"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_45"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_46"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_47"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_48"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_49"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_50"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_51"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_52"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_53"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_54"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_55"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_56"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_57"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_58"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_59"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_60"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_61"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_62"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_63"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_64"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_65"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_66"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_67"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_68"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_69"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_70"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_71"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_72"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_73"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_74"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_75"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_76"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_77"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_78"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_79"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_80"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_81"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_82"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_83"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_84"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_85"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_86"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_87"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_88"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_89"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_90"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_91"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_92"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_93"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_94"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_95"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_96"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_97"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_98"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_99"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_100"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_101"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_102"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_103"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_104"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_105"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_106"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_107"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_108"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_109"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_110"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_111"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_112"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_113"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_114"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_115"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_116"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_117"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_118"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_119"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_120"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_121"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_122"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_123"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_124"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_125"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_126"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_127"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_128"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_129"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_130"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_131"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_132"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_133"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_134"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_135"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_136"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_137"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_138"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_139"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_140"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_141"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_142"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_143"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_144"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_145"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_146"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_147"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_148"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_149"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_150"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_151"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_152"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_153"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_154"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_155"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_156"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_157"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_158"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_159"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_160"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_161"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_162"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_163"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_164"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_165"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_166"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_167"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_168"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_169"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_170"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_171"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_172"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_173"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_174"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_175"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_176"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_177"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_178"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_179"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_180"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_181"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_182"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_183"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_184"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_185"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_186"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_187"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_188"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_189"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_190"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_191"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_192"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_193"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_194"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_195"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_196"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_197"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_198"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_199"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_200"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_201"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_202"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_203"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_204"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_205"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_206"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_207"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_208"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_209"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_210"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_211"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_task_count_212"
+scope = "Perm"
+transmit = "Never"

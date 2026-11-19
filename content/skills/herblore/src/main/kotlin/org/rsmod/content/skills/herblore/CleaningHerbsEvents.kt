@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.herblore
 
+import org.rsmod.api.player.stat.SkillActivity
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invTransaction
@@ -45,6 +46,7 @@ class CleaningHerbsEvents : PluginScript() {
             add(inventory, row.output.id, 1)
         }
         if (result.failure) return
+        SkillActivity.record(player, "clean", row.input.internalName, row.output.internalName)
 
         if (row.xp > 0) {
             statAdvance("stat.herblore", row.xp / 10.0)

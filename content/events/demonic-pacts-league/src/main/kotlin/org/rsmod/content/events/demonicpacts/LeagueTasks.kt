@@ -1,58 +1,126 @@
 package org.rsmod.content.events.demonicpacts
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.content.quest.manager.Quest
 import org.rsmod.game.entity.Player
 
 private const val DROP_RATE_VARP = "varp.drop_rate_multiplier"
+private const val SPELLBOOK_VARBIT = "varbit.spellbook"
 
 object LeagueTasks {
+    private val byTrack: Map<String, List<OfficialTask>> by lazy { OfficialTasks.all.groupBy { it.track } }
+
+    private val tickTracks =
+        listOf(
+            "level",
+            "level_any",
+            "level_all",
+            "total_level",
+            "combat_level",
+            "xp",
+            "xp_noncombat",
+            "xp_combat",
+            "equip",
+            "equip_piece",
+            "equip_set",
+            "obtain",
+            "quest",
+            "spellbook",
+        )
+
+    private val questsByName: Map<String, Quest> by lazy {
+        Quest.all().associateBy { it.displayName.lowercase() }
+    }
+
     fun onKill(player: Player, npcName: String) {
         player.leagueTotalKills += 1
-        for (task in DemonicPactsData.tasks) {
-            if (task.type != "kill" || player.isTaskDone(task)) {
-                continue
-            }
-            if (task.npc.equals(npcName, ignoreCase = true) && player.canProgress(task)) {
-                complete(player, task)
+        for (task in byTrack["kill"].orEmpty()) {
+            if (task.npcs.any { OfficialTasks.namesMatch(npcName, it, allowShorter = true) }) {
+                progress(player, task, 1)
             }
         }
-        checkProgress(player)
+    }
+
+    /**
+     * A finished skilling action. [subjects] are `obj.` symbols or plain names; a task matches
+     * when its verb is [action] and one of its names matches one of them.
+     */
+    fun onActivity(player: Player, action: String, subjects: List<String>, count: Int, stat: String? = null) {
+        val names = subjects.map(::displayName).filter { it.isNotEmpty() }
+        if (names.isEmpty()) {
+            return
+        }
+        for (task in byTrack["action"].orEmpty()) {
+            if (task.action != action || (task.stat != null && task.stat != stat)) {
+                continue
+            }
+            if (task.items.any { wanted -> names.any { OfficialTasks.namesMatch(it, wanted) } }) {
+                progress(player, task, count)
+            }
+        }
+    }
+
+    fun onEvent(player: Player, event: String) {
+        for (task in byTrack["event"].orEmpty()) {
+            if (task.event == event) {
+                progress(player, task, 1)
+            }
+        }
     }
 
     fun checkProgress(player: Player) {
-        for (task in DemonicPactsData.tasks) {
-            if (task.type == "kill" || player.isTaskDone(task) || !player.canProgress(task)) {
-                continue
-            }
-            if (player.meets(task)) {
-                complete(player, task)
+        for (track in tickTracks) {
+            for (task in byTrack[track].orEmpty()) {
+                if (!player.isTaskDone(task) && player.canProgress(task) && player.meets(task)) {
+                    complete(player, task)
+                }
             }
         }
     }
 
-    fun complete(player: Player, task: LeagueTask) {
+    private fun progress(player: Player, task: OfficialTask, amount: Int) {
+        if (player.isTaskDone(task) || !player.canProgress(task)) {
+            return
+        }
+        val counter = task.counter
+        if (counter == null || task.count <= 1) {
+            complete(player, task)
+            return
+        }
+        val total = (player.vars[counter] + amount).coerceAtMost(task.count)
+        VarPlayerIntMapSetter.set(player, counter, total)
+        if (total >= task.count) {
+            complete(player, task)
+        }
+    }
+
+    fun complete(player: Player, task: OfficialTask, announce: Boolean = true) {
+        if (player.isTaskDone(task)) {
+            return
+        }
         val settings = DemonicPactsData.settings
         val tierBefore = player.relicTier()
-        val points = settings.pointsFor(task.tier)
+        val points = OfficialTasks.pointsFor(task)
 
         player.setTaskDone(task)
         player.leagueTasksDone += 1
         player.leaguePoints += points
-        player.mes(
-            "<col=ef1020>League task completed: ${task.name} (${task.tier}, +$points points)."
-        )
+        if (announce) {
+            player.mes("<col=ef1020>League task completed: ${task.name} (+$points points).")
+        }
 
         val bonusEvery = settings.bonusPactPointEveryTasks
-        val bonus = bonusEvery > 0 && player.leagueTasksDone % bonusEvery == 0
-        if (task.pact || bonus) {
+        if (bonusEvery > 0 && player.leagueTasksDone % bonusEvery == 0) {
             grantPactPoint(player)
         }
 
         val tierAfter = player.relicTier()
         if (tierAfter > tierBefore) {
-            player.mes("<col=ef1020>You have reached relic tier $tierAfter!")
+            player.mes("<col=ef1020>You have reached relic tier $tierAfter! Choose a relic in Journal > Leagues > Relics.")
             player.mes(LeagueRates.describe(player))
         }
         refreshDropRate(player)
@@ -69,7 +137,7 @@ object LeagueTasks {
         player.syncLeagueClientVars()
         player.mes(
             "<col=ef1020>You earned a pact point. Unspent: ${player.pactPointsAvailable()}. " +
-                "Spend it with ::pacts."
+                "Spend it in the pact tree."
         )
     }
 
@@ -92,30 +160,74 @@ object LeagueTasks {
                 player.leagueTasksDone >= settings.karamjaTasks
         ) {
             player.unlockRegion(karamja)
+            player.syncAreaSelections()
             player.mes("<col=ef1020>Karamja is now unlocked!")
         }
         if (settings.regionTaskThresholds.contains(player.leagueTasksDone)) {
-            player.mes("<col=ef1020>You can choose a new region to unlock. See ::regions.")
+            player.mes("<col=ef1020>You can unlock a new area. Open Journal > Leagues > Areas.")
         }
     }
 
-    private fun Player.canProgress(task: LeagueTask): Boolean {
-        if (task.region == "general") {
-            return true
-        }
-        val region = DemonicPactsData.regionsByKey[task.region] ?: return true
+    fun canProgress(player: Player, task: OfficialTask): Boolean = player.canProgress(task)
+
+    private fun Player.canProgress(task: OfficialTask): Boolean {
+        val region = OfficialTasks.regionFor(task) ?: return true
         return hasRegion(region)
     }
 
-    private fun Player.meets(task: LeagueTask): Boolean =
-        when (task.type) {
-            "kills" -> leagueTotalKills >= task.value
+    private fun Player.meets(task: OfficialTask): Boolean =
+        when (task.track) {
             "level" -> task.stat != null && statBase(task.stat) >= task.value
+            "level_any" -> LEAGUE_STATS.any { it != HITPOINTS && statBase(it) >= task.value }
+            "level_all" -> LEAGUE_STATS.all { statBase(it) >= task.value }
             "total_level" -> leagueTotalLevel() >= task.value
             "combat_level" -> combatLevel >= task.value
-            "pacts_owned" -> ownedPacts().size >= task.value
+            "xp" -> task.stat != null && statMap.getXP(task.stat) >= task.value
+            "xp_noncombat" -> LEAGUE_STATS.any { it !in COMBAT_STATS && statMap.getXP(it) >= task.value }
+            "xp_combat" -> COMBAT_STATS.any { it != PRAYER && statMap.getXP(it) >= task.value }
+            "equip" -> wearsAll(task)
+            "equip_piece" -> wornNames().any { task.match != null && it.contains(task.match) }
+            "equip_set" -> wornNames().count { task.match != null && it.contains(task.match) } >= SET_PIECES
+            "obtain" -> holds(task)
+            "quest" -> questsByName[task.quest?.lowercase()]?.isQuestCompleted(this) == true
+            "spellbook" -> vars[SPELLBOOK_VARBIT].toLong() == task.value
             else -> false
         }
+
+    private fun Player.wornNames(): List<String> =
+        worn.mapNotNull { obj -> obj?.let { OfficialTasks.itemName(it.id) } }
+
+    private fun Player.wearsAll(task: OfficialTask): Boolean {
+        val groups = OfficialTasks.itemGroups(task) ?: return false
+        val wornIds = worn.mapNotNull { it?.id }.toSet()
+        return groups.all { group -> group.any { it in wornIds } }
+    }
+
+    private fun Player.holds(task: OfficialTask): Boolean {
+        val group = OfficialTasks.itemGroups(task)?.firstOrNull() ?: return false
+        val bank = invMap.getOrPut("inv.bank")
+        var total = 0L
+        for (container in listOf(inv, worn, bank)) {
+            for (obj in container) {
+                if (obj != null && obj.id in group) {
+                    total += obj.count
+                }
+            }
+        }
+        return total >= task.count
+    }
+
+    private fun displayName(subject: String): String {
+        if (!subject.startsWith("obj.")) {
+            return subject.lowercase()
+        }
+        val id = runCatching { subject.asRSCM(RSCMType.OBJ) }.getOrNull() ?: return ""
+        return OfficialTasks.itemName(id)
+    }
+
+    private const val HITPOINTS = "stat.hitpoints"
+    private const val PRAYER = "stat.prayer"
+    private const val SET_PIECES = 3
 }
 
 object LeagueRates {

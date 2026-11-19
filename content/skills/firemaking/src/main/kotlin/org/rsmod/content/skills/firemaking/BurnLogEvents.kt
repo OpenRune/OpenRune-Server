@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.firemaking
 
+import org.rsmod.api.player.stat.SkillActivity
 import dev.openrune.map.MapSingletons.collision
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
@@ -172,6 +173,7 @@ public class BurnLogEvents @Inject constructor(
         val xpModifier = xpMods.get(player, "stat.firemaking")
         val xp = task.log.xp * task.method.xpMultiplier(task.log.input.internalName) * xpModifier
         statAdvance("stat.firemaking", xp)
+        SkillActivity.record(player, "burn_log", task.log.input.internalName)
         mes("The fire catches and the logs begin to burn.")
 
         moveAwayFromFire(fireCoords)

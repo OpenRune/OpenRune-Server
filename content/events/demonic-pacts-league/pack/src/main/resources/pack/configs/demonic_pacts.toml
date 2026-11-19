@@ -112,3 +112,13 @@ transmit = "Never"
 id = "varp.dp_flask_ready"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+id = "varp.dp_official_tasks"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_area_viewing"
+scope = "Temp"
+transmit = "Never"

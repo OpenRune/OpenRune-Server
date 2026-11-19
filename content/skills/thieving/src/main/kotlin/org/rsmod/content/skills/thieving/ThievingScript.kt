@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.thieving
 
+import org.rsmod.api.player.stat.SkillActivity
 import org.rsmod.api.player.stat.SkillModifiers
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
@@ -81,6 +82,8 @@ constructor(
         }
         mes("You steal ${describe(loot.obj, count)}.")
         statAdvance(THIEVING, stall.xp)
+        SkillActivity.record(player, "steal", loot.obj, count = count)
+        SkillActivity.record(player, "steal_from", locName(loc))
         restock(loc, stall)
     }
 
@@ -163,6 +166,10 @@ constructor(
             mes("You steal ${describe(loot.obj, count)}.", ChatType.Spam)
         }
         statAdvance(THIEVING, target.xp)
+        SkillActivity.record(player, "pickpocket", npc.name)
+        if (loot != null) {
+            SkillActivity.record(player, "steal", loot.obj, count = count)
+        }
     }
 
     private fun ProtectedAccess.openPouches(pouch: CoinPouch, all: Boolean) {
@@ -206,6 +213,8 @@ constructor(
         player.routeDestination.clear()
         player.timer(FREEZE_TIMER, STUN_TICKS)
     }
+
+    private fun locName(loc: BoundLocInfo): String = ServerCacheManager.getObject(loc.id)?.name ?: ""
 
     private fun pocketOwner(npc: Npc, target: Pickpocket): String {
         target.pocketName?.let { return it }

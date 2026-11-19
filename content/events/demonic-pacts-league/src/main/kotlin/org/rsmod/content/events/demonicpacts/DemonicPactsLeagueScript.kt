@@ -50,7 +50,8 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
     override fun ScriptContext.startup() {
         logger.info {
             "Demonic Pacts League: ${DemonicPactsData.nodes.size} pacts, " +
-                "${DemonicPactsData.regions.size} regions, ${DemonicPactsData.tasks.size} tasks."
+                "${DemonicPactsData.regions.size} regions, ${OfficialTasks.all.size} tasks " +
+                "(${OfficialTasks.all.count { OfficialTasks.isTracked(it) }} tracked automatically)."
         }
         installModifiers()
 
@@ -118,7 +119,14 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
         if (clearLegacyPacts()) {
             mes("<col=ef1020>The pact tree was rebuilt from the game's own data: your pacts were refunded.")
         }
+        if (migrateToOfficialTasks()) {
+            mes(
+                "<col=ef1020>Your league now uses the official task list (${OfficialTasks.all.size} tasks). " +
+                    "Old task progress and points were reset; tasks you already meet complete now."
+            )
+        }
         onPactsChanged()
+        LeagueTasks.onEvent(this, "login")
         if (settings.nearBrokenMapSquare(coords.x, coords.z)) {
             moveTo(startCoord)
             mes("You were moved away from an area this cache cannot load.")
@@ -234,8 +242,21 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
             cheat { player.resetPacts(args.firstOrNull()) }
         }
         onCommand("tasks") {
-            desc = "List league tasks: ::tasks [region|todo|done] [page]"
+            desc = "List league tasks: ::tasks [todo|done|all|manual|<region>|<words>] [page]"
             cheat { player.listTasks(args) }
+        }
+        onCommand("taskdone") {
+            desc = "Admin: complete a league task the server can't detect: ::taskdone <number>"
+            invalidArgs = "Use ::taskdone <number>; ::tasks shows each task's number."
+            requiredRights = Rights.ADMINISTRATOR
+            cheat {
+                val task = args[0].toIntOrNull()?.let { OfficialTasks.byIndex[it] }
+                when {
+                    task == null -> player.mes("There is no task number ${args[0]}.")
+                    player.isTaskDone(task) -> player.mes("${task.name} is already complete.")
+                    else -> LeagueTasks.complete(player, task)
+                }
+            }
         }
         onCommand("regions") {
             desc = "List league regions and unlock slots"
@@ -294,7 +315,7 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
         val nextText = if (next != null) " (next tier at $next)" else ""
         mes("<col=ef1020>Demonic Pacts League")
         mes("Points: $leaguePoints, relic tier $tier$nextText.")
-        mes("Tasks: $leagueTasksDone of ${DemonicPactsData.tasks.size}. Kills: $leagueTotalKills.")
+        mes("Tasks: $leagueTasksDone of ${OfficialTasks.all.size}. Kills: $leagueTotalKills.")
         mes(LeagueRates.describe(this))
         mes(
             "Pacts: ${ownedPacts().size} held, ${pactPointsAvailable()} to spend, " +
@@ -380,15 +401,24 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
     }
 
     private fun Player.listTasks(args: List<String>) {
-        val filter = args.firstOrNull()?.lowercase() ?: "todo"
-        val page = (args.getOrNull(1)?.toIntOrNull() ?: 1).coerceAtLeast(1)
+        val page = args.lastOrNull()?.toIntOrNull()?.coerceAtLeast(1) ?: 1
+        val words = (if (args.lastOrNull()?.toIntOrNull() != null) args.dropLast(1) else args)
+        val filter = words.joinToString(" ").lowercase().ifEmpty { "todo" }
         val tasks =
-            DemonicPactsData.tasks.filter { task ->
+            OfficialTasks.all.filter { task ->
                 when (filter) {
-                    "todo" -> !isTaskDone(task)
+                    "todo" -> !isTaskDone(task) && LeagueTasks.canProgress(this, task)
                     "done" -> isTaskDone(task)
                     "all" -> true
-                    else -> task.region == filter
+                    "manual" -> !OfficialTasks.isTracked(task) && !isTaskDone(task)
+                    else -> {
+                        val region = DemonicPactsData.regionsByKey[filter]
+                        if (region != null) {
+                            OfficialTasks.regionFor(task) == region
+                        } else {
+                            task.name.lowercase().contains(filter) || task.desc.lowercase().contains(filter)
+                        }
+                    }
                 }
             }
         val pages = max(1, (tasks.size + TASKS_PER_PAGE - 1) / TASKS_PER_PAGE)
@@ -396,12 +426,15 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
         mes("<col=ef1020>Tasks: $filter, page $page of $pages (${tasks.size} tasks)")
         for (task in shown) {
             val done = if (isTaskDone(task)) "<col=00ff00>[done]</col> " else ""
-            val pact = if (task.pact) " <col=ff981f>[pact]</col>" else ""
-            mes("$done${task.name} - ${task.tier}, ${task.region}$pact")
+            val manual = if (OfficialTasks.isTracked(task)) "" else " <col=ff981f>[manual]</col>"
+            val counter = task.counter
+            val progress = if (counter != null && !isTaskDone(task)) " (${vars[counter]}/${task.count})" else ""
+            mes("$done#${task.index} ${task.name}: ${task.desc}$progress$manual")
         }
         if (page < pages) {
             mes("::tasks $filter ${page + 1} for more.")
         }
+        mes("Tasks marked [manual] can't be detected here; complete them with ::taskdone <number>.")
     }
 
     private fun Player.listRegions() {
@@ -434,6 +467,7 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
                 mes("You need more completed tasks before choosing another region.")
             else -> {
                 unlockRegion(region)
+                syncLeagueClientVars()
                 mes("<col=ef1020>${region.name} is now unlocked!")
                 LeagueTasks.checkProgress(this)
             }

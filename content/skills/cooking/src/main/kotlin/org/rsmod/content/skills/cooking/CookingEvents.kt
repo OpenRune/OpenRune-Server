@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.cooking
 
+import org.rsmod.api.player.stat.SkillActivity
 import org.rsmod.api.player.stat.SkillModifiers
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -220,11 +221,13 @@ class CookingEvents @Inject constructor(
 
         if (burned) {
             invAdd(inv, food.burnt.internalName, 1)
+            SkillActivity.record(player, "burn_food", food.burnt.internalName, food.raw.internalName)
             spam("You accidentally burn the ${food.cooked.name.lowercase()}.")
         } else {
             invAdd(inv, food.cooked.internalName, 1)
             val xpModifier = xpMods.get(player, "stat.cooking")
             statAdvance("stat.cooking", food.xp.toDouble() * xpModifier)
+            SkillActivity.record(player, "cook", food.cooked.internalName, food.raw.internalName)
             spam("You successfully cook the ${food.cooked.name.lowercase()}.")
         }
     }

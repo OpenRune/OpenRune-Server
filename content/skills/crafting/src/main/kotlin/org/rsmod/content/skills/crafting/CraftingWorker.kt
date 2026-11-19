@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.crafting
 
+import org.rsmod.api.player.stat.SkillActivity
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -241,6 +242,7 @@ suspend fun ProtectedAccess.craftOnce(product: CraftingProduct): Boolean {
         consumeThreadCharge()
     }
 
+    SkillActivity.record(player, "craft", product.output, count = product.outputCount)
     advanceCraftingXp(CraftingConstants.STAT_CRAFTING, product.xp)
     product.extraXp.forEach { advanceCraftingXp(it.stat, it.xp) }
     val resultDialogue = product.resultDialogue

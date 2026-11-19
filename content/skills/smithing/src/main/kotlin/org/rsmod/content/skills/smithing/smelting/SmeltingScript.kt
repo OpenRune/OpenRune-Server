@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.smithing.smelting
 
+import org.rsmod.api.player.stat.SkillActivity
 import jakarta.inject.Inject
 import kotlin.random.Random
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -246,6 +247,7 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
         if (!invAdd(inv, bar.output.internalName, bars).success) {
             return bars
         }
+        SkillActivity.record(player, "smelt", bar.output.internalName, count = bars)
         repeat(bars) {
             val xp = SmithingSmeltXp.resolve(player, inv, bar, isSuperHeat, xpMods, regularFurnace)
             statAdvance("stat.smithing", xp)
