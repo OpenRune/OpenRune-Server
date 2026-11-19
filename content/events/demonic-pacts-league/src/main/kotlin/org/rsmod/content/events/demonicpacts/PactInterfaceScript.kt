@@ -77,8 +77,8 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
             is PactApply.Applied -> {
                 val noun = if (result.count == 1) "pact" else "pacts"
                 mes("<col=ef1020>You make ${result.count} new $noun with Yama.")
-                val unimplemented =
-                    nodes.mapNotNull { DemonicPactsData.nodesByBit[it] }.count { !it.isImplemented }
+                val bought = nodes.toList().mapNotNull { DemonicPactsData.nodesByBit[it] }
+                val unimplemented = bought.count { !it.isImplemented }
                 if (unimplemented > 0) {
                     mes("$unimplemented of them have no effect on this server yet. ::pactlist owned")
                 }
