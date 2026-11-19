@@ -119,6 +119,7 @@ internal object TutorialNpc {
     const val BROTHER_BRACE = "npc.brother_noob"
     const val MAGIC_INSTRUCTOR = "npc.newbie_magic_instructor"
     const val IRONMAN_TUTOR = "npc.ironman_tutor_2"
+    const val IRONMAN_TUTOR_VISIBLE = "npc.ironman_tutor_2_visible"
     const val GIANT_RAT = "npc.newbiegiantrat"
     const val GIANT_RAT_2 = "npc.newbiegiantrat2"
     const val GIANT_RAT_3 = "npc.newbiegiantrat3"

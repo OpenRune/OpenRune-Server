@@ -75,6 +75,7 @@ constructor(
         onOpNpc1(TutorialNpc.BROTHER_BRACE) { startDialogue(it.npc) { brotherBrace() } }
         onOpNpc1(TutorialNpc.MAGIC_INSTRUCTOR) { startDialogue(it.npc) { magicInstructor() } }
         onOpNpc1(TutorialNpc.IRONMAN_TUTOR) { startDialogue(it.npc) { ironmanTutor() } }
+        onOpNpc1(TutorialNpc.IRONMAN_TUTOR_VISIBLE) { startDialogue(it.npc) { ironmanTutor() } }
     }
 
     private fun ScriptContext.bindDoors() {
@@ -1391,7 +1392,12 @@ constructor(
                     "Excellent, I think that covers everything. When you're ready to go, use your " +
                         "home teleport spell to teleport to Lumbridge!",
                 )
-            else -> chatNpc(happy, "Magic is a powerful skill. Keep practising.")
+            else ->
+                chatNpc(
+                    neutral,
+                    "Click on the Wind Strike spell in your magic interface, then click on a " +
+                        "chicken to cast it.",
+                )
         }
     }
 
