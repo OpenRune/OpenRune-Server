@@ -60,3 +60,27 @@ inherit = "npc.swordshop2"
 "param.shop_sell_percentage" = 1000
 "param.shop_buy_percentage" = 600
 "param.shop_change_percentage" = 20
+
+[[npc]]
+isServerOnly = true
+id = "npc.vm_info_booth_lady"
+inherit = "npc.vm_info_booth_lady"
+respawnDir = "East"
+wanderRange = 0
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vm_museum_guard"
+inherit = "npc.vm_museum_guard"
+respawnDir = "South"
+wanderRange = 0
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.vm_museum_guard3"
+inherit = "npc.vm_museum_guard3"
+respawnDir = "West"
+wanderRange = 0
+moveRestrict = "NoMove"

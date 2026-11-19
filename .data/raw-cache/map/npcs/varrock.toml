@@ -870,10 +870,6 @@ coords = "0_50_53_61_10"
 npc = "npc.weaponsmaster"
 coords = "1_50_52_46_56"
 
-[[spawn]]
-npc = "npc.weaponsmaster_vis"
-coords = "1_50_52_46_56"
-
 ## Varrock Jolly Boar Inn
 
 [[spawn]]

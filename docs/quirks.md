@@ -176,3 +176,52 @@ the Falador park gardener (rev 235) and Hector's chest (rev 232). Known differen
 - Taking the white apron in Gerrant's shop is an ordinary ground item pickup, without the
   "freshly starched" message.
 - Chathead expressions for Frank, Luthas, Wydin and the customs officer are chosen by hand.
+
+## Shield of Arrav
+
+Built from the OSRS wiki transcripts and RSProx captures of a Black Arm run (rev 227), a
+finished Black Arm player at the doors and NPCs (rev 232) and a Leagues auto-completion
+(rev 237). No capture of the Phoenix route exists. Known differences:
+
+- The quest needs a partner from the other gang. On this single-player server that partner is
+  NotArrav, Arrav wearing odd spectacles (with their fake moustache). He uses `multivar` on the
+  gang varps, so a player only sees him where they need the other gang's item: on the road
+  north of the Varrock south gate while a Black Arm player is on the crossbow task (weapon
+  store key, 500 coins), and in the Varrock Museum after the curator step for either gang's
+  certificate swap (500 coins for Black Arm, 1,000 for Phoenix, plus one of the player's two
+  spare halves, as with a real partner). Both gangs spend 1,000 coins. He sells only while
+  the player has none of that item (bank and worn included) and no full certificate, and he
+  is gone once the quest is complete. While a player who needs him is within 6 tiles he calls
+  out to them by name ("Psst! Over here, [name]!") every 30 ticks.
+- Using a quest item on another player ("Drop your key for ... to take?") is not implemented.
+- The Phoenix-side values of `phoenixgang` come from the cache and Quest Helper, not a
+  capture: Straven's task sets 8 (Jonny becomes attackable), showing the report sets 9
+  (Jonny disappears for that player) and King Roald sets 10. The tick each is set on, Jonny's
+  fight and the Phoenix chest are not captured. The chest opens for 2 ticks like the Black
+  Arm cupboard.
+- The Phoenix door and the weapons depot door have no open-door loc in the cache, and rev 227
+  shows no door change for the depot. They use a custom `phoenixdoor_open` (the same model).
+  All three gang doors stay open a tick longer than the Black Arm door's 2 ticks in rev 232
+  (and one more when the player opens them from beside the door), because the player is
+  stepped through a tick after the door opens.
+- The Varrock Museum's information clerk and two guards wandered; they now stand still
+  facing the way they do in capture 1710.
+- The Black Arm hideout stairs land the player where capture 1710 does; the generic
+  auto-travel landing put them next to the stairs, out of reach of the cupboard.
+- Paying Charlie for the Phoenix Gang's location does not lock the player out of the Phoenix
+  route. The wiki's journal implies it does, but no dialogue for that case is documented.
+- `weaponsmaster_vis` was spawned on the same tile as `weaponsmaster` in the map data; the
+  extra spawn is removed so the weaponsmaster can disappear for a player who killed him.
+- The intel report is shown to Straven and kept, not handed over.
+- Messages with no source, written to match nearby ones: "You search the bookcase but find
+  nothing of interest." away from the quest, the inventory-full lines at the curator, King
+  Roald, Straven, NotArrav and the bookcase, Charlie's "Oh wait. I haven't got enough,
+  sorry." when the player can't pay him, "You can't attack Jonny the Beard." and "The door is
+  locked." for the Phoenix door when Straven isn't next to it.
+- The book's page breaks are chosen by hand to fill the six pages the wiki shows.
+- The certificate, intel report and broken shield have no Read or Inspect text; those ops
+  still give the default message.
+- The curator only has the Shield of Arrav, treasure and medallion topics; Bone Voyage and
+  Fossil Island topics come with those quests. King Roald only has the Shield of Arrav and
+  lamp topics. Baraek has no Ring of Charos(a) or Treasure Trail dialogue.
+- Chathead expressions are chosen by hand.

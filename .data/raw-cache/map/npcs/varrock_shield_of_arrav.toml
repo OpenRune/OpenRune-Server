@@ -1,0 +1,11 @@
+[[spawn]]
+npc = "npc.notarrav_blackarm"
+coords = "0_50_52_14_62"
+
+[[spawn]]
+npc = "npc.notarrav_blackarm_museum"
+coords = "0_50_53_53_57"
+
+[[spawn]]
+npc = "npc.notarrav_phoenix"
+coords = "0_50_53_53_57"
