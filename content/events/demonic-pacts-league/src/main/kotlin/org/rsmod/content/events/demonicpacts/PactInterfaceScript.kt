@@ -98,8 +98,9 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
         val tier = LeagueRelics.tiers[relic.tier]
         val state =
             when {
-                LeagueRelics.selection(player, relic.tier) == relic.key -> RELIC_STATE_OWNED
+                LeagueRelics.owns(player, relic) -> RELIC_STATE_OWNED
                 LeagueRelics.canSelect(player, relic) -> RELIC_STATE_SELECTABLE
+                LeagueRelics.canReload(player, relic) -> RELIC_STATE_RELOADABLE
                 else -> RELIC_STATE_LOCKED
             }
         VarPlayerIntMapSetter.set(player, RELIC_VIEWING, clickzone + 1)
@@ -112,13 +113,16 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
     private fun ProtectedAccess.confirmRelic() {
         val viewing = player.vars[RELIC_VIEWING] - 1
         val relic = LeagueRelics.byClickzone[viewing] ?: return
-        if (!LeagueRelics.canSelect(player, relic)) {
-            mes("You can't unlock that relic right now.")
-            return
+        when {
+            LeagueRelics.canSelect(player, relic) -> LeagueRelics.select(player, relic)
+            LeagueRelics.canReload(player, relic) -> LeagueRelics.selectReloaded(player, relic)
+            else -> {
+                mes("You can't unlock that relic right now.")
+                return
+            }
         }
-        LeagueRelics.select(player, relic)
         mes("<col=ef1020>You unlock the ${relic.name} relic.")
-        mes("Relic effects aren't active on this server yet; your choice is saved for when they are.")
+        RelicEffects.onUnlocked(player, relic)
         player.openRelics()
     }
 
@@ -183,6 +187,7 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
         const val RELIC_STATE_OWNED = 1
         const val RELIC_STATE_SELECTABLE = 2
         const val RELIC_STATE_LOCKED = 3
+        const val RELIC_STATE_RELOADABLE = 5
         const val NO_PASSIVE = -1
         val EXPANDED_VIEW_COMPONENTS =
             listOf(

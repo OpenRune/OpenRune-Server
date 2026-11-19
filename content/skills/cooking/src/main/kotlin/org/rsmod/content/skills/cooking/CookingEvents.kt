@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.cooking
 
+import org.rsmod.api.player.stat.SkillModifiers
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.cookingLvl
@@ -95,6 +96,7 @@ class CookingEvents @Inject constructor(
 
     private fun ProtectedAccess.isBurned(food: CookingFoodsRow, surface: CookingSurface): Boolean {
         if (hasCookingCape()) return false
+        if (SkillModifiers.alwaysSucceeds(player, "stat.cooking")) return false
 
         val isRange = surface is CookingSurface.Range
         val baseStop = if (isRange) food.stopBurnRange else food.stopBurnFire

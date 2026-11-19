@@ -119,7 +119,7 @@ constructor(
         }
 
         var cutLogs = false
-        val despawn: Boolean
+        var despawn: Boolean
 
         if (actionDelay < mapClock) {
             actionDelay = mapClock + 3
@@ -152,6 +152,9 @@ constructor(
                 )
             if (awardSkillingProduct(product) == SkillingAwardResult.Success) {
                 spam("You get some ${logs.name.lowercase()}.")
+            }
+            if (!product.depletes) {
+                despawn = false
             }
         }
 

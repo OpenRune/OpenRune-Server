@@ -15,6 +15,7 @@ import org.rsmod.api.spells.runes.compact.CompactRuneRepository
 import org.rsmod.api.spells.runes.fake.FakeRuneRepository
 import org.rsmod.api.spells.runes.staves.StaffSubstituteRepository
 import org.rsmod.api.spells.runes.subs.RuneSubstituteRepository
+import org.rsmod.api.spells.runes.unlimited.InventoryRuneSources
 import org.rsmod.api.spells.runes.unlimited.UnlimitedRuneRepository
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -239,6 +240,10 @@ public object MagicRunes {
         }
 
         if (unlimited.isHighPrioritySource(rune, righthand, lefthand)) {
+            return Validation.Valid.Unlimited
+        }
+
+        if (InventoryRuneSources.provides(inv, rune.id)) {
             return Validation.Valid.Unlimited
         }
 

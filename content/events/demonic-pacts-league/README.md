@@ -12,7 +12,7 @@ type. Turn it on with `world-types: ["demonic_pacts_league"]` in `game.yml`.
 | XP | 5× at relic tier 1, 8× at tier 2, 12× at tier 4, 16× at tier 6. Combat stats get another 1.5× from tier 3. |
 | Drops | Boosted drops 2×, rising to 5× at tier 4 (through the server's `boosted` drop flag). |
 | Run energy | Never drains. |
-| Relic tiers | Reached at 0, 600, 1,200, 2,600, 5,200, 8,500, 16,500 and 28,000 league points. Only the tier passives above are implemented, not the relic choices. |
+| Relic tiers | Reached at 0, 600, 1,200, 2,600, 5,200, 8,500, 16,500 and 28,000 league points. Pick relics in Journal > Leagues > Relics. See "Relics that work" below. |
 | Regions | Varlamore from the start, Karamja at 80 tasks, then one chosen region at each of 200, 300 and 450 tasks. Misthalin is closed. Zanaris and the Abyss are always open. Walking or teleporting into a locked region bounces you back. |
 | Tasks | 210 starter tasks: region boss and monster kills, skill levels, total level, combat level, kill counts, and pact milestones. 10/30/80/200/400 points by difficulty. |
 | Pact points | 2 to start, 1 per pact task, plus 1 every 10 tasks (configurable). 44 can be earned, 40 can be held at once. 6 full resets. |
@@ -34,10 +34,32 @@ The other 80 nodes (Regenerate, Ranged echoes, Blindbag, overheal, attack speed 
 spell effects, permanent Defence and so on) can be bought and saved, and are marked
 `[unimplemented]` in game. Most need hooks the combat engine does not expose yet.
 
+### Relics that work
+
+| Relic | On this server |
+|---|---|
+| Endless Harvest | Double logs, fish and ore and their XP; trees and rocks don't deplete; resources go to the bank (`::relic bank off`). |
+| Barbarian Gathering | Failed gathering attempts succeed half the time; bonus Strength and Agility XP. Tools are still needed and the knapsack does nothing. |
+| Abundance | +10 to non-combat skills, +2 XP per drop in them, 2 coins per XP gained in them. |
+| Hotfoot | Caught fish are cooked and mined ore is smelted (level permitting); Cooking never burns; Agility always succeeds; running gives Agility XP. |
+| Friendly Forager | 1 in 6 gathered resources also finds a grimy herb. Herblore perks aren't in. |
+| Woodsman | Cut logs are burned for Firemaking XP (`::relic burn off`); Hunter always succeeds. |
+| Bank Heist | The briefcase teleports to banks in unlocked regions (found from banker spawns). |
+| Transmute | The ledger is an unlimited nature rune source. The new alchemy spells aren't in. |
+| Larcenist | Thieving always succeeds; 10x loot, noted. |
+| Grimoire | The grimoire switches spellbooks. |
+| Eternal Sustenance | Food isn't used up. |
+| Reloaded | One extra relic from any lower tier, picked in the relics window. |
+| Executioner | Hits with the Sage's axe that leave a monster under 20% HP finish it (not Yama). |
+| Flask of Fervour | Restores HP, Prayer and special attack; 3-minute recharge, shortened by damage dealt. |
+
+Not in yet: Evil Eye, Map of Alacrity, Conniving Clues, Butler's Bell, Nature's Accord, Soul
+Harvest, Culling Spree, Flow State and Minion. Their items are still handed out.
+
 ## Not included
 
 - The real pact tree and leagues interfaces. Everything runs through chat commands for now.
-- Relic choices (Endless Harvest, Hotfoot and the rest), echo bosses and echo orbs, the reward shop,
+- The relics listed as not in yet, echo bosses and echo orbs, the reward shop,
   boosted minigame points, and the official task list.
 - Jagex's exact region borders; `demonic_pacts_regions.toml` uses hand-drawn boxes.
 
@@ -54,6 +76,9 @@ spell effects, permanent Defence and so on) can be bought and saved, and are mar
 | `::regions` | Region status and free choices. |
 | `::unlockregion <key>` | Use a region choice. |
 | `::dpregion` | Which region the tile you stand on belongs to. |
+| `::relics` | Your relics and what they do here. |
+| `::relic bank on\|off`, `::relic burn on\|off` | Endless Harvest banking, Woodsman log burning. |
+| `::relicitems` | Get back lost relic items. |
 | `::dppoints <n>`, `::dppactpoints <n>`, `::dpallregions` | Admin testing shortcuts. |
 
 ## Files
@@ -72,7 +97,12 @@ renumber existing ones, or saved progress will point at the wrong entries.
 ## Engine hooks this module added
 
 - `WorldType.DEMONIC_PACTS_LEAGUE`.
-- `StatXpModifiers` (api/player): per-stat xp multiplier for naturally earned xp.
+- `StatXpModifiers` (api/player): per-stat xp multiplier, flat bonus and xp-gained callback for
+  naturally earned xp.
+- `SkillModifiers` (api/player): stat-roll success chance (also used by cooking burns), thieving
+  loot multiplier, and food that isn't used up.
+- `InventoryRuneSources` (api/spells-runes): carried objs that count as unlimited runes.
+- Woodcutting now honours `SkillingProduct.depletes`, like mining.
 - `PlayerCombatModifiers` (api/combat-manager): accuracy and max-hit multipliers for players
   attacking npcs.
 - `NpcHitEvents.ModifyAny` (api/npc): a hit-modify event for every npc type.

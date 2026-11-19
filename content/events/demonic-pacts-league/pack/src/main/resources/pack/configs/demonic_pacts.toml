@@ -102,3 +102,13 @@ transmit = "Never"
 id = "varp.dp_relic_viewing"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+id = "varp.dp_relic_flags"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_flask_ready"
+scope = "Temp"
+transmit = "Never"

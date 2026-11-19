@@ -5,6 +5,7 @@ import org.rsmod.api.enums.RuneEnums.rune_staves
 import org.rsmod.api.enums.UnlimitedRunesEnums.unlimited_runes_hiprio
 import org.rsmod.api.enums.UnlimitedRunesEnums.unlimited_runes_loprio
 import org.rsmod.game.inv.InvObj
+import org.rsmod.game.inv.Inventory
 
 public class UnlimitedRuneRepository {
     // Magic rune validation has a subtle distinction involving certain "unlimited source" objs
@@ -79,4 +80,12 @@ public class UnlimitedRuneRepository {
 
         return mappedUnlimited
     }
+}
+
+/**
+ * Carried objs that count as an unlimited source of a rune, such as a league relic's book. Game
+ * modes install [provides] at startup; it receives the caster's inventory and the rune's obj id.
+ */
+public object InventoryRuneSources {
+    @Volatile public var provides: (Inventory, Int) -> Boolean = { _, _ -> false }
 }

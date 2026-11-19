@@ -161,6 +161,7 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
         LeagueTasks.refreshDropRate(this)
         syncLeagueClientVars()
         applyDefenceBoost()
+        RelicEffects.onLeagueTick(this)
         fillRunEnergy()
     }
 
@@ -181,6 +182,7 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
             return
         }
         player.fillRunEnergy()
+        RelicEffects.onMoved(player, lastKnownCoords)
         if (LeagueRegions.isAllowed(player, player.coords)) {
             return
         }

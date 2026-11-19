@@ -1,5 +1,6 @@
 package org.rsmod.content.other.consumables.food
 
+import org.rsmod.api.player.stat.SkillModifiers
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
@@ -315,6 +316,9 @@ constructor(
         type: ItemServerType,
         inventory: Inventory,
     ): Boolean {
+        if (SkillModifiers.keepsFood(player)) {
+            return true
+        }
         val nextStage =
             food.items.getOrNull(stage + 1)
 

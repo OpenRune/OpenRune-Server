@@ -20,6 +20,8 @@ dp_tasks_5 = 62117
 dp_tasks_6 = 62118
 dp_tasks_7 = 62119
 dp_relic_viewing = 62120
+dp_relic_flags = 62121
+dp_flask_ready = 62122
 
 [gamevals.timer]
 dp_league_tick = 62100

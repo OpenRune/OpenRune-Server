@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.thieving
 
+import org.rsmod.api.player.stat.SkillModifiers
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -71,8 +72,9 @@ constructor(
         anim(STALL_SEQ)
         delay(2)
         val loot = stall.loot.roll(random)
-        val count = random.of(loot.min, loot.max)
-        if (invAdd(inv, loot.obj, count).failure) {
+        val multiplier = SkillModifiers.lootMultiplier(player, THIEVING)
+        val count = random.of(loot.min, loot.max) * multiplier
+        if (invAdd(inv, loot.obj, count, cert = multiplier > 1).failure) {
             // UNVERIFIED: message when the inv fills during the steal delay (guess)
             mes(NO_SPACE)
             return
@@ -139,12 +141,15 @@ constructor(
             return
         }
         val loot = target.loot?.roll(random)
-        val count = loot?.let { random.of(it.min, it.max) } ?: 0
+        val multiplier = SkillModifiers.lootMultiplier(player, THIEVING)
+        val count = loot?.let { random.of(it.min, it.max) * multiplier } ?: 0
         val received =
             player.invTransaction(inv) {
                 val inventory = select(inv)
                 if (pouch != null) add(inventory, pouch.obj.asRSCM(RSCMType.OBJ), 1)
-                if (loot != null) add(inventory, loot.obj.asRSCM(RSCMType.OBJ), count)
+                if (loot != null) {
+                    add(inventory, loot.obj.asRSCM(RSCMType.OBJ), count, cert = multiplier > 1)
+                }
             }
         if (received.failure) {
             // UNVERIFIED: message when the inv fills during the pickpocket delay (guess)

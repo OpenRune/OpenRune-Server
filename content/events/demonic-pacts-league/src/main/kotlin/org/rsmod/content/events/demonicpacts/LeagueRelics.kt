@@ -24,6 +24,7 @@ data class Relic(
     val struct: Int,
     val name: String,
     val description: String,
+    val item: Int?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -56,6 +57,19 @@ object LeagueRelics {
             "varbit.league_relic_selection_5",
             "varbit.league_relic_selection_6",
             "varbit.league_relic_selection_7",
+        )
+
+    /** A second pick in a tier, which the Reloaded relic grants. */
+    private val reloadedVarbits =
+        listOf(
+            "varbit.league_relic_selection_other_0",
+            "varbit.league_relic_selection_other_1",
+            "varbit.league_relic_selection_other_2",
+            "varbit.league_relic_selection_other_3",
+            "varbit.league_relic_selection_other_4",
+            "varbit.league_relic_selection_other_5",
+            "varbit.league_relic_selection_other_6",
+            "varbit.league_relic_selection_other_7",
         )
 
     private val texts: RelicTextFile by lazy {
@@ -92,7 +106,8 @@ object LeagueRelics {
                 relicStruct ?: continue
                 val name = structParam(relicStruct, RELIC_NAME_PARAM) as? String ?: "Relic"
                 val description = descriptions[name.lowercase()] ?: ""
-                relics += Relic(index, key, clickzone++, relicStruct, name, description)
+                val item = structParam(relicStruct, RELIC_ITEM_PARAM) as? Int
+                relics += Relic(index, key, clickzone++, relicStruct, name, description, item)
             }
             result += RelicTier(index, points, passives[index + 1] ?: "", relics)
         }
@@ -119,11 +134,39 @@ object LeagueRelics {
         VarPlayerIntMapSetter.set(player, selectionVarbits[relic.tier], relic.key)
     }
 
+    fun reloadedSelection(player: Player, tier: Int): Int = player.vars[reloadedVarbits[tier]]
+
     fun selected(player: Player): List<Relic> =
-        tiers.mapNotNull { tier ->
-            val key = selection(player, tier.index)
-            tier.relics.firstOrNull { it.key == key }
+        tiers.flatMap { tier ->
+            val keys = setOf(selection(player, tier.index), reloadedSelection(player, tier.index))
+            tier.relics.filter { it.key in keys }
         }
+
+    fun owns(player: Player, relic: Relic): Boolean =
+        selection(player, relic.tier) == relic.key ||
+            reloadedSelection(player, relic.tier) == relic.key
+
+    fun owns(player: Player, name: String): Boolean {
+        val relic = byName[name.lowercase()] ?: return false
+        return owns(player, relic)
+    }
+
+    val byName: Map<String, Relic> by lazy {
+        tiers.flatMap { it.relics }.associateBy { it.name.lowercase() }
+    }
+
+    /** Reloaded lets you pick one more relic from any tier below it, once. */
+    fun canReload(player: Player, relic: Relic): Boolean {
+        val reloaded = byName[RELOADED] ?: return false
+        if (!owns(player, reloaded) || relic.tier >= reloaded.tier || owns(player, relic)) {
+            return false
+        }
+        return tiers.none { reloadedSelection(player, it.index) != 0 }
+    }
+
+    fun selectReloaded(player: Player, relic: Relic) {
+        VarPlayerIntMapSetter.set(player, reloadedVarbits[relic.tier], relic.key)
+    }
 
     private const val LEAGUE_STRUCT_ENUM = 2670
     private const val LEAGUE_TYPE_DEMONIC_PACTS = 6
@@ -131,4 +174,6 @@ object LeagueRelics {
     private const val TIER_POINTS_PARAM = 877
     private const val TIER_RELICS_PARAM = 878
     private const val RELIC_NAME_PARAM = 879
+    private const val RELIC_ITEM_PARAM = 2049
+    private const val RELOADED = "reloaded"
 }

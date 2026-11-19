@@ -294,16 +294,7 @@ public fun Player.statRandom(
 
     val visibleLevel = stat(internal)
     val effectiveLevel = visibleLevel.coerceIn(1, stat.maxLevel) + invisibleBoost
-    return statRandomRoll(random, low, high, effectiveLevel, stat.maxLevel)
-}
-
-private fun statRandomRoll(
-    random: GameRandom,
-    low: Int,
-    high: Int,
-    effectiveLevel: Int,
-    maxLevel: Int,
-): Boolean {
-    val rate = SkillingSuccessRate.successRate(low, high, effectiveLevel, maxLevel)
-    return rate > random.randomDouble()
+    val rate = SkillingSuccessRate.successRate(low, high, effectiveLevel, stat.maxLevel)
+    val modified = SkillModifiers.successRate(this, internal, rate)
+    return modified > random.randomDouble()
 }
