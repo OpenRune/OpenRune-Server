@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCMType
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 
 internal fun ProtectedAccess.giveTutorialItems(vararg items: Pair<String, Int>): Boolean {
@@ -19,6 +20,7 @@ internal fun ProtectedAccess.giveTutorialItems(vararg items: Pair<String, Int>):
             }
         }
     if (transaction.failure) {
+        player.mes("You don't have enough inventory space to hold that item.")
         return false
     }
     transaction.commitAll()

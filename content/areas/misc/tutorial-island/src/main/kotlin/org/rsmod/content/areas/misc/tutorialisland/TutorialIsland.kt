@@ -646,49 +646,124 @@ constructor(
 
     private suspend fun Dialogue.survivalRecap() {
         chatNpc(quiz, "Hello again. Is there something you'd like to hear more about?")
-        when (
-            choice4(
-                "Tell me about my skills again.",
-                1,
-                "Tell me about Woodcutting again.",
-                2,
-                "Tell me about Firemaking again.",
-                3,
-                "More options...",
-                4,
-            )
-        ) {
-            1 ->
-                chatNpc(
-                    neutral,
-                    "Your skills can be levelled up by earning experience. As you level up your " +
-                        "skills, you will earn new unlocks.",
+        while (true) {
+            when (
+                choice4(
+                    "Tell me about my skills again.",
+                    1,
+                    "Tell me about Woodcutting again.",
+                    2,
+                    "Tell me about Firemaking again.",
+                    3,
+                    "More options...",
+                    4,
                 )
-            2 ->
-                chatNpc(
-                    neutral,
-                    "Woodcutting is a skill that allows you to cut down trees for logs. All you " +
-                        "need is an axe.",
-                )
-            3 ->
-                chatNpc(
-                    neutral,
-                    "Firemaking is a skill that allows you to light fires. Use a tinderbox on " +
-                        "some logs to light them.",
-                )
-            else -> survivalMoreRecap()
+            ) {
+                1 -> {
+                    chatPlayer(quiz, "Tell me about my skills again.")
+                    chatNpc(
+                        neutral,
+                        "Every skill is listed in the skills menu. Here you can see what your " +
+                            "current levels are and how much experience you have.",
+                    )
+                    chatNpc(
+                        neutral,
+                        "As you move your mouse over the various skills the small tooltip will " +
+                            "show you the exact amount of experience you have and how much is " +
+                            "needed to get to the next level.",
+                    )
+                    chatNpc(
+                        neutral,
+                        "You can also click on a skill to open up the relevant skillguide. In " +
+                            "the skillguide, you can see all of the unlocks available in that skill.",
+                    )
+                }
+                2 -> {
+                    chatPlayer(quiz, "Tell me about Woodcutting again.")
+                    chatNpc(
+                        neutral,
+                        "Woodcutting, eh? Don't worry, newcomer, it's really very easy. Simply " +
+                            "equip your axe and click on a nearby tree to chop away.",
+                    )
+                    chatNpc(
+                        neutral,
+                        "As you explore the mainland you will discover many different kinds of " +
+                            "trees that will require different Woodcutting levels to chop down.",
+                    )
+                    chatNpc(
+                        neutral,
+                        "Logs are not only useful for making fires. Many archers use the skill " +
+                            "known as Fletching to craft their own bows and arrows from trees.",
+                    )
+                }
+                3 -> {
+                    chatPlayer(quiz, "Tell me about Firemaking again.")
+                    chatNpc(
+                        neutral,
+                        "Certainly, newcomer. When you have logs simply use your tinderbox on " +
+                            "them. If successful, you will start a fire.",
+                    )
+                    chatNpc(
+                        neutral,
+                        "You can also set fire to logs you find lying on the floor already, and " +
+                            "some other things can also be set alight...",
+                    )
+                    chatNpc(neutral, "A tinderbox is always a useful item to keep around!")
+                }
+                else -> {
+                    if (!survivalMoreRecap()) {
+                        return
+                    }
+                }
+            }
+            chatNpc(quiz, "Is there anything else you'd like to hear more about?")
         }
     }
 
-    private suspend fun Dialogue.survivalMoreRecap() {
-        when (choice2("Tell me about Fishing again.", 1, "No thanks.", 2)) {
-            1 ->
+    private suspend fun Dialogue.survivalMoreRecap(): Boolean {
+        return when (choice3("Tell me about Fishing again.", 1, "Tell me about Cooking again.", 2, "Nothing thanks.", 3)) {
+            1 -> {
+                chatPlayer(quiz, "Tell me about Fishing again.")
                 chatNpc(
                     neutral,
-                    "Fishing is a skill that allows you to catch fish. You'll need a net or a " +
-                        "fishing rod, depending on what you want to catch.",
+                    "Ah, yes. Fishing! Fishing is undoubtedly one of the more popular hobbies " +
+                        "here in Gielinor!",
                 )
-            else -> Unit
+                chatNpc(
+                    neutral,
+                    "Whenever you see sparkling waters, you can be sure there's probably some " +
+                        "good fishing to be had there!",
+                )
+                chatNpc(
+                    neutral,
+                    "Not only are fish absolutely delicious when cooked, they will also heal " +
+                        "lost health.",
+                )
+                chatNpc(
+                    neutral,
+                    "I would recommend everybody has a go at Fishing at least once in their lives!",
+                )
+                true
+            }
+            2 -> {
+                chatPlayer(quiz, "Tell me about Cooking again.")
+                chatNpc(
+                    neutral,
+                    "Yes, the most basic of survival techniques. Most simple foods can be used on " +
+                        "a fire to cook them. If you're feeling a bit fancier, you can also use a " +
+                        "range to cook the food instead.",
+                )
+                chatNpc(
+                    neutral,
+                    "Eating cooked food will restore lost health. The harder something is to " +
+                        "cook, the more it will heal you.",
+                )
+                true
+            }
+            else -> {
+                chatPlayer(neutral, "Nothing thanks.")
+                false
+            }
         }
     }
 
