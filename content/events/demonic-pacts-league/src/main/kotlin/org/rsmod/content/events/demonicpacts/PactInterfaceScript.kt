@@ -6,6 +6,8 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.IfScriptArgs
+import org.rsmod.api.player.ui.ifCloseSub
+import org.rsmod.api.player.ui.ifOpenMain
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.script.onCommand
@@ -30,6 +32,8 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
         onIfOpen(PACT_TREE) { player.prepareTree() }
         onIfScriptTrigger<PactApplyArg>(APPLY_COMPONENT) { applyPacts(it.nodes) }
         onIfScriptTrigger<PactResetArg>(RESET_COMPONENT) { confirmReset() }
+        onIfOverlayButton(PACT_TREE_FRAME) { player.ifCloseSub(PACT_TREE, eventBus) }
+        onIfOverlayButton(RELICS_CLOSE) { player.ifCloseSub(RELICS, eventBus) }
 
         onIfOverlayButton(JOURNAL_LEAGUE_BUTTON) { player.openSidePanel() }
         onIfOverlayButton(SIDE_PANEL_PACTS_BUTTON) { player.openPactTree() }
@@ -59,6 +63,7 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
         onPactsChanged()
         ifSetEvents(APPLY_COMPONENT, -1..-1, IfEvent.ScriptTrigger)
         ifSetEvents(RESET_COMPONENT, -1..-1, IfEvent.ScriptTrigger)
+        ifSetEvents(PACT_TREE_FRAME, FRAME_CHILDREN, IfEvent.Op1)
         runClientScript(TALENT_TREE_INIT, CENTRE_TREE)
     }
 
@@ -69,7 +74,7 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
 
     private fun Player.openRelics() {
         syncLeagueClientVars()
-        ifOpenOverlay(RELICS, eventBus)
+        ifOpenMain(RELICS, eventBus)
     }
 
     private fun ProtectedAccess.applyPacts(nodes: IntArray) {
@@ -119,6 +124,11 @@ class PactInterfaceScript @Inject constructor(private val eventBus: EventBus) : 
         const val JOURNAL_CONTAINER = "component.side_journal:tab_container"
         const val JOURNAL_LEAGUE_BUTTON = "component.side_journal:league_list"
         const val APPLY_COMPONENT = "component.talent_tree:data_layer"
+
+        /** The steel border's close button is a child of the frame; nothing else on it has ops. */
+        const val PACT_TREE_FRAME = "component.talent_tree:frame"
+        val FRAME_CHILDREN = 0..20
+        const val RELICS_CLOSE = "component.league_relics:close_button"
         const val RESET_COMPONENT = "component.talent_tree:perm_floating_panel_content"
         const val SIDE_PANEL_PACTS_BUTTON = "component.league_side_panel:mastery_button"
         const val SIDE_PANEL_RELICS_BUTTON = "component.league_side_panel:relics_button"
