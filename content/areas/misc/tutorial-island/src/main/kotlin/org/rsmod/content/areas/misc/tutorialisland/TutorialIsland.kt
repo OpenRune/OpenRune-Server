@@ -600,12 +600,18 @@ constructor(
                     guide.advance(player, TutorialStage.NET_GIVEN)
                 }
             }
-            TutorialStage.NET_GIVEN, TutorialStage.INVENTORY_VIEWED ->
+            TutorialStage.NET_GIVEN, TutorialStage.INVENTORY_VIEWED -> {
                 chatNpc(
                     neutral,
                     "Hello again. First up, we're going to do some fishing. There's some shrimp " +
                         "in this pond here. Let's try and catch some.",
                 )
+                if (!player.inv.contains(TutorialObj.NET) &&
+                    access.giveTutorialItems(TutorialObj.NET to 1)
+                ) {
+                    mesbox("The survival expert gives you a <col=000080>small fishing net<col=000000>.")
+                }
+            }
             TutorialStage.SHRIMP_CAUGHT ->
                 chatNpc(neutral, "Hello again. You should take a look at that menu before we continue.")
             TutorialStage.SKILLS_VIEWED -> {
@@ -623,12 +629,28 @@ constructor(
                     guide.advance(player, TutorialStage.AXE_GIVEN)
                 }
             }
-            TutorialStage.AXE_GIVEN ->
+            TutorialStage.AXE_GIVEN -> {
                 chatNpc(
                     happy,
                     "Next up you need to make a fire. First, you'll need to cut down a tree to get " +
                         "some logs.",
                 )
+                val missing =
+                    buildList {
+                        if (!player.inv.contains(TutorialObj.BRONZE_AXE)) {
+                            add(TutorialObj.BRONZE_AXE to 1)
+                        }
+                        if (!player.inv.contains(TutorialObj.TINDERBOX)) {
+                            add(TutorialObj.TINDERBOX to 1)
+                        }
+                    }
+                if (missing.isNotEmpty() && access.giveTutorialItems(*missing.toTypedArray())) {
+                    mesbox(
+                        "The survival expert gives you a <col=000080>bronze axe<col=000000> and a " +
+                            "<col=000000><col=000080>tinderbox<col=000000>.",
+                    )
+                }
+            }
             TutorialStage.LOGS_CUT ->
                 chatNpc(
                     happy,
@@ -1029,6 +1051,12 @@ constructor(
     }
 
     private suspend fun Dialogue.miningRecap() {
+        if (player.tutorialStage >= TutorialStage.MINING_GUIDE_TALKED &&
+            !player.inv.contains(TutorialObj.BRONZE_PICKAXE) &&
+            access.giveTutorialItems(TutorialObj.BRONZE_PICKAXE to 1)
+        ) {
+            mesbox("The mining instructor gives you a <col=000080>bronze pickaxe<col=000000>.")
+        }
         if (player.tutorialStage >= TutorialStage.MINING_GUIDE_BAR &&
             !player.inv.contains(TutorialObj.HAMMER) &&
             access.giveTutorialItems(TutorialObj.HAMMER to 1)
