@@ -259,6 +259,7 @@ bas_walk_r=65473
 bas_running=65474
 equipment_sound=65475
 player_op5_text=65476
+player_op5_priority=65563
 release_note_title=65477
 release_note_message=65478
 statreq_failmessage1=65479
