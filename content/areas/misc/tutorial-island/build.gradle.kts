@@ -1,6 +1,12 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
     id("integration-test-suite")
+}
+
+tasks.named<Test>("test") {
+    systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
+    systemProperty("mockk.junit.extension.keepmocks", "true")
 }
 
 dependencies {
@@ -9,6 +15,9 @@ dependencies {
     implementation(projects.api.scriptAdvanced)
     implementation(projects.api.spells)
     implementation(projects.content.quest)
-    integrationImplementation(projects.api.pluginCommons)
-    integrationImplementation(projects.content.quest)
+    testImplementation(projects.api.invtx)
+    testImplementation(projects.api.stats.xpmod)
+    testImplementation(projects.api.testing)
+    testImplementation(projects.content.quest)
+    testImplementation(projects.orCache)
 }
