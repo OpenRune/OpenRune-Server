@@ -110,6 +110,7 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
         if (gamemode == PlayerGamemode.NORMAL) {
             setGamemode(PlayerGamemode.IRONMAN)
         }
+        xpRate = 1.0
         softTimer(LEAGUE_TICK_TIMER, LEAGUE_TICK_CYCLES)
         softTimer(PRAYER_REGEN_TIMER, PRAYER_REGEN_CYCLES)
         LeagueTasks.refreshDropRate(this)
