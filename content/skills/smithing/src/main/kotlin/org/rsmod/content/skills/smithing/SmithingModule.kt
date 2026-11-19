@@ -7,6 +7,7 @@ import org.rsmod.plugin.module.PluginModule
 
 public class SmithingModule : PluginModule() {
     override fun bind() {
+        newSetBinding<SmithingRestrictHook>()
         addSetBinding<PlayerItemStorageHook>(CoalBagStorageHook::class.java)
         addSetBinding<XpMod>(SmithingUniformXpModifiers::class.java)
     }

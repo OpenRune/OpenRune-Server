@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.api.scriptAdvanced)
     implementation(projects.api.spells)
     implementation(projects.content.quest)
+    implementation(projects.content.skills.smithing)
     testImplementation(projects.api.invtx)
     testImplementation(projects.api.stats.xpmod)
     testImplementation(projects.api.testing)

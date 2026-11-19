@@ -7,6 +7,7 @@ import org.rsmod.api.player.hook.PlayerHomeTeleportDestinationHook
 import org.rsmod.api.player.hook.PlayerTeleportValidateHook
 import org.rsmod.api.spells.attack.SpellCastHook
 import org.rsmod.api.stats.xpmod.XpMod
+import org.rsmod.content.skills.smithing.SmithingRestrictHook
 import org.rsmod.plugin.module.PluginModule
 
 internal class TutorialIslandModule : PluginModule() {
@@ -17,6 +18,7 @@ internal class TutorialIslandModule : PluginModule() {
         addSetBinding<SpellCastHook>(TutorialSpellCastHook::class.java)
         addSetBinding<PlayerTeleportValidateHook>(TutorialTeleportHook::class.java)
         addSetBinding<HeldEquipValidateHook>(TutorialEquipHook::class.java)
+        addSetBinding<SmithingRestrictHook>(TutorialSmithingHook::class.java)
         addSetBinding<PlayerHomeTeleportDestinationHook>(
             TutorialHomeTeleportDestination::class.java,
         )
