@@ -12,14 +12,14 @@ constructor(private val guide: TutorialGuide) : NpcDeathKillHook {
         if (!player.inTutorial) {
             return
         }
-        if (context.npc.visType.internalName != TutorialNpc.GIANT_RAT) {
+        if (context.npc.visType.internalName !in TutorialNpc.GIANT_RATS &&
+            context.npc.type.internalName !in TutorialNpc.GIANT_RATS
+        ) {
             return
         }
         when (player.tutorialStage) {
-            in TutorialStage.RAT_PIT_OPENED until TutorialStage.COMBAT_GUIDE_MELEE ->
-                guide.advance(player, TutorialStage.COMBAT_GUIDE_MELEE)
-            in TutorialStage.RANGED_GIVEN until TutorialStage.COMBAT_GUIDE_DONE ->
-                guide.advance(player, TutorialStage.COMBAT_GUIDE_DONE)
+            TutorialStage.RAT_ENGAGED -> guide.advance(player, TutorialStage.RAT_KILLED_MELEE)
+            TutorialStage.RAT_ENGAGED_RANGED -> guide.advance(player, TutorialStage.COMBAT_GUIDE_DONE)
         }
     }
 }

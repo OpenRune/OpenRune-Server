@@ -37,9 +37,9 @@ mid-tutorial resumes at the same stage with the correct control guide and next-a
   rat pit, no teleports/random events/death handling on the island, and the exit item wipe.
 - The `Learning the Ropes` quest: `dbrow.quest_learningtheropes` (9643), quest list entry,
   quest journal text per stage, 1 quest point, completion jingle and quest scroll.
-- Leaving the island: Home Teleport, arrival at `(3232, 3232, 0)`, final loadout, 25 coins in
-  the bank, run-energy restore, chat unlock, player-op restore, music and the `tutorial_end`
-  clientscript.
+- Leaving the island: Home Teleport, arrival at `(3232, 3232, 0)`, inventory/worn wipe, the
+  25 coins already seeded in the bank, chat unlock, player-op restore, music and the
+  `tutorial_end` clientscript.
 - Handoff to the existing Lumbridge new-player content, including Adventurer Jon/Adventure Paths
   if enabled by the experience-modal choice.
 - Unit/integration tests for stage transitions, item movement, bank coins, XP cap, damage floor,
@@ -130,15 +130,15 @@ The observed chapter/stage map (transcribed from the capture, exact sub-stages p
 | Chapter | `varp.tutorial` values | Completes on |
 |---|---|---|
 | Entry/creation | 1, 2, 3, 7 | name, appearance, experience choice, first guide talk |
-| Gielinor Guide | 7, 10 | open Settings, then leave the house |
-| Survival Expert | 20, 30, 40, 50, 60, 70, 80, 90, 120 | net, inventory, shrimp, skills, axe/tinderbox, logs, fire, cooked shrimp, gate |
+| Gielinor Guide | 7, 10, 20 | open Settings, second talk, leave the house |
+| Survival Expert | 20, 30, 40, 50, 60, 70, 80, 90, 120, 130 | net, inventory, shrimp, skills, axe/tinderbox, logs, fire, cooked shrimp, gate |
 | Master Chef | 130, 140, 150, 160, 170, 183, 200 | enter kitchen, talk, dough, bread, leave |
-| Quest Guide | 200, 220, 230, 240, 250, 260 | guide talk, quest list, journal, recap, ladder |
-| Mining Instructor | 260, 270, 300, 310, 320, 330, 340, 350 | tin, copper, bronze bar, hammer, dagger |
-| Combat Instructor | 350, 360, 370, 390, 400, 405, 410, 420, 430, 440 | equip, sword/shield, melee rat, ranged rat |
-| Bank/Account Guide | 450, 460, 470, 480, 490, 500 | bank, poll booth, account menu, guide recap |
-| Brother Brace | 500, 510, 520, 525, 530, 531, 532, 540 | prayer book, prayers, bones, chapel exit |
-| Magic Instructor | 540, 550, 560, 570, 580, 610, 620, 640, 650, 660, 670, 671 | magic book, runes, Wind Strike, ironman talk, completion |
+| Quest Guide | 200, 220, 230, 240, 250, 260 | house, guide talk, quest list, recap, ladder |
+| Mining Instructor | 260, 270, 300, 310, 320, 330, 340, 350, 360 | tin, copper, bronze bar, hammer, anvil, dagger, gates |
+| Combat Instructor | 360, 370, 390, 400, 405, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510 | equip, sword/shield, combat tab, melee rat, ranged rat, ladder |
+| Bank/Account Guide | 510, 520, 525, 530, 531, 532, 540 | bank, poll booth, account menu, guide recap |
+| Brother Brace | 540, 550, 560, 570, 610, 620 | prayer book, prayers, bones, chapel exit |
+| Magic Instructor | 620, 630, 640, 650, 660, 670, 671, 680 | magic book, runes, Wind Strike, ironman talk, completion |
 | Leave island | 671, 680, 1000 | final talk, Home Teleport, arrival |
 
 `varp.tutorial` reaching **671** is quest completion (1 QP and the quest scroll); **680** is the
@@ -215,18 +215,17 @@ Each phase ends in a compiling commit and the listed verification.
    120→200.
 7. **Quest Guide** — quest list, `Learning the Ropes` journal, minimap icon explanation, ladder;
    200→260.
-8. **Mining Instructor** — pickaxe, tin/copper rocks, furnace, bar, hammer, anvil, bronze dagger;
-   260→350.
+8. **Mining Instructor** — pickaxe, tin/copper rocks, furnace, bar, hammer, anvil, bronze dagger,
+   combat gates; 260→360.
 9. **Combat Instructor** — worn/equipment stats, dagger, sword/shield, combat options, melee rat,
-   shortbow/arrows, ranged rat, no-death rule; 350→440.
-10. **Bank + Account Guide** — bank booth (25 coins), poll booth, account management, guide
-    dialogue; 450→500.
-11. **Brother Brace** — prayer book, prayer points, bones, organ, chapel exit; 500→540.
-12. **Magic Instructor + completion** — magic book, runes, Wind Strike chicken, Ironman tutor,
-    final dialogue, 1 QP/quest scroll at 671; 540→671.
-13. **Exit + Lumbridge arrival** — stage 680, Home Teleport, inventory/worn wipe, final loadout,
-    25 bank coins, `tutorial_freestuff_check`, `tutorial_end`, run energy, chat unlock, music,
-    Adventurer Jon call; 671→1000.
+   shortbow/arrows, ranged rat, no-death rule, ladder; 360→510.
+10. **Bank + Account Guide** — bank booth (25 coins pre-seeded), poll booth, account management,
+    guide dialogue; 510→540.
+11. **Brother Brace** — prayer book, prayer points, bones, chapel exit; 540→620.
+12. **Magic Instructor + completion** — magic book, 5 air/5 mind runes, Wind Strike chicken,
+    Ironman talk, final dialogue, 1 QP/quest scroll at 671, ready-to-leave at 680; 620→680.
+13. **Exit + Lumbridge arrival** — stage 680, Home Teleport, inventory/worn wipe, 25 bank coins,
+    `tutorial_freestuff_check`, `tutorial_end`, chat unlock, music, Adventurer Jon call; 680→1000.
 14. **Dialogue completeness audit** — walk every branch in the wiki transcript, including repeat
     and "recap" paths, and add any missing menus.
 15. **Verification and hardening** — integration tests, `checkGamevals`, a full live MCP run on a
@@ -239,8 +238,8 @@ Each phase ends in a compiling commit and the listed verification.
 - Stage tests: every transition fires only from the expected predecessor; the exact capture
   sequence is reproducible; login at each stage restores the right hint/overlay.
 - Item-movement tests: every grant/removal uses an inventory transaction; a full inventory
-  rolls back the whole action; no item duplication; the exit wipe plus loadout is exact; bank
-  seed is idempotent.
+  rolls back the whole action; no item duplication; the exit wipe is exact; bank seed is
+  idempotent.
 - Rules tests: XP is capped at level 3, Hitpoints gain is zero, the player cannot drop below 1
   HP in the rat pit, and the tutorial rules stop applying at stage ≥ 1000.
 - Quest tests: 671 grants exactly 1 QP and one journal completion; `1000` does not grant it
@@ -298,11 +297,9 @@ ahead and already contains the newer quest/travel content this branch should bui
   `varbit.quests_completed_count 0→1`, game message
   `Congratulations, you've completed a quest: Learning the Ropes`.
 - Home Teleport at tick 1034: `varp.tutorial 680→1000`, arrival `(3232, 3232, 0)`,
-  `varbit.tutorial_freestuff_check 0→1`, inventory/worn cleared, then loadout:
-  `bronze_axe`, `bronze_pickaxe`, `tinderbox`, `net`, 1 `shrimp`, `bronze_dagger`,
-  `bronze_sword`, `wooden_shield`, `shortbow`, 25 `bronze_arrow`, 25 `airrune`, 15 `mindrune`,
-  `bucket_empty`, `pot_empty`, 1 `bread`, 6 `waterrune`, 4 `earthrune`, 2 `bodyrune`.
+  `varbit.tutorial_freestuff_check 0→1`, inventory/worn cleared; no final loadout is granted.
 - Bank on first tutorial bank access: 25 `coins`.
+- Terrova gives 5 `airrune` and 5 `mindrune`; one Wind Strike consumes one of each.
 - Adventurer Jon calls the player immediately on arrival and the existing Adventure Paths content
   takes over.
 - Quest journal title: `<col=7f0000>Learning the Ropes</col>`; the journal text observed at the

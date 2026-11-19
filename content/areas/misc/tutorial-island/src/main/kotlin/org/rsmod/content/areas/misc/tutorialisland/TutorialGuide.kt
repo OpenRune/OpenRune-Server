@@ -81,22 +81,19 @@ constructor(
     private fun progress(stage: Int): Int? =
         when (stage) {
             TutorialStage.GUIDE_DONE -> 2
-            TutorialStage.AXE_GIVEN -> 3
-            TutorialStage.GATE_OPENED -> 4
-            TutorialStage.BREAD_BAKED -> 5
             TutorialStage.QUEST_HOUSE_ENTERED -> 6
-            TutorialStage.LADDER_DOWN -> 7
-            TutorialStage.MINING_GUIDE_TALKED -> 8
-            TutorialStage.MINING_GUIDE_BAR -> 9
-            TutorialStage.COMBAT_GATE -> 10
-            TutorialStage.RAT_PIT_OPENED -> 11
+            TutorialStage.QUEST_HOUSE_INSIDE -> 7
+            TutorialStage.LADDER_DOWN -> 8
+            TutorialStage.BAR_SMELTED -> 9
+            TutorialStage.COMBAT_GUIDE_TALKED -> 10
+            TutorialStage.COMBAT_TAB_OPENED -> 11
             TutorialStage.COMBAT_GUIDE_DONE -> 12
             TutorialStage.BANK_OPENED -> 14
             TutorialStage.POLL_BOOTH -> 15
             TutorialStage.ACCOUNT_GUIDE_DONE -> 16
             TutorialStage.PRAYER_GUIDE_DONE -> 17
             TutorialStage.MAGIC_GUIDE_TALKED -> 18
-            TutorialStage.WIND_STRIKE_CAST -> 20
+            TutorialStage.COMPLETE -> 20
             else -> null
         }
 
@@ -161,7 +158,7 @@ constructor(
                 TutorialStage.OUTSIDE to
                     Hint(
                         hintId = 6,
-                        arrow = Arrow.Npc(TutorialNpc.SURVIVAL_EXPERT, CoordGrid(3101, 3095, 0)),
+                        arrow = Arrow.Npc(TutorialNpc.SURVIVAL_EXPERT, CoordGrid(3103, 3095, 0)),
                     ),
                 TutorialStage.NET_GIVEN to
                     Hint(
@@ -290,20 +287,20 @@ constructor(
                         hintId = 21,
                         arrow = Arrow.Tile(CoordGrid(3086, 3126, 0), 128),
                     ),
-                TutorialStage.QUEST_LIST_OPENED to
+                TutorialStage.QUEST_HOUSE_INSIDE to
                     Hint(
                         text =
                             "<col=0000ff>Quests</col><br>It's time to learn about quests! Just " +
                                 "talk to the Quest Guide to get started.",
                         arrow = Arrow.Npc(TutorialNpc.QUEST_GUIDE, CoordGrid(3087, 3123, 0)),
                     ),
-                TutorialStage.QUEST_JOURNAL_READ to
+                TutorialStage.QUEST_GUIDE_TALKED to
                     Hint(
                         text =
                             "<col=0000ff>Quest journal</col><br>Click on the flashing icon to " +
                                 "the left of your inventory.",
                     ),
-                TutorialStage.QUEST_GUIDE_DONE to
+                TutorialStage.QUEST_LIST_OPENED to
                     Hint(
                         text =
                             "<col=0000ff>Quest journal</col><br>This is your quest journal. It " +
@@ -311,14 +308,14 @@ constructor(
                                 "an explanation on how it works.",
                         arrow = Arrow.Npc(TutorialNpc.QUEST_GUIDE, CoordGrid(3087, 3123, 0)),
                     ),
-                TutorialStage.LADDER_DOWN to
+                TutorialStage.QUEST_GUIDE_DONE to
                     Hint(
                         text =
                             "<col=0000ff>Moving on</col><br>It's time to enter some caves. Click " +
                                 "on the ladder to go down to the next area.",
                         arrow = Arrow.Tile(CoordGrid(3088, 3119, 0), 5),
                     ),
-                TutorialStage.MINING_GUIDE_TALKED to
+                TutorialStage.LADDER_DOWN to
                     Hint(
                         text =
                             "<col=0000ff>Mining and Smithing</col><br>Next let's get you a " +
@@ -327,7 +324,7 @@ constructor(
                                 "Talk to him and he'll tell you all about it.",
                         arrow = Arrow.Npc(TutorialNpc.MINING_INSTRUCTOR, CoordGrid(3083, 9504, 0)),
                     ),
-                TutorialStage.TIN_MINED to
+                TutorialStage.MINING_GUIDE_TALKED to
                     Hint(
                         text =
                             "<col=0000ff>Mining</col><br>It's quite simple really. To mine a " +
@@ -336,7 +333,7 @@ constructor(
                         hintId = 12,
                         arrow = Arrow.Tile(CoordGrid(3077, 9504, 0), 45),
                     ),
-                TutorialStage.COPPER_MINED to
+                TutorialStage.TIN_MINED to
                     Hint(
                         text =
                             "<col=0000ff>Mining</col><br>Now that you have some tin ore, you " +
@@ -344,7 +341,7 @@ constructor(
                                 "click on it.",
                         arrow = Arrow.Tile(CoordGrid(3083, 9501, 0), 45),
                     ),
-                TutorialStage.BAR_SMELTED to
+                TutorialStage.COPPER_MINED to
                     Hint(
                         text =
                             "<col=0000ff>Smelting</col><br>You now have some tin ore and some " +
@@ -353,7 +350,7 @@ constructor(
                         hintId = 13,
                         arrow = Arrow.Tile(CoordGrid(3079, 9496, 0), 128),
                     ),
-                TutorialStage.MINING_GUIDE_BAR to
+                TutorialStage.BAR_SMELTED to
                     Hint(
                         text =
                             "<col=0000ff>Smelting</col><br>You've made a bronze bar! Speak to " +
@@ -361,7 +358,7 @@ constructor(
                                 "weapon.",
                         arrow = Arrow.Npc(TutorialNpc.MINING_INSTRUCTOR, CoordGrid(3083, 9504, 0)),
                     ),
-                TutorialStage.DAGGER_SMITHED to
+                TutorialStage.MINING_GUIDE_BAR to
                     Hint(
                         text =
                             "<col=0000ff>Smithing a dagger</col><br>To smith you'll need a " +
@@ -381,7 +378,7 @@ constructor(
                                 "dagger to continue.",
                         arrow = Arrow.Tile(CoordGrid(3083, 9499, 0), 50),
                     ),
-                TutorialStage.DAGGER_SELECTED to
+                TutorialStage.DAGGER_SMITHED to
                     Hint(
                         text =
                             "<col=0000ff>Moving on</col><br>Congratulations, you've made your " +
@@ -391,6 +388,14 @@ constructor(
                                 "recap at any time.",
                         arrow = Arrow.Tile(CoordGrid(3094, 9502, 0), 128),
                     ),
+                TutorialStage.COMBAT_GATE to
+                    Hint(
+                        text =
+                            "<col=0000ff>Combat</col><br>In this area you will find out about " +
+                                "melee and ranged combat. Speak to the guide and he will tell you " +
+                                "all about it.",
+                        arrow = Arrow.Npc(TutorialNpc.COMBAT_INSTRUCTOR, CoordGrid(3106, 9510, 0)),
+                    ),
                 TutorialStage.COMBAT_GUIDE_TALKED to
                     Hint(
                         text =
@@ -399,7 +404,7 @@ constructor(
                                 "all about it.",
                         arrow = Arrow.Npc(TutorialNpc.COMBAT_INSTRUCTOR, CoordGrid(3106, 9510, 0)),
                     ),
-                TutorialStage.DAGGER_EQUIPPED to
+                TutorialStage.DAGGER_EQUIP_TASK to
                     Hint(
                         text =
                             "<col=0000ff>Equipping items</col><br>You now have access to a new " +
@@ -423,7 +428,7 @@ constructor(
                                 "with their combined statistics on the right. Let's add " +
                                 "something. Click your dagger to equip it.",
                     ),
-                TutorialStage.COMBAT_GUIDE_EQUIP to
+                TutorialStage.DAGGER_EQUIPPED to
                     Hint(
                         text =
                             "<col=0000ff>Equipment stats</col><br>You're now holding your " +
@@ -433,7 +438,7 @@ constructor(
                                 "to the combat instructor to continue.",
                         arrow = Arrow.Npc(TutorialNpc.COMBAT_INSTRUCTOR, CoordGrid(3106, 9510, 0)),
                     ),
-                TutorialStage.SWORD_EQUIPPED to
+                TutorialStage.COMBAT_GUIDE_SWORD to
                     Hint(
                         text =
                             "<col=0000ff>Unequipping items</col><br>To unequip an item, go to " +
@@ -442,13 +447,13 @@ constructor(
                                 "one. Try this out now by swapping your dagger for the sword and " +
                                 "shield that the combat instructor gave you.",
                     ),
-                TutorialStage.COMBAT_TAB_OPENED to
+                TutorialStage.SWORD_EQUIPPED to
                     Hint(
                         text =
                             "<col=0000ff>Combat interface</col><br>Click on the flashing " +
                                 "crossed swords icon to open the combat interface.",
                     ),
-                TutorialStage.RAT_PIT_OPENED to
+                TutorialStage.COMBAT_TAB_OPENED to
                     Hint(
                         text =
                             "<col=0000ff>Combat interface</col><br>This is your combat " +
@@ -459,7 +464,7 @@ constructor(
                         hintId = 15,
                         arrow = Arrow.Tile(CoordGrid(3110, 9518, 0), 128),
                     ),
-                TutorialStage.RAT_KILLED_MELEE to
+                TutorialStage.COMBAT_TAB_CLOSED to
                     Hint(
                         text =
                             "<col=0000ff>Attacking</col><br>It's time to slay some rats! To " +
@@ -467,7 +472,15 @@ constructor(
                                 "cause you to walk over and start hitting it.",
                         arrow = Arrow.Npc(TutorialNpc.GIANT_RAT, CoordGrid(3108, 9519, 0)),
                     ),
-                TutorialStage.COMBAT_GUIDE_MELEE to
+                TutorialStage.RAT_ENGAGED to
+                    Hint(
+                        text =
+                            "<col=0000ff>Sit back and watch</col><br>While you are fighting you " +
+                                "will see a bar over your head. The bar shows how much health you " +
+                                "have left. Your opponent will have one too. You will continue to " +
+                                "attack the rat until it's dead or you do something else.",
+                    ),
+                TutorialStage.RAT_KILLED_MELEE to
                     Hint(
                         text =
                             "<col=0000ff>Well done, you've made your first kill!</col><br>Pass " +
@@ -486,6 +499,17 @@ constructor(
                         hintId = 16,
                         arrow = Arrow.Npc(TutorialNpc.GIANT_RAT, CoordGrid(3106, 9519, 0)),
                     ),
+                TutorialStage.RAT_ENGAGED_RANGED to
+                    Hint(
+                        text =
+                            "<col=0000ff>Rat ranging</col><br>Before you can use the shortbow " +
+                                "and arrows you'll need to equip them by clicking on them. Once " +
+                                "equipped with the ranging gear, try killing another rat. You " +
+                                "don't need to enter the pen this time. To attack a rat, just " +
+                                "click on it.",
+                        hintId = 16,
+                        arrow = Arrow.Npc(TutorialNpc.GIANT_RAT, CoordGrid(3106, 9519, 0)),
+                    ),
                 TutorialStage.COMBAT_GUIDE_DONE to
                     Hint(
                         text =
@@ -494,9 +518,9 @@ constructor(
                                 "over any of what you learnt here, just talk to the combat " +
                                 "instructor and he'll tell you what he can.",
                         hintId = 22,
-                        arrow = Arrow.Tile(CoordGrid(3111, 9526, 0), 128),
+                        arrow = Arrow.Tile(CoordGrid(3111, 9531, 0), 128),
                     ),
-                TutorialStage.BANK_OPENED to
+                TutorialStage.LADDER_UP to
                     Hint(
                         text =
                             "<col=0000ff>Banking</col><br>This is the Bank of Gielinor, where " +
@@ -504,7 +528,7 @@ constructor(
                                 "just click on the indicated booth.",
                         arrow = Arrow.Tile(CoordGrid(3122, 3124, 0), 128),
                     ),
-                TutorialStage.BANK_TUTORIAL to
+                TutorialStage.BANK_OPENED to
                     Hint(
                         text =
                             "<col=0000ff>Banking</col><br>This is your bank. You can store " +
@@ -523,7 +547,7 @@ constructor(
                                 "door indicated.",
                         arrow = Arrow.Tile(CoordGrid(3125, 3124, 0), 128),
                     ),
-                TutorialStage.ACCOUNT_GUIDE_TALKED to
+                TutorialStage.ACCOUNT_GUIDE_ARRIVED to
                     Hint(
                         text =
                             "<col=0000ff>Account Management</col><br>The guide here will tell " +
@@ -531,7 +555,7 @@ constructor(
                                 "he's got to say.",
                         arrow = Arrow.Npc(TutorialNpc.ACCOUNT_GUIDE, CoordGrid(3127, 3123, 0)),
                     ),
-                TutorialStage.ACCOUNT_MENU_REQUESTED to
+                TutorialStage.ACCOUNT_GUIDE_TALKED to
                     Hint(
                         text =
                             "<col=0000ff>Account Management</col><br>Click on the flashing " +
@@ -550,6 +574,10 @@ constructor(
                         text = "<col=0000ff>Moving on</col><br>Continue through the next door.",
                         hintId = 17,
                         arrow = Arrow.Tile(CoordGrid(3130, 3124, 0), 128),
+                    ),
+                TutorialStage.CHAPEL_ARRIVED to
+                    Hint(
+                        arrow = Arrow.Npc(TutorialNpc.BROTHER_BRACE, CoordGrid(3127, 3107, 0)),
                     ),
                 TutorialStage.PRAYER_GUIDE_TALKED to
                     Hint(
@@ -573,7 +601,7 @@ constructor(
                         hintId = 18,
                         arrow = Arrow.Tile(CoordGrid(3122, 3102, 0), 128),
                     ),
-                TutorialStage.MAGIC_GUIDE_TALKED to
+                TutorialStage.MAGIC_GUIDE_ARRIVED to
                     Hint(
                         text =
                             "<col=0000ff>Your final instructor!</col><br>Follow the path to " +
@@ -582,13 +610,13 @@ constructor(
                                 "instructor.",
                         arrow = Arrow.Npc(TutorialNpc.MAGIC_INSTRUCTOR, CoordGrid(3141, 3088, 0)),
                     ),
-                TutorialStage.MAGIC_BOOK_OPENED to
+                TutorialStage.MAGIC_GUIDE_TALKED to
                     Hint(
                         text =
                             "<col=0000ff>Open up your final menu</col><br>Open up the magic " +
                                 "interface by clicking on the flashing icon.",
                     ),
-                TutorialStage.RUNES_GIVEN to
+                TutorialStage.MAGIC_BOOK_OPENED to
                     Hint(
                         text =
                             "<col=0000ff>Magic</col><br>This is your magic interface. All of " +
@@ -598,7 +626,7 @@ constructor(
                                 "continue.",
                         arrow = Arrow.Npc(TutorialNpc.MAGIC_INSTRUCTOR, CoordGrid(3141, 3088, 0)),
                     ),
-                TutorialStage.WIND_STRIKE_CAST to
+                TutorialStage.RUNES_GIVEN to
                     Hint(
                         text =
                             "<col=0000ff>Magic casting</col><br>You now have some runes. All " +
@@ -608,6 +636,24 @@ constructor(
                                 "instructor if you need more runes.",
                         hintId = 19,
                         arrow = Arrow.Npc(TutorialNpc.CHICKEN, CoordGrid(3139, 3094, 0)),
+                    ),
+                TutorialStage.WIND_STRIKE_CAST to
+                    Hint(
+                        text =
+                            "<col=0000ff>Magic casting</col><br>You cast a spell! Sadly it " +
+                                "didn't have any effect this time, but the more you practice, " +
+                                "the better you'll get. Let's try again. Click on the spell to " +
+                                "select it and then click on a chicken to cast it. Talk to the " +
+                                "instructor if you need more runes.",
+                    ),
+                TutorialStage.WIND_STRIKE_RESOLVED to
+                    Hint(
+                        text =
+                            "<col=0000ff>To the mainland!</col><br>You're nearly finished " +
+                                "with the tutorial. All you need to do now is move on to the " +
+                                "mainland. Just speak with the magic instructor to continue.",
+                        hintId = 20,
+                        arrow = Arrow.Npc(TutorialNpc.MAGIC_INSTRUCTOR, CoordGrid(3141, 3088, 0)),
                     ),
                 TutorialStage.COMPLETE to
                     Hint(

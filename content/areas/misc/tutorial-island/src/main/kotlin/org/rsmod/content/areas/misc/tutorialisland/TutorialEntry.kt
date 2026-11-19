@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.events.PlayerTimerEvent
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.input.StringDialogInput
@@ -13,12 +14,13 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifOpenFullOverlay
 import org.rsmod.api.player.ui.ifSetHide
 import org.rsmod.api.player.ui.ifSetText
+import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerSoftTimer
-import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.content.quest.manager.Quest
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
@@ -65,6 +67,10 @@ constructor(
             player.coords = TutorialCoords.START
             player.tutorialStage = TutorialStage.START
             player.displayNameStatus = 1
+            val bank = player.invMap.getOrPut("inv.bank")
+            if (bank.count(TutorialObj.COINS) == 0) {
+                player.invAdd(bank, TutorialObj.COINS, 25)
+            }
         }
     }
 
@@ -86,7 +92,12 @@ constructor(
                 return@launch
             }
             player.ifOpenFullOverlay("interface.tutorial_overlay", eventBus)
-            player.ifSetHide("component.tutorial_overlay:noclick", true)
+            player.ifSetHide("component.tutorial_overlay:noclick", false)
+            player.ifSetHide("component.tutorial_overlay:hint_layer", true)
+            mesOverlay(
+                "<col=0000ff>Setting your name</col><br>Before you get started, you'll need to " +
+                    "set a display name. Please use the open interface to set one.",
+            )
             ifOpenMainModal("interface.tutorial_displayname")
             player.ifSetText(
                 "component.tutorial_displayname:status",
@@ -182,6 +193,7 @@ constructor(
         player.ifSetText("component.tutorial_displayname:status", "Requesting...")
         player.runClientScript(NAME_SET_COMPLETE)
         ifCloseSub("interface.tutorial_displayname")
+        player.ifSetHide("component.tutorial_overlay:noclick", true)
         player.attr.remove(CANDIDATE_NAME)
         player.attr.remove(SUGGESTIONS)
         openDesign()
@@ -201,9 +213,15 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.openDesign() {
+    private suspend fun ProtectedAccess.openDesign() {
         player.playerDesignBodyType = player.appearance.bodyType
         player.transmitPronouns = player.appearance.pronoun
+        player.ifSetHide("component.tutorial_overlay:noclick", false)
+        mesOverlay(
+            "<col=0000ff>Setting your appearance</col><br>Before you get started, you'll need to " +
+                "set the appearance of your character. Please use the open interface to set " +
+                "your appearance.",
+        )
         ifOpenMainModal("interface.player_design")
     }
 
@@ -224,7 +242,13 @@ constructor(
         if (!closed && player.ui.getModalOrNull("interface.player_design") != null) {
             ifCloseSub("interface.player_design")
         }
+        player.ifSetHide("component.tutorial_overlay:noclick", true)
+        mesOverlay(
+            "<col=0000ff>Past Experience</col><br>Before you get started, please use the open " +
+                "interface to select your experience with Old School RuneScape.",
+        )
         ifOpenMainModal("interface.tutorial_player_experience")
+        player.ifSetHide("component.tutorial_overlay:noclick", false)
         val input = coroutine.pause(ResumePauseButtonInput::class)
         if (input.isComponentType("component.tutorial_player_experience:content")) {
             player.adventurePaths =
@@ -236,6 +260,10 @@ constructor(
         } else {
             player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
         }
+        if (player.ui.getModalOrNull("interface.tutorial_player_experience") != null) {
+            ifCloseSub("interface.tutorial_player_experience")
+        }
+        player.ifSetHide("component.tutorial_overlay:noclick", true)
         guide.advance(player, TutorialStage.EXPERIENCE_SELECTED)
         player.softTimer(TUTORIAL_TIMER, 1)
     }
@@ -245,6 +273,7 @@ constructor(
             return
         }
         player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
+        player.ifSetHide("component.tutorial_overlay:noclick", true)
         guide.advance(player, TutorialStage.EXPERIENCE_SELECTED)
         player.softTimer(TUTORIAL_TIMER, 1)
     }
@@ -253,7 +282,17 @@ constructor(
         if (!player.inTutorial) {
             return
         }
+        reconcileInterfaces(player)
         rules.nextStage(player)?.let { guide.advance(player, it) }
+        if (player.tutorialStage == TutorialStage.WIND_STRIKE_RESOLVED) {
+            guide.advance(player, TutorialStage.COMPLETE)
+        }
+        if (player.tutorialStage == TutorialStage.COMPLETE) {
+            val quest = Quest.get("quest_learningtheropes")
+            if (quest != null && !quest.isQuestCompleted(player)) {
+                protectedAccess.launch(player) { quest.completeQuest(this) }
+            }
+        }
         val ticks = player.attr.getOrPut(HINT_TICKS) { 0 } + 1
         if (ticks >= HINT_REPEAT_TICKS) {
             guide.show(player, player.tutorialStage)
@@ -262,6 +301,62 @@ constructor(
             player.attr[HINT_TICKS] = ticks
         }
         player.softTimer(TUTORIAL_TIMER, 1)
+    }
+
+    private fun reconcileInterfaces(player: Player) {
+        val stage = player.tutorialStage
+        val next =
+            when {
+                stage == TutorialStage.SETTINGS_REQUESTED &&
+                    player.ui.containsOverlay("interface.settings_side") ->
+                    TutorialStage.SETTINGS_OPENED
+                stage == TutorialStage.NET_GIVEN &&
+                    player.ui.containsOverlay("interface.inventory") ->
+                    TutorialStage.INVENTORY_VIEWED
+                stage == TutorialStage.SHRIMP_CAUGHT &&
+                    player.ui.containsOverlay("interface.stats") ->
+                    TutorialStage.SKILLS_VIEWED
+                stage == TutorialStage.DAGGER_EQUIP_TASK &&
+                    player.ui.containsOverlay("interface.wornitems") ->
+                    TutorialStage.WORN_OPENED
+                stage == TutorialStage.WORN_OPENED &&
+                    (player.ui.containsModal("interface.equipment") ||
+                        player.ui.containsModal("interface.equipment_side")) ->
+                    TutorialStage.EQUIPMENT_STATS_OPENED
+                stage == TutorialStage.SWORD_EQUIPPED &&
+                    player.ui.containsOverlay("interface.combat_interface") ->
+                    TutorialStage.COMBAT_TAB_OPENED
+                stage == TutorialStage.COMBAT_TAB_OPENED &&
+                    player.ui.containsOverlay("interface.inventory") ->
+                    TutorialStage.COMBAT_TAB_CLOSED
+                stage == TutorialStage.QUEST_GUIDE_TALKED &&
+                    player.ui.containsOverlay("interface.questlist") ->
+                    TutorialStage.QUEST_LIST_OPENED
+                stage == TutorialStage.MINING_GUIDE_BAR &&
+                    player.ui.containsModal("interface.smithing") ->
+                    TutorialStage.ANVIL_OPENED
+                stage == TutorialStage.PRAYER_GUIDE_TALKED &&
+                    player.ui.containsOverlay("interface.prayerbook") ->
+                    TutorialStage.PRAYER_BOOK_OPENED
+                stage == TutorialStage.MAGIC_GUIDE_TALKED &&
+                    player.ui.containsOverlay("interface.magic_spellbook") ->
+                    TutorialStage.MAGIC_BOOK_OPENED
+                stage == TutorialStage.ACCOUNT_GUIDE_TALKED &&
+                    player.ui.containsOverlay("interface.account") ->
+                    TutorialStage.ACCOUNT_MENU_OPENED
+                stage == TutorialStage.LADDER_UP &&
+                    (player.ui.containsOverlay("interface.bankside") ||
+                        player.ui.containsModal("interface.bankmain")) ->
+                    TutorialStage.BANK_OPENED
+                else -> null
+            }
+        if (next != null) {
+            guide.advance(player, next)
+        }
+    }
+
+    private fun ProtectedAccess.mesOverlay(text: String) {
+        player.runClientScript(MESOVERLAY, text)
     }
 
     private fun validName(name: String): Boolean {
@@ -285,7 +380,9 @@ constructor(
 
     private companion object {
         private const val TUTORIAL_TIMER = "timer.tutorial_island"
-        private const val HINT_REPEAT_TICKS = 50
+        private const val HINT_REPEAT_TICKS = 10
+        private val MESOVERLAY =
+            "clientscript.[clientscript,mesoverlay]".asRSCM(RSCMType.CLIENTSCRIPT)
         private const val ADVENTURE_PATHS_PARTICIPATING = 1
         private const val ADVENTURE_PATHS_OPTED_OUT = 2
         private const val ADVENTURE_PATHS_EXPERIENCED = 2

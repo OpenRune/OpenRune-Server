@@ -1,28 +1,37 @@
 package org.rsmod.content.areas.misc.tutorialisland
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.events.PlayerHitEvents
-import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
-import org.rsmod.api.player.events.skilling.SkillingActionContext
+import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.player.stat.statAdvance
+import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onEvent
-import org.rsmod.api.script.onIfClose
-import org.rsmod.api.script.onIfModalButton
-import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onPlayerCoordsChanged
+import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
+import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
+import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
+import org.rsmod.map.CoordGrid
+import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -30,16 +39,27 @@ internal class TutorialIsland
 @Inject
 constructor(
     private val guide: TutorialGuide,
+    private val exit: TutorialExit,
+    private val protectedAccess: ProtectedAccessLauncher,
     private val locRepo: LocRepository,
+    private val npcRepo: NpcRepository,
+    private val xpMods: XpModifiers,
     private val eventBus: EventBus,
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
         bindInstructors()
         bindDoors()
-        bindInterfaces()
+        bindObjects()
         bindSkilling()
         bindDamageFloor()
+        onPlayerCoordsChanged {
+            if (player.tutorialStage == TutorialStage.READY_TO_LEAVE &&
+                player.coords.chebyshevDistance(TutorialCoords.LUMBRIDGE) <= 4
+            ) {
+                protectedAccess.launch(player) { with(exit) { complete() } }
+            }
+        }
     }
 
     private fun ScriptContext.bindInstructors() {
@@ -56,60 +76,118 @@ constructor(
     }
 
     private fun ScriptContext.bindDoors() {
-        onOpLoc1(TutorialLoc.DOOR_1) { player.advanceIf(10, 20) }
-        for (gate in listOf(TutorialLoc.GATE_LEFT, TutorialLoc.GATE_RIGHT)) {
-            onOpLoc1(gate) { player.advanceIf(120, 130) }
+        onOpLoc1(TutorialLoc.DOOR_1) {
+            player.openDoor(it.loc)
+            player.advanceIf(TutorialStage.GUIDE_DONE, TutorialStage.OUTSIDE)
         }
-        onOpLoc1(TutorialLoc.DOOR_2) { player.advanceIf(130, 140) }
-        onOpLoc1(TutorialLoc.DOOR_3) { player.advanceIf(170, 183) }
-        onOpLoc1(TutorialLoc.DOOR_4) { player.advanceIf(183, 200) }
-        for (door in listOf(TutorialLoc.DOOR_6, TutorialLoc.DOOR_7)) {
-            onOpLoc1(door) { player.advanceIf(525, 530) }
+        onOpLoc1(TutorialLoc.GATE_LEFT) {
+            player.openGate(it.loc, TutorialLoc.GATE_RIGHT)
+            player.advanceIf(TutorialStage.SHRIMP_COOKED, TutorialStage.GATE_OPENED)
         }
-        onOpLoc1(TutorialLoc.DOOR_8) { player.advanceIf(540, 550) }
-        onOpLoc1(TutorialLoc.DOOR_9) { player.advanceIf(610, 620) }
-        for (ladder in listOf(TutorialLoc.LADDER_DOWN, TutorialLoc.LADDER_DOWN_2)) {
-            onOpLoc1(ladder) { player.advanceIf(250, 260) }
+        onOpLoc1(TutorialLoc.GATE_RIGHT) {
+            player.openGate(it.loc, TutorialLoc.GATE_LEFT)
+            player.advanceIf(TutorialStage.SHRIMP_COOKED, TutorialStage.GATE_OPENED)
         }
-        for (ladder in listOf(TutorialLoc.LADDER_UP, TutorialLoc.LADDER_UP_2)) {
-            onOpLoc1(ladder) { player.advanceIf(500, 510) }
+        onOpLoc1(TutorialLoc.DOOR_2) {
+            player.openDoor(it.loc)
+            player.advanceIf(TutorialStage.GATE_OPENED, TutorialStage.KITCHEN_ENTERED)
         }
-        for (gate in listOf(TutorialLoc.DOOR_4_LEFT, TutorialLoc.DOOR_4_RIGHT)) {
-            onOpLoc1(gate) { player.advanceIf(360, 370) }
+        onOpLoc1(TutorialLoc.DOOR_3) {
+            player.openDoor(it.loc)
+            player.advanceIf(TutorialStage.BREAD_BAKED, TutorialStage.QUEST_PATH)
+            player.advanceIf(TutorialStage.QUEST_PATH, TutorialStage.QUEST_HOUSE_ENTERED)
         }
-        for (gate in listOf(TutorialLoc.DOOR_5_LEFT, TutorialLoc.DOOR_5_RIGHT)) {
-            onOpLoc1(gate) { player.advanceIf(440, 450) }
+        onOpLoc1(TutorialLoc.DOOR_4) {
+            player.openDoor(it.loc)
+            player.advanceIf(TutorialStage.QUEST_HOUSE_ENTERED, TutorialStage.QUEST_HOUSE_INSIDE)
         }
+        onOpLoc1(TutorialLoc.DOOR_6) {
+            player.openDoor(it.loc)
+            player.advanceIf(TutorialStage.POLL_BOOTH, TutorialStage.ACCOUNT_GUIDE_ARRIVED)
+        }
+        onOpLoc1(TutorialLoc.DOOR_7) {
+            player.openDoor(it.loc)
+            player.advanceIf(TutorialStage.ACCOUNT_GUIDE_DONE, TutorialStage.CHAPEL_ARRIVED)
+        }
+        onOpLoc1(TutorialLoc.DOOR_8) {
+            player.openDoor(it.loc)
+            player.advanceIf(TutorialStage.PRAYER_GUIDE_DONE, TutorialStage.MAGIC_GUIDE_ARRIVED)
+        }
+        onOpLoc1(TutorialLoc.LADDER_DOWN) {
+            climb(
+                CoordGrid(3088, 9520, 0),
+                TutorialStage.QUEST_GUIDE_DONE,
+                TutorialStage.LADDER_DOWN,
+            )
+        }
+        onOpLoc1(TutorialLoc.LADDER_DOWN_2) {
+            climb(
+                CoordGrid(3111, 9526, 0),
+                TutorialStage.QUEST_GUIDE_DONE,
+                TutorialStage.LADDER_DOWN,
+            )
+        }
+        onOpLoc1(TutorialLoc.LADDER_UP) {
+            climb(
+                CoordGrid(3088, 3120, 0),
+                TutorialStage.COMBAT_GUIDE_DONE,
+                TutorialStage.LADDER_UP,
+            )
+        }
+        onOpLoc1(TutorialLoc.LADDER_UP_2) {
+            climb(
+                CoordGrid(3111, 3125, 0),
+                TutorialStage.COMBAT_GUIDE_DONE,
+                TutorialStage.LADDER_UP,
+            )
+        }
+        onOpLoc1(TutorialLoc.COMBAT_GATE_LEFT) {
+            player.openGate(it.loc, TutorialLoc.COMBAT_GATE_RIGHT)
+            player.advanceIf(TutorialStage.DAGGER_SMITHED, TutorialStage.COMBAT_GATE)
+        }
+        onOpLoc1(TutorialLoc.COMBAT_GATE_RIGHT) {
+            player.openGate(it.loc, TutorialLoc.COMBAT_GATE_LEFT)
+            player.advanceIf(TutorialStage.DAGGER_SMITHED, TutorialStage.COMBAT_GATE)
+        }
+        onOpLoc1(TutorialLoc.RAT_GATE_LEFT) { useRatGate(it.loc, TutorialLoc.RAT_GATE_RIGHT) }
+        onOpLoc1(TutorialLoc.RAT_GATE_RIGHT) { useRatGate(it.loc, TutorialLoc.RAT_GATE_LEFT) }
     }
 
-    private fun ScriptContext.bindInterfaces() {
-        onIfOpen("interface.settings_side") { player.advanceIf(3, 7) }
-        onIfOpen("interface.inventory") { player.advanceIf(30, 40) }
-        onIfOpen("interface.stats") { player.advanceIf(50, 60) }
-        onIfOpen("interface.wornitems") { player.advanceIf(390, 400) }
-        onIfOpen("interface.equipment") { player.advanceIf(400, 405) }
-        onIfOpen("interface.combat_interface") { player.advanceIf(430, 440) }
-        onIfOpen("interface.questlist") { player.advanceIf(220, 230) }
-        onIfOpen("interface.questjournal") { player.advanceIf(230, 240) }
-        onIfOpen("interface.prayerbook") { player.advanceIf(560, 570) }
-        onIfOpen("interface.magic_spellbook") { player.advanceIf(630, 640) }
-        onIfOpen("interface.account") { player.advanceIf(531, 532) }
-        onIfOpen("interface.bankside") { player.openTutorialBank() }
-        onIfClose("interface.bankmain") { player.advanceIf(520, 525) }
-        onIfModalButton("component.smithing:dagger") {
-            if (player.tutorialStage in 330..350) {
-                delay(4)
-                guide.advance(player, TutorialStage.COMBAT_GATE)
+    private fun ScriptContext.bindObjects() {
+        onOpLoc1(TutorialLoc.BANK_BOOTH) {
+            if (player.tutorialStage == TutorialStage.LADDER_UP) {
+                guide.advance(player, TutorialStage.BANK_OPENED)
+            }
+            player.ifOpenMainSidePair("interface.bankmain", "interface.bankside", -1, -2, eventBus)
+        }
+        onOpLoc1(TutorialLoc.POLL_BOOTH) {
+            if (player.tutorialStage == TutorialStage.BANK_OPENED) {
+                mesbox(
+                    "Poll booths are found in towns across the world. The Old School RuneScape " +
+                        "community is invited to vote on future game updates, to decide whether " +
+                        "each update should or shouldn't be released.",
+                )
+                mesbox(
+                    "Voting is open to <col=7f0000>members</col> with a <col=7f0000>skill total " +
+                        "of 300</col>. To preserve the old-school character of this game, an " +
+                        "update must gain <col=7f0000>70%</col> support to be released.",
+                )
+                mesbox("A flag appears on the booth to let you know when you're invited to vote in a poll.")
+                guide.advance(player, TutorialStage.POLL_BOOTH)
             }
         }
     }
 
     private fun ScriptContext.bindSkilling() {
-        onOpHeldU(TutorialObj.POT_FLOUR, TutorialObj.BUCKET_WATER) { makeDough() }
+        onOpHeldU(TutorialObj.BUCKET_WATER, TutorialObj.POT_FLOUR) { makeDough() }
         onOpHeldU(TutorialObj.TINDERBOX, TutorialObj.LOGS) { lightFire() }
         onOpLocU(TutorialLoc.FIRE, TutorialObj.RAW_SHRIMP) { cookShrimp() }
         onOpLocU(TutorialLoc.RANGE, TutorialObj.BREAD_DOUGH) { bakeBread() }
-        onOpHeld1(TutorialObj.BONES) { buryBones() }
+        onOpLoc1(TutorialLoc.RANGE) {
+            if (player.tutorialStage == TutorialStage.DOUGH_MADE) {
+                bakeBread()
+            }
+        }
         onOpNpc1(TutorialNpc.FISHING_SPOT) { catchShrimp() }
         for (tree in listOf(TutorialLoc.TREE, TutorialLoc.TREE_2, TutorialLoc.OAK_TREE)) {
             onOpLoc1(tree) { chopTree() }
@@ -117,7 +195,7 @@ constructor(
         onOpLoc1(TutorialLoc.TIN_ROCK) { mineTin() }
         onOpLoc1(TutorialLoc.COPPER_ROCK) { mineCopper() }
         onOpLoc1(TutorialLoc.FURNACE) { smeltBar() }
-        onEvent<SkillingActionCompleteEvent> { skillingComplete() }
+        onOpHeld1(TutorialObj.BONES) { buryBones() }
     }
 
     private fun ScriptContext.bindDamageFloor() {
@@ -131,54 +209,66 @@ constructor(
         }
     }
 
+    private suspend fun ProtectedAccess.climb(destination: CoordGrid, from: Int, to: Int) {
+        if (player.tutorialStage != from) {
+            return
+        }
+        anim("seq.human_reachforladder")
+        delay(1)
+        telejump(destination, TeleportType.Exempt)
+        guide.advance(player, to)
+    }
+
     private fun Player.advanceIf(from: Int, to: Int) {
         if (tutorialStage == from) {
             guide.advance(this, to)
         }
     }
 
-    private fun Player.openTutorialBank() {
-        if (tutorialStage == TutorialStage.BANK_OPENED) {
-            guide.advance(this, TutorialStage.BANK_TUTORIAL)
+    private fun Player.openDoor(loc: BoundLocInfo) {
+        locRepo.del(loc, DOOR_OPEN_TICKS)
+    }
+
+    private fun Player.openGate(loc: BoundLocInfo, otherName: String) {
+        locRepo.del(loc, DOOR_OPEN_TICKS)
+        findNearbyLoc(loc.coords, otherName)?.let { locRepo.del(it, DOOR_OPEN_TICKS) }
+    }
+
+    private suspend fun ProtectedAccess.useRatGate(loc: BoundLocInfo, otherName: String) {
+        if (player.tutorialStage in TutorialStage.RANGED_GIVEN until TutorialStage.RAT_ENGAGED_RANGED) {
+            mesbox("No, don't enter the pit. Range the rats from outside the cage.")
+            return
         }
-        if (tutorialStage == TutorialStage.BANK_OPENED || tutorialStage == TutorialStage.BANK_TUTORIAL) {
-            val bank = invMap.getOrPut("inv.bank")
-            if (bank.count(TutorialObj.COINS) == 0) {
-                invAdd(bank, TutorialObj.COINS, 25)
-            }
+        player.openGate(loc, otherName)
+    }
+
+    private fun findNearbyLoc(origin: CoordGrid, name: String): LocInfo? {
+        val id = name.asRSCM(RSCMType.LOC)
+        return locRepo.findAll(ZoneKey.from(origin)).firstOrNull {
+            it.entity.id == id && it.coords.chebyshevDistance(origin) <= 1
         }
     }
 
-    private fun SkillingActionCompleteEvent.skillingComplete() {
-        if (!player.inTutorial) {
-            return
-        }
-        val context = context as? SkillingActionContext.Product ?: return
-        val stage = player.tutorialStage
-        val advanced =
-            when (context.item) {
-                TutorialObj.RAW_SHRIMP -> if (stage == TutorialStage.INVENTORY_VIEWED) 50 else null
-                TutorialObj.LOGS -> if (stage == TutorialStage.AXE_GIVEN) 80 else null
-                TutorialObj.BRONZE_BAR -> if (stage == TutorialStage.BAR_SMELTED) 320 else null
-                TutorialObj.BRONZE_DAGGER ->
-                    when (stage) {
-                        TutorialStage.DAGGER_SMITHED -> 350
-                        TutorialStage.DAGGER_SELECTED -> 360
-                        else -> null
-                    }
-                else -> null
-            }
-        advanced?.let { guide.advance(player, it) }
+    private suspend fun ProtectedAccess.mesOverlay(text: String) {
+        runClientScript(MESOVERLAY, text)
+    }
+
+    private fun ProtectedAccess.tutorialStat(stat: String, xp: Double) {
+        player.statAdvance(stat, xp * xpMods.get(player, stat))
     }
 
     private suspend fun ProtectedAccess.makeDough() {
         if (player.tutorialStage != TutorialStage.CHEF_TALKED) {
             return
         }
-        if (!player.inv.contains(TutorialObj.POT_FLOUR) || !player.inv.contains(TutorialObj.BUCKET_WATER)) {
+        if (!player.inv.contains(TutorialObj.POT_FLOUR) ||
+            !player.inv.contains(TutorialObj.BUCKET_WATER)
+        ) {
             return
         }
-        if (invDel(inv, TutorialObj.POT_FLOUR, 1).failure || invDel(inv, TutorialObj.BUCKET_WATER, 1).failure) {
+        if (invDel(inv, TutorialObj.POT_FLOUR, 1).failure ||
+            invDel(inv, TutorialObj.BUCKET_WATER, 1).failure
+        ) {
             return
         }
         invAdd(inv, TutorialObj.BREAD_DOUGH, 1)
@@ -192,11 +282,13 @@ constructor(
         if (player.tutorialStage != TutorialStage.LOGS_CUT) {
             return
         }
-        if (!player.inv.contains(TutorialObj.LOGS) || !player.inv.contains(TutorialObj.TINDERBOX)) {
+        if (!player.inv.contains(TutorialObj.LOGS) ||
+            !player.inv.contains(TutorialObj.TINDERBOX)
+        ) {
             return
         }
+        mesOverlay("Your character is now attempting to light a fire. This should only take a few seconds.")
         anim("seq.human_createfire")
-        mes("You attempt to light the logs.")
         delay(4)
         if (invDel(inv, TutorialObj.LOGS, 1).failure) {
             return
@@ -208,6 +300,7 @@ constructor(
             LocAngle.West,
             LocShape.CentrepieceStraight,
         )
+        tutorialStat("stat.firemaking", 40.0)
         guide.advance(player, TutorialStage.FIRE_LIT)
     }
 
@@ -215,11 +308,13 @@ constructor(
         if (player.tutorialStage != TutorialStage.FIRE_LIT) {
             return
         }
+        mesOverlay("Your character is now attempting to cook some shrimp. This will only take a few seconds.")
+        delay(2)
         if (invDel(inv, TutorialObj.RAW_SHRIMP, 1).failure) {
             return
         }
         mesbox("You manage to cook some shrimp.")
-        statAdvance("stat.cooking", 30.0)
+        tutorialStat("stat.cooking", 30.0)
         invAdd(inv, TutorialObj.SHRIMP, 1)
         guide.advance(player, TutorialStage.SHRIMP_COOKED)
     }
@@ -228,11 +323,13 @@ constructor(
         if (player.tutorialStage != TutorialStage.DOUGH_MADE) {
             return
         }
+        mesOverlay("Your character is now attempting to bake some bread. This will only take a few seconds.")
+        delay(2)
         if (invDel(inv, TutorialObj.BREAD_DOUGH, 1).failure) {
             return
         }
         mesbox("You manage to bake some bread.")
-        statAdvance("stat.cooking", 40.0)
+        tutorialStat("stat.cooking", 40.0)
         invAdd(inv, TutorialObj.BREAD, 1)
         guide.advance(player, TutorialStage.BREAD_BAKED)
     }
@@ -245,11 +342,14 @@ constructor(
             mes("You need a net to catch shrimp.")
             return
         }
-        spam("You cast out your net...")
+        mesOverlay(
+            "Your character is now attempting to catch some shrimp. Sit back for a moment " +
+                "while he does all the hard work.",
+        )
         delay(3)
         invAdd(inv, TutorialObj.RAW_SHRIMP, 1)
-        statAdvance("stat.fishing", 10.0)
-        spam("You manage to catch some shrimp.")
+        tutorialStat("stat.fishing", 10.0)
+        mesbox("You manage to catch some shrimp.")
         guide.advance(player, TutorialStage.SHRIMP_CAUGHT)
     }
 
@@ -261,17 +361,36 @@ constructor(
             mes("You need an axe to chop down this tree.")
             return
         }
-        spam("You swing your axe at the tree.")
+        mesOverlay(
+            "Your character is now attempting to cut down the tree. Sit back for a moment " +
+                "while he does all the hard work.",
+        )
         delay(4)
         if (invAdd(inv, TutorialObj.LOGS, 1).failure) {
             return
         }
-        statAdvance("stat.woodcutting", 25.0)
-        spam("You manage to cut some logs.")
+        tutorialStat("stat.woodcutting", 25.0)
+        mesbox("You manage to cut some logs.")
         guide.advance(player, TutorialStage.LOGS_CUT)
     }
 
     private suspend fun ProtectedAccess.mineTin() {
+        if (player.tutorialStage != TutorialStage.MINING_GUIDE_TALKED) {
+            return
+        }
+        if (!player.inv.contains(TutorialObj.BRONZE_PICKAXE)) {
+            mes("You need a pickaxe to mine this rock.")
+            return
+        }
+        mesOverlay("Your character is now attempting to mine the rock.<br>This should only take a few seconds.")
+        delay(3)
+        invAdd(inv, TutorialObj.TIN_ORE, 1)
+        tutorialStat("stat.mining", 17.5)
+        mesbox("You manage to mine some tin.")
+        guide.advance(player, TutorialStage.TIN_MINED)
+    }
+
+    private suspend fun ProtectedAccess.mineCopper() {
         if (player.tutorialStage != TutorialStage.TIN_MINED) {
             return
         }
@@ -279,47 +398,35 @@ constructor(
             mes("You need a pickaxe to mine this rock.")
             return
         }
-        spam("You swing your pick at the rock.")
+        mesOverlay("Your character is now attempting to mine the rock.<br>This should only take a few seconds.")
         delay(3)
-        invAdd(inv, "obj.tin_ore", 1)
-        statAdvance("stat.mining", 17.5)
-        spam("You manage to mine some tin.")
+        invAdd(inv, TutorialObj.COPPER_ORE, 1)
+        tutorialStat("stat.mining", 17.5)
+        mesbox("You manage to mine some copper.")
         guide.advance(player, TutorialStage.COPPER_MINED)
     }
 
-    private suspend fun ProtectedAccess.mineCopper() {
+    private suspend fun ProtectedAccess.smeltBar() {
         if (player.tutorialStage != TutorialStage.COPPER_MINED) {
             return
         }
-        if (!player.inv.contains(TutorialObj.BRONZE_PICKAXE)) {
-            mes("You need a pickaxe to mine this rock.")
-            return
-        }
-        spam("You swing your pick at the rock.")
-        delay(3)
-        invAdd(inv, "obj.copper_ore", 1)
-        statAdvance("stat.mining", 17.5)
-        spam("You manage to mine some copper.")
-        guide.advance(player, TutorialStage.BAR_SMELTED)
-    }
-
-    private suspend fun ProtectedAccess.smeltBar() {
-        if (player.tutorialStage != TutorialStage.BAR_SMELTED) {
-            return
-        }
-        if (!player.inv.contains("obj.tin_ore") || !player.inv.contains("obj.copper_ore")) {
+        if (!player.inv.contains(TutorialObj.TIN_ORE) ||
+            !player.inv.contains(TutorialObj.COPPER_ORE)
+        ) {
             mes("You need some tin and copper ore to smelt a bronze bar.")
             return
         }
-        if (invDel(inv, "obj.tin_ore", 1).failure || invDel(inv, "obj.copper_ore", 1).failure) {
+        mesOverlay("You smelt the copper and tin together in the furnace.")
+        delay(2)
+        if (invDel(inv, TutorialObj.TIN_ORE, 1).failure ||
+            invDel(inv, TutorialObj.COPPER_ORE, 1).failure
+        ) {
             return
         }
-        mesbox("You smelt the copper and tin together in the furnace.")
-        delay(2)
         mesbox("You retrieve a bar of bronze.")
-        statAdvance("stat.smithing", 6.2)
+        tutorialStat("stat.smithing", 6.2)
         invAdd(inv, TutorialObj.BRONZE_BAR, 1)
-        guide.advance(player, TutorialStage.MINING_GUIDE_BAR)
+        guide.advance(player, TutorialStage.BAR_SMELTED)
     }
 
     private suspend fun ProtectedAccess.buryBones() {
@@ -327,7 +434,7 @@ constructor(
             return
         }
         mes("You bury the bones.")
-        statAdvance("stat.prayer", 4.5)
+        tutorialStat("stat.prayer", 4.5)
     }
 
     private suspend fun Dialogue.gielinorGuide() {
@@ -344,7 +451,7 @@ constructor(
                         "talking to other people!",
                 )
                 chatNpc(
-                    happy,
+                    neutral,
                     "You will find many inhabitants of this world have useful things to say to " +
                         "you. By clicking on them you can talk to them.",
                 )
@@ -374,7 +481,7 @@ constructor(
         when (player.tutorialStage) {
             TutorialStage.OUTSIDE -> {
                 chatNpc(
-                    happy,
+                    neutral,
                     "Hello there, newcomer. My name is Brynna. My job is to teach you about the " +
                         "skills you can use to survive in this world.",
                 )
@@ -388,6 +495,8 @@ constructor(
                     guide.advance(player, TutorialStage.NET_GIVEN)
                 }
             }
+            TutorialStage.NET_GIVEN, TutorialStage.INVENTORY_VIEWED, TutorialStage.SHRIMP_CAUGHT ->
+                chatNpc(neutral, "Hello again. You should take a look at that menu before we continue.")
             TutorialStage.SKILLS_VIEWED -> {
                 chatNpc(
                     happy,
@@ -402,23 +511,75 @@ constructor(
                     guide.advance(player, TutorialStage.AXE_GIVEN)
                 }
             }
-            else ->
+            else -> survivalRecap()
+        }
+    }
+
+    private suspend fun Dialogue.survivalRecap() {
+        chatNpc(quiz, "Hello again. Is there something you'd like to hear more about?")
+        when (
+            choice4(
+                "Tell me about my skills again.",
+                1,
+                "Tell me about Woodcutting again.",
+                2,
+                "Tell me about Firemaking again.",
+                3,
+                "More options...",
+                4,
+            )
+        ) {
+            1 ->
                 chatNpc(
-                    happy,
-                    "Hello again. Is there something you'd like to hear more about?",
+                    neutral,
+                    "Your skills can be levelled up by earning experience. As you level up your " +
+                        "skills, you will earn new unlocks.",
                 )
+            2 ->
+                chatNpc(
+                    neutral,
+                    "Woodcutting is a skill that allows you to cut down trees for logs. All you " +
+                        "need is an axe.",
+                )
+            3 ->
+                chatNpc(
+                    neutral,
+                    "Firemaking is a skill that allows you to light fires. Use a tinderbox on " +
+                        "some logs to light them.",
+                )
+            else -> survivalMoreRecap()
+        }
+    }
+
+    private suspend fun Dialogue.survivalMoreRecap() {
+        when (choice2("Tell me about Fishing again.", 1, "No thanks.", 2)) {
+            1 ->
+                chatNpc(
+                    neutral,
+                    "Fishing is a skill that allows you to catch fish. You'll need a net or a " +
+                        "fishing rod, depending on what you want to catch.",
+                )
+            else -> Unit
         }
     }
 
     private suspend fun Dialogue.masterChef() {
         if (player.tutorialStage == TutorialStage.KITCHEN_ENTERED) {
             chatNpc(
-                happy,
+                neutral,
                 "Ah! Welcome, newcomer. I am the Master Chef, Lev. It is here that I will teach " +
                     "you how to cook food truly fit for a king.",
             )
+            chatPlayer(angry, "I already know how to cook. Brynna taught me just now.")
+            chatNpc(
+                laugh,
+                "Hahahahahaha! You call THAT cooking? Some shrimp on an open log fire? Oh, no, " +
+                    "no, no. I am going to teach you the fine art of cooking bread.",
+            )
             if (access.giveTutorialItems(TutorialObj.POT_FLOUR to 1, TutorialObj.BUCKET_WATER to 1)) {
-                mesbox(
+                doubleobjbox(
+                    TutorialObj.POT_FLOUR,
+                    TutorialObj.BUCKET_WATER,
                     "The master chef gives you some <col=000080>flour<col=000000> and some " +
                         "<col=000080>water<col=000000>.",
                 )
@@ -431,19 +592,49 @@ constructor(
 
     private suspend fun Dialogue.questGuide() {
         when (player.tutorialStage) {
-            TutorialStage.QUEST_HOUSE_ENTERED -> {
+            TutorialStage.QUEST_HOUSE_INSIDE -> {
                 chatNpc(
                     neutral,
                     "Ah. Welcome, adventurer. I'm here to tell you all about quests. Let's start " +
                         "by opening your quest list.",
                 )
-                guide.advance(player, TutorialStage.QUEST_LIST_OPENED)
+                guide.advance(player, TutorialStage.QUEST_GUIDE_TALKED)
             }
-            TutorialStage.QUEST_JOURNAL_READ -> {
+            TutorialStage.QUEST_GUIDE_TALKED ->
+                chatNpc(neutral, "You should take a look at your quest list before we continue.")
+            TutorialStage.QUEST_LIST_OPENED -> {
                 chatNpc(
                     neutral,
                     "Now that you have the quest list open, you can see all the quests within it. " +
                         "Opening a quest's journal will provide you with more information on it.",
+                )
+                chatNpc(
+                    neutral,
+                    "If you haven't started the quest, it will tell you where to begin and what " +
+                        "requirements you need. If the quest is in progress, it will remind you " +
+                        "what to do next.",
+                )
+                chatNpc(
+                    neutral,
+                    "It's very easy to find quest start points. Just look out for the quest icon " +
+                        "on your minimap. You should see one marking this house.",
+                )
+                mesbox(
+                    "The minimap in the top right corner of the screen has various icons to show " +
+                        "different points of interest. Look for the icon to the left to find quest " +
+                        "start points.",
+                )
+                chatNpc(
+                    neutral,
+                    "The quests themselves can vary greatly from collecting beads to hunting down " +
+                        "dragons. Completing quests will reward you with all sorts of things, such " +
+                        "as new areas and better weapons!",
+                )
+                chatNpc(
+                    neutral,
+                    "There's not a lot more I can tell you about questing. You have to experience " +
+                        "the thrill of it yourself to fully understand. Let me know if you want a " +
+                        "recap, otherwise you can move on.",
                 )
                 guide.advance(player, TutorialStage.QUEST_GUIDE_DONE)
             }
@@ -457,34 +648,40 @@ constructor(
 
     private suspend fun Dialogue.miningInstructor() {
         when (player.tutorialStage) {
-            TutorialStage.MINING_GUIDE_TALKED -> {
+            TutorialStage.LADDER_DOWN -> {
                 chatNpc(
-                    happy,
+                    neutral,
                     "Hi there. You must be new around here. So what do I call you? 'Newcomer' seems " +
                         "so impersonal, and if we're going to be working together, I'd rather call " +
                         "you by name.",
                 )
-                chatPlayer(happy, "You can call me ${player.displayName}.")
+                chatPlayer(neutral, "You can call me ${player.displayName}.")
                 chatNpc(
-                    happy,
+                    neutral,
                     "Ok then, ${player.displayName}. My name is Dezzick and I'm a miner by trade. " +
                         "Let's teach you how to mine.",
                 )
+                chatNpc(
+                    happy,
+                    "Mining is very simple, all you need is a pickaxe. The rocks around here " +
+                        "contain tin and copper. Why don't you get started by mining some?",
+                )
                 if (access.giveTutorialItems(TutorialObj.BRONZE_PICKAXE to 1)) {
                     mesbox("The mining instructor gives you a <col=000080>bronze pickaxe<col=000000>.")
-                    guide.advance(player, TutorialStage.TIN_MINED)
+                    guide.advance(player, TutorialStage.MINING_GUIDE_TALKED)
                 }
             }
-            TutorialStage.MINING_GUIDE_BAR -> {
+            TutorialStage.BAR_SMELTED -> {
+                chatPlayer(quiz, "I have a bronze bar. What now?")
                 chatNpc(
-                    neutral,
+                    happy,
                     "Now that you've got a bar, you can smith it into a weapon. To smith something, " +
                         "you need a hammer and an anvil. There's some anvils just here that you can " +
                         "use. See if you can make a bronze dagger.",
                 )
                 if (access.giveTutorialItems(TutorialObj.HAMMER to 1)) {
                     mesbox("The mining instructor gives you a <col=000080>hammer<col=000000>.")
-                    guide.advance(player, TutorialStage.DAGGER_SMITHED)
+                    guide.advance(player, TutorialStage.MINING_GUIDE_BAR)
                 }
             }
             else -> chatNpc(neutral, "Keep practising your mining and smithing.")
@@ -493,23 +690,25 @@ constructor(
 
     private suspend fun Dialogue.combatInstructor() {
         when (player.tutorialStage) {
-            TutorialStage.COMBAT_GUIDE_TALKED -> {
+            TutorialStage.COMBAT_GATE -> {
+                guide.advance(player, TutorialStage.COMBAT_GUIDE_TALKED)
+                chatPlayer(happy, "Hi! My name's ${player.displayName}.")
                 chatNpc(
-                    neutral,
+                    angry,
                     "Do I look like I care? To me you're just another newcomer who thinks they're " +
                         "ready to fight.",
                 )
                 chatNpc(
-                    happy,
+                    neutral,
                     "I am Vannaka, the greatest swordsman alive, and I'm here to teach you the " +
                         "basics of combat.",
                 )
                 chatNpc(neutral, "Let's get started by teaching you to wield a weapon.")
-                guide.advance(player, TutorialStage.DAGGER_EQUIPPED)
+                guide.advance(player, TutorialStage.DAGGER_EQUIP_TASK)
             }
-            TutorialStage.EQUIPMENT_STATS_OPENED -> {
+            TutorialStage.DAGGER_EQUIPPED -> {
                 chatNpc(
-                    happy,
+                    neutral,
                     "Very good, but that little butter knife isn't going to protect you much. " +
                         "Let's get you something a bit better. Once you're properly equipped we " +
                         "can move on to some actual combat.",
@@ -519,12 +718,13 @@ constructor(
                         "The combat instructor gives you a <col=000080>bronze sword<col=000000> " +
                             "and a <col=000000><col=000080>wooden shield<col=000000>.",
                     )
-                    guide.advance(player, TutorialStage.SWORD_EQUIPPED)
+                    guide.advance(player, TutorialStage.COMBAT_GUIDE_SWORD)
                 }
             }
-            TutorialStage.COMBAT_GUIDE_MELEE -> {
+            TutorialStage.RAT_KILLED_MELEE -> {
+                chatPlayer(happy, "I did it! I killed a giant rat!")
                 chatNpc(
-                    happy,
+                    neutral,
                     "I saw. You seem better at this than I thought. Now that you have grasped basic " +
                         "swordplay, let's move on.",
                 )
@@ -548,31 +748,92 @@ constructor(
 
     private suspend fun Dialogue.accountGuide() {
         when (player.tutorialStage) {
-            TutorialStage.ACCOUNT_GUIDE_TALKED -> {
+            TutorialStage.ACCOUNT_GUIDE_ARRIVED -> {
+                chatPlayer(happy, "Hello. Who are you?")
                 chatNpc(happy, "I'm the Account Guide. I'm here to tell you about your account.")
+                chatPlayer(quiz, "What's an account?")
+                chatNpc(
+                    happy,
+                    "Your character IS your account! It's what you are using to play the game " +
+                        "right now. Everyone here has one and some people even have multiple!",
+                )
                 chatNpc(
                     neutral,
                     "There's various things you can do with your account which is where the Account " +
                         "Management menu comes into play. Let's take a look at it now.",
                 )
-                guide.advance(player, TutorialStage.ACCOUNT_MENU_REQUESTED)
+                guide.advance(player, TutorialStage.ACCOUNT_GUIDE_TALKED)
             }
+            TutorialStage.ACCOUNT_GUIDE_TALKED ->
+                chatNpc(neutral, "You should take a look at your Account Management menu before we continue.")
             TutorialStage.ACCOUNT_MENU_OPENED -> {
+                chatNpc(happy, "As you can see, there's a few things you can do with your account.")
                 chatNpc(
-                    neutral,
-                    "As you can see, there's a few things you can do with your account. First, you " +
-                        "have membership. All accounts are free to play by default but if you " +
-                        "desire, you can buy membership to unlock members' worlds.",
+                    happy,
+                    "First, you have membership. All accounts are free to play by default but if " +
+                        "you desire, you can buy membership to unlock members' worlds. These worlds " +
+                        "give you access to extra skills, areas, quests, and more!",
+                )
+                chatPlayer(quiz, "What's a world?")
+                chatNpc(
+                    happy,
+                    "A world is what you play the game on. Most worlds can hold up to 2000 players. " +
+                        "They are split into two main types: free worlds and members' worlds. You " +
+                        "can swap worlds with the World Switcher in the Logout menu.",
+                )
+                chatNpc(
+                    happy,
+                    "You are currently on a free world. If you want to switch to a members' world " +
+                        "and enjoy all of the benefits, you'll need to purchase membership. You can " +
+                        "do so using the store in the Account Management menu.",
+                )
+                chatNpc(
+                    happy,
+                    "Bonds are another thing that you should know about. You can purchase Bonds " +
+                        "from the store in the Account Management menu. Once you have some Bonds, " +
+                        "you can redeem them for membership!",
+                )
+                chatPlayer(quiz, "But why would I use a Bond instead of just buying membership normally?")
+                chatNpc(
+                    happy,
+                    "Unlike membership, Bonds can be traded with other players. You could purchase " +
+                        "a Bond and then sell it to another player for some gold. Alternatively, " +
+                        "you could use your gold to buy a Bond from another player!",
+                )
+                chatPlayer(
+                    quiz,
+                    "So if I used my gold to buy a Bond from another player, I could get membership " +
+                        "without spending any real money?",
+                )
+                chatNpc(happy, "Exactly!")
+                chatNpc(
+                    happy,
+                    "Next up, you have your inbox and name changer. The inbox is where you'll receive " +
+                        "important information related to your account and the game. Be sure to " +
+                        "keep an eye on it.",
                 )
                 chatNpc(
                     neutral,
+                    "The name changer allows you to change your display name if you don't like your " +
+                        "current one. Be aware though that this is only available to accounts with " +
+                        "membership.",
+                )
+                chatPlayer(quiz, "Awesome. Is there anything else I should know about accounts?")
+                chatNpc(
+                    happy,
                     "Your account is very valuable and it's important you look after it. Various " +
                         "tools can help with this, such as Bank PINs and two-factor authentication.",
                 )
                 chatNpc(
                     happy,
-                    "Anyway, that's everything I have to tell you about accounts. Let me know if " +
-                        "you need a recap, otherwise head on to your next instructor.",
+                    "You'll find more information on account security on the Customer Support " +
+                        "webpage. You can use the Useful Links section of the Account Management " +
+                        "menu to get there.",
+                )
+                chatNpc(
+                    happy,
+                    "Anyway, that's everything I have to tell you about accounts. Let me know if you " +
+                        "need a recap, otherwise head on to your next instructor.",
                 )
                 guide.advance(player, TutorialStage.ACCOUNT_GUIDE_DONE)
             }
@@ -582,7 +843,8 @@ constructor(
 
     private suspend fun Dialogue.brotherBrace() {
         when (player.tutorialStage) {
-            TutorialStage.CHAPEL_ENTERED -> {
+            TutorialStage.CHAPEL_ARRIVED -> {
+                chatPlayer(happy, "Good day, brother.")
                 chatNpc(happy, "Hello, I'm Brother Brace.<br>I'm here to tell you all about Prayer.")
                 guide.advance(player, TutorialStage.PRAYER_GUIDE_TALKED)
             }
@@ -614,46 +876,36 @@ constructor(
     }
 
     private suspend fun Dialogue.magicInstructor() {
-        when (player.tutorialStage) {
-            TutorialStage.MAGIC_GUIDE_TALKED -> {
+        when {
+            player.tutorialStage == TutorialStage.MAGIC_GUIDE_ARRIVED -> {
+                chatPlayer(happy, "Hello.")
                 chatNpc(
                     happy,
                     "Good day, newcomer. My name is Terrova. I'm here to tell you about Magic. " +
                         "Let's start by opening your magic interface.",
                 )
-                guide.advance(player, TutorialStage.MAGIC_BOOK_OPENED)
+                guide.advance(player, TutorialStage.MAGIC_GUIDE_TALKED)
             }
-            TutorialStage.RUNES_GIVEN -> {
+            player.tutorialStage == TutorialStage.MAGIC_GUIDE_TALKED ->
+                chatNpc(neutral, "Open up your magic interface by clicking on the flashing icon.")
+            player.tutorialStage == TutorialStage.MAGIC_BOOK_OPENED -> {
                 chatNpc(
                     neutral,
                     "Currently you can only cast one offensive spell called Wind Strike. Let's " +
                         "try it out on one of those chickens.",
                 )
-                if (access.giveTutorialItems(TutorialObj.AIR_RUNE to 25, TutorialObj.MIND_RUNE to 15)) {
+                if (access.giveTutorialItems(TutorialObj.AIR_RUNE to 5, TutorialObj.MIND_RUNE to 5)) {
                     mesbox(
                         "Terrova gives you some <col=000080>air runes<col=000000> and " +
                             "<col=000080>mind runes<col=000000>.",
                     )
-                    guide.advance(player, TutorialStage.WIND_STRIKE_CAST)
+                    guide.advance(player, TutorialStage.RUNES_GIVEN)
                 }
             }
-            TutorialStage.WIND_STRIKE_CAST -> {
-                chatNpc(
-                    happy,
-                    "Well done. You've completed your training here on Tutorial Island. Take these " +
-                        "runes with you, and speak to me again when you're ready to leave.",
-                )
-                guide.advance(player, TutorialStage.COMPLETE)
-            }
-            TutorialStage.COMPLETE -> {
-                chatNpc(
-                    happy,
-                    "You're nearly finished with the tutorial. All you need to do now is move on " +
-                        "to the mainland. Just speak with me to continue.",
-                )
-                guide.advance(player, TutorialStage.READY_TO_LEAVE)
-            }
-            TutorialStage.READY_TO_LEAVE ->
+            player.tutorialStage == TutorialStage.RUNES_GIVEN ->
+                chatNpc(neutral, "You should try casting Wind Strike on one of those chickens.")
+            player.tutorialStage == TutorialStage.COMPLETE -> finalMagicDialogue()
+            player.tutorialStage >= TutorialStage.READY_TO_LEAVE ->
                 chatNpc(
                     happy,
                     "Excellent, I think that covers everything. When you're ready to go, use your " +
@@ -663,15 +915,86 @@ constructor(
         }
     }
 
+    private suspend fun Dialogue.finalMagicDialogue() {
+        chatNpc(
+            happy,
+            "Well, you're all finished here now. I'll give you a reasonable number of runes when " +
+                "you leave.",
+        )
+        chatNpc(neutral, "Were you planning to become an Ironman, by the way?")
+        when (
+            choice3(
+                "What's an Ironman?",
+                1,
+                "Yes, I do want to become an Ironman.",
+                2,
+                "No, I'm not planning to do that.",
+                3,
+            )
+        ) {
+            1 -> {
+                chatPlayer(quiz, "What's an Ironman?")
+                chatNpc(
+                    neutral,
+                    "An Ironman is a player who is entirely self-sufficient. Ironmen cannot trade " +
+                        "with other players, use the Grand Exchange, or take items from other " +
+                        "players' drops.",
+                )
+                finalMagicDialogue()
+                return
+            }
+            2 -> {
+                chatPlayer(happy, "Yes, I do want to become an Ironman.")
+                access.ifOpenMainModal("interface.ironman_setup")
+                return
+            }
+            else -> chatPlayer(neutral, "No, I'm not planning to do that.")
+        }
+        chatNpc(
+            happy,
+            "When you get to the mainland you will find yourself in the town of Lumbridge. If " +
+                "you want some ideas on where to go next, talk to my friend Adventurer Jon. You " +
+                "can't miss him; he's wearing light blue armour with a huge sword. There are also " +
+                "many tutors willing to teach you about the many skills you could learn.",
+        )
+        mesbox(
+            "When you get to Lumbridge, look out for Adventurer Jon, he can be found outside of " +
+                "the Sheared Ram pub.",
+        )
+        chatNpc(
+            happy,
+            "Excellent, I think that covers everything. When you're ready to go, use your home " +
+                "teleport spell to teleport to Lumbridge!",
+        )
+        guide.advance(player, TutorialStage.READY_TO_LEAVE)
+    }
+
     private suspend fun Dialogue.ironmanTutor() {
         chatNpc(
             happy,
             "Hello, ${player.displayName}. I'm the Ironman tutor. You can choose to become an " +
                 "Ironman while you're on Tutorial Island. Some things can't be changed later.",
         )
+        when (choice3("Tell me about Ironmen.", 1, "I'd like to become an Ironman.", 2, "I'm fine, thanks.", 3)) {
+            1 ->
+                chatNpc(
+                    neutral,
+                    "An Ironman is a player who is entirely self-sufficient. Ironmen cannot trade " +
+                        "with other players, use the Grand Exchange, or take items from other " +
+                        "players' drops.",
+                )
+            2 -> {
+                chatPlayer(happy, "I'd like to become an Ironman.")
+                access.ifOpenMainModal("interface.ironman_setup")
+            }
+            else -> chatPlayer(neutral, "I'm fine, thanks.")
+        }
     }
 
     private companion object {
         private const val FIRE_DURATION = 200
+        private const val DOOR_OPEN_TICKS = 5
+        private val MESOVERLAY =
+            "clientscript.[clientscript,mesoverlay]".asRSCM(RSCMType.CLIENTSCRIPT)
     }
 }
