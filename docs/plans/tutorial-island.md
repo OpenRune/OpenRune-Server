@@ -1,8 +1,8 @@
 # Tutorial Island / Learning the Ropes — Implementation Plan
 
-Status: planned, not implemented. Branch: `feat/tutorial-island`, based on upstream
-`openrune/main` (`15009ceaa`). This supersedes the empty "boss" wording in the request: the
-scope here is Tutorial Island, not a boss.
+Status: planned, decisions confirmed, implementation not started. Branch:
+`feat/tutorial-island`, based on upstream `openrune/main` (`15009ceaa`). This supersedes the
+empty "boss" wording in the request: the scope here is Tutorial Island, not a boss.
 
 Reference capture: `C:\Public\rsprox logs\tutorial island\20260821T013635-3be6815`
 (rev 240.1, 21 Aug 2026, full new-account run from character creation to Lumbridge arrival).
@@ -46,10 +46,11 @@ mid-tutorial resumes at the same stage with the correct control guide and next-a
   quest completion and resume-on-login.
 - Live verification with the Developer Tools MCP and a fresh rsprox capture of our own server.
 
-**Out of scope unless requested**
+**Out of scope**
 
-- Hardcore worlds and Death's Delegate beyond the existing informational dialogue.
-- Group Ironman and Hardcore Group Ironman creation.
+- Hardcore worlds, Death's Delegate and Group Ironman/Hardcore Group Ironman creation. The
+  Ironman tutor is included; the other mode conversations are deferred until those systems
+  exist.
 - Permanent Tutorial Island "stayer" support beyond what naturally falls out of the stage
   machine.
 - Full Adventure Paths task/reward implementation; the existing Lumbridge content is reused and
@@ -272,21 +273,20 @@ Each phase ends in a compiling commit and the listed verification.
 - Existing bank tutorial, random events, death office, gravestones and teleports must be
   suppressed or redirected while `varp.tutorial < 1000`.
 
-## Decisions needing your call
+## Decisions (confirmed)
 
-1. **Creation flow fidelity.** Implement the native display-name + player-design + experience
-   modals now (true 1:1, touches account/display-name handling), or start with the existing
-   auto-assigned name/appearance and add the modals in a later phase?
-2. **Post-tutorial scope.** Stop at the Lumbridge arrival effects, or also wire the full existing
-   Adventurer Jon/Adventure Paths handoff and starter kit?
-3. **Hardcore/Death's Delegate and Group Ironman.** Include the informational Tutorial Island
-   conversations now, defer them until hardcore/group worlds exist, or omit them?
-4. **Hint timing.** Match the capture's hint/overlay timing and idle repeats exactly, or implement
-   the same hints without promising tick-identical re-hint timing?
+1. **Creation flow:** implement the native display-name, player-design and past-experience modals
+   now, including name availability and appearance commit.
+2. **Post-tutorial:** implement the full Lumbridge arrival (loadout, bank coins, run-energy/chat
+   restore) and hand off to the existing Adventurer Jon/Adventure Paths content. Do not implement
+   the remaining Adventure Paths task/reward system in this change.
+3. **Game modes:** implement the Ironman tutor and mode switching. Defer Hardcore/Death's Delegate
+   and Group Ironman conversations until those systems exist.
+4. **Hints:** match the capture's hint sequence, overlay text, arrow targets and idle re-hint
+   behaviour, tuned to the server's tick rate.
 
-The recommended defaults are: native modals in phase 3, arrival + Adventurer Jon handoff (the
-repo already has it), Ironman tutor now but Hardcore/Death's Delegate and Group Ironman deferred,
-and capture-matched hints.
+Base branch is upstream `openrune/main` rather than the fork's `origin/main`, because upstream is
+ahead and already contains the newer quest/travel content this branch should build on.
 
 ## Appendix — reference facts from the capture
 
