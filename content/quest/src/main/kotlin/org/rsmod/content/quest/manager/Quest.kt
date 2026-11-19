@@ -45,6 +45,7 @@ data class ItemRewardDisplay(
     val zoom: Int = 10,
     val x: Int? = null,
     val y: Int? = null,
+    val showQuestPoints: Boolean = true,
 )
 
 data class Quest(
@@ -261,7 +262,8 @@ data class Quest(
         }
         access.ifSetText("component.questscroll:quest_title", "You have completed ${displayName}!")
         val questPointLabel = if (questPoints == 1) "Quest Point" else "Quest Points"
-        access.ifSetText("component.questscroll:quest_reward1", "$questPoints $questPointLabel")
+        val questPointText = if (itemDisplay.showQuestPoints) "$questPoints $questPointLabel" else ""
+        access.ifSetText("component.questscroll:quest_reward1", questPointText)
 
         if (itemDisplay.item.isNotBlank()) {
             access.ifSetObj(

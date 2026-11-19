@@ -11,11 +11,8 @@ internal class TutorialQuest :
     QuestScript(
         questKey = "quest_learningtheropes",
         questVarp = "varp.tutorial",
-        rewards =
-            rewards {
-                extra("Access to the Mainland!")
-            },
-        completedQuestItemDisplay = ItemRewardDisplay("", zoom = 400),
+        rewards = rewards {},
+        completedQuestItemDisplay = ItemRewardDisplay("", zoom = 400, showQuestPoints = false),
         closeDialogue = QuestClose.Never,
         closeScroll = QuestClose.Never,
     ) {
