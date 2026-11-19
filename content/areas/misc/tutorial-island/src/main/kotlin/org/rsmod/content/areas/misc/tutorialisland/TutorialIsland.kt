@@ -79,14 +79,26 @@ constructor(
 
     private fun ScriptContext.bindDoors() {
         onOpLoc1(TutorialLoc.DOOR_1) {
+            if (player.tutorialStage < TutorialStage.GUIDE_DONE) {
+                mesbox("You need to talk to the Gielinor Guide before you are allowed to proceed through this door.")
+                return@onOpLoc1
+            }
             player.openDoor(it.loc)
             player.advanceIf(TutorialStage.GUIDE_DONE, TutorialStage.OUTSIDE)
         }
         onOpLoc1(TutorialLoc.GATE_LEFT) {
+            if (player.tutorialStage < TutorialStage.SHRIMP_COOKED) {
+                mesbox("You need to talk to the Survival Guide and complete her tasks before you are allowed to proceed through this gate.")
+                return@onOpLoc1
+            }
             player.openGate(it.loc, TutorialLoc.GATE_RIGHT)
             player.advanceIf(TutorialStage.SHRIMP_COOKED, TutorialStage.GATE_OPENED)
         }
         onOpLoc1(TutorialLoc.GATE_RIGHT) {
+            if (player.tutorialStage < TutorialStage.SHRIMP_COOKED) {
+                mesbox("You need to talk to the Survival Guide and complete her tasks before you are allowed to proceed through this gate.")
+                return@onOpLoc1
+            }
             player.openGate(it.loc, TutorialLoc.GATE_LEFT)
             player.advanceIf(TutorialStage.SHRIMP_COOKED, TutorialStage.GATE_OPENED)
         }
@@ -108,14 +120,30 @@ constructor(
             player.advanceIf(TutorialStage.QUEST_HOUSE_ENTERED, TutorialStage.QUEST_HOUSE_INSIDE)
         }
         onOpLoc1(TutorialLoc.DOOR_6) {
+            if (player.tutorialStage < TutorialStage.BANK_OPENED) {
+                mesbox("You need to open your bank first.")
+                return@onOpLoc1
+            }
+            if (player.tutorialStage < TutorialStage.POLL_BOOTH) {
+                mesbox("You need to visit the poll booth before you can proceed through this door.")
+                return@onOpLoc1
+            }
             player.openDoor(it.loc)
             player.advanceIf(TutorialStage.POLL_BOOTH, TutorialStage.ACCOUNT_GUIDE_ARRIVED)
         }
         onOpLoc1(TutorialLoc.DOOR_7) {
+            if (player.tutorialStage < TutorialStage.ACCOUNT_GUIDE_DONE) {
+                mesbox("You need to talk to the Account Guide before you are allowed to proceed through this door.")
+                return@onOpLoc1
+            }
             player.openDoor(it.loc)
             player.advanceIf(TutorialStage.ACCOUNT_GUIDE_DONE, TutorialStage.CHAPEL_ARRIVED)
         }
         onOpLoc1(TutorialLoc.DOOR_8) {
+            if (player.tutorialStage < TutorialStage.PRAYER_GUIDE_DONE) {
+                mesbox("You need to finish Brother Brace's tasks before you are allowed to proceed through this door.")
+                return@onOpLoc1
+            }
             player.openDoor(it.loc)
             player.advanceIf(TutorialStage.PRAYER_GUIDE_DONE, TutorialStage.MAGIC_GUIDE_ARRIVED)
         }
@@ -152,10 +180,18 @@ constructor(
             )
         }
         onOpLoc1(TutorialLoc.COMBAT_GATE_LEFT) {
+            if (player.tutorialStage < TutorialStage.DAGGER_SMITHED) {
+                mesbox("You need to finish with Mining and Smithing first.")
+                return@onOpLoc1
+            }
             player.openGate(it.loc, TutorialLoc.COMBAT_GATE_RIGHT)
             player.advanceIf(TutorialStage.DAGGER_SMITHED, TutorialStage.COMBAT_GATE)
         }
         onOpLoc1(TutorialLoc.COMBAT_GATE_RIGHT) {
+            if (player.tutorialStage < TutorialStage.DAGGER_SMITHED) {
+                mesbox("You need to finish with Mining and Smithing first.")
+                return@onOpLoc1
+            }
             player.openGate(it.loc, TutorialLoc.COMBAT_GATE_LEFT)
             player.advanceIf(TutorialStage.DAGGER_SMITHED, TutorialStage.COMBAT_GATE)
         }
