@@ -111,6 +111,10 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
             setGamemode(PlayerGamemode.IRONMAN)
         }
         xpRate = 1.0
+        if (settings.nearBrokenMapSquare(coords.x, coords.z)) {
+            moveTo(startCoord)
+            mes("You were moved away from an area this cache cannot load.")
+        }
         softTimer(LEAGUE_TICK_TIMER, LEAGUE_TICK_CYCLES)
         softTimer(PRAYER_REGEN_TIMER, PRAYER_REGEN_CYCLES)
         LeagueTasks.refreshDropRate(this)
@@ -232,6 +236,15 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
             requiredRights = Rights.ADMINISTRATOR
             cheat {
                 repeat(args[0].toInt()) { LeagueTasks.grantPactPoint(player) }
+            }
+        }
+        onCommand("dplockregions") {
+            desc = "Admin: re-lock league regions to the ones you have earned"
+            requiredRights = Rights.ADMINISTRATOR
+            cheat {
+                player.resetRegions()
+                player.mes("Regions reset: ${player.unlockedRegions().joinToString { it.name }}.")
+                player.mes("Use ::regions to choose any region slots you have earned.")
             }
         }
         onCommand("dpallregions") {

@@ -1,9 +1,13 @@
 # Demonic Pacts League settings. Restart the server after editing.
 
 # Where a new league character starts. Civitas illa Fortis, Varlamore.
-start_x = 1681
-start_z = 3134
+start_x = 1760
+start_z = 3112
 start_level = 0
+
+# Map squares ("x_z", as ::mypos prints them) the client cannot load from this cache: standing
+# within view of one freezes the game. League players who log in near one are moved to the start.
+broken_map_squares = ["25_48"]
 
 # League point thresholds for relic tiers 1-8.
 tier_thresholds = [0, 600, 1200, 2600, 5200, 8500, 16500, 28000]

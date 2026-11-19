@@ -112,6 +112,15 @@ fun Player.unlockRegion(region: LeagueRegion) {
     }
 }
 
+fun Player.resetRegions() {
+    regionBits = 0
+    DemonicPactsData.regionsByKey["varlamore"]?.let { unlockRegion(it) }
+    val karamja = DemonicPactsData.regionsByKey["karamja"]
+    if (karamja != null && leagueTasksDone >= DemonicPactsData.settings.karamjaTasks) {
+        unlockRegion(karamja)
+    }
+}
+
 fun Player.unlockedRegions(): List<LeagueRegion> =
     DemonicPactsData.regions.filter { it.bit >= 0 && hasRegion(it) }
 

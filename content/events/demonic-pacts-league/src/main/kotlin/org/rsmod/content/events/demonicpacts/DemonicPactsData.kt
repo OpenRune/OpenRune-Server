@@ -9,9 +9,10 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class LeagueSettings(
-    @param:JsonProperty("start_x") val startX: Int = 1681,
-    @param:JsonProperty("start_z") val startZ: Int = 3134,
+    @param:JsonProperty("start_x") val startX: Int = 1760,
+    @param:JsonProperty("start_z") val startZ: Int = 3112,
     @param:JsonProperty("start_level") val startLevel: Int = 0,
+    @param:JsonProperty("broken_map_squares") val brokenMapSquares: List<String> = emptyList(),
     @param:JsonProperty("tier_thresholds")
     val tierThresholds: List<Int> = listOf(0, 600, 1200, 2600, 5200, 8500, 16500, 28000),
     @param:JsonProperty("easy_points") val easyPoints: Int = 10,
@@ -29,6 +30,17 @@ data class LeagueSettings(
     val regionTaskThresholds: List<Int> = listOf(200, 300, 450),
     @param:JsonProperty("region_lock") val regionLock: Boolean = true,
 ) {
+    /** True when [x],[z] is close enough to a broken map square that the client would load it. */
+    fun nearBrokenMapSquare(x: Int, z: Int): Boolean =
+        brokenMapSquares.any { key ->
+            val parts = key.split('_')
+            val squareX = parts.getOrNull(0)?.toIntOrNull() ?: return@any false
+            val squareZ = parts.getOrNull(1)?.toIntOrNull() ?: return@any false
+            val minX = squareX * 64 - VIEW_MARGIN
+            val minZ = squareZ * 64 - VIEW_MARGIN
+            x in minX until minX + 64 + VIEW_MARGIN * 2 && z in minZ until minZ + 64 + VIEW_MARGIN * 2
+        }
+
     fun pointsFor(tier: String): Int =
         when (tier.lowercase()) {
             "easy" -> easyPoints
@@ -39,6 +51,8 @@ data class LeagueSettings(
             else -> 0
         }
 }
+
+private const val VIEW_MARGIN = 56
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class PactNode(
