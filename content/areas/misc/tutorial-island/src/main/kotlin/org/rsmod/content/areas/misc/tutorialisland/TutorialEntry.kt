@@ -67,10 +67,6 @@ constructor(
             player.coords = TutorialCoords.START
             player.tutorialStage = TutorialStage.START
             player.displayNameStatus = 1
-            val bank = player.invMap.getOrPut("inv.bank")
-            if (bank.count(TutorialObj.COINS) == 0) {
-                player.invAdd(bank, TutorialObj.COINS, 25)
-            }
         }
     }
 
@@ -78,6 +74,7 @@ constructor(
         if (!player.inTutorial) {
             return
         }
+        seedTutorialBank(player)
         if (player.tutorialStage <= TutorialStage.START) {
             player.beginName()
         } else {
@@ -86,6 +83,16 @@ constructor(
             guide.apply(player, player.tutorialStage)
             player.attr[LAST_RUN_STATE] = player.vars["varp.option_run"]
             player.softTimer(TUTORIAL_TIMER, 1)
+        }
+    }
+
+    private fun seedTutorialBank(player: Player) {
+        if (player.tutorialStage >= TutorialStage.BANK_OPENED) {
+            return
+        }
+        val bank = player.invMap.getOrPut("inv.bank")
+        if (bank.count(TutorialObj.COINS) == 0) {
+            player.invAdd(bank, TutorialObj.COINS, 25)
         }
     }
 
