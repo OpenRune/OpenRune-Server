@@ -1,5 +1,6 @@
 package dev.openrune.map
 
+import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.cache.MAPS
 import dev.openrune.filesystem.Cache
@@ -35,6 +36,8 @@ import org.rsmod.routefinder.flag.CollisionFlag
 import org.rsmod.routefinder.loc.LocLayerConstants
 
 object GameMapDecoder {
+
+    private val logger = InlineLogger()
 
     /**
      * The plane carrying the LINK_BELOW ("bridge") tile flag. It is authored on plane 1 only and
@@ -199,7 +202,10 @@ object GameMapDecoder {
                 val entity = LocEntity(loc.id, loc.shape, loc.angle)
                 val type =
                     ServerCacheManager.getObject(loc.id)
-                        ?: error("Invalid loc type: $loc ($square)")
+                        ?: run {
+                            logger.warn { "Skipping map loc with no cache definition: $loc ($square)" }
+                            continue
+                        }
                 zone.add(zoneGridX, zoneGridZ, layer, entity)
                 collision.toggleLoc(
                     coords = coords,
