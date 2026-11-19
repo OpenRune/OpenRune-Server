@@ -52,6 +52,7 @@ class LeagueWebScript @Inject constructor(private val config: ServerConfig) : Pl
                 MEMBERS_PARAM to "true",
                 WORLD_PROPERTIES_PARAM to WORLD_FLAGS.toString(),
                 INITIAL_WORLD_PARAM to config.world.toString(),
+                REVISION_PARAM to config.revision.toString(),
                 WORLD_LIST_PARAM to "http://$LOCALHOST:$port/world_list.ws",
             )
         val seen = HashSet<Int>()
@@ -146,5 +147,6 @@ class LeagueWebScript @Inject constructor(private val config: ServerConfig) : Pl
         const val WORLD_PROPERTIES_PARAM = 5
         const val INITIAL_WORLD_PARAM = 12
         const val WORLD_LIST_PARAM = 17
+        const val REVISION_PARAM = 25
     }
 }
