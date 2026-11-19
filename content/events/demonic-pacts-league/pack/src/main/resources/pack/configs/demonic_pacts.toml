@@ -97,3 +97,8 @@ transmit = "Never"
 id = "varp.dp_tasks_7"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+id = "varp.dp_relic_viewing"
+scope = "Temp"
+transmit = "Never"

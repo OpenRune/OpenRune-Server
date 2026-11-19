@@ -1,0 +1,114 @@
+# Text shown in the relic interface. Tiers, points, names and icons come from the cache.
+# Tier numbers here are 1-based, like the interface's "Tier 1".
+
+[[tier]]
+tier = 1
+passive = "Leagues XP is 5x. Eligible drops are 2x as common. Farming ticks every minute. Minigame points are 4x. Run energy doesn't drain. Clue scrolls are stackable and keep their step progress."
+
+[[tier]]
+tier = 2
+passive = "Leagues XP increases from 5x to 8x."
+
+[[tier]]
+tier = 3
+passive = "Combat XP is 1.5x. Bigger and Badder is unlocked. Slayer reward points from tasks are 5x. Superior monsters appear at 1/50."
+
+[[tier]]
+tier = 4
+passive = "Boosted drops are 5x as common. Minigame points are 8x. Leagues XP increases from 8x to 12x."
+
+[[tier]]
+tier = 6
+passive = "Leagues XP increases from 12x to 16x."
+
+[[relic]]
+name = "Endless Harvest"
+description = "Resources you gather can go straight to your bank. Depleted fishing spots, trees and rocks keep giving resources. Fishing, Woodcutting and Mining yields are doubled, and the extra resources give XP."
+
+[[relic]]
+name = "Barbarian Gathering"
+description = "Gives a knapsack that holds 140 items of up to 3 gathered types. Gather wood, fish and ore without tools. Failed attempts have a 50% chance to succeed, and gathering gives bonus Strength and Agility XP."
+
+[[relic]]
+name = "Abundance"
+description = "Coins can go to your inventory. All non-combat skills get +10 levels. Each XP drop gives 2 bonus XP, and you earn coins for the XP you gain."
+
+[[relic]]
+name = "Hotfoot"
+description = "Gives searing boots that cook fish and smelt ore as you gather, and give Agility XP while you run. Agility and Cooking always succeed."
+
+[[relic]]
+name = "Friendly Forager"
+description = "Gives a forager's pouch that finds grimy herbs while you gather. Herblore processes all items at once, keeps secondaries 90% of the time and makes 4-dose potions."
+
+[[relic]]
+name = "Woodsman"
+description = "Hunter traps can send catches to your bank and logs can be burned as you cut. Fletching makes up to 10 at once and Hunter always succeeds."
+
+[[relic]]
+name = "Bank Heist"
+description = "Gives a banker's briefcase that teleports you to banks, bank chests and deposit boxes in your unlocked areas, ignoring Wilderness restrictions."
+
+[[relic]]
+name = "Evil Eye"
+description = "Gives an evil eye that teleports you to boss and raid entrances, including Barrows and the Moons of Peril, ignoring Wilderness restrictions."
+
+[[relic]]
+name = "Map of Alacrity"
+description = "Gives a map that teleports you to agility shortcuts you meet the requirements for, ignoring Wilderness restrictions."
+
+[[relic]]
+name = "Transmute"
+description = "Gives a Transmutation ledger that turns High and Low Alchemy into Alchemic Divergence and Alchemic Convergence. The ledger is also an unlimited source of nature runes."
+
+[[relic]]
+name = "Conniving Clues"
+description = "Reward caskets can give clue contracts that teleport you to your current clue step. Clues drop more often and have fewer steps."
+
+[[relic]]
+name = "Butler's Bell"
+description = "Gives a bell that summons a demon butler to gather and process resources for you, even while you're logged out, and gives you production XP."
+
+[[relic]]
+name = "Nature's Accord"
+description = "Gives a fairy mushroom that teleports you to fairy rings, spirit trees and tool leprechauns. Farming level requirements are removed and Farming yields are 10x."
+
+[[relic]]
+name = "Larcenist"
+description = "Thieving always succeeds, pickpockets and stalls repeat automatically, loot is noted and 10x, and coin pouches hold more."
+
+[[relic]]
+name = "Soul Harvest"
+description = "Bones and ashes become soul shards, which replace pure essence for Runecraft or can be sacrificed at the libation bowl for Prayer XP."
+
+[[relic]]
+name = "Grimoire"
+description = "Gives an arcane grimoire that switches spellbooks and works as a Book of the Dead. All prayers and spells are unlocked regardless of requirements."
+
+[[relic]]
+name = "Eternal Sustenance"
+description = "Food is not used up when you eat it."
+
+[[relic]]
+name = "Culling Spree"
+description = "Choose your Slayer tasks and their kill counts, get superior monster perks and free items from the Slayer reward shop."
+
+[[relic]]
+name = "Flow State"
+description = "Many skilling actions, and some minigame actions, happen every 2 ticks."
+
+[[relic]]
+name = "Reloaded"
+description = "Choose another relic from any lower tier."
+
+[[relic]]
+name = "Executioner"
+description = "Gives the Sage's axe, a thrown weapon with a 6-tile range that executes targets below 20% hitpoints. It doesn't work on Yama."
+
+[[relic]]
+name = "Minion"
+description = "Gives a minion whistle that summons a minion for 30 minutes. It attacks everything nearby in multi-combat and can loot for you."
+
+[[relic]]
+name = "Flask of Fervour"
+description = "Gives a flask that restores your Hitpoints, Prayer and special attack, triggers an explosion and reduces damage taken. Its cooldown shortens as you deal damage."
