@@ -28,6 +28,10 @@ import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerCutscenes
 import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerQuest
 import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerScenes
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest
+import org.rsmod.content.quest.area.varrock.shieldofarrav.JonnyTheBeardAttackHook
+import org.rsmod.content.quest.area.varrock.shieldofarrav.JonnyTheBeardKillHook
+import org.rsmod.content.quest.area.varrock.shieldofarrav.ShieldOfArravQuest
+import org.rsmod.content.quest.area.varrock.shieldofarrav.WeaponsmasterKillHook
 import org.rsmod.plugin.module.PluginModule
 
 public class QuestModule : PluginModule() {
@@ -46,6 +50,7 @@ public class QuestModule : PluginModule() {
         bindInstance<PiratesTreasureQuest>()
         bindInstance<PiratesTreasureSmuggling>()
         bindInstance<PiratesTreasureDig>()
+        bindInstance<ShieldOfArravQuest>()
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)
         addSetBinding<BookcaseSearchHook>(TouristCentreBookcases::class.java)
         addSetBinding<SpadeDigHook>(XMarksTheSpotQuest::class.java)
@@ -55,6 +60,9 @@ public class QuestModule : PluginModule() {
         addSetBinding<NpcAttackValidateHook>(DelrithAttackHook::class.java)
         addSetBinding<NpcDeathKillHook>(PiratesTreasureGardenerKillHook::class.java)
         addSetBinding<NpcAttackValidateHook>(PiratesTreasureGardenerAttackHook::class.java)
+        addSetBinding<NpcAttackValidateHook>(JonnyTheBeardAttackHook::class.java)
+        addSetBinding<NpcDeathKillHook>(JonnyTheBeardKillHook::class.java)
+        addSetBinding<NpcDeathKillHook>(WeaponsmasterKillHook::class.java)
         addSetBinding<NpcDeathKillHook>(PerilousMoonsNaguaKill::class.java)
         addSetBinding<NeypotzliHook>(PerilousMoonsRuins::class.java)
     }

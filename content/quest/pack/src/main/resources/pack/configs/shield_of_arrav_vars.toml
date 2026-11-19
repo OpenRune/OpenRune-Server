@@ -1,0 +1,12 @@
+[[varp]]
+isServerOnly = true
+id = "varp.shield_of_arrav_state"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.notarrav_call_wait"
+varp = "varp.shield_of_arrav_state"
+startBit = 0
+endBit = 4
