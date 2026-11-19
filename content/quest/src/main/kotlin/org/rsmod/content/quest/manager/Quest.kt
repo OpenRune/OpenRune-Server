@@ -261,10 +261,16 @@ data class Quest(
         val questPointLabel = if (questPoints == 1) "Quest Point" else "Quest Points"
         access.ifSetText("component.questscroll:quest_reward1", "$questPoints $questPointLabel")
 
-        access.ifSetObj("component.questscroll:quest_model", obj = itemDisplay.item, zoom = itemDisplay.zoom)
-        if (itemDisplay.x != null && itemDisplay.y != null) {
-            val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
-            access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
+        if (itemDisplay.item.isNotBlank()) {
+            access.ifSetObj(
+                "component.questscroll:quest_model",
+                obj = itemDisplay.item,
+                zoom = itemDisplay.zoom,
+            )
+            if (itemDisplay.x != null && itemDisplay.y != null) {
+                val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
+                access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
+            }
         }
 
         val rewardLines = mutableListOf<String>()
