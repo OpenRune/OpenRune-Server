@@ -1,1 +1,4 @@
 standard_gp=0
+unidentified_minerals=65533
+golden_nugget=65534
+stardust=65535

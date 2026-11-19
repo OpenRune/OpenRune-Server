@@ -7918,3 +7918,10 @@
 [clientscript,script7919]=7919
 [clientscript,script7920]=7920
 quest_policy_complete_set=45553
+omnishop_info_update=9772
+spawn_menu_init=45500
+spawn_menu_buttons=45518
+spawn_menu_labels=45524
+spawn_menu_search_stop=45530
+poh_furniture_creation_entry_old=7988
+quest_available_set=45550
