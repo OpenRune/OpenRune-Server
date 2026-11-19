@@ -120,7 +120,7 @@ constructor(
                 NAME_TEXT.asRSCM(RSCMType.COMPONENT),
                 NAME_HIGHLIGHT.asRSCM(RSCMType.COMPONENT),
                 NAME_INPUT.asRSCM(RSCMType.COMPONENT),
-                true,
+                1,
             )
         }
     }
