@@ -68,8 +68,8 @@ constructor(
 
     override val worldTypes = listOf(WorldType.DEMONIC_PACTS_LEAGUE)
 
-    private val cookedFish by lazy {
-        CookingFoodsRow.all().associateBy { it.raw.internalName }
+    private val cookedFish: Map<String, CookingFoodsRow> by lazy {
+        CookingFoodsRow.all().associateBy { it.input.internalName }
     }
 
     private val burnableLogs by lazy {
@@ -185,10 +185,11 @@ constructor(
         when (product.source) {
             is SkillingProductSource.Fishing -> {
                 val food = cookedFish[product.item] ?: return
-                if (player.statBase(COOKING) < food.level) {
+                val level = food.statReq.firstOrNull()?.t1 ?: return
+                if (player.statBase(COOKING) < level) {
                     return
                 }
-                product.item = food.cooked.internalName
+                product.item = food.output.internalName
                 player.statAdvance(COOKING, food.xp.toDouble() * product.count)
             }
             is SkillingProductSource.Mining -> {
