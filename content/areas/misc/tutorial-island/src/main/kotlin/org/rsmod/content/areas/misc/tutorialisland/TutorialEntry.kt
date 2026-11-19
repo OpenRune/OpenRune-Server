@@ -208,6 +208,9 @@ constructor(
         }
         player.hasDisplayNameTransmitter = true
         player.displayNameStatus = 5
+        if (player.displayName.isBlank()) {
+            player.displayName = player.username
+        }
         protectedAccess.launch(player) {
             if (player.ui.getModalOrNull("interface.tutorial_displayname") != null) {
                 ifCloseSub("interface.tutorial_displayname")
