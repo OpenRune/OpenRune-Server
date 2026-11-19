@@ -75,7 +75,7 @@ object LeagueTasks {
     fun checkProgress(player: Player) {
         for (track in tickTracks) {
             for (task in byTrack[track].orEmpty()) {
-                if (!player.isTaskDone(task) && player.canProgress(task) && player.meets(task)) {
+                if (!player.isTaskDone(task) && canProgress(player, task) && player.meets(task)) {
                     complete(player, task)
                 }
             }
@@ -83,7 +83,7 @@ object LeagueTasks {
     }
 
     private fun progress(player: Player, task: OfficialTask, amount: Int) {
-        if (player.isTaskDone(task) || !player.canProgress(task)) {
+        if (player.isTaskDone(task) || !canProgress(player, task)) {
             return
         }
         val counter = task.counter
@@ -168,11 +168,9 @@ object LeagueTasks {
         }
     }
 
-    fun canProgress(player: Player, task: OfficialTask): Boolean = player.canProgress(task)
-
-    private fun Player.canProgress(task: OfficialTask): Boolean {
+    fun canProgress(player: Player, task: OfficialTask): Boolean {
         val region = OfficialTasks.regionFor(task) ?: return true
-        return hasRegion(region)
+        return player.hasRegion(region)
     }
 
     private fun Player.meets(task: OfficialTask): Boolean =
