@@ -81,6 +81,8 @@ constructor(
         if (player.tutorialStage <= TutorialStage.START) {
             player.beginName()
         } else {
+            player.ifOpenFullOverlay("interface.tutorial_overlay", eventBus)
+            player.ifSetHide("component.tutorial_overlay:noclick", true)
             guide.apply(player, player.tutorialStage)
             player.attr[LAST_RUN_STATE] = player.vars["varp.option_run"]
             player.softTimer(TUTORIAL_TIMER, 1)

@@ -3,6 +3,7 @@ package org.rsmod.content.areas.misc.tutorialisland
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
@@ -31,6 +32,13 @@ constructor(
         player.usedHomeTeleport = 1
         invClear(inv)
         invClear(worn)
+        val bank = player.invMap.getOrPut("inv.bank")
+        for (item in TutorialObj.TUTORIAL_ITEMS) {
+            val count = bank.count(item)
+            if (count > 0) {
+                player.invDel(bank, item, count)
+            }
+        }
         val quest = Quest.get("quest_learningtheropes")
         if (quest != null && !quest.isQuestCompleted(player)) {
             quest.completeQuest(this)

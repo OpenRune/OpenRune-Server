@@ -158,6 +158,38 @@ internal object TutorialObj {
     const val EARTH_RUNE = "obj.earthrune"
     const val BODY_RUNE = "obj.bodyrune"
     const val COINS = "obj.coins"
+
+    val TUTORIAL_ITEMS =
+        listOf(
+            NET,
+            RAW_SHRIMP,
+            SHRIMP,
+            LOGS,
+            BONES,
+            POT_FLOUR,
+            BUCKET_WATER,
+            BUCKET_EMPTY,
+            POT_EMPTY,
+            BREAD_DOUGH,
+            BREAD,
+            BRONZE_AXE,
+            BRONZE_PICKAXE,
+            TINDERBOX,
+            HAMMER,
+            TIN_ORE,
+            COPPER_ORE,
+            BRONZE_BAR,
+            BRONZE_DAGGER,
+            BRONZE_SWORD,
+            WOODEN_SHIELD,
+            SHORTBOW,
+            BRONZE_ARROW,
+            AIR_RUNE,
+            MIND_RUNE,
+            WATER_RUNE,
+            EARTH_RUNE,
+            BODY_RUNE,
+        )
 }
 
 internal object TutorialLoc {
