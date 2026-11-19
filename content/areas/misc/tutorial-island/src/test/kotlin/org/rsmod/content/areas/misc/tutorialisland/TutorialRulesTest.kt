@@ -45,6 +45,30 @@ class TutorialRulesTest {
             assertEquals(TutorialStage.QUEST_HOUSE_INSIDE, rules.nextStage(player))
         }
 
+    @Test
+    fun GameTestState.`exit wipes tutorial items and keeps bank coins`() =
+        runInjectedGameTest(TutorialExit::class, TestHooks()) { exit ->
+            player.tutorialStage = TutorialStage.READY_TO_LEAVE
+            player.adventurePaths = 2
+            player.invAdd(player.inv, TutorialObj.SHRIMP, 1)
+            player.invAdd(player.worn, TutorialObj.BRONZE_SWORD, 1)
+            val bank = player.invMap.getOrPut("inv.bank")
+            player.invAdd(bank, TutorialObj.COINS, 25)
+            player.invAdd(bank, TutorialObj.BREAD, 1)
+            player.invAdd(bank, "obj.shark", 1)
+
+            player.withProtectedAccess { with(exit) { complete() } }
+            advance(2)
+
+            assertEquals(TutorialStage.LEFT_ISLAND, player.tutorialStage)
+            assertEquals(0, player.inv.count(TutorialObj.SHRIMP))
+            assertEquals(0, player.worn.count(TutorialObj.BRONZE_SWORD))
+            assertEquals(25, bank.count(TutorialObj.COINS))
+            assertEquals(0, bank.count(TutorialObj.BREAD))
+            assertEquals(1, bank.count("obj.shark"))
+            assertEquals(1, player.tutorialFreeStuffCheck)
+        }
+
     private class TestHooks : AbstractModule() {
         override fun configure() {
             Multibinder.newSetBinder(binder(), HeldEquipValidateHook::class.java)

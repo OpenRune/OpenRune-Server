@@ -26,6 +26,10 @@ constructor(
         if (player.tutorialStage != TutorialStage.READY_TO_LEAVE) {
             return
         }
+        val quest = Quest.get("quest_learningtheropes")
+        if (quest != null && !quest.isQuestCompleted(player)) {
+            quest.completeQuest(this)
+        }
         player.tutorialStage = TutorialStage.LEFT_ISLAND
         player.tutorialFreeStuffCheck = 1
         player.hasDisplayNameTransmitter = true
@@ -38,10 +42,6 @@ constructor(
             if (count > 0) {
                 player.invDel(bank, item, count)
             }
-        }
-        val quest = Quest.get("quest_learningtheropes")
-        if (quest != null && !quest.isQuestCompleted(player)) {
-            quest.completeQuest(this)
         }
         player.mes("Welcome to Old School RuneScape.", ChatType.Welcome)
         player.ifClose(eventBus)
