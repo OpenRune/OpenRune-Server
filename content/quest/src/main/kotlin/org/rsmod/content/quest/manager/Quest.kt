@@ -5,6 +5,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import java.util.Locale
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetObject
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetPosition
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.invtx.add
@@ -24,6 +25,7 @@ const val QUEST_COMPLETE_JINGLE = "jingle.quest_complete_1"
 
 internal const val QUEST_DIALOGUE_CLOSE_TIMER = "timer.quest_dialogue_close"
 internal const val QUEST_SCROLL_CLOSE_TIMER = "timer.quest_scroll_close"
+private const val BLANK_OBJ = 65535
 
 private fun scheduleClose(
     access: ProtectedAccess,
@@ -271,6 +273,9 @@ data class Quest(
                 val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
                 access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
             }
+        } else {
+            val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
+            access.player.client.write(IfSetObject(model, BLANK_OBJ, itemDisplay.zoom))
         }
 
         val rewardLines = mutableListOf<String>()

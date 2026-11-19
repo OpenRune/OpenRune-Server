@@ -15,7 +15,7 @@ internal class TutorialQuest :
             rewards {
                 extra("Access to the Mainland!")
             },
-        completedQuestItemDisplay = ItemRewardDisplay(""),
+        completedQuestItemDisplay = ItemRewardDisplay("", zoom = 400),
         closeDialogue = QuestClose.Never,
         closeScroll = QuestClose.Never,
     ) {
