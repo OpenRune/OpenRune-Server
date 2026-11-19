@@ -466,8 +466,8 @@ constructor(
         val GATHERING_STATS = setOf("stat.woodcutting", "stat.fishing", "stat.mining")
         val HOTFOOT_STATS = setOf("stat.cooking", "stat.agility")
         val TELEPORT_OPS = setOf("Teleport", "Rub", "Open", "Use", "Activate", "Heist")
-        val GRIMOIRE_OPS = setOf("Read", "Open", "Switch", "Use", "Change", "Spellbook")
-        val FLASK_OPS = setOf("Drink", "Sip", "Quaff", "Consume", "Use")
+        val GRIMOIRE_OPS = setOf("Change Spellbook", "Read", "Open", "Switch", "Use", "Change", "Spellbook")
+        val FLASK_OPS = setOf("Activate", "Drink", "Sip", "Quaff", "Consume", "Use")
         val SPELLBOOK_NAMES =
             listOf("Standard spellbook", "Ancient Magicks", "Lunar spellbook", "Arceuus spellbook")
         val DIRECTIONS = listOf(0 to 1, 1 to 0, 0 to -1, -1 to 0)
