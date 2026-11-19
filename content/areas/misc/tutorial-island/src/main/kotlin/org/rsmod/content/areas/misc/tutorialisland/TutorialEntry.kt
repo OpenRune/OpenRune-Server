@@ -253,6 +253,7 @@ constructor(
             "<col=0000ff>Past Experience</col><br>Before you get started, please use the open " +
                 "interface to select your experience with Old School RuneScape.",
         )
+        player.attr[EXPERIENCE_CHOSEN] = false
         ifOpenMainModal("interface.tutorial_player_experience")
         player.ifSetHide("component.tutorial_overlay:noclick", false)
         val input = coroutine.pause(ResumePauseButtonInput::class)
@@ -266,6 +267,7 @@ constructor(
         } else {
             player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
         }
+        player.attr[EXPERIENCE_CHOSEN] = true
         if (player.ui.getModalOrNull("interface.tutorial_player_experience") != null) {
             ifCloseSub("interface.tutorial_player_experience")
         }
@@ -275,7 +277,7 @@ constructor(
     }
 
     private fun closeExperience(player: Player) {
-        if (player.tutorialStage != TutorialStage.START) {
+        if (player.tutorialStage != TutorialStage.START || player.attr[EXPERIENCE_CHOSEN] == true) {
             return
         }
         player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
@@ -414,6 +416,7 @@ constructor(
         private val CANDIDATE_NAME = AttributeKey<String>(temp = true)
         private val SUGGESTIONS = AttributeKey<List<String>>(temp = true)
         private val DESIGN_DONE = AttributeKey<Boolean>(temp = true)
+        private val EXPERIENCE_CHOSEN = AttributeKey<Boolean>(temp = true)
         private val NAME_ALLOW_INPUT =
             "clientscript.[clientscript,tutorial_displayname_allow_input]".asRSCM(RSCMType.CLIENTSCRIPT)
         private val NAME_SET_COMPLETE =
