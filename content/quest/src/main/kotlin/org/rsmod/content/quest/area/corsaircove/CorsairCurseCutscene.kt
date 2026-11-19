@@ -310,21 +310,22 @@ internal class CorsairCurseCutscene(
         val cast = mutableListOf<Npc>()
         access.blankChatbox()
         access.scene(
-            template = CorsairCurseRegions.CoveHut,
+            template = CorsairCurseRegions.CoveSea,
             vantage = TelescopeScene.Vantage,
             faceAt = TelescopeScene.Ogre,
             camera = TelescopeScene.Opening.toCamera(rate2 = TelescopeOpeningRate2),
+            local = true,
             teardown = { cast.forEach(::despawn) },
             onEntered = {
                 player.midiSong(CorsairCurseRefs.StopMusic)
                 player.midiJingle(SceneOpenJingle)
             },
             underFade = { r ->
-                spawn(CorsairCurseRefs.Ogre, r[TelescopeScene.Ogre]).also(cast::add)
+                spawn(CorsairCurseRefs.Ogre, r.local(TelescopeScene.Ogre)).also(cast::add)
             },
             reveal = { ifOpenSub(SpyglassInterface, FadeOverlaySlot, IfSubType.Overlay) },
         ) { r ->
-            dolly(r, TelescopeScene.PushIn)
+            dolly(r, TelescopeScene.PushIn, local = true)
 
             delay(TelescopeHoldTicks)
 
@@ -488,6 +489,7 @@ internal class CorsairCurseCutscene(
         vantage: CoordGrid,
         faceAt: CoordGrid,
         camera: SceneCamera,
+        local: Boolean = false,
         teardown: () -> Unit = {},
         underFade: suspend ProtectedAccess.(SceneRegion) -> Unit = {},
         onEntered: suspend ProtectedAccess.() -> Unit = {},
@@ -502,6 +504,8 @@ internal class CorsairCurseCutscene(
         val region = regionRepo.add(template)
         region?.let(regionRepo::protect)
         val scene = SceneRegion(region)
+        val mapCoords: (CoordGrid) -> CoordGrid =
+            if (local) { coords -> scene.local(coords) } else { coords -> scene[coords] }
 
         player.npcViewDistance = SceneNpcViewDistance
         player.attr[InstanceAttributes.LOGIN_EXIT_COORD] = returnTo.packed
@@ -510,9 +514,9 @@ internal class CorsairCurseCutscene(
         try {
             if (reveal != null) {
                 revealScene(
-                    vantage = scene[vantage],
-                    faceAt = scene[faceAt],
-                    camera = scene.map(camera),
+                    vantage = mapCoords(vantage),
+                    faceAt = mapCoords(faceAt),
+                    camera = camera.map(mapCoords),
                     returnTo = returnTo,
                     onEntered = onEntered,
                     underFade = { access.underFade(scene) },
@@ -524,9 +528,9 @@ internal class CorsairCurseCutscene(
                 }
             } else {
                 lockedScene(
-                    vantage = scene[vantage],
-                    faceAt = scene[faceAt],
-                    camera = scene.map(camera),
+                    vantage = mapCoords(vantage),
+                    faceAt = mapCoords(faceAt),
+                    camera = camera.map(mapCoords),
                     returnTo = returnTo,
                     underFade = { access.underFade(scene) },
                     teardown = teardown,
@@ -560,10 +564,33 @@ internal class CorsairCurseCutscene(
         r: SceneRegion,
         frame: SceneFrame,
         rate: Int = SceneDollyRate,
+        local: Boolean = false,
     ) {
-        val mapped = r.map(frame.toCamera())
+        val mapped =
+            if (local) {
+                frame.toCamera().map { coords -> r.local(coords) }
+            } else {
+                r.map(frame.toCamera())
+            }
         camMoveToV3(mapped.eye, height = mapped.eyeHeight, rate = rate, rate2 = rate)
     }
+
+    private fun SceneRegion.local(coords: CoordGrid): CoordGrid =
+        (region?.southWest ?: TelescopeScene.FallbackBase).translate(
+            coords.x,
+            coords.z,
+            coords.level,
+        )
+
+    private fun SceneCamera.map(mapper: (CoordGrid) -> CoordGrid): SceneCamera =
+        SceneCamera(
+            eye = mapper(eye),
+            eyeHeight = eyeHeight,
+            lookAt = mapper(lookAt),
+            lookAtHeight = lookAtHeight,
+            rate = rate,
+            rate2 = rate2,
+        )
 
     private fun ProtectedAccess.hideFromShot() {
         transmog(InvisibleActor)
@@ -710,12 +737,6 @@ internal class CorsairCurseCutscene(
 
         private const val ChatboxBackgroundScript = 1508
 
-        private const val OgreRevealLine =
-            "That doesn't look anything like a mermaid. That's an ogre!"
-
-        private const val OgreRevealLineWrapped =
-            "That doesn't look anything like a mermaid.<br>That's an ogre!"
-
         private const val OgreRevealMesanim = "seq.chatlaugh2"
 
         private const val OgreRevealLineHeight = 28
@@ -758,5 +779,11 @@ internal class CorsairCurseCutscene(
                 "staring into my soul. Please find Her, and kill the demon inside!"
     }
 }
+
+internal const val OgreRevealLine =
+    "That doesn't look anything like a mermaid. That's an ogre!"
+
+internal const val OgreRevealLineWrapped =
+    "That doesn't look anything like a mermaid.<br>That's an ogre!"
 
 private var ProtectedAccess.chatModalUnclamp by intVarBit("varbit.chatmodal_unclamp")

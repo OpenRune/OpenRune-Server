@@ -82,7 +82,7 @@ internal class CorsairCurseScenery(
                 "That doesn't look anything like a mermaid. That's Bugs, the son of that chompy " +
                     "hunter, Rantz!"
             } else {
-                "That doesn't look anything like a mermaid. That's an ogre!"
+                OgreRevealLineWrapped
             }
         startDialogue {
             chatPlayer(laugh, line)

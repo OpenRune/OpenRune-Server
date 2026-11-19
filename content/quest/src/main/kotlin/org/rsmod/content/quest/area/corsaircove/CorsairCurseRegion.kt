@@ -4,6 +4,7 @@ import org.rsmod.api.player.cinematic.SceneCamera
 import org.rsmod.api.player.cinematic.SceneSnapRate
 import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.zone.ZoneKey
 
 internal object CorsairCurseRegions {
     val CoveHut: RegionTemplate =
@@ -26,6 +27,16 @@ internal object CorsairCurseRegions {
             }
         }
 
+    // One sea chunk repeated 6x6; scene coordinates are arena offsets from the region base.
+    val CoveSea: RegionTemplate =
+        RegionTemplate.create {
+            for (x in 0 until SeaZoneWidth) {
+                for (z in 0 until SeaZoneLength) {
+                    this[x, z, SeaLevel] = ZoneKey(SeaZoneX, SeaZoneZ, SeaLevel)
+                }
+            }
+        }
+
     const val HutZoneX: Int = 314
     const val HutZoneZ: Int = 351
     const val HutZoneWidth: Int = 14
@@ -36,13 +47,25 @@ internal object CorsairCurseRegions {
     const val ShoreZoneWidth: Int = 13
     const val ShoreZoneLength: Int = 13
 
+    const val SeaZoneX: Int = 316
+    const val SeaZoneZ: Int = 352
+    const val SeaZoneWidth: Int = 6
+    const val SeaZoneLength: Int = 6
+
+    private const val SeaLevel = 0
+
     private const val BlockOffsetZones = 0
 }
 
 internal fun assertCorsairCurseSceneCoords() {
     val hut: RegionTemplate = CorsairCurseRegions.CoveHut
     val shore: RegionTemplate = CorsairCurseRegions.CoveShore
-    check(hut === CorsairCurseRegions.CoveHut && shore === CorsairCurseRegions.CoveShore) {
+    val sea: RegionTemplate = CorsairCurseRegions.CoveSea
+    check(
+        hut === CorsairCurseRegions.CoveHut &&
+            shore === CorsairCurseRegions.CoveShore &&
+            sea === CorsairCurseRegions.CoveSea
+    ) {
         "The Corsair Curse cutscene region templates failed to build."
     }
 
@@ -52,7 +75,7 @@ internal fun assertCorsairCurseSceneCoords() {
         originZ = CorsairCurseRegions.HutZoneZ * ZoneSize,
         width = CorsairCurseRegions.HutZoneWidth * ZoneSize,
         length = CorsairCurseRegions.HutZoneLength * ZoneSize,
-        coords = ColinScene.coords() + DriftwoodScene.coords() + TelescopeScene.coords(),
+        coords = ColinScene.coords() + DriftwoodScene.coords(),
     )
 
     assertInside(
@@ -63,6 +86,24 @@ internal fun assertCorsairCurseSceneCoords() {
         length = CorsairCurseRegions.ShoreZoneLength * ZoneSize,
         coords = GnocciScene.coords(),
     )
+
+    assertInside(
+        block = "CoveSea",
+        originX = 0,
+        originZ = 0,
+        width = CorsairCurseRegions.SeaZoneWidth * ZoneSize,
+        length = CorsairCurseRegions.SeaZoneLength * ZoneSize,
+        coords = TelescopeScene.coords(),
+    )
+
+    val ogre = TelescopeScene.Ogre
+    check(
+        ogre.x + OgreSize <= CorsairCurseRegions.SeaZoneWidth * ZoneSize &&
+            ogre.z + OgreSize <= CorsairCurseRegions.SeaZoneLength * ZoneSize
+    ) {
+        "Corsair Curse telescope ogre footprint is outside the copied CoveSea block: " +
+            "ogre=$ogre, size=$OgreSize"
+    }
 }
 
 private fun assertInside(
@@ -85,6 +126,8 @@ private fun assertInside(
 }
 
 private const val ZoneSize = 8
+
+private const val OgreSize = 5
 
 internal object ColinScene {
     val Anchor: CoordGrid = CoordGrid(2528, 2836, 1)
@@ -211,15 +254,22 @@ internal object DriftwoodScene {
 
 // Scene bounds must contain whole NPC footprints, including the five-tile ogre.
 internal object TelescopeScene {
-    val Vantage: CoordGrid = CoordGrid(2528, 2816, 0)
+    val Vantage: CoordGrid = CoordGrid(0, 0, 0)
 
-    val Ogre: CoordGrid = CoordGrid(2550, 2849, 0)
+    val Ogre: CoordGrid = CoordGrid(22, 33, 0)
+
+    val FallbackBase: CoordGrid =
+        CoordGrid(
+            CorsairCurseRegions.SeaZoneX * ZoneSize,
+            CorsairCurseRegions.SeaZoneZ * ZoneSize,
+            0,
+        )
 
     val Opening: SceneFrame =
-        SceneFrame(CoordGrid(2528, 2821, 0), 400, CoordGrid(2528, 2822, 0), 300)
+        SceneFrame(CoordGrid(0, 5, 0), 400, CoordGrid(0, 6, 0), 300)
 
     val PushIn: SceneFrame =
-        SceneFrame(CoordGrid(2528, 2818, 0), 400, CoordGrid(2528, 2822, 0), 300)
+        SceneFrame(CoordGrid(0, 2, 0), 400, CoordGrid(0, 6, 0), 300)
 
     fun coords(): List<Pair<String, CoordGrid>> =
         listOf("telescope.vantage" to Vantage, "telescope.ogre" to Ogre) +

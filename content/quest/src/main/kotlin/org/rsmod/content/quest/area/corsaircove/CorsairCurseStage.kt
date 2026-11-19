@@ -196,5 +196,5 @@ internal object CorsairCurseRefs {
 
     const val TelescopeAnim: String = "seq.human_use_wom_telecope"
 
-    const val StopMusic: String = "midi.stop_music"
+    const val StopMusic: String = "midi.silence"
 }
