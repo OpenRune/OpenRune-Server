@@ -14,6 +14,7 @@ import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.hook.PlayerHomeTeleportDestinationHook
 import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.ChatType
@@ -39,6 +40,7 @@ constructor(
     private val teleportValidator: PlayerTeleportValidator,
     private val areaChecker: AreaChecker,
     private val config: ServerConfig,
+    private val homeDestinations: Set<@JvmSuppressWildcards PlayerHomeTeleportDestinationHook>,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         for (teleport in SpellTeleport.entries) {
@@ -83,7 +85,12 @@ constructor(
         }
 
         if (teleport.homeTeleport) {
-            castHomeTeleport(teleport, destination)
+            val override = homeDestinations.firstNotNullOfOrNull { it.destination(player) }
+            if (override != null) {
+                castHomeTeleport(teleport, override, landingRadius = 0)
+            } else {
+                castHomeTeleport(teleport, destination)
+            }
             return
         }
 
@@ -118,7 +125,11 @@ constructor(
         return mapFindSquareLineOfWalk(centre, minRadius = 0, maxRadius = radius) ?: centre
     }
 
-    private fun ProtectedAccess.castHomeTeleport(teleport: SpellTeleport, destination: CoordGrid) {
+    private fun ProtectedAccess.castHomeTeleport(
+        teleport: SpellTeleport,
+        destination: CoordGrid,
+        landingRadius: Int = teleport.landingRadius,
+    ) {
         // UNVERIFIED: the in-combat refusal shares the moving refusal's message (wiki description)
         if (player.routeDestination.isNotEmpty() || isInCombat()) {
             mes("You can't use that teleport at the moment.")
@@ -141,7 +152,12 @@ constructor(
         weakQueue(
             HomeTeleportQueue,
             first.tick + SameTickQueue,
-            PendingHomeTeleport(teleport, destination.packed, stage = first.ordinal),
+            PendingHomeTeleport(
+                teleport,
+                destination.packed,
+                stage = first.ordinal,
+                landingRadius = landingRadius,
+            ),
         )
     }
 
@@ -167,7 +183,7 @@ constructor(
         }
         vars[Busy] = 0
         if (allowed) {
-            telejump(landingSquare(CoordGrid(task.destination), task.teleport.landingRadius))
+            telejump(landingSquare(CoordGrid(task.destination), task.landingRadius))
         }
         resetAnim()
         resetSpotanim()
@@ -241,6 +257,7 @@ constructor(
         val teleport: SpellTeleport,
         val destination: Int,
         val stage: Int,
+        val landingRadius: Int,
     )
 
     private enum class HomeTeleportStage(
