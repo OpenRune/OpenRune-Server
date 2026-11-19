@@ -1,0 +1,87 @@
+[[spawn]]
+npc = "npc.goat_pit_helper"
+coords = "0_40_34_17_26"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_3_17"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_4_10"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_5_15"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_6_18"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_7_21"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_9_23"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_9_17"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_10_13"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_12_25"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_14_16"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_15_24"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_16_21"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_16_18"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_18_23"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_18_16"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_20_25"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_21_15"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_23_23"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_23_19"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_27_24"
+
+[[spawn]]
+npc = "npc.goat_pit_goat"
+coords = "0_40_34_27_18"

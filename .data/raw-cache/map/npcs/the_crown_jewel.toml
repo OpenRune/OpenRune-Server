@@ -1,0 +1,59 @@
+[[spawn]]
+npc = "npc.rainbow_crab_a"
+coords = "0_27_41_31_39"
+
+[[spawn]]
+npc = "npc.rainbow_crab_b"
+coords = "0_27_41_33_29"
+
+[[spawn]]
+npc = "npc.rainbow_crab_c"
+coords = "0_27_41_33_32"
+
+[[spawn]]
+npc = "npc.rainbow_crab_a"
+coords = "0_27_41_33_43"
+
+[[spawn]]
+npc = "npc.rainbow_crab_b"
+coords = "0_27_41_36_37"
+
+[[spawn]]
+npc = "npc.rainbow_crab_c"
+coords = "0_27_41_27_40"
+
+[[spawn]]
+npc = "npc.rainbow_crab_a"
+coords = "0_27_41_30_42"
+
+[[spawn]]
+npc = "npc.rainbow_crab_b"
+coords = "0_27_41_33_37"
+
+[[spawn]]
+npc = "npc.rainbow_crab_c"
+coords = "0_27_41_34_44"
+
+[[spawn]]
+npc = "npc.rainbow_crab_a"
+coords = "0_27_41_38_31"
+
+[[spawn]]
+npc = "npc.rainbow_crab_b"
+coords = "0_27_41_26_45"
+
+[[spawn]]
+npc = "npc.rainbow_crab_c"
+coords = "0_27_41_27_37"
+
+[[spawn]]
+npc = "npc.rainbow_crab_a"
+coords = "0_27_41_32_30"
+
+[[spawn]]
+npc = "npc.rainbow_crab_b"
+coords = "0_27_41_35_46"
+
+[[spawn]]
+npc = "npc.rainbow_crab_c"
+coords = "0_27_41_40_30"

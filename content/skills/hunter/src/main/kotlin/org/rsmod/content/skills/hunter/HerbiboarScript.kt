@@ -1,0 +1,304 @@
+package org.rsmod.content.skills.hunter
+
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.ObjectServerType
+import dev.openrune.types.enums.enum
+import jakarta.inject.Inject
+import org.rsmod.api.player.output.ChatType
+import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.random.GameRandom
+import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onOpLoc2
+import org.rsmod.api.script.onOpLoc3
+import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.table.HerbiboarFossilsRow
+import org.rsmod.api.table.HerbiboarHerbsRow
+import org.rsmod.api.table.HerbiboarLegsRow
+import org.rsmod.api.table.hunter.HunterHerbiboarRow
+import org.rsmod.content.other.pets.PetRewards
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
+import org.rsmod.plugin.scripts.PluginScript
+import org.rsmod.plugin.scripts.ScriptContext
+
+class HerbiboarScript
+@Inject
+constructor(
+    private val objRepo: ObjRepository,
+    private val npcRepo: NpcRepository,
+    private val worldRepo: WorldRepository,
+    private val random: GameRandom,
+    private val rumours: HunterRumours,
+    private val pets: PetRewards,
+) : PluginScript() {
+    private val legs: List<Leg> by lazy { loadLegs() }
+    private val spots by lazy { enum<ObjectServerType, Int>("herbiboar_spots") }
+    private val spotGroups: Map<Int, Int?> by lazy { spots.backing.mapKeys { it.key.id } }
+    private val tunnels by lazy { enum<Int, CoordGrid>("herbiboar_tunnels") }
+
+    private val spotMessages: Map<Int, String?> by lazy {
+        enum<ObjectServerType, String>("herbiboar_spot_messages").backing.mapKeys { it.key.id }
+    }
+    private val trailVarbits: List<VarBitType> by lazy { legs.map { it.trail }.distinctBy { it.id } }
+
+    override fun ScriptContext.startup() {
+        for (start in START_LOCS) {
+            onOpLoc1(start) { inspectStart(it.loc.id) }
+            onOpLoc2(start) { mes("You have harvested ${vars[HARVESTED]} Herbiboars.") }
+            onOpLoc3(start) { toggleWarning() }
+        }
+        for (spot in spots.keys) {
+            onOpLoc1(spot.internalName) { inspectSpot(it.loc.id) }
+        }
+        onOpLoc1(TUNNEL) { attackTunnel(it.loc.coords) }
+        onOpLoc2(TUNNEL) { attackTunnel(it.loc.coords) }
+        onOpNpc1(HERBIBOAR) { harvest(it.npc) }
+    }
+
+    internal suspend fun ProtectedAccess.inspectStart(loc: Int) {
+        if (stat(HUNTER) < LEVEL) {
+            mes("You need a Hunter level of $LEVEL to track a herbiboar.")
+            return
+        }
+        if (RING_OF_PURSUIT in player.worn) {
+            mes("Hmm, seems my ring of pursuit doesn't work here. Must be the magic of these mushrooms.")
+        }
+        if (vars[VISIBLE] != 0 && vars[IGNORE_WARNING] == 0) {
+            val title = "Start a new track? Your caught herbiboar will escape."
+            if (!choice2("Yes.", true, "No.", false, title)) return
+        }
+        anim(INSPECT_SEQ)
+        delay(INSPECT_TICKS)
+        reset(player)
+        val first = legs.filter { it.from == loc }.randomOrNull(random) ?: return
+        VarPlayerIntMapSetter.set(player, ROUTE_LENGTH, random.of(MIN_LEGS, MAX_LEGS))
+        reveal(player, first)
+        mes("Closer inspection reveals tracks leading away from you.")
+        if (!continueFrom(player, first)) confuse()
+    }
+
+    internal suspend fun ProtectedAccess.inspectSpot(loc: Int) {
+        anim(INSPECT_SEQ)
+        delay(INSPECT_TICKS)
+        val leg = legs.firstOrNull { it.from == loc && player.vars[it.trail] == it.dir }
+        if (leg == null) {
+            mes("Nothing seems to be out of place here.")
+            return
+        }
+        reveal(player, leg)
+        VarPlayerIntMapSetter.set(player, STARTED, 1)
+        mes(checkNotNull(spotMessages[loc]), ChatType.Spam)
+        if (isLast(player, leg)) {
+            VarPlayerIntMapSetter.set(player, ENDS, leg.endTunnel)
+            return
+        }
+        statAdvance(HUNTER, INSPECT_XP)
+        rollFossil()
+        if (!continueFrom(player, leg)) confuse()
+    }
+
+    internal suspend fun ProtectedAccess.attackTunnel(coords: CoordGrid) {
+        val index = tunnels.backing.entries.firstOrNull { it.value == coords }?.key ?: return
+        if (vars[ENDS] != index) {
+            mes("Nothing seems to be hiding in this tunnel.")
+            return
+        }
+        anim(KICK_SEQ)
+        soundSynth(KICK_SYNTH)
+        VarPlayerIntMapSetter.set(player, ANIM, index)
+        herbiboarAt(coords)?.anim(APPEAR_SEQ)
+        delay(INSPECT_TICKS)
+        if (vars[ENDS] != index) return
+        VarPlayerIntMapSetter.set(player, ANIM, 0)
+        VarPlayerIntMapSetter.set(player, VISIBLE, index)
+        mes("You stun the creature.")
+        reset(player)
+        VarPlayerIntMapSetter.set(player, VISIBLE, index)
+        statAdvance(HUNTER, tunnelXp(statBase(HUNTER)).toDouble())
+    }
+
+    private fun herbiboarAt(coords: CoordGrid): Npc? =
+        npcRepo.findAll(org.rsmod.map.zone.ZoneKey.from(coords), zoneRadius = 1)
+            .filter { it.type.internalName.startsWith(HERBIBOAR_PREFIX) }
+            .minByOrNull { HunterTrapScript.distance(it.coords, coords) }
+
+    internal suspend fun ProtectedAccess.harvest(npc: Npc) {
+        val index = vars[VISIBLE]
+        if (index == 0) return
+        if (stat(HERBLORE) < HERBLORE_LEVEL) {
+            mes("You need a Herblore level of $HERBLORE_LEVEL to harvest from the herbiboar.")
+            return
+        }
+        anim(HARVEST_SEQ)
+        npc.anim(HARVEST_NPC_SEQ)
+        delay(INSPECT_TICKS)
+        if (vars[VISIBLE] != index) return
+        val secateurs = SECATEURS in inv || SECATEURS in player.worn
+        val count = random.of(1, 3) + if (secateurs) 1 else 0
+        VarPlayerIntMapSetter.set(player, VISIBLE, 0)
+        VarPlayerIntMapSetter.set(player, ANIM, index)
+        npc.anim(ESCAPE_NPC_SEQ)
+        npc.spotanim(ESCAPE_SPOTANIM)
+        worldRepo.soundArea(npc.coords, ESCAPE_SYNTH)
+        repeat(count) { invAddOrDrop(objRepo, rollHerb(stat(HERBLORE)) { random.of(it) }) }
+        if (count > 1) statAdvance(HERBLORE, HERB_XP * (count - 1))
+        if (HORN_OF_PLENTY in player.worn && vars[HORN_CHARGES] > 0 && random.of(HORN_CHANCE) == 0) {
+            VarPlayerIntMapSetter.set(player, HORN_CHARGES, vars[HORN_CHARGES] - 1)
+            repeat(random.of(1, 3) + if (secateurs) 1 else 0) {
+                invAddOrDrop(objRepo, rollHerb(stat(HERBLORE)) { random.of(it) })
+            }
+        }
+        val harvested = vars[HARVESTED] + 1
+        VarPlayerIntMapSetter.set(player, HARVESTED, harvested)
+        rumours.onCatch(player, HERBIBOAR)
+        mes("You harvest herbs from the herbiboar, whereupon it escapes.")
+        mes("Your herbiboar harvest count is: <col=ff0000>$harvested</col>.")
+        if (random.of(HERBI_RATE) == 0) pets.give(player, HERBI)
+        delay(ESCAPE_TICKS)
+        if (vars[ANIM] == index) VarPlayerIntMapSetter.set(player, ANIM, 0)
+    }
+
+    private fun ProtectedAccess.toggleWarning() {
+        val ignore = vars[IGNORE_WARNING] == 0
+        VarPlayerIntMapSetter.set(player, IGNORE_WARNING, if (ignore) 1 else 0)
+        if (ignore) {
+            mes("You will no longer be warned if you try to track a second herbiboar before harvesting a caught one.")
+        } else {
+            mes("You will now be warned if you try to track a second herbiboar before harvesting a caught one.")
+        }
+    }
+
+    private fun ProtectedAccess.confuse() {
+        reset(player)
+        mes(
+            "The creature has successfully confused you with its tracks, leading you round in " +
+                "circles. You'll need to start again."
+        )
+    }
+
+    private fun ProtectedAccess.rollFossil() {
+        val roll = random.of(FOSSIL_ROLL)
+        var edge = 0
+        for (fossil in HerbiboarFossilsRow.all()) {
+            edge += fossil.weight
+            if (roll < edge) {
+                invAddOrDrop(objRepo, fossil.fossil.internalName, random.of(fossil.min, fossil.max))
+                return
+            }
+        }
+    }
+
+    private fun continueFrom(player: Player, leg: Leg): Boolean {
+        val group = leg.toGroup ?: return true
+        val used = trailVarbits.filter { player.vars[it] != 0 }.map { it.id }.toSet()
+        val candidates =
+            legs.filter { spotGroups[it.from] == group && it.trail.id !in used && it.trail.id != leg.trail.id }
+        if (candidates.isEmpty()) return false
+        val revealed = revealedCount(player)
+        val wantEnd = revealed + 1 >= player.vars[ROUTE_LENGTH]
+        val preferred = candidates.filter { (it.endTunnel > 0) == wantEnd }.ifEmpty { candidates }
+        val next = preferred.randomOrNull(random) ?: return false
+        VarPlayerIntMapSetter.set(player, next.trail, next.dir)
+        return true
+    }
+
+    private fun isLast(player: Player, leg: Leg): Boolean =
+        leg.toGroup == null || (leg.endTunnel > 0 && revealedCount(player) >= player.vars[ROUTE_LENGTH])
+
+    private fun revealedCount(player: Player): Int = trailVarbits.count { player.vars[it] >= REVEALED }
+
+    private fun reveal(player: Player, leg: Leg) {
+        VarPlayerIntMapSetter.set(player, leg.trail, leg.dir + 2)
+    }
+
+    private fun reset(player: Player) {
+        for (varbit in trailVarbits) VarPlayerIntMapSetter.set(player, varbit, 0)
+        VarPlayerIntMapSetter.set(player, ENDS, 0)
+        VarPlayerIntMapSetter.set(player, STARTED, 0)
+        VarPlayerIntMapSetter.set(player, VISIBLE, 0)
+    }
+
+    private fun <T> List<T>.randomOrNull(random: GameRandom): T? = if (isEmpty()) null else this[random.of(size)]
+
+    internal data class Leg(val from: Int, val trail: VarBitType, val dir: Int, val toGroup: Int?, val endTunnel: Int)
+
+    private fun loadLegs(): List<Leg> =
+        HerbiboarLegsRow.all().map {
+            Leg(
+                from = it.fromLoc.id,
+                trail = checkNotNull(ServerCacheManager.getVarbit(it.trail)) { "Missing trail varbit ${it.trail}" },
+                dir = it.dir,
+                toGroup = it.toGroup.takeIf { group -> group >= 0 },
+                endTunnel = it.endTunnel,
+            )
+        }
+
+    internal companion object {
+        private val ROW by lazy { HunterHerbiboarRow.getRow("dbrow.hunter_herbiboar") }
+        const val HUNTER = "stat.hunter"
+        const val HERBLORE = "stat.herblore"
+        val LEVEL: Int get() = ROW.level
+        val HERBLORE_LEVEL: Int get() = ROW.herbLevel
+        val INSPECT_XP: Double get() = ROW.inspectXpTenths / 10.0
+        val HERB_XP: Double get() = ROW.herbXpTenths / 10.0
+        val MIN_LEGS: Int get() = ROW.minLegs
+        val MAX_LEGS: Int get() = ROW.maxLegs
+        const val REVEALED = 3
+        const val FADED = 5
+        private const val INSPECT_TICKS = 2
+
+        const val TUNNEL = "loc.hunting_trail_end_fossil"
+        const val HERBIBOAR = "npc.fossil_herbiboar_visible"
+        const val SECATEURS = "obj.fairy_enchanted_secateurs"
+        const val ENDS = "varbit.hunting_trail_ends_fossil"
+        const val STARTED = "varbit.hunting_trails_used_fossil"
+        const val VISIBLE = "varbit.fossil_herbiboar_visible"
+        const val IGNORE_WARNING = "varbit.fossil_herbiboar_already_caught_ignore_warning"
+        const val HARVESTED = "varp.herbiboar_harvested"
+        const val ROUTE_LENGTH = "varp.herbiboar_route_length"
+        private const val INSPECT_SEQ = "seq.hunting_searching_bushes"
+        private const val HARVEST_SEQ = "seq.pruning_high"
+        private const val KICK_SEQ = "seq.human_unarmedkick"
+        private const val APPEAR_SEQ = "seq.fossil_npc_herbiboar_appear"
+        private const val HARVEST_NPC_SEQ = "seq.fossil_npc_herbiboar_wake"
+        private const val ESCAPE_NPC_SEQ = "seq.fossil_npc_herbiboar_burrow"
+        private const val ESCAPE_SPOTANIM = "spotanim.misty"
+        private const val KICK_SYNTH = "synth.herbiboar_tunnel_kick"
+        private const val ESCAPE_SYNTH = "synth.herbiboar_escape"
+        private const val ESCAPE_TICKS = 3
+        const val ANIM = "varbit.fossil_herbiboar_anim"
+        const val RING_OF_PURSUIT = "obj.ring_of_pursuit"
+        const val HORN_OF_PLENTY = "obj.horn_of_plenty"
+        const val HORN_CHARGES = "varbit.horn_of_plenty_counter"
+        val HORN_CHANCE: Int get() = ROW.hornChance
+        const val HERBI = "obj.herbiboarpet"
+        val HERBI_RATE: Int get() = ROW.petRate
+        const val HERBIBOAR_PREFIX = "fossil_herbiboar"
+
+        val START_LOCS = (1..5).map { "loc.hunting_trail_spawn_fossil$it" }
+
+        private val FOSSIL_ROLL: Int get() = ROW.fossilRate
+
+        private val TUNNEL_XP by lazy { enum<Int, Int>("herbiboar_tunnel_xp") }
+
+        fun tunnelXp(level: Int): Int =
+            checkNotNull(TUNNEL_XP[level.coerceIn(TUNNEL_XP.keys.min(), TUNNEL_XP.keys.max())])
+
+        fun herbChance(level: Int, low: Int, high: Int): Int =
+            (low * (99 - level) / 98 + high * (level - 1) / 98 + 1).coerceIn(0, 256)
+
+        fun rollHerb(level: Int, nextInt: (Int) -> Int): String {
+            val rows = HerbiboarHerbsRow.all()
+            for (row in rows) {
+                if (nextInt(256) < herbChance(level, row.low, row.high)) return row.herb.internalName
+            }
+            return rows.last().herb.internalName
+        }
+    }
+}
