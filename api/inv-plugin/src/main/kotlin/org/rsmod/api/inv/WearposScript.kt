@@ -1,7 +1,5 @@
 package org.rsmod.api.inv
 
-import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.util.Wearpos
 import org.rsmod.api.config.refs.params
