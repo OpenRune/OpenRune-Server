@@ -107,7 +107,12 @@ public object MiscOutput {
 
     /** @see [SetPlayerOp] */
     public fun setPlayerOp(player: Player, slot: Int, op: String?, priority: Boolean = false) {
-        player.options.add(slot, op)
+        require(slot in 1..MAX_PLAYER_OP_SLOT) { "Invalid player op slot: $slot" }
+        val options = player.options
+        while (options.size <= slot) {
+            options += null
+        }
+        options[slot] = op
         player.client.write(SetPlayerOp(slot, priority, op))
     }
 
@@ -181,6 +186,7 @@ public object MiscOutput {
     }
 
     private const val DEFAULT_WORLD_ID = -2
+    private const val MAX_PLAYER_OP_SLOT = 8
     private const val TILE_INTERACTION_WALK = 1
     private const val ENTITY_INTERACTION_ALL = 1
 }

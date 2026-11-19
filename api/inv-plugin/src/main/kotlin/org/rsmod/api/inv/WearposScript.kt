@@ -67,7 +67,8 @@ public class WearposScript : PluginScript() {
 
         val righthand = getOrNull(this.righthand)
         val playerOp5 = righthand?.paramOrNull(params.player_op5_text)
-        setPlayerOp(this, slot = 5, op = playerOp5, priority = playerOp5 != null)
+        val playerOp5Priority = righthand?.paramOrNull(params.player_op5_priority) != false
+        setPlayerOp(this, slot = 5, op = playerOp5, priority = playerOp5 != null && playerOp5Priority)
     }
 
     private fun Player.validateWeaponVars(wearpos: Wearpos) {

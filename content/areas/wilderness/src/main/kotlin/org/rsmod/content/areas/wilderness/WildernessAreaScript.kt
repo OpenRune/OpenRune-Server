@@ -113,16 +113,18 @@ constructor(
 
         private fun Player.refreshPlayerOptions() {
             when {
-                canPvp() -> MiscOutput.setPlayerOp(
-                    this,
-                    slot = 1,
-                    op = if (isDueling()) "Fight" else "Attack",
-                    priority = true,
-                )
-                isDueling() -> MiscOutput.setPlayerOp(this, slot = 1, op = "Challenge", priority = false)
+                canPvp() && isDueling() -> {
+                    MiscOutput.clearPlayerOp(this, 1, "Challenge")
+                    MiscOutput.setPlayerOp(this, slot = 2, op = "Fight", priority = true)
+                }
+                canPvp() -> MiscOutput.setPlayerOp(this, slot = 2, op = "Attack")
+                isDueling() -> {
+                    MiscOutput.clearPlayerOp(this, 2, "Fight")
+                    MiscOutput.setPlayerOp(this, slot = 1, op = "Challenge")
+                }
                 else -> {
-                    MiscOutput.clearPlayerOp(this, 1, "Attack")
-                    MiscOutput.clearPlayerOp(this, 1, "Fight")
+                    MiscOutput.clearPlayerOp(this, 2, "Attack")
+                    MiscOutput.clearPlayerOp(this, 2, "Fight")
                     MiscOutput.clearPlayerOp(this, 1, "Challenge")
                 }
             }
