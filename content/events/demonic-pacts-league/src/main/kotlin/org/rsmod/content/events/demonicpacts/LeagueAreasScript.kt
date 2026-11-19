@@ -10,7 +10,9 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.ifCloseModal
+import org.rsmod.api.player.ui.ifCloseSub
 import org.rsmod.api.player.ui.ifOpenMain
+import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onIfModalButton
@@ -35,7 +37,7 @@ constructor(private val eventBus: EventBus, private val teleports: ItemTeleportC
         onIfOverlayButton(SIDE_PANEL_AREAS_BUTTON) { player.openAreas() }
 
         onIfOpen(TASKS) { player.prepareTasks() }
-        onIfModalButton(TASKS_CLOSE) { player.ifCloseModal(TASKS, eventBus) }
+        onIfOverlayButton(TASKS_CLOSE) { player.ifCloseSub(TASKS, eventBus) }
 
         onIfOpen(AREAS) { player.prepareAreas() }
         onIfModalButton(AREAS_CLOSE) { player.ifCloseModal(AREAS, eventBus) }
@@ -46,9 +48,13 @@ constructor(private val eventBus: EventBus, private val teleports: ItemTeleportC
         onIfModalButton(AREAS_CONFIRM) { confirmArea() }
     }
 
+    /**
+     * The tasks window is a draggable floating window that positions itself against the whole
+     * screen, so it goes in the floater layer like the pact tree, not the main modal.
+     */
     private fun Player.openTasks() {
         syncLeagueClientVars()
-        ifOpenMain(TASKS, eventBus)
+        ifOpenOverlay(TASKS, eventBus)
     }
 
     private fun Player.prepareTasks() {
