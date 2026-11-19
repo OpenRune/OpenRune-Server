@@ -238,8 +238,20 @@ constructor(
             }
         }
         onOpNpc1(TutorialNpc.FISHING_SPOT) { catchShrimp() }
-        for (tree in listOf(TutorialLoc.TREE, TutorialLoc.TREE_2, TutorialLoc.OAK_TREE)) {
+        for (tree in listOf(TutorialLoc.TREE, TutorialLoc.TREE_2)) {
             onOpLoc1(tree) { chopTree() }
+        }
+        onOpLoc1(TutorialLoc.OAK_TREE) {
+            if (player.tutorialStage == TutorialStage.AXE_GIVEN) {
+                mes(
+                    "You won't be able to chop oak trees until you have a Woodcutting level of " +
+                        "15. You'll advance to higher Woodcutting levels by chopping down normal " +
+                        "trees. At higher Woodcutting levels you will find even more trees you " +
+                        "can cut.",
+                )
+            } else {
+                mes("Perhaps you've done enough woodcutting now.")
+            }
         }
         onOpLoc1(TutorialLoc.TIN_ROCK) { mineTin() }
         onOpLoc1(TutorialLoc.COPPER_ROCK) { mineCopper() }
