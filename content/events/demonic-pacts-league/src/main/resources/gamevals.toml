@@ -1,0 +1,25 @@
+[gamevals.varp]
+dp_initialised = 62100
+dp_league_points = 62101
+dp_tasks_done = 62102
+dp_pact_points_earned = 62103
+dp_pact_resets_used = 62104
+dp_regions = 62105
+dp_total_kills = 62106
+dp_pacts_0 = 62107
+dp_pacts_1 = 62108
+dp_pacts_2 = 62109
+dp_pacts_3 = 62110
+dp_pacts_4 = 62111
+dp_tasks_0 = 62112
+dp_tasks_1 = 62113
+dp_tasks_2 = 62114
+dp_tasks_3 = 62115
+dp_tasks_4 = 62116
+dp_tasks_5 = 62117
+dp_tasks_6 = 62118
+dp_tasks_7 = 62119
+
+[gamevals.timer]
+dp_league_tick = 62100
+dp_prayer_regen = 62101

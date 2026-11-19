@@ -20,6 +20,7 @@ public class StandardNpcHitModifier @Inject constructor(private val eventBus: Ev
     private fun Npc.publishEvent(hit: HitBuilder) {
         val event = NpcHitEvents.Modify(this, hit)
         eventBus.publish(event)
+        eventBus.publish(NpcHitEvents.ModifyAny(this, hit))
     }
 
     private fun Npc.applyStyleImmunity(hit: HitBuilder) {

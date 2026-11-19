@@ -14,10 +14,12 @@ world: 255
 #   world-types: ["main", "raging_echoes_league"]   main players and leagues players together
 #   world-types: ["raging_echoes_league"]           dedicated leagues world, no normal play
 #   world-types: ["gridmaster", "raging_echoes_league"]
+#   world-types: ["demonic_pacts_league"]           dedicated Leagues VI: Demonic Pacts world
 #
 # Valid keys (org.rsmod.game.world.WorldType): main, twisted_league, trailblazer_league,
-# shattered_relics_league, trailblazer_reloaded_league, raging_echoes_league, gridmaster.
-world-types: ["main"]
+# shattered_relics_league, trailblazer_reloaded_league, raging_echoes_league,
+# demonic_pacts_league, gridmaster.
+world-types: ["demonic_pacts_league"]
 
 gameplay:
   # Farming growth speed: integer 1-100. 1 is normal, 5 is five times faster.

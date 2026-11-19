@@ -1,0 +1,128 @@
+# Region areas for the league lock, as boxes of [minX, minZ, maxX, maxZ] (inclusive).
+#
+# These are hand-drawn approximations of the league region map, not Jagex's data. Tiles that match
+# no region are always allowed, so a gap never traps anyone. Use ::dpregion in game to see which
+# region you are standing in, and widen or add boxes here if something is wrong.
+#
+# `raw_boxes` are matched against exact coordinates and checked first, for dungeons and other areas
+# that sit away from the surface map. `boxes` are matched against surface coordinates, with
+# underground tiles (z >= 6400) folded up onto the surface above them.
+#
+# `bit` is the save slot for the region. Never renumber an existing region.
+
+[[region]]
+key = "always"
+name = "Shared areas"
+bit = -1
+raw_boxes = [
+    [2370, 4410, 2500, 4480], # Zanaris
+    [3010, 4800, 3070, 4860], # Abyss
+    [3030, 4820, 3060, 4850], # Abyssal area
+]
+
+[[region]]
+key = "varlamore"
+name = "Varlamore"
+bit = 0
+boxes = [[1150, 2780, 1920, 3330]]
+
+[[region]]
+key = "karamja"
+name = "Karamja"
+bit = 1
+raw_boxes = [
+    [2370, 5040, 2560, 5200], # TzHaar and the Fight Caves
+    [2240, 5300, 2300, 5370], # The Inferno
+    [2620, 9410, 2770, 9610], # Brimhaven Dungeon
+]
+boxes = [
+    [2690, 2880, 2990, 3229], # Karamja
+    [2800, 3230, 2880, 3320], # Crandor
+    [2690, 2690, 2820, 2815], # Ape Atoll
+]
+
+[[region]]
+key = "asgarnia"
+name = "Asgarnia"
+bit = 2
+unlockable = true
+raw_boxes = [[2800, 9660, 2980, 9870]] # Taverley Dungeon
+boxes = [
+    [2880, 3190, 3069, 3520], # Falador, Port Sarim, Rimmington, Taverley
+    [2830, 3500, 2940, 3600], # Burthorpe and the Warriors' Guild
+    [2800, 3600, 2940, 3780], # Troll Country
+    [2800, 3320, 2870, 3390], # Entrana
+]
+
+[[region]]
+key = "desert"
+name = "Kharidian Desert"
+bit = 3
+unlockable = true
+boxes = [
+    [3270, 3120, 3340, 3215], # Al Kharid
+    [3150, 2700, 3520, 3139], # The desert
+]
+
+[[region]]
+key = "fremennik"
+name = "Fremennik Provinces"
+bit = 4
+unlockable = true
+raw_boxes = [[2880, 4360, 2950, 4470]] # Dagannoth Kings
+boxes = [
+    [2580, 3600, 2830, 3990], # Rellekka and the mainland
+    [2300, 3770, 2460, 3910], # Neitiznot and Jatizso
+    [2050, 3830, 2180, 3960], # Lunar Isle
+    [2490, 3690, 2650, 3900], # Waterbirth, Miscellania, Etceteria
+]
+
+[[region]]
+key = "kandarin"
+name = "Kandarin"
+bit = 5
+unlockable = true
+boxes = [
+    [2390, 2880, 2689, 3599], # Ardougne, Yanille, Feldip Hills, the Gnome Stronghold
+    [2690, 3330, 2879, 3599], # Seers' Village, Camelot, Catherby
+]
+
+[[region]]
+key = "kourend"
+name = "Kourend & Kebos"
+bit = 6
+unlockable = true
+boxes = [[1150, 3331, 1950, 4100]]
+
+[[region]]
+key = "morytania"
+name = "Morytania"
+bit = 7
+unlockable = true
+boxes = [
+    [3411, 3150, 3900, 3600], # Morytania
+    [3640, 2920, 3860, 3080], # Mos Le'Harmless
+    [3780, 2820, 3830, 2880], # Harmony Island
+]
+
+[[region]]
+key = "tirannwn"
+name = "Tirannwn"
+bit = 8
+unlockable = true
+raw_boxes = [[3200, 5950, 3350, 6150]] # Prifddinas
+boxes = [[2100, 2950, 2389, 3450]]
+
+[[region]]
+key = "wilderness"
+name = "Wilderness"
+bit = 9
+unlockable = true
+boxes = [[2940, 3521, 3400, 3970]]
+
+[[region]]
+key = "misthalin"
+name = "Misthalin"
+bit = 10
+unlockable = false
+boxes = [[3070, 3140, 3410, 3520]]

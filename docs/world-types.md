@@ -37,6 +37,7 @@ behind it, so there is no "add a row" path.
 | `shattered_relics_league` | Shattered Relics League |
 | `trailblazer_reloaded_league` | Trailblazer Reloaded League |
 | `raging_echoes_league` | Raging Echoes League |
+| `demonic_pacts_league` | Demonic Pacts League — see `content/events/demonic-pacts-league` |
 | `gridmaster` | Gridmaster |
 
 `key` is the identifier everywhere: the `game.yml` entry, the Postgres schema name, and the value in

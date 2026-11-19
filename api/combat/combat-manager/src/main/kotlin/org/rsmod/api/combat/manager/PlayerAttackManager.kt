@@ -579,7 +579,9 @@ constructor(
             attackType = attackType,
             attackStyle = attackStyle,
             blockType = blockType,
-            specMultiplier = specMultiplier,
+            specMultiplier =
+                specMultiplier *
+                    PlayerCombatModifiers.accuracy(source, target, CombatStyleGroup.Melee),
             random = random,
         )
 
@@ -669,7 +671,14 @@ constructor(
         specMultiplier: Double,
         roundUp: Boolean,
     ): Int =
-        maxHits.getMeleeMaxHit(source, target, attackType, attackStyle, specMultiplier, roundUp)
+        maxHits.getMeleeMaxHit(
+            source,
+            target,
+            attackType,
+            attackStyle,
+            specMultiplier * PlayerCombatModifiers.maxHit(source, target, CombatStyleGroup.Melee),
+            roundUp,
+        )
 
     private fun calculateMeleeMaxHit(
         source: Player,
@@ -842,7 +851,9 @@ constructor(
             attackType = attackType,
             attackStyle = attackStyle,
             blockType = blockType,
-            specMultiplier = specMultiplier,
+            specMultiplier =
+                specMultiplier *
+                    PlayerCombatModifiers.accuracy(source, target, CombatStyleGroup.Ranged),
             random = random,
         )
 
@@ -961,7 +972,9 @@ constructor(
             target = target,
             attackType = attackType,
             attackStyle = attackStyle,
-            specMultiplier = specMultiplier,
+            specMultiplier =
+                specMultiplier *
+                    PlayerCombatModifiers.maxHit(source, target, CombatStyleGroup.Ranged),
             boltSpecDamage = boltSpecDamage,
         )
 
@@ -1184,15 +1197,25 @@ constructor(
         spell: ItemServerType,
         spellbook: Spellbook?,
         sunfireRune: Boolean,
-    ): Boolean =
-        accuracy.rollSpellAccuracy(
-            player = source,
-            target = target,
-            spell = spell,
-            spellbook = spellbook,
-            usedSunfireRune = sunfireRune,
-            random = random,
-        )
+    ): Boolean {
+        val roll = {
+            accuracy.rollSpellAccuracy(
+                player = source,
+                target = target,
+                spell = spell,
+                spellbook = spellbook,
+                usedSunfireRune = sunfireRune,
+                random = random,
+            )
+        }
+        if (roll()) {
+            return true
+        }
+        // The spell formula takes no accuracy multiplier, so a boost of +x% is approximated as an
+        // x% chance to reroll a miss.
+        val bonus = PlayerCombatModifiers.accuracy(source, target, CombatStyleGroup.Magic) - 1.0
+        return bonus > 0.0 && random.randomDouble() < bonus.coerceAtMost(1.0) && roll()
+    }
 
     private fun rollSpellAccuracy(
         source: Player,
@@ -1313,16 +1336,24 @@ constructor(
         baseMaxHit: Int,
         attackRate: Int,
         sunfireRune: Boolean,
-    ): IntRange =
-        maxHits.getSpellMaxHitRange(
-            player = source,
-            target = target,
-            spell = spell,
-            spellbook = spellbook,
-            baseMaxHit = baseMaxHit,
-            attackRate = attackRate,
-            usedSunfireRune = sunfireRune,
-        )
+    ): IntRange {
+        val range =
+            maxHits.getSpellMaxHitRange(
+                player = source,
+                target = target,
+                spell = spell,
+                spellbook = spellbook,
+                baseMaxHit = baseMaxHit,
+                attackRate = attackRate,
+                usedSunfireRune = sunfireRune,
+            )
+        val multiplier = PlayerCombatModifiers.maxHit(source, target, CombatStyleGroup.Magic)
+        if (multiplier == 1.0) {
+            return range
+        }
+        val last = (range.last * multiplier).toInt().coerceAtLeast(range.first)
+        return range.first..last
+    }
 
     private fun calculateSpellMaxHit(
         source: Player,
@@ -1379,7 +1410,8 @@ constructor(
             player = source,
             target = target,
             attackStyle,
-            specMultiplier,
+            specMultiplier *
+                PlayerCombatModifiers.accuracy(source, target, CombatStyleGroup.Magic),
             random,
         )
 
@@ -1458,7 +1490,9 @@ constructor(
             player = source,
             target = target,
             baseMaxHit = baseMaxHit,
-            specialMultiplier = specMultiplier,
+            specialMultiplier =
+                specMultiplier *
+                    PlayerCombatModifiers.maxHit(source, target, CombatStyleGroup.Magic),
         )
 
     private fun calculateSpellMaxHit(

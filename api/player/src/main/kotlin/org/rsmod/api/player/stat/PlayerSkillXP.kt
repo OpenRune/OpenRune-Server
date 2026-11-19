@@ -21,7 +21,8 @@ public object PlayerSkillXP {
     ): Int = player.addXP(stat, xp, rate, source)
 
     private fun Player.addXP(stat: String, xp: Double, rate: Double, source: XpSource): Int {
-        val fineXp = PlayerStatMap.toFineXP(xp * rate)
+        val statRate = if (source == XpSource.Natural) StatXpModifiers.modifier(this, stat) else 1.0
+        val fineXp = PlayerStatMap.toFineXP(xp * rate * statRate)
         if (fineXp.isInfinite()) {
             throw IllegalArgumentException("Total XP being added is too high! (xp=$xp, rate=$rate)")
         }

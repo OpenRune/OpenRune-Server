@@ -1,0 +1,33 @@
+# Demonic Pacts League settings. Restart the server after editing.
+
+# Where a new league character starts. Civitas illa Fortis, Varlamore.
+start_x = 1681
+start_z = 3134
+start_level = 0
+
+# League point thresholds for relic tiers 1-8.
+tier_thresholds = [0, 600, 1200, 2600, 5200, 8500, 16500, 28000]
+
+# League points per task difficulty.
+easy_points = 10
+medium_points = 30
+hard_points = 80
+elite_points = 200
+master_points = 400
+
+# Pact points: two from the tutorial, 44 earnable in total, at most 40 spent at once.
+starting_pact_points = 2
+max_pact_points_earned = 44
+max_pacts_spent = 40
+max_pact_resets = 6
+
+# The official league has far more pact tasks than the starter task list here, so every N completed
+# tasks also award a pact point. Set to 0 to turn this off.
+bonus_pact_point_every_tasks = 10
+
+# Tasks needed for Karamja and for each of the three chosen regions.
+karamja_tasks = 80
+region_task_thresholds = [200, 300, 450]
+
+# Set false to let league players walk anywhere.
+region_lock = true

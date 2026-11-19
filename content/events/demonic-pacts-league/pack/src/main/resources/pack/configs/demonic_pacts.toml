@@ -1,0 +1,99 @@
+[[varp]]
+id = "varp.dp_initialised"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_league_points"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_tasks_done"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_pact_points_earned"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_pact_resets_used"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_regions"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_total_kills"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_pacts_0"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_pacts_1"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_pacts_2"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_pacts_3"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_pacts_4"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_tasks_0"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_tasks_1"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_tasks_2"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_tasks_3"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_tasks_4"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_tasks_5"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_tasks_6"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_tasks_7"
+scope = "Perm"
+transmit = "Never"
