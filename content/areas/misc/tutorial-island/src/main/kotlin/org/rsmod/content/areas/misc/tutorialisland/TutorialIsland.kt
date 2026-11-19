@@ -1028,7 +1028,8 @@ constructor(
     }
 
     private suspend fun Dialogue.miningRecap() {
-        if (!player.inv.contains(TutorialObj.HAMMER) &&
+        if (player.tutorialStage >= TutorialStage.MINING_GUIDE_BAR &&
+            !player.inv.contains(TutorialObj.HAMMER) &&
             access.giveTutorialItems(TutorialObj.HAMMER to 1)
         ) {
             mesbox("The mining instructor gives you a <col=000080>hammer<col=000000>.")

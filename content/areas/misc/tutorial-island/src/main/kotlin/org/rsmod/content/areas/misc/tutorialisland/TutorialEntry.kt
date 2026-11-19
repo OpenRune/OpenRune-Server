@@ -257,6 +257,9 @@ constructor(
         ifOpenMainModal("interface.tutorial_player_experience")
         player.ifSetHide("component.tutorial_overlay:noclick", false)
         val input = coroutine.pause(ResumePauseButtonInput::class)
+        if (player.tutorialStage != TutorialStage.START) {
+            return
+        }
         if (input.isComponentType("component.tutorial_player_experience:content")) {
             player.adventurePaths =
                 if (input.subcomponent == ADVENTURE_PATHS_EXPERIENCED) {
