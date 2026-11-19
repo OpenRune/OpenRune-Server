@@ -1,0 +1,422 @@
+# Pact effect id -> the varbit the client reads to show its total (talent_effect_value), and that
+# varbit's largest value. Generated from the revision 242 cache.
+
+[[effect]]
+id = 1
+varbit = "varbit.talent_regen_ammo_chance"
+max = 1023
+
+[[effect]]
+id = 2
+varbit = "varbit.talent_ammo_regen_magic_accuracy"
+max = 1
+
+[[effect]]
+id = 3
+varbit = "varbit.talent_airrune_regen_prayer_restore"
+max = 127
+
+[[effect]]
+id = 4
+varbit = "varbit.talent_waterrune_regen_healing"
+max = 1
+
+[[effect]]
+id = 5
+varbit = "varbit.talent_firerune_regen_damage_boost"
+max = 3
+
+[[effect]]
+id = 6
+varbit = "varbit.talent_earthrune_regen_defence_boost"
+max = 1
+
+[[effect]]
+id = 7
+varbit = "varbit.talent_percentage_magic_damage"
+max = 255
+
+[[effect]]
+id = 8
+varbit = "varbit.talent_crossbow_echo_reproc_chance"
+max = 127
+
+[[effect]]
+id = 9
+varbit = "varbit.talent_bow_echo_pass_accuracy"
+max = 1
+
+[[effect]]
+id = 10
+varbit = "varbit.talent_thrown_maxhit_echoes"
+max = 63
+
+[[effect]]
+id = 11
+varbit = "varbit.talent_ranged_regen_echo_chance"
+max = 127
+
+[[effect]]
+id = 12
+varbit = "varbit.talent_all_style_accuracy"
+max = 1023
+
+[[effect]]
+id = 13
+varbit = "varbit.talent_defence_boost"
+max = 127
+
+[[effect]]
+id = 14
+varbit = "varbit.talent_percentage_melee_damage"
+max = 255
+
+[[effect]]
+id = 15
+varbit = "varbit.talent_percentage_ranged_damage"
+max = 255
+
+[[effect]]
+id = 16
+varbit = "varbit.talent_offhand_stat_boost"
+max = 1
+
+[[effect]]
+id = 17
+varbit = "varbit.talent_thrown_weapon_melee_str_scale"
+max = 1
+
+[[effect]]
+id = 18
+varbit = "varbit.talent_overhealing_via_talents"
+max = 127
+
+[[effect]]
+id = 19
+varbit = "varbit.talent_thorns_damage"
+max = 15
+
+[[effect]]
+id = 20
+varbit = "varbit.talent_melee_range_multiplier"
+max = 7
+
+[[effect]]
+id = 21
+varbit = "varbit.talent_poison_chance_from_ranged"
+max = 127
+
+[[effect]]
+id = 22
+varbit = "varbit.talent_recoil_heal"
+max = 1
+
+[[effect]]
+id = 23
+varbit = "varbit.talent_shield_reflect"
+max = 1
+
+[[effect]]
+id = 24
+varbit = "varbit.talent_spec_for_free"
+max = 127
+
+[[effect]]
+id = 25
+varbit = "varbit.talent_distance_melee_minhit"
+max = 7
+
+[[effect]]
+id = 26
+varbit = "varbit.talent_melee_distance_healing_chance"
+max = 511
+
+[[effect]]
+id = 27
+varbit = "varbit.talent_damage_reduction"
+max = 511
+
+[[effect]]
+id = 28
+varbit = "varbit.talent_air_spell_damage_high_hp"
+max = 1
+
+[[effect]]
+id = 29
+varbit = "varbit.talent_water_spell_damage_high_hp"
+max = 1
+
+[[effect]]
+id = 30
+varbit = "varbit.talent_air_spell_max_hit_prayer_bonus"
+max = 7
+
+[[effect]]
+id = 31
+varbit = "varbit.talent_water_spell_bouce_heal"
+max = 1
+
+[[effect]]
+id = 32
+varbit = "varbit.talent_fire_hp_consume_for_damage"
+max = 1
+
+[[effect]]
+id = 33
+varbit = "varbit.talent_fire_spell_burn_bounce"
+max = 1
+
+[[effect]]
+id = 34
+varbit = "varbit.talent_magic_attack_speed_traditional"
+max = 3
+
+[[effect]]
+id = 35
+varbit = "varbit.talent_regen_stave_charges_water"
+max = 1
+
+[[effect]]
+id = 36
+varbit = "varbit.talent_regen_stave_charges_fire"
+max = 1
+
+[[effect]]
+id = 37
+varbit = "varbit.talent_prayer_pen_melee"
+max = 63
+
+[[effect]]
+id = 38
+varbit = "varbit.talent_prayer_pen_ranged"
+max = 63
+
+[[effect]]
+id = 39
+varbit = "varbit.talent_prayer_pen_magic"
+max = 63
+
+[[effect]]
+id = 40
+varbit = "varbit.talent_prayer_pen_all"
+max = 127
+
+[[effect]]
+id = 41
+varbit = "varbit.talent_earth_scale_defence_stat"
+max = 15
+
+[[effect]]
+id = 42
+varbit = "varbit.talent_earth_reduce_defence"
+max = 1
+
+[[effect]]
+id = 43
+varbit = "varbit.talent_light_weapon_doublehit"
+max = 1
+
+[[effect]]
+id = 44
+varbit = "varbit.talent_free_random_weapon_attack_chance"
+max = 127
+
+[[effect]]
+id = 45
+varbit = "varbit.talent_smoke_counts_as_air"
+max = 1
+
+[[effect]]
+id = 46
+varbit = "varbit.talent_ice_counts_as_water"
+max = 1
+
+[[effect]]
+id = 47
+varbit = "varbit.talent_blood_counts_as_fire"
+max = 1
+
+[[effect]]
+id = 48
+varbit = "varbit.talent_shadow_counts_as_earth"
+max = 1
+
+[[effect]]
+id = 49
+varbit = "varbit.talent_ranged_strength_hp_difference"
+max = 1
+
+[[effect]]
+id = 50
+varbit = "varbit.talent_crossbow_slow_big_hits"
+max = 1
+
+[[effect]]
+id = 51
+varbit = "varbit.talent_crossbow_max_hit"
+max = 1
+
+[[effect]]
+id = 52
+varbit = "varbit.talent_ranged_echo_cyclical"
+max = 1
+
+[[effect]]
+id = 53
+varbit = "varbit.talent_bow_fast_hits"
+max = 1
+
+[[effect]]
+id = 54
+varbit = "varbit.talent_enchanted_bolts_random_effect"
+max = 1
+
+[[effect]]
+id = 55
+varbit = "varbit.talent_thrown_weapon_accuracy"
+max = 127
+
+[[effect]]
+id = 56
+varbit = "varbit.talent_thrown_weapon_multi"
+max = 1
+
+[[effect]]
+id = 57
+varbit = "varbit.talent_max_accuracy_roll_from_range"
+max = 1
+
+[[effect]]
+id = 58
+varbit = "varbit.talent_buffed_ranged_prayers"
+max = 1
+
+[[effect]]
+id = 59
+varbit = "varbit.talent_bow_min_hit_stacking_increase"
+max = 1
+
+[[effect]]
+id = 60
+varbit = "varbit.talent_bow_max_hit_stacking_increase"
+max = 1
+
+[[effect]]
+id = 61
+varbit = "varbit.talent_prayer_restore_no_overhead"
+max = 1
+
+[[effect]]
+id = 62
+varbit = "varbit.talent_restore_sa_energy_from_distance"
+max = 1
+
+[[effect]]
+id = 63
+varbit = "varbit.talent_heal_stood_still"
+max = 1
+
+[[effect]]
+id = 64
+varbit = "varbit.talent_defence_recoil_scaling"
+max = 1
+
+[[effect]]
+id = 65
+varbit = "varbit.talent_light_weapon_faster"
+max = 1
+
+[[effect]]
+id = 66
+varbit = "varbit.talent_hit_restore_spec_energy"
+max = 7
+
+[[effect]]
+id = 67
+varbit = "varbit.talent_overheal_consumption_boost"
+max = 1
+
+[[effect]]
+id = 68
+varbit = "varbit.talent_unique_blindbag_damage"
+max = 7
+
+[[effect]]
+id = 69
+varbit = "varbit.talent_melee_range_conditional_boost"
+max = 1
+
+[[effect]]
+id = 70
+varbit = "varbit.talent_percentage_melee_maxhit_distance"
+max = 15
+
+[[effect]]
+id = 71
+varbit = "varbit.talent_2h_melee_echos"
+max = 1
+
+[[effect]]
+id = 72
+varbit = "varbit.talent_unique_blindbag_chance"
+max = 1
+
+[[effect]]
+id = 73
+varbit = "varbit.talent_melee_strength_prayer_bonus"
+max = 1
+
+[[effect]]
+id = 74
+varbit = "varbit.talent_hit_autovenge_chance"
+max = 7
+
+[[effect]]
+id = 75
+varbit = "varbit.talent_shield_block_heal"
+max = 1
+
+[[effect]]
+id = 76
+varbit = "varbit.talent_max_hit_style_swap"
+max = 1
+
+[[effect]]
+id = 77
+varbit = "varbit.talent_multi_hit_str_increase"
+max = 1
+
+[[effect]]
+id = 78
+varbit = "varbit.talent_regen_magic_level_boost"
+max = 15
+
+[[effect]]
+id = 79
+varbit = "varbit.talent_regen_stave_charges_air"
+max = 1
+
+[[effect]]
+id = 80
+varbit = "varbit.talent_regen_stave_charges_earth"
+max = 1
+
+[[effect]]
+id = 81
+varbit = "varbit.talent_magic_attack_speed_powered"
+max = 3
+
+[[effect]]
+id = 82
+varbit = "varbit.talent_crossbow_double_accuracy_roll"
+max = 1
+
+[[effect]]
+id = 83
+varbit = "varbit.talent_air_spell_damage_active_prayers"
+max = 15
+
+[[effect]]
+id = 84
+varbit = "varbit.talent_thorns_double_hit"
+max = 1

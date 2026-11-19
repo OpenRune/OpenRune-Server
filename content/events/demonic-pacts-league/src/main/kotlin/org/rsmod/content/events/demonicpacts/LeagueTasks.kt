@@ -56,6 +56,7 @@ object LeagueTasks {
             player.mes(LeagueRates.describe(player))
         }
         refreshDropRate(player)
+        player.syncLeagueClientVars()
         checkRegionUnlocks(player)
     }
 
@@ -65,9 +66,10 @@ object LeagueTasks {
             return
         }
         player.pactPointsEarned += 1
+        player.syncLeagueClientVars()
         player.mes(
             "<col=ef1020>You earned a pact point. Unspent: ${player.pactPointsAvailable()}. " +
-                "See ::pacts."
+                "Spend it with ::pacts."
         )
     }
 

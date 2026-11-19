@@ -14,7 +14,10 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.StatXpModifiers
 import org.rsmod.api.player.stat.XpSource
 import org.rsmod.api.player.stat.statAdvance
+import org.rsmod.api.player.stat.stat
+import org.rsmod.api.player.stat.statAdd
 import org.rsmod.api.player.stat.statBase
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onPlayerCoordsChanged
 import org.rsmod.api.script.onPlayerLogin
@@ -96,9 +99,9 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
                 CombatStyleGroup.Magic -> effects.magicDamagePercent
             }
         var distancePercent = 0
-        if (effects.maxHitDistancePercent > 0) {
+        if (style == CombatStyleGroup.Melee && effects.meleeMaxHitDistancePercent > 0) {
             val distance = player.coords.chebyshevDistance(npc.coords)
-            distancePercent = effects.maxHitDistancePercent * (1 + distance / 3)
+            distancePercent = effects.meleeMaxHitDistancePercent * (1 + distance / 3)
         }
         return 1.0 + (stylePercent + distancePercent) / 100.0
     }
@@ -111,6 +114,11 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
             setGamemode(PlayerGamemode.IRONMAN)
         }
         xpRate = 1.0
+        grantStartingResetsOnce()
+        if (clearLegacyPacts()) {
+            mes("<col=ef1020>The pact tree was rebuilt from the game's own data: your pacts were refunded.")
+        }
+        onPactsChanged()
         if (settings.nearBrokenMapSquare(coords.x, coords.z)) {
             moveTo(startCoord)
             mes("You were moved away from an area this cache cannot load.")
@@ -122,6 +130,13 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
         mes("<col=ef1020>Welcome to the Demonic Pacts League.</col> Type ::league for your progress.")
     }
 
+    private fun Player.grantStartingResetsOnce() {
+        if (vars[RESETS_GRANTED] == 0) {
+            VarPlayerIntMapSetter.set(this, RESETS_GRANTED, 1)
+            pactResetsAvailable = settings.startingPactResets
+        }
+    }
+
     private fun Player.startLeague() {
         dpInitialised = true
         pactPointsEarned = settings.startingPactPoints
@@ -129,7 +144,7 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
         raiseToLevel("stat.herblore", HERBLORE_START_XP, 3)
         raiseToLevel("stat.runecrafting", RUNECRAFT_START_XP, 5)
         moveTo(startCoord)
-        mes("Yama has bound you to Varlamore. Earn pact points and spend them with ::pacts.")
+        mes("Yama has bound you to Varlamore. Spend pact points in the Demonic Pacts menu: ::pacts.")
     }
 
     private fun Player.raiseToLevel(stat: String, xp: Double, level: Int) {
@@ -144,7 +159,21 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
         }
         LeagueTasks.checkProgress(this)
         LeagueTasks.refreshDropRate(this)
+        syncLeagueClientVars()
+        applyDefenceBoost()
         fillRunEnergy()
+    }
+
+    private fun Player.applyDefenceBoost() {
+        val boost = pactEffects().defenceBoost
+        if (boost <= 0) {
+            return
+        }
+        val target = statBase(DEFENCE) + boost
+        val current = stat(DEFENCE)
+        if (current < target) {
+            statAdd(DEFENCE, target - current, 0)
+        }
     }
 
     private fun onMoved(player: Player, lastKnownCoords: CoordGrid) {
@@ -184,18 +213,18 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
             desc = "Show your Demonic Pacts League progress"
             cheat { player.showSummary() }
         }
-        onCommand("pacts") {
-            desc = "List pacts: ::pacts [owned|all|todo]"
+        onCommand("pactlist") {
+            desc = "List pacts in chat: ::pactlist [owned|all]"
             cheat { player.listPacts(args.firstOrNull() ?: "available") }
         }
         onCommand("pact") {
-            desc = "Show a pact: ::pact <id>"
-            invalidArgs = "Use ::pact <id>, for example ::pact AA."
+            desc = "Show a pact: ::pact <node>"
+            invalidArgs = "Use ::pact <node>, for example ::pact 1."
             cheat { player.showPact(args[0]) }
         }
         onCommand("pactbuy") {
-            desc = "Buy a pact: ::pactbuy <id>"
-            invalidArgs = "Use ::pactbuy <id>, for example ::pactbuy AA."
+            desc = "Buy a pact from chat: ::pactbuy <node>"
+            invalidArgs = "Use ::pactbuy <node>, for example ::pactbuy 1."
             cheat { player.buyPact(args[0]) }
         }
         onCommand("pactreset") {
@@ -293,29 +322,29 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
         for (node in nodes) {
             mes(node.summary(this))
         }
-        mes("::pact <id> for details, ::pactbuy <id> to buy. [unimplemented] pacts do nothing yet.")
+        mes("::pact <node> for details. [unimplemented] pacts do nothing yet. ::pacts opens the menu.")
     }
 
     private fun Player.showPact(id: String) {
-        val node = DemonicPactsData.nodesById[id.uppercase()]
+        val node = DemonicPactsData.findNode(id)
         if (node == null) {
             mes("There is no pact with the id '$id'.")
             return
         }
         mes(node.summary(this))
-        val linked = DemonicPactsData.neighbours[node.id].orEmpty().sorted()
-        mes("Connects to: ${linked.joinToString()}.")
+        val linked = DemonicPactsData.neighbours[node.id].orEmpty().map { it.removePrefix("node") }
+        mes("Connects to: ${linked.sortedBy { it.toIntOrNull() ?: 0 }.joinToString()}.")
         val state =
             when {
                 ownsPact(node) -> "You hold this pact."
-                PactTree.canReach(this, node) -> "You can buy this pact with ::pactbuy ${node.id}."
+                PactTree.canReach(this, node) -> "You can buy this pact now."
                 else -> "Buy a connected pact first."
             }
         mes(state)
     }
 
     private fun Player.buyPact(id: String) {
-        val node = DemonicPactsData.nodesById[id.uppercase()]
+        val node = DemonicPactsData.findNode(id)
         if (node == null) {
             mes("There is no pact with the id '$id'.")
             return
@@ -412,7 +441,7 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
     private fun PactNode.summary(player: Player): String {
         val owned = if (player.ownsPact(this)) "<col=00ff00>[held]</col> " else ""
         val unimplemented = if (isImplemented) "" else " <col=9f9f9f>[unimplemented]</col>"
-        return "$owned<col=ff981f>$id</col> ($size): $text$unimplemented"
+        return "$owned<col=ff981f>${id.removePrefix("node")}</col>: $text$unimplemented"
     }
 
     private companion object {
@@ -423,5 +452,7 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
         const val TASKS_PER_PAGE = 10
         const val HERBLORE_START_XP = 174.0
         const val RUNECRAFT_START_XP = 388.0
+        const val DEFENCE = "stat.defence"
+        const val RESETS_GRANTED = "varp.dp_pact_resets_used"
     }
 }

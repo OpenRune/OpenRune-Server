@@ -116,7 +116,7 @@ constructor(
     }
 
     private fun Player.regenPrayer() {
-        if (!isDemonicPactsLeague || pactEffects().prayerRegenTicks <= 0) {
+        if (!isDemonicPactsLeague || !pactEffects().prayerRegen) {
             return
         }
         val protecting =

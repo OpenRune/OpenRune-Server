@@ -7,6 +7,16 @@ import org.rsmod.game.world.WorldType
 
 private val PACT_VARPS =
     listOf(
+        "varp.combat_mastery_perm_0",
+        "varp.combat_mastery_perm_1",
+        "varp.combat_mastery_perm_2",
+        "varp.combat_mastery_perm_3",
+        "varp.combat_mastery_perm_4",
+        "varp.combat_mastery_perm_5",
+    )
+
+private val LEGACY_PACT_VARPS =
+    listOf(
         "varp.dp_pacts_0",
         "varp.dp_pacts_1",
         "varp.dp_pacts_2",
@@ -30,7 +40,16 @@ private const val INITIALISED = "varp.dp_initialised"
 private const val LEAGUE_POINTS = "varp.dp_league_points"
 private const val TASKS_DONE = "varp.dp_tasks_done"
 private const val PACT_POINTS_EARNED = "varp.dp_pact_points_earned"
-private const val PACT_RESETS_USED = "varp.dp_pact_resets_used"
+private const val CLIENT_PACT_POINTS_EARNED = "varp.talent_points_earned"
+private const val CLIENT_PACT_POINTS_SPENT = "varp.talent_points_spent"
+private const val PACT_RESETS_AVAILABLE = "varbit.talent_resets_available"
+private const val PACT_RESETS_MAX = 63
+private const val LEAGUE_TYPE = "varbit.league_type"
+private const val LEAGUE_TYPE_DEMONIC_PACTS = 6
+private const val LEAGUE_TUTORIAL = "varbit.league_tutorial_completed"
+private const val LEAGUE_TUTORIAL_DONE = 63
+private const val CLIENT_LEAGUE_POINTS = "varp.league_points_claimed"
+private const val CLIENT_LEAGUE_CURRENCY = "varp.league_points_currency"
 private const val REGIONS = "varp.dp_regions"
 private const val TOTAL_KILLS = "varp.dp_total_kills"
 
@@ -91,9 +110,10 @@ var Player.pactPointsEarned: Int
     get() = vars[PACT_POINTS_EARNED]
     set(value) = VarPlayerIntMapSetter.set(this, PACT_POINTS_EARNED, value)
 
-var Player.pactResetsUsed: Int
-    get() = vars[PACT_RESETS_USED]
-    set(value) = VarPlayerIntMapSetter.set(this, PACT_RESETS_USED, value)
+var Player.pactResetsAvailable: Int
+    get() = vars[PACT_RESETS_AVAILABLE]
+    set(value) =
+        VarPlayerIntMapSetter.set(this, PACT_RESETS_AVAILABLE, value.coerceIn(0, PACT_RESETS_MAX))
 
 var Player.leagueTotalKills: Int
     get() = vars[TOTAL_KILLS]
@@ -136,6 +156,41 @@ fun Player.ownedPacts(): List<PactNode> = DemonicPactsData.nodes.filter { ownsPa
 fun Player.clearAllPacts() {
     for (varp in PACT_VARPS) {
         VarPlayerIntMapSetter.set(this, varp, 0)
+    }
+}
+
+/**
+ * Pacts bought before the tree moved onto the cache's own node order were saved in different
+ * slots. Clears them (their points come straight back, since spent points are counted from owned
+ * pacts) and reports whether there was anything to clear.
+ */
+fun Player.clearLegacyPacts(): Boolean {
+    var cleared = false
+    for (varp in LEGACY_PACT_VARPS) {
+        if (vars[varp] != 0) {
+            VarPlayerIntMapSetter.set(this, varp, 0)
+            cleared = true
+        }
+    }
+    return cleared
+}
+
+/** Sends the league state the client's league interfaces read. */
+fun Player.syncLeagueClientVars() {
+    val settings = DemonicPactsData.settings
+    setIfChanged(LEAGUE_TYPE, LEAGUE_TYPE_DEMONIC_PACTS)
+    if (vars[LEAGUE_TUTORIAL] < LEAGUE_TUTORIAL_DONE) {
+        setIfChanged(LEAGUE_TUTORIAL, LEAGUE_TUTORIAL_DONE)
+    }
+    setIfChanged(CLIENT_PACT_POINTS_EARNED, minOf(pactPointsEarned, settings.maxPactsSpent))
+    setIfChanged(CLIENT_PACT_POINTS_SPENT, ownedPacts().size)
+    setIfChanged(CLIENT_LEAGUE_POINTS, leaguePoints)
+    setIfChanged(CLIENT_LEAGUE_CURRENCY, leaguePoints)
+}
+
+private fun Player.setIfChanged(varName: String, value: Int) {
+    if (vars[varName] != value) {
+        VarPlayerIntMapSetter.set(this, varName, value)
     }
 }
 

@@ -1,1325 +1,1191 @@
-# Demonic Pacts tree, from the OSRS Wiki (Module:Demonic_Pacts/data), with the 23 April 2026
-# rebalance applied (accuracy 25%/50%, prayer penetration 25%).
-#
-# `bit` is the save slot for the node. Never renumber an existing node: saves store these bits.
-# `effect = "none"` nodes can be bought but their effect is not implemented yet.
+# The Demonic Pacts tree, generated from the revision 242 cache (dbtable talent_tree, enum_5942).
+# `bit` is the node index the client uses: it is the bit in varps combat_mastery_perm_0-5, so it
+# must match the cache. `effect` is the cache effect id, `value` its amount.
 
 [[node]]
-id = "AA"
+id = "node1"
 bit = 0
-size = "md"
-out = ["B1", "B2", "B3", "BA", "BB", "BC"]
-effect = "none"
-value = 0
-style = "all"
-text = "50% chance to Regenerate runes, ammunition and charges."
+size = 1
+out = ["node2", "node74", "node44", "node62", "node92", "node93"]
+effect = 1
+value = 50
+text = "+50% chance to Regenerate runes, ammo and charges Regenerate: Whenever you use runes to cast a spell, fire ammunition from a ranged weapon or consume charges with a charged weapon there is a % chance to generate an additional resource spent."
 
 [[node]]
-id = "B1"
+id = "node2"
 bit = 1
-size = "md"
-out = ["C1", "C2", "C3", "C4"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Each Regenerate boosts Magic by 1 (max +10, 18 seconds)."
+size = 1
+out = ["node1", "node3", "node4", "node5"]
+effect = 11
+value = 25
+text = "Whenever you Regenerate ammo, you have a +25% chance to fire a Ranged echo against the enemy. Ranged echo: An additional ranged attack which rolls with your ranged accuracy against the targets ranged defence. Echo attacks cannot trigger additional echo attacks and will not trigger on special attacks."
 
 [[node]]
-id = "B2"
+id = "node3"
 bit = 2
-size = "md"
-out = ["E1", "E2", "E3"]
-effect = "none"
-value = 0
-style = "ranged"
-text = "+25% chance to fire a Ranged echo when ammunition Regenerates."
+size = 1
+out = ["node2", "node6"]
+effect = 9
+value = 1
+text = "While a bow is equipped, Ranged echoes never miss. All bow pacts will not work with an Eclipse Atlatl."
 
 [[node]]
-id = "B3"
+id = "node4"
 bit = 3
-size = "md"
-out = ["D1", "D2", "D3", "D4"]
-effect = "melee_min_hit"
-value = 3
-style = "melee"
-text = "Melee min hit +3, and +3 for each extra tile of distance."
-
-[[node]]
-id = "BA"
-bit = 4
-size = "sm"
-out = []
-effect = "none"
-value = 0
-style = "all"
-text = "+5% Regenerate chance."
-
-[[node]]
-id = "BB"
-bit = 5
-size = "sm"
-out = []
-effect = "none"
-value = 0
-style = "all"
-text = "+5% Regenerate chance."
-
-[[node]]
-id = "BC"
-bit = 6
-size = "sm"
-out = []
-effect = "none"
-value = 0
-style = "all"
-text = "+5% Regenerate chance."
-
-[[node]]
-id = "C1"
-bit = 7
-size = "md"
-out = ["CA"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Air Regenerate: 15% chance to restore 1 Prayer per rune."
-
-[[node]]
-id = "C2"
-bit = 8
-size = "md"
-out = ["CB"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Water Regenerate: heal 1 per rune."
-
-[[node]]
-id = "C3"
-bit = 9
-size = "md"
-out = ["CB"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Fire Regenerate: next spell hit deals +1 damage per rune."
-
-[[node]]
-id = "C4"
-bit = 10
-size = "md"
-out = ["CC"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Earth Regenerate: +1 Defence boost per rune for 30 ticks."
-
-[[node]]
-id = "CA"
-bit = 11
-size = "sm"
-out = ["F1", "F2"]
-effect = "accuracy"
-value = 25
-style = "all"
-text = "+25% accuracy with all styles."
-
-[[node]]
-id = "CB"
-bit = 12
-size = "sm"
-out = ["F2", "F3"]
-effect = "accuracy"
-value = 25
-style = "all"
-text = "+25% accuracy with all styles."
-
-[[node]]
-id = "CC"
-bit = 13
-size = "sm"
-out = ["F3", "F4"]
-effect = "accuracy"
-value = 25
-style = "all"
-text = "+25% accuracy with all styles."
-
-[[node]]
-id = "D1"
-bit = 14
-size = "md"
-out = ["DA"]
-effect = "thorns"
-value = 3
-style = "melee"
-text = "With a shield equipped, gain Thorns: attackers take 3 damage."
-
-[[node]]
-id = "D2"
-bit = 15
-size = "md"
-out = ["DB"]
-effect = "none"
-value = 0
-style = "melee"
-text = "Melee weapons under 1kg add an extra hit at 40% of max hit."
-
-[[node]]
-id = "D3"
-bit = 16
-size = "md"
-out = ["DB"]
-effect = "none"
-value = 0
-style = "melee"
-text = "Heavy melee weapons have a chance to Blindbag."
-
-[[node]]
-id = "D4"
-bit = 17
-size = "md"
-out = ["DC"]
-effect = "none"
-value = 0
-style = "melee"
-text = "Melee range doubled with two-handed weapons."
-
-[[node]]
-id = "DA"
-bit = 18
-size = "sm"
-out = ["G1", "G2"]
-effect = "none"
-value = 0
-style = "all"
-text = "+5 permanent Defence."
-
-[[node]]
-id = "DB"
-bit = 19
-size = "sm"
-out = ["G2", "G3"]
-effect = "accuracy"
-value = 25
-style = "all"
-text = "+25% accuracy with all styles."
-
-[[node]]
-id = "DC"
-bit = 20
-size = "sm"
-out = ["G3", "G4"]
-effect = "accuracy"
-value = 25
-style = "all"
-text = "+25% accuracy with all styles."
-
-[[node]]
-id = "E1"
-bit = 21
-size = "md"
-out = ["EA"]
-effect = "none"
-value = 0
-style = "ranged"
-text = "With a bow, Ranged echoes never miss."
-
-[[node]]
-id = "E2"
-bit = 22
-size = "md"
-out = ["EB"]
-effect = "none"
-value = 0
-style = "ranged"
-text = "With a crossbow, +15% Ranged echo chance."
-
-[[node]]
-id = "E3"
-bit = 23
-size = "md"
-out = ["EC"]
-effect = "none"
-value = 0
-style = "ranged"
-text = "With a thrown weapon, echoes have a 20% chance to max hit."
-
-[[node]]
-id = "EA"
-bit = 24
-size = "sm"
-out = ["H1", "H2", "H5"]
-effect = "none"
-value = 0
-style = "all"
-text = "+5 permanent Defence."
-
-[[node]]
-id = "EB"
-bit = 25
-size = "sm"
-out = ["H2", "H3"]
-effect = "accuracy"
-value = 25
-style = "all"
-text = "+25% accuracy with all styles."
-
-[[node]]
-id = "EC"
-bit = 26
-size = "sm"
-out = ["H3", "H4", "H8"]
-effect = "none"
-value = 0
-style = "all"
-text = "+5 permanent Defence."
-
-[[node]]
-id = "F1"
-bit = 27
-size = "md"
-out = ["F11", "FA"]
-effect = "accuracy"
-value = 50
-style = "all"
-text = "+50% accuracy with all styles."
-
-[[node]]
-id = "F2"
-bit = 28
-size = "md"
-out = ["FB"]
-effect = "none"
-value = 0
-style = "all"
-text = "Demonic Pact healing can overheal up to +30% of base Hitpoints."
-
-[[node]]
-id = "F3"
-bit = 29
-size = "md"
-out = ["FC"]
-effect = "none"
-value = 0
-style = "all"
-text = "+30% Regenerate chance."
-
-[[node]]
-id = "F4"
-bit = 30
-size = "md"
-out = ["F12", "FD"]
-effect = "none"
-value = 0
-style = "all"
-text = "+15 permanent Defence."
-
-[[node]]
-id = "F5"
-bit = 31
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Powered staff/wand charge Regenerate also gives 1 water rune."
-
-[[node]]
-id = "F6"
-bit = 32
-size = "md"
-out = ["F5"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Powered staff/wand charge Regenerate also gives 1 air rune."
-
-[[node]]
-id = "F7"
-bit = 33
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Combat spells attack faster (minimum 2 ticks)."
-
-[[node]]
-id = "F8"
-bit = 34
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Powered staves attack 3 ticks faster; one-handed staff max hit -8."
-
-[[node]]
-id = "F9"
-bit = 35
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Powered staff/wand charge Regenerate also gives 1 earth rune."
-
-[[node]]
-id = "F10"
-bit = 36
-size = "md"
-out = ["F9"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Powered staff/wand charge Regenerate also gives 1 fire rune."
-
-[[node]]
-id = "F11"
-bit = 37
-size = "sm"
-out = ["BB"]
-effect = "none"
-value = 0
-style = "all"
-text = "+5 permanent Defence."
-
-[[node]]
-id = "F12"
-bit = 38
-size = "sm"
-out = ["BA", "F13"]
-effect = "none"
-value = 0
-style = "all"
-text = "+5 permanent Defence."
-
-[[node]]
-id = "F13"
-bit = 39
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "all"
-text = "Demonic Pact healing can overheal up to +30% of base Hitpoints."
-
-[[node]]
-id = "FA"
-bit = 40
-size = "sm"
-out = ["F6", "I1"]
-effect = "damage"
-value = 1
-style = "magic"
-text = "+1% Magic damage."
-
-[[node]]
-id = "FB"
-bit = 41
-size = "sm"
-out = ["F5", "F7", "F8", "I2"]
-effect = "damage"
-value = 1
-style = "magic"
-text = "+1% Magic damage."
-
-[[node]]
-id = "FC"
-bit = 42
-size = "sm"
-out = ["F10", "F7", "F8", "I3"]
-effect = "damage"
-value = 1
-style = "magic"
-text = "+1% Magic damage."
-
-[[node]]
-id = "FD"
-bit = 43
-size = "sm"
-out = ["F9", "I4"]
-effect = "damage"
-value = 1
-style = "magic"
-text = "+1% Magic damage."
-
-[[node]]
-id = "G1"
-bit = 44
-size = "md"
-out = ["G11", "GA"]
-effect = "reflect"
-value = 1
-style = "melee"
-text = "With a shield, 0.1% chance per Defence level to reflect all damage."
-
-[[node]]
-id = "G2"
-bit = 45
-size = "md"
-out = ["GB"]
-effect = "none"
-value = 0
-style = "all"
-text = "Special attacks have a 20% chance to use no energy."
-
-[[node]]
-id = "G3"
-bit = 46
-size = "md"
-out = ["GC"]
-effect = "accuracy"
-value = 50
-style = "all"
-text = "+50% accuracy with all styles."
-
-[[node]]
-id = "G4"
-bit = 47
-size = "md"
-out = ["G12"]
-effect = "spec_distance"
-value = 20
-style = "all"
-text = "Attacks from 2+ tiles away restore 2% special attack energy."
-
-[[node]]
-id = "G5"
-bit = 48
-size = "md"
-out = ["G6"]
-effect = "none"
-value = 0
-style = "melee"
-text = "Melee and Thorns: +10% chance to heal, scaling with distance."
-
-[[node]]
-id = "G6"
-bit = 49
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "melee"
-text = "Under-1kg or one-handed melee: +20% of Strength level as melee strength."
-
-[[node]]
-id = "G7"
-bit = 50
-size = "md"
-out = ["G8"]
-effect = "none"
-value = 0
-style = "melee"
-text = "Melee strength +50% of worn prayer bonus."
-
-[[node]]
-id = "G8"
-bit = 51
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "melee"
-text = "Melee can consume 5 overheal Hitpoints for +5 min hit."
-
-[[node]]
-id = "G9"
-bit = 52
-size = "md"
-out = ["G10"]
-effect = "none"
-value = 0
-style = "melee"
-text = "Two-handed hits: 5% chance for a bow/crossbow/thrown Ranged echo."
-
-[[node]]
-id = "G10"
-bit = 53
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "melee"
-text = "Melee and Thorns: +10% chance to heal, scaling with distance."
-
-[[node]]
-id = "G11"
-bit = 54
-size = "sm"
-out = ["BA"]
-effect = "none"
-value = 0
-style = "all"
-text = "+5 permanent Defence."
-
-[[node]]
-id = "G12"
-bit = 55
-size = "sm"
-out = ["BC"]
-effect = "none"
-value = 0
-style = "all"
-text = "+5 permanent Defence."
-
-[[node]]
-id = "GA"
-bit = 56
-size = "sm"
-out = ["G5", "J1"]
-effect = "damage"
-value = 1
-style = "melee"
-text = "+1% Melee damage."
-
-[[node]]
-id = "GB"
-bit = 57
-size = "sm"
-out = ["G6", "G7", "J2"]
-effect = "damage"
-value = 1
-style = "melee"
-text = "+1% Melee damage."
-
-[[node]]
-id = "GC"
-bit = 58
-size = "sm"
-out = ["G8", "G9", "J3"]
-effect = "damage"
-value = 1
-style = "melee"
-text = "+1% Melee damage."
-
-[[node]]
-id = "GD"
-bit = 59
-size = "sm"
-out = ["G10", "G4", "J4"]
-effect = "damage"
-value = 1
-style = "melee"
-text = "+1% Melee damage."
-
-[[node]]
-id = "H1"
-bit = 60
-size = "md"
-out = ["HA"]
-effect = "none"
-value = 0
-style = "ranged"
-text = "5% chance per attack to roll max accuracy, +5% per tile."
-
-[[node]]
-id = "H2"
-bit = 61
-size = "md"
-out = ["HB"]
-effect = "none"
-value = 0
-style = "all"
-text = "+30% Regenerate chance."
-
-[[node]]
-id = "H3"
-bit = 62
-size = "md"
-out = ["HC"]
-effect = "accuracy"
-value = 50
-style = "all"
-text = "+50% accuracy with all styles."
-
-[[node]]
-id = "H4"
-bit = 63
-size = "md"
-out = ["HD"]
-effect = "none"
-value = 0
-style = "all"
-text = "With an off-hand: +5 melee strength, +5 ranged strength, +2% Magic."
-
-[[node]]
-id = "H5"
-bit = 64
-size = "sm"
-out = ["BB", "H6"]
-effect = "none"
-value = 0
-style = "all"
-text = "+5 permanent Defence."
-
-[[node]]
-id = "H6"
-bit = 65
-size = "md"
-out = ["H7"]
-effect = "none"
-value = 0
-style = "all"
-text = "Max hit from 3+ tiles: next hit with a different style +25%."
-
-[[node]]
-id = "H7"
-bit = 66
-size = "sm"
-out = []
-effect = "prayer_penetration"
-value = 25
-style = "all"
-text = "+25% Prayer penetration (up to 100%)."
-
-[[node]]
-id = "H8"
-bit = 67
-size = "sm"
-out = ["BC", "H9"]
-effect = "none"
-value = 0
-style = "all"
-text = "+5 permanent Defence."
-
-[[node]]
-id = "H9"
-bit = 68
-size = "md"
-out = ["H10"]
-effect = "none"
-value = 0
-style = "all"
-text = "Demonic Pact healing can overheal up to +30% of base Hitpoints."
-
-[[node]]
-id = "H10"
-bit = 69
-size = "sm"
-out = []
-effect = "prayer_penetration"
-value = 25
-style = "all"
-text = "+25% Prayer penetration (up to 100%)."
-
-[[node]]
-id = "HA"
-bit = 70
-size = "sm"
-out = ["K1", "K4"]
-effect = "damage"
-value = 1
-style = "ranged"
-text = "+1% Ranged damage."
-
-[[node]]
-id = "HB"
-bit = 71
-size = "sm"
-out = ["K1", "K2", "K8"]
-effect = "damage"
-value = 1
-style = "ranged"
-text = "+1% Ranged damage."
-
-[[node]]
-id = "HC"
-bit = 72
-size = "sm"
-out = ["K2", "K3", "K8"]
-effect = "damage"
-value = 1
-style = "ranged"
-text = "+1% Ranged damage."
-
-[[node]]
-id = "HD"
-bit = 73
-size = "sm"
-out = ["K3", "K6"]
-effect = "damage"
-value = 1
-style = "ranged"
-text = "+1% Ranged damage."
-
-[[node]]
-id = "I1"
-bit = 74
-size = "md"
-out = ["I5", "IA"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Air spells +7% damage per active prayer."
-
-[[node]]
-id = "I2"
-bit = 75
-size = "md"
-out = ["IB"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Water spell damage scales with Hitpoints (+20% at full)."
-
-[[node]]
-id = "I3"
-bit = 76
-size = "md"
-out = ["IC"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Fire burns (6% max HP) grant a double damage bonus."
-
-[[node]]
-id = "I4"
-bit = 77
-size = "md"
-out = ["I7", "ID"]
-effect = "none"
-value = 0
-style = "magic"
-text = "Earth hits lower enemy Defence and Magic Defence by 2."
-
-[[node]]
-id = "I5"
-bit = 78
-size = "sm"
-out = ["I6"]
-effect = "prayer_penetration"
-value = 25
-style = "all"
-text = "+25% Prayer penetration (up to 100%)."
-
-[[node]]
-id = "I6"
-bit = 79
-size = "md"
-out = ["H7"]
-effect = "prayer_regen"
+size = 1
+out = ["node2", "node7"]
+effect = 8
 value = 15
-style = "all"
-text = "Regenerate 1 Prayer every 15 ticks without a protection prayer."
+text = "While a crossbow is equipped, you have a +15% chance to trigger Ranged echoes All crossbow weapon pacts will work with ballistae."
 
 [[node]]
-id = "I7"
-bit = 80
-size = "sm"
-out = []
-effect = "prayer_penetration"
+id = "node5"
+bit = 4
+size = 1
+out = ["node2", "node8"]
+effect = 10
+value = 20
+text = "While a thrown weapon is equipped, Ranged echoes have a 20% chance to max hit All thrown weapon pacts will work with an Eclipse Atlatl."
+
+[[node]]
+id = "node6"
+bit = 5
+size = 2
+out = ["node3", "node9", "node10", "node64"]
+effect = 13
+value = 5
+text = "+5 permanent Defence level boost."
+
+[[node]]
+id = "node7"
+bit = 6
+size = 2
+out = ["node4", "node10", "node11"]
+effect = 12
 value = 25
-style = "all"
-text = "+25% Prayer penetration (up to 100%)."
+text = "+25% accuracy in all combat styles."
 
 [[node]]
-id = "IA"
-bit = 81
-size = "sm"
-out = ["L1", "L5"]
-effect = "damage"
+id = "node8"
+bit = 7
+size = 2
+out = ["node5", "node11", "node12", "node99"]
+effect = 13
+value = 5
+text = "+5 permanent Defence level boost."
+
+[[node]]
+id = "node9"
+bit = 8
+size = 1
+out = ["node6", "node13"]
+effect = 57
 value = 1
-style = "magic"
-text = "+1% Magic damage."
+text = "You have a 5% chance per attack in any style to roll max accuracy, this is increased by 5% for each tile distance between you and your target."
 
 [[node]]
-id = "IB"
-bit = 82
-size = "sm"
-out = ["L2", "L6"]
-effect = "damage"
+id = "node10"
+bit = 9
+size = 1
+out = ["node6", "node7", "node15"]
+effect = 1
+value = 30
+text = "+30% chance to Regenerate runes, ammo and charges."
+
+[[node]]
+id = "node11"
+bit = 10
+size = 1
+out = ["node7", "node8", "node17"]
+effect = 12
+value = 50
+text = "+50% accuracy in all combat styles."
+
+[[node]]
+id = "node12"
+bit = 11
+size = 1
+out = ["node8", "node19"]
+effect = 16
 value = 1
-style = "magic"
-text = "+1% Magic damage."
+text = "While an off-hand item is equipped, gain +5 melee strength, +5 ranged strength and +2% magic damage."
 
 [[node]]
-id = "IC"
-bit = 83
-size = "sm"
-out = ["L3", "L7"]
-effect = "damage"
+id = "node13"
+bit = 12
+size = 2
+out = ["node9", "node14", "node20"]
+effect = 15
 value = 1
-style = "magic"
-text = "+1% Magic damage."
+text = "+1% Ranged damage. +10% accuracy in all combat styles."
 
 [[node]]
-id = "ID"
-bit = 84
-size = "sm"
-out = ["L4", "L8"]
-effect = "damage"
+id = "node14"
+bit = 13
+size = 1
+out = ["node13", "node15"]
+effect = 58
 value = 1
-style = "magic"
-text = "+1% Magic damage."
-
-[[node]]
-id = "J1"
-bit = 85
-size = "md"
-out = ["J7", "JA"]
-effect = "none"
-value = 0
-style = "melee"
-text = "Recoil and Thorns deal an extra 1% of total defence bonuses."
-
-[[node]]
-id = "J2"
-bit = 86
-size = "md"
-out = ["JB"]
-effect = "none"
-value = 0
-style = "melee"
-text = "Melee weapons under 1kg attack 1 tick faster."
-
-[[node]]
-id = "J3"
-bit = 87
-size = "md"
-out = ["JC"]
-effect = "none"
-value = 0
-style = "melee"
-text = "Blindbag chance +2% per unique heavy weapon (max 10%)."
-
-[[node]]
-id = "J4"
-bit = 88
-size = "md"
-out = ["J5", "JD"]
-effect = "max_hit_distance"
-value = 4
-style = "all"
-text = "Max hit +4%, plus 4% per 3 tiles of distance."
-
-[[node]]
-id = "J5"
-bit = 89
-size = "sm"
-out = ["J6"]
-effect = "prayer_penetration"
-value = 25
-style = "all"
-text = "+25% Prayer penetration (up to 100%)."
-
-[[node]]
-id = "J6"
-bit = 90
-size = "md"
-out = ["H10"]
-effect = "none"
-value = 0
-style = "all"
-text = "+30% Regenerate chance."
-
-[[node]]
-id = "J7"
-bit = 91
-size = "sm"
-out = ["I7", "J8"]
-effect = "prayer_penetration"
-value = 25
-style = "all"
-text = "+25% Prayer penetration (up to 100%)."
-
-[[node]]
-id = "J8"
-bit = 92
-size = "md"
-out = ["J9"]
-effect = "none"
-value = 0
-style = "all"
-text = "0-damage hits with a two-handed weapon or off-hand: heal 2, restore 2 Prayer."
-
-[[node]]
-id = "J9"
-bit = 93
-size = "sm"
-out = ["F13"]
-effect = "prayer_penetration"
-value = 25
-style = "all"
-text = "+25% Prayer penetration (up to 100%)."
-
-[[node]]
-id = "JA"
-bit = 94
-size = "sm"
-out = ["M1"]
-effect = "damage"
-value = 1
-style = "melee"
-text = "+1% Melee damage."
-
-[[node]]
-id = "JB"
-bit = 95
-size = "sm"
-out = ["M2"]
-effect = "damage"
-value = 1
-style = "melee"
-text = "+1% Melee damage."
-
-[[node]]
-id = "JC"
-bit = 96
-size = "sm"
-out = ["M3"]
-effect = "damage"
-value = 1
-style = "melee"
-text = "+1% Melee damage."
-
-[[node]]
-id = "JD"
-bit = 97
-size = "sm"
-out = ["M4"]
-effect = "damage"
-value = 1
-style = "melee"
-text = "+1% Melee damage."
-
-[[node]]
-id = "K1"
-bit = 98
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "ranged"
 text = "Ranged prayers are 30% more effective."
 
 [[node]]
-id = "K2"
-bit = 99
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "ranged"
-text = "Ranged strength +1 per 10 Hitpoints missing."
+id = "node15"
+bit = 14
+size = 2
+out = ["node10", "node14", "node16", "node21"]
+effect = 15
+value = 1
+text = "+1% Ranged damage. +10% accuracy in all combat styles."
 
 [[node]]
-id = "K3"
-bit = 100
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "ranged"
-text = "Ranged echoes can trigger echoes at half chance (up to 4)."
+id = "node16"
+bit = 15
+size = 1
+out = ["node15", "node17"]
+effect = 49
+value = 1
+text = "Ranged strength is increased by 1 for every 10 hitpoints difference between your current hitpoints and Hitpoints level."
 
 [[node]]
-id = "K4"
-bit = 101
-size = "md"
-out = ["K5", "KA"]
-effect = "none"
-value = 0
-style = "ranged"
-text = "Bows attack 1 tick faster."
+id = "node17"
+bit = 16
+size = 2
+out = ["node11", "node16", "node18", "node21"]
+effect = 15
+value = 1
+text = "+1% Ranged damage. +10% accuracy in all combat styles."
 
 [[node]]
-id = "K5"
-bit = 102
-size = "sm"
-out = ["I5"]
-effect = "prayer_penetration"
+id = "node18"
+bit = 17
+size = 1
+out = ["node17", "node19"]
+effect = 52
+value = 1
+text = "Ranged echoes can now trigger additional Ranged echoes at half your chance to trigger them (up to 4 times)."
+
+[[node]]
+id = "node19"
+bit = 18
+size = 2
+out = ["node12", "node18", "node22"]
+effect = 15
+value = 1
+text = "+1% Ranged damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node20"
+bit = 19
+size = 1
+out = ["node13", "node23", "node103"]
+effect = 53
+value = 1
+text = "Bows attack 1 tick (0.6s) faster."
+
+[[node]]
+id = "node21"
+bit = 20
+size = 1
+out = ["node15", "node17", "node24"]
+effect = 50
+value = 1
+text = "Crossbows attack 2 ticks (1.2s) slower, but deal +70% damage."
+
+[[node]]
+id = "node22"
+bit = 21
+size = 1
+out = ["node19", "node25", "node91"]
+effect = 17
+value = 1
+text = "While a thrown weapon is equipped, ranged strength is also increased by your 80% of your melee strength."
+
+[[node]]
+id = "node23"
+bit = 22
+size = 2
+out = ["node20", "node27", "node38"]
+effect = 15
+value = 1
+text = "+1% Ranged damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node24"
+bit = 23
+size = 2
+out = ["node21", "node30", "node38", "node39"]
+effect = 15
+value = 1
+text = "+1% Ranged damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node25"
+bit = 24
+size = 2
+out = ["node22", "node33", "node39"]
+effect = 15
+value = 1
+text = "+1% Ranged damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node26"
+bit = 25
+size = 3
+out = ["node27"]
+effect = 59
+value = 1
+text = "Hitting with a bow increases your bows minimum hit by 1, capping at 15% of your base maximum hit. This bonus is halved when you take damage that you didn't or couldn't pray against."
+
+[[node]]
+id = "node27"
+bit = 26
+size = 2
+out = ["node23", "node26", "node28"]
+effect = 15
+value = 1
+text = "+1% Ranged damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node28"
+bit = 27
+size = 3
+out = ["node27"]
+effect = 60
+value = 1
+text = "Hitting with a bow increases your bows maximum hit by 1, capping at 15% of your base maximum hit. This bonus is halved when you take damage that you didn't or couldn't pray against."
+
+[[node]]
+id = "node29"
+bit = 28
+size = 3
+out = ["node30"]
+effect = 51
+value = 1
+text = "Crossbow hits always max hit."
+
+[[node]]
+id = "node30"
+bit = 29
+size = 2
+out = ["node24", "node29", "node31"]
+effect = 15
+value = 1
+text = "+1% Ranged damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node31"
+bit = 30
+size = 3
+out = ["node30"]
+effect = 82
+value = 1
+text = "Crossbows attacks roll accuracy twice."
+
+[[node]]
+id = "node32"
+bit = 31
+size = 3
+out = ["node33"]
+effect = 55
+value = 60
+text = "While a thrown weapon is equipped, increase your ranged accuracy by 60."
+
+[[node]]
+id = "node33"
+bit = 32
+size = 2
+out = ["node25", "node32", "node34"]
+effect = 15
+value = 1
+text = "+1% Ranged damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node34"
+bit = 33
+size = 3
+out = ["node33"]
+effect = 56
+value = 1
+text = "When attacking with a thrown weapon, you now throw at an additional nearby target."
+
+[[node]]
+id = "node38"
+bit = 34
+size = 1
+out = ["node23", "node24"]
+effect = 11
+value = 5
+text = "Whenever you Regenerate ammo, you have a +5% chance to fire a Ranged echo against the enemy. Ranged echo: An additional ranged attack which rolls with your ranged accuracy against the targets ranged defence. Echo attacks cannot trigger additional echo attacks and will not trigger on special attacks."
+
+[[node]]
+id = "node39"
+bit = 35
+size = 1
+out = ["node24", "node25"]
+effect = 11
+value = 5
+text = "Whenever you Regenerate ammo, you have a +5% chance to fire a Ranged echo against the enemy. Ranged echo: An additional ranged attack which rolls with your ranged accuracy against the targets ranged defence. Echo attacks cannot trigger additional echo attacks and will not trigger on special attacks."
+
+[[node]]
+id = "node43"
+bit = 36
+size = 1
+out = ["node74", "node83"]
+effect = 20
+value = 2
+text = "Melee range is doubled whilst using two handed weapons."
+
+[[node]]
+id = "node44"
+bit = 37
+size = 1
+out = ["node1", "node45", "node46", "node47", "node48"]
+effect = 78
+value = 10
+text = "Whenever your combat spells Regenerate runes, your Magic level is boosted by 1 for 30 ticks (18s). This boost cannot exceed 10 Magic levels and additional triggers reset the duration."
+
+[[node]]
+id = "node45"
+bit = 38
+size = 1
+out = ["node44", "node55"]
+effect = 3
+value = 15
+text = "Whenever your combat spells Regenerate air runes, you have a 15% chance to restore 1 prayer point per rune regenerated."
+
+[[node]]
+id = "node46"
+bit = 39
+size = 1
+out = ["node44", "node56"]
+effect = 4
+value = 1
+text = "Whenever your combat spells Regenerate water runes, you're healed for 1 per rune regenerated."
+
+[[node]]
+id = "node47"
+bit = 40
+size = 1
+out = ["node44", "node56"]
+effect = 5
+value = 1
+text = "Whenever your combat spells Regenerate fire runes, the damage of your next spell hit is increased by 1 per rune regenerated."
+
+[[node]]
+id = "node48"
+bit = 41
+size = 1
+out = ["node44", "node57"]
+effect = 6
+value = 1
+text = "Whenever your combat spells Regenerate earth runes, your Defence level is boosted by 1 per rune regenerated for 30 ticks (18s). This boost cannot exceed 20% of your base Defence level and additional triggers reset the duration."
+
+[[node]]
+id = "node53"
+bit = 42
+size = 1
+out = ["node68", "node166"]
+effect = 35
+value = 1
+text = "Whenever you Regenerate charges from a powered staff or wand, also Regenerate 1 water rune."
+
+[[node]]
+id = "node54"
+bit = 43
+size = 1
+out = ["node69", "node167"]
+effect = 36
+value = 1
+text = "Whenever you Regenerate charges from a powered staff or wand, also Regenerate 1 fire rune."
+
+[[node]]
+id = "node55"
+bit = 44
+size = 2
+out = ["node45", "node58", "node59"]
+effect = 12
 value = 25
-style = "all"
-text = "+25% Prayer penetration (up to 100%)."
+text = "+25% accuracy in all combat styles."
 
 [[node]]
-id = "K6"
-bit = 103
-size = "md"
-out = ["K7", "KC"]
-effect = "none"
-value = 0
-style = "ranged"
-text = "Thrown weapons: ranged strength +80% of melee strength."
-
-[[node]]
-id = "K7"
-bit = 104
-size = "sm"
-out = ["J5"]
-effect = "prayer_penetration"
+id = "node56"
+bit = 45
+size = 2
+out = ["node46", "node47", "node59", "node60"]
+effect = 12
 value = 25
-style = "all"
-text = "+25% Prayer penetration (up to 100%)."
+text = "+25% accuracy in all combat styles."
 
 [[node]]
-id = "K8"
-bit = 105
-size = "md"
-out = ["KB"]
-effect = "none"
-value = 0
-style = "ranged"
-text = "Crossbows attack 2 ticks slower but deal +70% damage."
+id = "node57"
+bit = 46
+size = 2
+out = ["node48", "node60", "node61"]
+effect = 12
+value = 25
+text = "+25% accuracy in all combat styles."
 
 [[node]]
-id = "K9"
-bit = 106
-size = "md"
-out = ["KA", "KB"]
-effect = "none"
-value = 0
-style = "ranged"
-text = "Ammunition Regenerate: +5% Ranged echo chance."
+id = "node58"
+bit = 47
+size = 1
+out = ["node55", "node63", "node67"]
+effect = 12
+value = 50
+text = "+50% accuracy in all combat styles."
 
 [[node]]
-id = "K10"
-bit = 107
-size = "md"
-out = ["KB", "KC"]
-effect = "none"
-value = 0
-style = "ranged"
-text = "Ammunition Regenerate: +5% Ranged echo chance."
+id = "node59"
+bit = 48
+size = 1
+out = ["node55", "node56", "node68"]
+effect = 18
+value = 30
+text = "Healing with Demonic Pacts overheals you, up to +30% of your base Hitpoints level."
 
 [[node]]
-id = "KA"
-bit = 108
-size = "sm"
-out = ["N1"]
-effect = "damage"
+id = "node60"
+bit = 49
+size = 1
+out = ["node56", "node57", "node69"]
+effect = 1
+value = 30
+text = "+30% chance to Regenerate runes, ammo and charges."
+
+[[node]]
+id = "node61"
+bit = 50
+size = 1
+out = ["node57", "node70", "node94"]
+effect = 13
+value = 15
+text = "+15 permanent Defence level boost."
+
+[[node]]
+id = "node62"
+bit = 51
+size = 2
+out = ["node1", "node63", "node64"]
+effect = 1
+value = 5
+text = "+5% chance to Regenerate runes, ammo and charges."
+
+[[node]]
+id = "node63"
+bit = 52
+size = 2
+out = ["node58", "node62"]
+effect = 13
+value = 5
+text = "+5 permanent Defence level boost."
+
+[[node]]
+id = "node64"
+bit = 53
+size = 2
+out = ["node6", "node62", "node65"]
+effect = 13
+value = 5
+text = "+5 permanent Defence level boost."
+
+[[node]]
+id = "node65"
+bit = 54
+size = 1
+out = ["node64", "node66"]
+effect = 76
 value = 1
-style = "ranged"
-text = "+1% Ranged damage."
+text = "Whenever you max hit from at least 3 tiles away, your next hit from a different style deals +25% damage."
 
 [[node]]
-id = "KB"
-bit = 109
-size = "sm"
-out = ["N2"]
-effect = "damage"
+id = "node66"
+bit = 55
+size = 2
+out = ["node65", "node102"]
+effect = 40
+value = 25
+text = "All attacks have +25% Prayer penetration (up to 100%)."
+
+[[node]]
+id = "node67"
+bit = 56
+size = 2
+out = ["node58", "node107", "node166"]
+effect = 7
 value = 1
-style = "ranged"
-text = "+1% Ranged damage."
+text = "+1% Magic damage This bonus is multiplied by the Tumeken's Shadow special effect. +10% accuracy in all combat styles."
 
 [[node]]
-id = "KC"
-bit = 110
-size = "sm"
-out = ["N3"]
-effect = "damage"
+id = "node68"
+bit = 57
+size = 2
+out = ["node53", "node59", "node112", "node122", "node133"]
+effect = 7
 value = 1
-style = "ranged"
-text = "+1% Ranged damage."
+text = "+1% Magic damage This bonus is multiplied by the Tumeken's Shadow special effect. +10% accuracy in all combat styles."
 
 [[node]]
-id = "L1"
-bit = 111
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Air spells: +1% chance to max hit per prayer bonus (doubled vs air-weak)."
+id = "node69"
+bit = 58
+size = 2
+out = ["node54", "node60", "node117", "node133", "node122"]
+effect = 7
+value = 1
+text = "+1% Magic damage This bonus is multiplied by the Tumeken's Shadow special effect. +10% accuracy in all combat styles."
 
 [[node]]
-id = "L2"
-bit = 112
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Water hits bounce back and heal 60% of the damage."
+id = "node70"
+bit = 59
+size = 2
+out = ["node61", "node127", "node167"]
+effect = 7
+value = 1
+text = "+1% Magic damage This bonus is multiplied by the Tumeken's Shadow special effect. +10% accuracy in all combat styles."
 
 [[node]]
-id = "L3"
-bit = 113
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Fire hits apply burn (max 5) and bounce to 2 targets."
+id = "node71"
+bit = 60
+size = 1
+out = ["node74", "node81"]
+effect = 19
+value = 3
+text = "While you have a shield equipped you gain the Thorns effect Thorns: Whenever you're attacked enemies will be instantly hit with 3 melee damage. This effect can only trigger once per hit-splat and will trigger if you take 0 damage. Other pacts will specify if they effect Thorns."
 
 [[node]]
-id = "L4"
-bit = 114
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Earth spells gain flat damage from Defence level."
+id = "node72"
+bit = 61
+size = 1
+out = ["node74", "node82"]
+effect = 43
+value = 1
+text = "Melee weapons under 1kg always trigger an additional melee hit using 40% of your base max hit (minimum of 1) This will not trigger on special attacks."
 
 [[node]]
-id = "L5"
-bit = 115
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Smoke spells count as air spells."
+id = "node73"
+bit = 62
+size = 1
+out = ["node74", "node82"]
+effect = 44
+value = 15
+text = "Each melee attack with a heavy melee weapon (>=1kg) has a 15% chance to trigger an instant Blindbag attack. Blindbag: Automatically attack your current target with a random heavy melee weapon in your inventory as though you have equipped it, ignoring all stat requirements and attack delay. Blindbag attacks can trigger additional Blindbag attacks but cannot trigger from special attacks."
 
 [[node]]
-id = "L6"
-bit = 116
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Ice spells count as water spells."
+id = "node74"
+bit = 63
+size = 1
+out = ["node1", "node71", "node72", "node73", "node43"]
+effect = 25
+value = 3
+text = "Your minimum hit when attacking with a melee weapon is increased by 3. This minimum hit is further increased by 3 for each additional tile between you and the target."
 
 [[node]]
-id = "L7"
-bit = 117
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Blood spells count as fire spells."
+id = "node79"
+bit = 64
+size = 1
+out = ["node146", "node163"]
+effect = 77
+value = 1
+text = "Melee weapons that are under 1kg or one handed, increase your melee strength by 20% of your Strength level."
 
 [[node]]
-id = "L8"
-bit = 118
-size = "md"
-out = []
-effect = "none"
-value = 0
-style = "magic"
-text = "Shadow spells count as earth spells."
+id = "node80"
+bit = 65
+size = 1
+out = ["node156", "node157"]
+effect = 26
+value = 10
+text = "Attacking with a melee weapon or Thorns has a +10% chance to heal you based off your distance between you and your target (1 tile = 1 health)."
 
 [[node]]
-id = "M1"
-bit = 119
-size = "lg"
-out = []
-effect = "thorns_double"
-value = 0
-style = "melee"
-text = "Thorns always hits twice; the second hit deals 50%."
+id = "node81"
+bit = 66
+size = 2
+out = ["node71", "node84", "node85"]
+effect = 13
+value = 5
+text = "+5 permanent Defence level boost."
 
 [[node]]
-id = "M2"
-bit = 120
-size = "lg"
-out = []
-effect = "spec_on_melee"
+id = "node82"
+bit = 67
+size = 2
+out = ["node72", "node73", "node85", "node86"]
+effect = 12
+value = 25
+text = "+25% accuracy in all combat styles."
+
+[[node]]
+id = "node83"
+bit = 68
+size = 2
+out = ["node43", "node86", "node88"]
+effect = 12
+value = 25
+text = "+25% accuracy in all combat styles."
+
+[[node]]
+id = "node84"
+bit = 69
+size = 1
+out = ["node81", "node95", "node145"]
+effect = 23
+value = 1
+text = "While you have a shield equipped, you have a 0.1% chance per Defence level to reflect all damage back to the attacker."
+
+[[node]]
+id = "node85"
+bit = 70
+size = 1
+out = ["node81", "node82", "node163"]
+effect = 24
 value = 20
-style = "melee"
-text = "Melee damage restores 2% special attack energy per hit."
+text = "Special attacks have a 20% chance to not consume any energy."
 
 [[node]]
-id = "M3"
+id = "node86"
+bit = 71
+size = 1
+out = ["node82", "node83", "node161"]
+effect = 12
+value = 50
+text = "+50% accuracy in all combat styles."
+
+[[node]]
+id = "node87"
+bit = 72
+size = 1
+out = ["node101", "node164"]
+effect = 1
+value = 30
+text = "+30% chance to Regenerate runes, ammo and charges."
+
+[[node]]
+id = "node88"
+bit = 73
+size = 1
+out = ["node83", "node98", "node156"]
+effect = 62
+value = 1
+text = "Whenever you attack an enemy from at least 2 tiles away with any style, you restore 2% special attack energy."
+
+[[node]]
+id = "node91"
+bit = 74
+size = 2
+out = ["node22", "node164"]
+effect = 40
+value = 25
+text = "All attacks have +25% Prayer penetration (up to 100%)."
+
+[[node]]
+id = "node92"
+bit = 75
+size = 2
+out = ["node1", "node94", "node95"]
+effect = 1
+value = 5
+text = "+5% chance to Regenerate runes, ammo and charges."
+
+[[node]]
+id = "node93"
+bit = 76
+size = 2
+out = ["node1", "node98", "node99"]
+effect = 1
+value = 5
+text = "+5% chance to Regenerate runes, ammo and charges."
+
+[[node]]
+id = "node94"
+bit = 77
+size = 2
+out = ["node61", "node92", "node96"]
+effect = 13
+value = 5
+text = "+5 permanent Defence level boost."
+
+[[node]]
+id = "node95"
+bit = 78
+size = 2
+out = ["node84", "node92"]
+effect = 13
+value = 5
+text = "+5 permanent Defence level boost."
+
+[[node]]
+id = "node96"
+bit = 79
+size = 1
+out = ["node94", "node97"]
+effect = 18
+value = 30
+text = "Healing with Demonic Pacts overheals you, up to +30% of your base Hitpoints level."
+
+[[node]]
+id = "node97"
+bit = 80
+size = 2
+out = ["node96", "node135"]
+effect = 40
+value = 25
+text = "All attacks have +25% Prayer penetration (up to 100%)."
+
+[[node]]
+id = "node98"
+bit = 81
+size = 2
+out = ["node88", "node93"]
+effect = 13
+value = 5
+text = "+5 permanent Defence level boost."
+
+[[node]]
+id = "node99"
+bit = 82
+size = 2
+out = ["node8", "node93", "node100"]
+effect = 13
+value = 5
+text = "+5 permanent Defence level boost."
+
+[[node]]
+id = "node100"
+bit = 83
+size = 1
+out = ["node99", "node101"]
+effect = 18
+value = 30
+text = "Healing with Demonic Pacts overheals you, up to +30% of your base Hitpoints level."
+
+[[node]]
+id = "node101"
+bit = 84
+size = 2
+out = ["node100", "node87"]
+effect = 40
+value = 25
+text = "All attacks have +25% Prayer penetration (up to 100%)."
+
+[[node]]
+id = "node102"
+bit = 85
+size = 1
+out = ["node66", "node106"]
+effect = 61
+value = 1
+text = "While protection prayers are not active, you restore 1 Prayer point every 15 ticks (9s), this is sped up by 1 tick (0.6s) for every 7 worn prayer bonus you have."
+
+[[node]]
+id = "node103"
+bit = 86
+size = 2
+out = ["node20", "node106"]
+effect = 40
+value = 25
+text = "All attacks have +25% Prayer penetration (up to 100%)."
+
+[[node]]
+id = "node106"
+bit = 87
+size = 2
+out = ["node102", "node103", "node107"]
+effect = 40
+value = 25
+text = "All attacks have +25% Prayer penetration (up to 100%)."
+
+[[node]]
+id = "node107"
+bit = 88
+size = 1
+out = ["node106", "node67", "node108"]
+effect = 83
+value = 7
+text = "Air spells deal +7% damage for each active prayer."
+
+[[node]]
+id = "node108"
+bit = 89
+size = 2
+out = ["node107", "node109", "node111"]
+effect = 7
+value = 1
+text = "+1% Magic damage This bonus is multiplied by the Tumeken's Shadow special effect. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node109"
+bit = 90
+size = 3
+out = ["node108"]
+effect = 30
+value = 1
+text = "Air spells have a +1% chance to max hit for every 1 prayer bonus, this chance is doubled against enemies weak to air spells."
+
+[[node]]
+id = "node111"
+bit = 91
+size = 1
+out = ["node108"]
+effect = 45
+value = 1
+text = "Smoke spells now count as 'air' spells."
+
+[[node]]
+id = "node112"
+bit = 92
+size = 1
+out = ["node68", "node113"]
+effect = 29
+value = 1
+text = "Water spells deal increased damage the higher health percentage you have (+20% damage at 100% health)."
+
+[[node]]
+id = "node113"
+bit = 93
+size = 2
+out = ["node112", "node114", "node123"]
+effect = 7
+value = 1
+text = "+1% Magic damage This bonus is multiplied by the Tumeken's Shadow special effect. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node114"
+bit = 94
+size = 3
+out = ["node113"]
+effect = 31
+value = 1
+text = "Water spell hits bounce back to you, healing you for the 60% of the damage dealt to your target."
+
+[[node]]
+id = "node117"
+bit = 95
+size = 1
+out = ["node69", "node118"]
+effect = 32
+value = 1
+text = "Fire spell casts burn up to 6% of your maximum Hitpoints to increase your damage dealt by double the amount burned for. This effect cannot kill you directly."
+
+[[node]]
+id = "node118"
+bit = 96
+size = 2
+out = ["node117", "node119", "node124"]
+effect = 7
+value = 1
+text = "+1% Magic damage This bonus is multiplied by the Tumeken's Shadow special effect. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node119"
+bit = 97
+size = 3
+out = ["node118"]
+effect = 33
+value = 1
+text = "Fire spell hits apply 1 burn (max 5) and bounce to up to 2 nearby targets."
+
+[[node]]
+id = "node122"
+bit = 98
+size = 1
+out = ["node68", "node69"]
+effect = 34
+value = 2
+text = "Attack rate with combat spells in a spellbook is sped up by 2 ticks. This cannot reduce attack rate below 2 ticks (1.2s)."
+
+[[node]]
+id = "node123"
+bit = 99
+size = 1
+out = ["node113"]
+effect = 46
+value = 1
+text = "Ice spells now count as 'water' spells."
+
+[[node]]
+id = "node124"
+bit = 100
+size = 1
+out = ["node118"]
+effect = 47
+value = 1
+text = "Blood spells now count as 'fire' spells."
+
+[[node]]
+id = "node127"
+bit = 101
+size = 1
+out = ["node70", "node128", "node134"]
+effect = 42
+value = 1
+text = "Earth spell hits reduce the enemies Defence & Magic Defence levels by 2."
+
+[[node]]
+id = "node128"
+bit = 102
+size = 2
+out = ["node127", "node129", "node131"]
+effect = 7
+value = 1
+text = "+1% Magic damage This bonus is multiplied by the Tumeken's Shadow special effect. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node129"
+bit = 103
+size = 3
+out = ["node128"]
+effect = 41
+value = 12
+text = "Earth spells deal additional flat damage based on your current Defence level (+1 damage per 12 Defence levels)."
+
+[[node]]
+id = "node131"
+bit = 104
+size = 1
+out = ["node128"]
+effect = 48
+value = 1
+text = "Shadow spells, now count as 'earth' spells."
+
+[[node]]
+id = "node133"
+bit = 105
+size = 1
+out = ["node69", "node68"]
+effect = 81
+value = 3
+text = "Attack rate with powered staves is sped up by 3 ticks. All one handed powered staves have their max hit reduced by 8 This cannot reduce attack rate below 1 tick (0.6s)."
+
+[[node]]
+id = "node134"
+bit = 106
+size = 2
+out = ["node127", "node136"]
+effect = 40
+value = 25
+text = "All attacks have +25% Prayer penetration (up to 100%)."
+
+[[node]]
+id = "node135"
+bit = 107
+size = 1
+out = ["node97", "node136"]
+effect = 75
+value = 1
+text = "Whenever an attack deals 0 damage to you while either a two-handed shield or an off-hand is equipped, you're healed for 2 and restore 2 prayer points."
+
+[[node]]
+id = "node136"
+bit = 108
+size = 2
+out = ["node134", "node135", "node139"]
+effect = 40
+value = 25
+text = "All attacks have +25% Prayer penetration (up to 100%)."
+
+[[node]]
+id = "node139"
+bit = 109
+size = 1
+out = ["node136", "node140", "node145"]
+effect = 64
+value = 1
+text = "All recoil & Thorns style effects deal additional damage equal to 1% of your total defence bonuses."
+
+[[node]]
+id = "node140"
+bit = 110
+size = 2
+out = ["node139", "node141"]
+effect = 14
+value = 1
+text = "+1% Melee damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node141"
+bit = 111
+size = 3
+out = ["node140"]
+effect = 84
+value = 1
+text = "When the Thorns effect triggers, it will always hit twice, dealing 50% of its damage in the second hit."
+
+[[node]]
+id = "node142"
+bit = 112
+size = 1
+out = ["node143", "node163"]
+effect = 65
+value = 1
+text = "Melee weapons under 1kg attack 1 tick (0.6s) faster."
+
+[[node]]
+id = "node143"
+bit = 113
+size = 2
+out = ["node142", "node144"]
+effect = 14
+value = 1
+text = "+1% Melee damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node144"
+bit = 114
+size = 3
+out = ["node143"]
+effect = 66
+value = 2
+text = "Whenever you deal damage with a melee weapon, you restore 2% special attack energy per hit."
+
+[[node]]
+id = "node145"
+bit = 115
+size = 2
+out = ["node84", "node139", "node146"]
+effect = 14
+value = 1
+text = "+1% Melee damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node146"
+bit = 116
+size = 1
+out = ["node79", "node145"]
+effect = 26
+value = 10
+text = "Attacking with a melee weapon or Thorns has a +10% chance to heal you based off your distance between you and your target (1 tile = 1 health)."
+
+[[node]]
+id = "node150"
+bit = 117
+size = 1
+out = ["node151", "node161"]
+effect = 72
+value = 1
+text = "For each unique heavy melee weapon (>=1kg) in your inventory, your chance of a Blindbag trigger is increased by 2% up to a maximum of 10% (5 weapons)."
+
+[[node]]
+id = "node151"
+bit = 118
+size = 2
+out = ["node150", "node152"]
+effect = 14
+value = 1
+text = "+1% Melee damage. +10% accuracy in all combat styles."
+
+[[node]]
+id = "node152"
+bit = 119
+size = 3
+out = ["node151"]
+effect = 68
+value = 2
+text = "For each unique heavy melee weapon (>=1kg) in your inventory, the max hit of your Blindbag attacks is increased by 2% up to a maximum of 10% (5 weapons)."
+
+[[node]]
+id = "node153"
+bit = 120
+size = 1
+out = ["node154", "node156", "node164"]
+effect = 70
+value = 4
+text = "Your maximum hit when attacking with a melee weapon is increased by 4% and an additional 4% for every 3 tiles of distance between you and your target."
+
+[[node]]
+id = "node154"
 bit = 121
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "melee"
-text = "Blindbag max hit +% per unique heavy weapon (max 10%)."
+size = 2
+out = ["node153", "node155"]
+effect = 14
+value = 1
+text = "+1% Melee damage. +10% accuracy in all combat styles."
 
 [[node]]
-id = "M4"
+id = "node155"
 bit = 122
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "melee"
-text = "Melee range of 4+ becomes 7; slow halberds attack every 5 ticks."
+size = 3
+out = ["node154"]
+effect = 69
+value = 1
+text = "If your melee attack range is at least 4, it is increased to 7 All halberds slower than 5 ticks have their attack rate set to 5 ticks (3.0s)."
 
 [[node]]
-id = "N1"
+id = "node156"
 bit = 123
-size = "sm"
-out = ["N4", "N5"]
-effect = "damage"
+size = 2
+out = ["node80", "node88", "node153"]
+effect = 14
 value = 1
-style = "ranged"
-text = "+1% Ranged damage."
+text = "+1% Melee damage. +10% accuracy in all combat styles."
 
 [[node]]
-id = "N2"
+id = "node157"
 bit = 124
-size = "sm"
-out = ["N6", "N7"]
-effect = "damage"
+size = 1
+out = ["node80", "node161"]
+effect = 71
 value = 1
-style = "ranged"
-text = "+1% Ranged damage."
+text = "When hitting a target with a two handed melee weapon, you have a 5% chance to trigger a Ranged echo as if you have a bow, crossbow and thrown weapon equipped. Ranged echo: An additional ranged attack which rolls with your melee stats instead of ranged. Echo attacks cannot trigger additional echo attacks and will not trigger on special attacks."
 
 [[node]]
-id = "N3"
+id = "node161"
 bit = 125
-size = "sm"
-out = ["N8", "N9"]
-effect = "damage"
+size = 2
+out = ["node86", "node150", "node157", "node165"]
+effect = 14
 value = 1
-style = "ranged"
-text = "+1% Ranged damage."
+text = "+1% Melee damage. +10% accuracy in all combat styles."
 
 [[node]]
-id = "N4"
+id = "node162"
 bit = 126
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "ranged"
-text = "Bow min hit +1 per hit (capped at 15% of max hit)."
+size = 1
+out = ["node163", "node165"]
+effect = 73
+value = 1
+text = "Melee strength is increased by 50% of your worn prayer bonus."
 
 [[node]]
-id = "N5"
+id = "node163"
 bit = 127
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "ranged"
-text = "Bow max hit +1 per hit (capped at 15% of max hit)."
+size = 2
+out = ["node79", "node85", "node142", "node162"]
+effect = 14
+value = 1
+text = "+1% Melee damage. +10% accuracy in all combat styles."
 
 [[node]]
-id = "N6"
+id = "node164"
 bit = 128
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "ranged"
-text = "Crossbow hits always max."
+size = 2
+out = ["node87", "node91", "node153"]
+effect = 40
+value = 25
+text = "All attacks have +25% Prayer penetration (up to 100%)."
 
 [[node]]
-id = "N7"
+id = "node165"
 bit = 129
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "ranged"
-text = "Crossbow accuracy rolls twice."
+size = 1
+out = ["node161", "node162"]
+effect = 67
+value = 1
+text = "Attacks with a melee weapon can consume 5 overhealed hitpoints (if available), increasing your minimum hit on that attack by 5."
 
 [[node]]
-id = "N8"
+id = "node166"
 bit = 130
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "ranged"
-text = "Thrown weapons: +60 ranged accuracy."
+size = 1
+out = ["node67", "node53"]
+effect = 79
+value = 1
+text = "Whenever you Regenerate charges from a powered staff or wand, also Regenerate 1 air rune."
 
 [[node]]
-id = "N9"
+id = "node167"
 bit = 131
-size = "lg"
-out = []
-effect = "none"
-value = 0
-style = "ranged"
-text = "Thrown weapons hit an additional nearby target."
+size = 1
+out = ["node54", "node70"]
+effect = 80
+value = 1
+text = "Whenever you Regenerate charges from a powered staff or wand, also Regenerate 1 earth rune."

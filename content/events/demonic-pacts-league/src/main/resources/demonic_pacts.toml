@@ -23,7 +23,7 @@ master_points = 400
 starting_pact_points = 2
 max_pact_points_earned = 44
 max_pacts_spent = 40
-max_pact_resets = 6
+starting_pact_resets = 6
 
 # The official league has far more pact tasks than the starter task list here, so every N completed
 # tasks also award a pact point. Set to 0 to turn this off.
@@ -35,3 +35,7 @@ region_task_thresholds = [200, 300, 450]
 
 # Set false to let league players walk anywhere.
 region_lock = true
+
+# Port for this world's jav_config.ws and world_list.ws, which mark it as a league world so the
+# client shows its league interfaces. Point RSProx at http://127.0.0.1:<port>/jav_config.ws.
+web_port = 8081

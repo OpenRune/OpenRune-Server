@@ -23,7 +23,8 @@ data class LeagueSettings(
     @param:JsonProperty("starting_pact_points") val startingPactPoints: Int = 2,
     @param:JsonProperty("max_pact_points_earned") val maxPactPointsEarned: Int = 44,
     @param:JsonProperty("max_pacts_spent") val maxPactsSpent: Int = 40,
-    @param:JsonProperty("max_pact_resets") val maxPactResets: Int = 6,
+    @param:JsonProperty("starting_pact_resets") val startingPactResets: Int = 6,
+    @param:JsonProperty("web_port") val webPort: Int = 8081,
     @param:JsonProperty("bonus_pact_point_every_tasks") val bonusPactPointEveryTasks: Int = 10,
     @param:JsonProperty("karamja_tasks") val karamjaTasks: Int = 80,
     @param:JsonProperty("region_task_thresholds")
@@ -58,16 +59,22 @@ private const val VIEW_MARGIN = 56
 data class PactNode(
     @param:JsonProperty("id") val id: String,
     @param:JsonProperty("bit") val bit: Int,
-    @param:JsonProperty("size") val size: String = "sm",
+    @param:JsonProperty("size") val size: Int = 1,
     @param:JsonProperty("out") val out: List<String> = emptyList(),
-    @param:JsonProperty("effect") val effect: String = "none",
+    @param:JsonProperty("effect") val effect: Int = 0,
     @param:JsonProperty("value") val value: Int = 0,
-    @param:JsonProperty("style") val style: String = "all",
     @param:JsonProperty("text") val text: String = "",
 ) {
     val isImplemented: Boolean
-        get() = effect != "none"
+        get() = effect in PactEffectIds.IMPLEMENTED
 }
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class PactEffectVarbit(
+    @param:JsonProperty("id") val id: Int,
+    @param:JsonProperty("varbit") val varbit: String,
+    @param:JsonProperty("max") val max: Int,
+)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class LeagueRegion(
@@ -97,6 +104,11 @@ data class LeagueTask(
 internal data class PactTreeFile(@param:JsonProperty("node") val nodes: List<PactNode> = emptyList())
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+internal data class EffectFile(
+    @param:JsonProperty("effect") val effects: List<PactEffectVarbit> = emptyList()
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 internal data class RegionFile(
     @param:JsonProperty("region") val regions: List<LeagueRegion> = emptyList()
 )
@@ -105,7 +117,7 @@ internal data class RegionFile(
 internal data class TaskFile(@param:JsonProperty("task") val tasks: List<LeagueTask> = emptyList())
 
 object DemonicPactsData {
-    const val MAX_PACT_BITS: Int = 160
+    const val MAX_PACT_BITS: Int = 192
     const val MAX_TASK_BITS: Int = 256
 
     private val mapper: ObjectMapper = ObjectMapper(TomlFactory()).registerKotlinModule()
@@ -117,6 +129,18 @@ object DemonicPactsData {
     }
 
     val nodesById: Map<String, PactNode> by lazy { nodes.associateBy { it.id.uppercase() } }
+
+    val nodesByBit: Map<Int, PactNode> by lazy { nodes.associateBy { it.bit } }
+
+    val effectVarbits: List<PactEffectVarbit> by lazy {
+        read<EffectFile>("demonic_pacts_effects.toml").effects
+    }
+
+    /** A node by its cache name, with or without the prefix: `node12` or `12`. */
+    fun findNode(key: String): PactNode? {
+        val trimmed = key.trim().uppercase()
+        return nodesById[trimmed] ?: nodesById["NODE$trimmed"]
+    }
 
     /** Undirected: a node can be bought next to any owned node, in either direction. */
     val neighbours: Map<String, Set<String>> by lazy {
@@ -130,7 +154,7 @@ object DemonicPactsData {
         map
     }
 
-    val root: PactNode by lazy { nodes.first() }
+    val root: PactNode by lazy { nodes.first { it.bit == 0 } }
 
     val regions: List<LeagueRegion> by lazy {
         read<RegionFile>("demonic_pacts_regions.toml").regions.also { validateRegions(it) }
@@ -148,7 +172,7 @@ object DemonicPactsData {
         require(ids.size == ids.toSet().size) { "Duplicate pact node ids." }
         val bits = nodes.map { it.bit }
         require(bits.size == bits.toSet().size) { "Duplicate pact node bits." }
-        require(bits.all { it in 0 until MAX_PACT_BITS }) { "Pact bits must be 0-159." }
+        require(bits.all { it in 0 until MAX_PACT_BITS }) { "Pact bits must be 0-191." }
         val known = ids.toSet()
         for (node in nodes) {
             for (target in node.out) {
@@ -182,4 +206,40 @@ object DemonicPactsData {
                 ?: error("Missing Demonic Pacts resource: $resource")
         return stream.use { mapper.readValue<T>(it) }
     }
+}
+
+/** Cache effect ids (talent_effect_value) the server implements. */
+object PactEffectIds {
+    const val MAGIC_DAMAGE: Int = 7
+    const val ALL_STYLE_ACCURACY: Int = 12
+    const val DEFENCE_BOOST: Int = 13
+    const val MELEE_DAMAGE: Int = 14
+    const val RANGED_DAMAGE: Int = 15
+    const val THORNS: Int = 19
+    const val SHIELD_REFLECT: Int = 23
+    const val MELEE_MIN_HIT_DISTANCE: Int = 25
+    const val PRAYER_PEN_ALL: Int = 40
+    const val PRAYER_RESTORE_NO_OVERHEAD: Int = 61
+    const val SPEC_FROM_DISTANCE: Int = 62
+    const val SPEC_ON_MELEE_HIT: Int = 66
+    const val MELEE_MAX_HIT_DISTANCE: Int = 70
+    const val THORNS_DOUBLE_HIT: Int = 84
+
+    val IMPLEMENTED: Set<Int> =
+        setOf(
+            MAGIC_DAMAGE,
+            ALL_STYLE_ACCURACY,
+            DEFENCE_BOOST,
+            MELEE_DAMAGE,
+            RANGED_DAMAGE,
+            THORNS,
+            SHIELD_REFLECT,
+            MELEE_MIN_HIT_DISTANCE,
+            PRAYER_PEN_ALL,
+            PRAYER_RESTORE_NO_OVERHEAD,
+            SPEC_FROM_DISTANCE,
+            SPEC_ON_MELEE_HIT,
+            MELEE_MAX_HIT_DISTANCE,
+            THORNS_DOUBLE_HIT,
+        )
 }
