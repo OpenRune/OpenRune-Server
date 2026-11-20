@@ -87,7 +87,6 @@ constructor(
 
         onRelicItemOp(GRIMOIRE_ITEM, GRIMOIRE_OPS) { switchSpellbook() }
         onRelicItemOp(FLASK_ITEM, FLASK_OPS) { drinkFlask() }
-        onRelicItemOp(SOUL_SHARD_ITEM, SOUL_SHARD_OPS) { sacrificeShards() }
 
         onCommand("relics") {
             desc = "List your relics and what they do here"
@@ -96,6 +95,10 @@ constructor(
         onCommand("relic") {
             desc = "Toggle relic options: ::relic bank on|off, ::relic burn on|off"
             cheat { player.toggleRelicOption(args) }
+        }
+        onCommand("releaseshards") {
+            desc = "Soul Harvest: release your soul shards for Prayer XP (stands in for the Libation bowl)"
+            cheat { player.releaseShards() }
         }
         onCommand("relicitems") {
             desc = "Get back the items your relics give"
@@ -334,14 +337,17 @@ constructor(
         mes("You drink from the Flask of Fervour and feel restored.")
     }
 
-    private fun ProtectedAccess.sacrificeShards() {
+    private fun Player.releaseShards() {
         val id = SOUL_SHARD_ITEM.asRSCM(RSCMType.OBJ)
         val count = inv.count(SOUL_SHARD_ITEM)
-        if (count <= 0 || player.invDel(player.inv, id, count).failure) {
+        if (count <= 0) {
+            mes("You have no soul shards in your inventory.")
             return
         }
-        anim(BURY_ANIM)
-        player.statAdvance("stat.prayer", SOUL_SHARD_XP * count)
+        if (invDel(inv, id, count).failure) {
+            return
+        }
+        statAdvance("stat.prayer", SOUL_SHARD_XP * count)
         mes("You release the souls of $count shards.")
     }
 
@@ -452,7 +458,6 @@ constructor(
         const val TRANSMUTE_ITEM = "obj.league_transmute_book"
         const val EXECUTIONER_ITEM = "obj.league_executioner_weapon"
         const val SOUL_SHARD_ITEM = "obj.league_soul_shard"
-        const val BURY_ANIM = "seq.human_pickupfloor"
 
         const val YAMA = "Yama"
         const val SPEC_ENERGY_VARP = "varp.sa_energy"
@@ -485,8 +490,6 @@ constructor(
         val HOTFOOT_STATS = setOf("stat.cooking", "stat.agility")
         val BARE_HAND_STATS = setOf("stat.woodcutting", "stat.mining")
         val GRIMOIRE_OPS = setOf("Change Spellbook", "Read", "Open", "Switch", "Use", "Change", "Spellbook")
-        val SOUL_SHARD_OPS =
-            setOf("Sacrifice", "Offer", "Release", "Absorb", "Consume", "Crush", "Break", "Bury", "Scatter")
         val FLASK_OPS = setOf("Activate", "Drink", "Sip", "Quaff", "Consume", "Use")
         val SPELLBOOK_NAMES =
             listOf("Standard spellbook", "Ancient Magicks", "Lunar spellbook", "Arceuus spellbook")

@@ -75,7 +75,7 @@ object RelicEffects {
             RelicNames.LARCENIST to "Thieving always succeeds and gives 10x loot, noted.",
             RelicNames.SOUL_HARVEST to
                 "Bones and ashes that monsters drop become soul shards. Shards work as pure essence, or " +
-                    "release them from the shard item for Prayer XP.",
+                    "type ::releaseshards for 5.5 Prayer XP each.",
             RelicNames.GRIMOIRE to "The grimoire switches spellbooks.",
             RelicNames.ETERNAL_SUSTENANCE to "Eating food doesn't use it up.",
             RelicNames.CULLING_SPREE to "Slayer masters let you choose from three tasks and pick 5-200 kills.",

@@ -54,7 +54,7 @@ The relic window shows the game's own description of each relic. On this server:
 | Butler's Bell | The bell gives the demon butler a job (ores 8, fish 14, logs 10, flax 50 a minute; processed items at half rate with 10 XP each). It keeps working while you're logged out; ring again to collect, noted. |
 | Nature's Accord | No Farming level requirements; 10x noted harvests with 10x XP; the fairy mushroom teleports to fairy rings and tool leprechauns in unlocked areas. Plants still die, and seeds aren't saved. |
 | Larcenist | Thieving always succeeds; 10x loot, noted. No auto-repeat. |
-| Soul Harvest | Bones and ashes that monsters drop become soul shards (by Prayer XP). Shards work as pure essence; the shard item's op releases them for 5.5 Prayer XP each. Farming doesn't give shards. |
+| Soul Harvest | Bones and ashes that monsters drop become soul shards (by Prayer XP). Shards work as pure essence; `::releaseshards` gives 5.5 Prayer XP each (the Libation bowl isn't on this server). Farming doesn't give shards. |
 | Grimoire | The grimoire switches spellbooks. Prayer and spell unlocks and Book of the Dead aren't in. |
 | Eternal Sustenance | Food isn't used up. |
 | Culling Spree | Slayer masters offer three tasks to choose from, and you pick 5-200 kills. The other perks aren't in. |
