@@ -125,7 +125,9 @@ private fun writeEnumAccessorObject(
         referencedOpenRuneClassNames(k).forEach { extraImports += it }
         referencedOpenRuneClassNames(v).forEach { extraImports += it }
 
-        val init = buildCodeBlock { add("enum(%S)", slug) }
+        val init = buildCodeBlock {
+            if (isSyntheticEnumSlug(slug)) add("enum(%L)", id) else add("enum(%S)", slug)
+        }
         props += PropertySpec.builder(propName, mapType, KModifier.PUBLIC).initializer(init).build()
     }
 
