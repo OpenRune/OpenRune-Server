@@ -21,6 +21,15 @@ object RelicNames {
     const val FRIENDLY_FORAGER = "Friendly Forager"
     const val WOODSMAN = "Woodsman"
     const val BANK_HEIST = "Bank Heist"
+    const val EVIL_EYE = "Evil Eye"
+    const val MAP_OF_ALACRITY = "Map of Alacrity"
+    const val CONNIVING_CLUES = "Conniving Clues"
+    const val BUTLERS_BELL = "Butler's Bell"
+    const val NATURES_ACCORD = "Nature's Accord"
+    const val SOUL_HARVEST = "Soul Harvest"
+    const val CULLING_SPREE = "Culling Spree"
+    const val FLOW_STATE = "Flow State"
+    const val MINION = "Minion"
     const val TRANSMUTE = "Transmute"
     const val LARCENIST = "Larcenist"
     const val GRIMOIRE = "Grimoire"
@@ -38,36 +47,51 @@ object RelicEffects {
     val SUPPORT: Map<String, String> =
         mapOf(
             RelicNames.ENDLESS_HARVEST to
-                "Woodcutting, Fishing and Mining give double resources and XP, trees and rocks " +
-                    "don't deplete, and resources go to your bank (::relic bank off to stop).",
+                "Double logs, fish and ore and their XP; trees and rocks don't deplete; resources " +
+                    "go to your bank (::relic bank off to stop).",
             RelicNames.BARBARIAN_GATHERING to
-                "Failed Woodcutting, Fishing and Mining attempts succeed half the time, and " +
-                    "gathering gives bonus Strength and Agility XP. You still need tools.",
+                "Chop and mine bare-handed (as crystal tools), failed attempts succeed half the time, " +
+                    "and gathering gives 10% bonus Strength and Agility XP. Fishing still needs tools.",
             RelicNames.ABUNDANCE to
-                "Non-combat skills are boosted by 10, each XP drop in them gives 2 bonus XP, " +
-                    "and you get 2 coins per XP gained in them.",
+                "Non-combat skills +10, 2 bonus XP per drop in them and 2 coins per XP gained in them.",
             RelicNames.HOTFOOT to
-                "Fish you catch are cooked and ore you mine is smelted when you have the levels, " +
-                    "Cooking never burns, Agility always succeeds and running gives Agility XP.",
+                "Agility and Cooking always succeed. With the searing boots on, fish are cooked and ore " +
+                    "smelted as you gather, and running gives Agility XP.",
             RelicNames.FRIENDLY_FORAGER to
-                "Gathering sometimes finds a grimy herb you can clean.",
+                "With the pouch carried, gathering finds grimy herbs (Herblore +25). Potions get 4 doses " +
+                    "and secondaries are saved 90% of the time.",
             RelicNames.WOODSMAN to
-                "Logs you cut are burned for Firemaking XP (::relic burn off to keep them), " +
-                    "and Hunter always succeeds.",
-            RelicNames.BANK_HEIST to
-                "Your banker's briefcase teleports you to banks in areas you have unlocked.",
-            RelicNames.TRANSMUTE to "Carrying the ledger gives you unlimited nature runes.",
-            RelicNames.LARCENIST to
-                "Thieving always succeeds and gives 10x loot, noted where possible.",
-            RelicNames.GRIMOIRE to "Your grimoire switches spellbooks.",
+                "Logs you cut are burned for Firemaking XP (::relic burn off to keep them).",
+            RelicNames.BANK_HEIST to "The briefcase teleports to banks, deposit boxes and bank chests in unlocked areas.",
+            RelicNames.EVIL_EYE to "The necklace teleports to boss and raid entrances in unlocked areas.",
+            RelicNames.MAP_OF_ALACRITY to "The map teleports to agility shortcuts in unlocked areas.",
+            RelicNames.TRANSMUTE to "The ledger is an unlimited source of nature runes.",
+            RelicNames.BUTLERS_BELL to
+                "Ring the bell to give the demon butler a job; it gathers or processes items even while " +
+                    "you're logged out. Ring again to collect.",
+            RelicNames.NATURES_ACCORD to
+                "No Farming level requirements, 10x noted harvests with matching XP, and the fairy " +
+                    "mushroom teleports to fairy rings and tool leprechauns.",
+            RelicNames.LARCENIST to "Thieving always succeeds and gives 10x loot, noted.",
+            RelicNames.SOUL_HARVEST to
+                "Bones and ashes that monsters drop become soul shards. Shards work as pure essence, or " +
+                    "release them from the shard item for Prayer XP.",
+            RelicNames.GRIMOIRE to "The grimoire switches spellbooks.",
             RelicNames.ETERNAL_SUSTENANCE to "Eating food doesn't use it up.",
+            RelicNames.CULLING_SPREE to "Slayer masters let you choose from three tasks and pick 5-200 kills.",
+            RelicNames.FLOW_STATE to
+                "Woodcutting, Mining, Fishing, Cooking, smelting, smithing and potion making repeat every " +
+                    "2 ticks.",
             RelicNames.RELOADED to "Open the relics window and pick one more relic from a lower tier.",
             RelicNames.EXECUTIONER to
-                "While wielding the Sage's axe, a hit that leaves a monster under 20% hitpoints " +
-                    "finishes it, except Yama.",
+                "While wielding the Sage's axe, a hit that leaves a monster under 20% hitpoints finishes " +
+                    "it, except Yama.",
+            RelicNames.MINION to
+                "Use the whistle to summon a minion for 30 minutes: it hits your target for 3-10 every " +
+                    "3 ticks and loots your kills into your inventory.",
             RelicNames.FLASK_OF_FERVOUR to
-                "Drinking the flask restores your Hitpoints, Prayer and special attack. It " +
-                    "recharges in 3 minutes, faster as you deal damage.",
+                "The flask restores Hitpoints, Prayer and special attack, explodes three times around " +
+                    "you and blocks all damage for 2.4 seconds. 3-minute recharge, shortened by big hits.",
         )
 
     private val NON_COMBAT_STATS =
@@ -130,13 +154,25 @@ object RelicEffects {
     }
 
     fun onMoved(player: Player, from: CoordGrid) {
-        if (!player.hasRelic(RelicNames.HOTFOOT)) {
+        if (!player.hasRelic(RelicNames.HOTFOOT) || !wearsRelicItem(player, RelicNames.HOTFOOT)) {
             return
         }
         val tiles = player.coords.chebyshevDistance(from)
         if (tiles == 2 && player.coords.level == from.level) {
             player.statAdvance("stat.agility", HOTFOOT_RUN_XP * tiles)
         }
+    }
+
+    /** Whether the player is wearing the item [relic] gave them. */
+    fun wearsRelicItem(player: Player, relic: String): Boolean {
+        val item = LeagueRelics.byName[relic.lowercase()]?.item ?: return true
+        return player.worn.any { it?.id == item }
+    }
+
+    /** Whether the player is wearing or carrying the item [relic] gave them. */
+    fun carriesRelicItem(player: Player, relic: String): Boolean {
+        val item = LeagueRelics.byName[relic.lowercase()]?.item ?: return true
+        return player.worn.any { it?.id == item } || player.inv.any { it?.id == item }
     }
 
     fun banksResources(player: Player): Boolean =

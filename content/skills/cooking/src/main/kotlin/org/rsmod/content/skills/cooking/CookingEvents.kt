@@ -210,7 +210,8 @@ class CookingEvents @Inject constructor(
         val cooked = task.cooked + 1
         if (cooked < task.amount && inv.contains(food.raw.internalName)) {
             anim(cookAnim(task.surface))
-            val delay = maxOf(food.cookTicks ?: DEFAULT_COOK_TICKS, MIN_REQUEUE_TICKS)
+            val baseDelay = maxOf(food.cookTicks ?: DEFAULT_COOK_TICKS, MIN_REQUEUE_TICKS)
+            val delay = SkillModifiers.ticks(player, "stat.cooking", baseDelay)
             weakQueue("queue.cooking_cook", delay, CookTask(food, task.surface, task.amount, cooked))
         }
     }

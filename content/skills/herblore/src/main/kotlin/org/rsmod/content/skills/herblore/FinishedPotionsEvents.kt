@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.herblore
 
+import org.rsmod.api.player.stat.SkillModifiers
 import org.rsmod.api.player.stat.SkillActivity
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
@@ -162,7 +163,7 @@ constructor(
 
         val created = task.created + 1
         if (created < task.amount) {
-            weakQueue("queue.herblore_finished", potion.brewTicks.getOrNull(1) ?: 4, FinishedPotionTask(potion, task.amount, created))
+            weakQueue("queue.herblore_finished", SkillModifiers.ticks(player, "stat.herblore", potion.brewTicks.getOrNull(1) ?: 4), FinishedPotionTask(potion, task.amount, created))
         } else {
             resetAnim()
         }

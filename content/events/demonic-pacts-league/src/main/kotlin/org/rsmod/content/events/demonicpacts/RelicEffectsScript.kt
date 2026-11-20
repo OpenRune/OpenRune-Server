@@ -11,13 +11,14 @@ import org.rsmod.api.config.constants
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.npc.events.NpcHitEvents
+import org.rsmod.api.npc.hit.modifier.NpcHitModifier
+import org.rsmod.api.npc.hit.queueHit
+import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.events.skilling.SkillingProduct
 import org.rsmod.api.player.events.skilling.SkillingProductPrepareEvent
 import org.rsmod.api.player.events.skilling.SkillingProductSource
-import org.rsmod.api.player.hook.ItemTeleportCaster
-import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
@@ -36,23 +37,19 @@ import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.spells.autocast.MagicSpellbookManager
 import org.rsmod.api.spells.runes.unlimited.InventoryRuneSources
-import org.rsmod.game.map.collision.isZoneValid
 import org.rsmod.api.table.FiremakingLogsRow
 import org.rsmod.api.table.cooking.CookingFoodsRow
 import org.rsmod.api.table.herblore.HerbloreCleaningRow
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.world.WorldType
-import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
-import org.rsmod.routefinder.collision.CollisionFlagMap
-import org.rsmod.routefinder.flag.CollisionFlag
 
 class RelicEffectsScript
 @Inject
@@ -60,8 +57,7 @@ constructor(
     private val random: GameRandom,
     private val playerList: PlayerList,
     private val npcList: NpcList,
-    private val collision: CollisionFlagMap,
-    private val teleports: ItemTeleportCaster,
+    private val npcHitModifier: NpcHitModifier,
     private val spellbooks: MagicSpellbookManager,
 ) : PluginScript() {
     private val logger = InlineLogger()
@@ -83,10 +79,15 @@ constructor(
         onEvent<SkillingProductPrepareEvent> { onPrepare(product) }
         onEvent<SkillingActionCompleteEvent> { onComplete(player, context) }
         onEvent<NpcHitEvents.ModifyAny> { onPlayerHitsNpc(npc, hit) }
+        onEvent<PlayerHitEvents.Modify> {
+            if (player.vars[FLASK_SHIELD_VARP] > player.currentMapClock && player.hasRelic(RelicNames.FLASK_OF_FERVOUR)) {
+                hit.damage = 0
+            }
+        }
 
-        onRelicItemOp(BANK_HEIST_ITEM, TELEPORT_OPS) { bankHeist() }
         onRelicItemOp(GRIMOIRE_ITEM, GRIMOIRE_OPS) { switchSpellbook() }
         onRelicItemOp(FLASK_ITEM, FLASK_OPS) { drinkFlask() }
+        onRelicItemOp(SOUL_SHARD_ITEM, SOUL_SHARD_OPS) { sacrificeShards() }
 
         onCommand("relics") {
             desc = "List your relics and what they do here"
@@ -133,6 +134,34 @@ constructor(
                 player.invAdd(player.inv, COINS.asRSCM(RSCMType.OBJ), xp * ABUNDANCE_COINS_PER_XP)
             }
         }
+        val previousLevels = SkillModifiers.ignoresLevels
+        SkillModifiers.ignoresLevels = { player, stat ->
+            previousLevels(player, stat) || (stat == FARMING && player.hasRelic(RelicNames.NATURES_ACCORD))
+        }
+        val previousYield = SkillModifiers.yieldMultiplier
+        SkillModifiers.yieldMultiplier = { player, stat ->
+            val base = previousYield(player, stat)
+            if (stat == FARMING && player.hasRelic(RelicNames.NATURES_ACCORD)) base * NATURES_ACCORD_YIELD else base
+        }
+        val previousSlayer = SkillModifiers.choosesSlayerTasks
+        SkillModifiers.choosesSlayerTasks = { player ->
+            previousSlayer(player) || player.hasRelic(RelicNames.CULLING_SPREE)
+        }
+        val previousTicks = SkillModifiers.actionTicks
+        SkillModifiers.actionTicks = { player, stat, ticks ->
+            val base = previousTicks(player, stat, ticks)
+            if (player.hasRelic(RelicNames.FLOW_STATE)) minOf(base, FLOW_STATE_TICKS) else base
+        }
+        val previousHands = SkillModifiers.bareHanded
+        SkillModifiers.bareHanded = { player, stat ->
+            previousHands(player, stat) ||
+                (stat in BARE_HAND_STATS && player.hasRelic(RelicNames.BARBARIAN_GATHERING))
+        }
+        val previousSecondaries = SkillModifiers.secondarySaveChance
+        SkillModifiers.secondarySaveChance = { player ->
+            val forager = if (player.hasRelic(RelicNames.FRIENDLY_FORAGER)) FORAGER_SECONDARY_SAVE else 0
+            previousSecondaries(player) + forager
+        }
         val previousRunes = InventoryRuneSources.provides
         val natureRune = NATURE_RUNE.asRSCM(RSCMType.OBJ)
         val ledger = TRANSMUTE_ITEM.asRSCM(RSCMType.OBJ)
@@ -173,10 +202,14 @@ constructor(
             player.statAdvance("stat.strength", bonus)
             player.statAdvance("stat.agility", bonus)
         }
-        if (player.hasRelic(RelicNames.HOTFOOT)) {
+        if (player.hasRelic(RelicNames.HOTFOOT) && RelicEffects.wearsRelicItem(player, RelicNames.HOTFOOT)) {
             hotfoot(player, product)
         }
-        if (player.hasRelic(RelicNames.FRIENDLY_FORAGER) && random.of(FORAGER_ODDS) == 0) {
+        if (
+            player.hasRelic(RelicNames.FRIENDLY_FORAGER) &&
+                RelicEffects.carriesRelicItem(player, RelicNames.FRIENDLY_FORAGER) &&
+                random.of(FORAGER_ODDS) == 0
+        ) {
             forageHerb(player)
         }
     }
@@ -203,13 +236,15 @@ constructor(
     }
 
     private fun forageHerb(player: Player) {
-        val herblore = player.statBase("stat.herblore")
+        val herblore = player.statBase("stat.herblore") + FORAGER_LEVEL_BONUS
         val herbs = grimyHerbs.filter { row -> row.statReq.all { herblore >= it.t1 } }
         if (herbs.isEmpty()) {
             return
         }
-        val herb = herbs[random.of(herbs.size)].input.internalName
+        val row = herbs[random.of(herbs.size)]
+        val herb = row.input.internalName
         if (player.invAdd(player.inv, herb.asRSCM(RSCMType.OBJ), 1).success) {
+            player.statAdvance("stat.herblore", row.xp / 10.0)
             player.mes("Your forager's pouch finds a grimy herb.")
             if (RelicEffects.banksResources(player)) {
                 RelicEffects.bankFromInventory(player, herb)
@@ -266,65 +301,6 @@ constructor(
         }
     }
 
-    private suspend fun ProtectedAccess.bankHeist() {
-        if (!player.hasRelic(RelicNames.BANK_HEIST)) {
-            mes("You need the Bank Heist relic to use this.")
-            return
-        }
-        val banks = bankDestinations(player)
-        if (banks.isEmpty()) {
-            mes("There are no banks in the areas you have unlocked.")
-            return
-        }
-        val shown = banks.take(MAX_MENU_CHOICES)
-        val choice = menu("Bank Heist", hotkeys = false, choices = shown.map { it.first })
-        val dest = shown.getOrNull(choice)?.second ?: return
-        with(teleports) { cast(TeleportType.Exempt, dest) }
-    }
-
-    /** Every banker in an unlocked area, landing on the free tile in front of their booth. */
-    private fun bankDestinations(player: Player): List<Pair<String, CoordGrid>> {
-        val found = mutableListOf<CoordGrid>()
-        for (npc in npcList) {
-            if (!npc.isContentType(BANKER_CONTENT)) {
-                continue
-            }
-            val front = frontOfBooth(npc.coords) ?: continue
-            if (!LeagueRegions.isAllowed(player, front)) {
-                continue
-            }
-            if (found.none { it.level == front.level && it.chebyshevDistance(front) <= BANK_CLUSTER }) {
-                found += front
-            }
-        }
-        val named = found.map { bankName(it) to it }
-        return named.sortedBy { it.first }
-    }
-
-    private fun frontOfBooth(banker: CoordGrid): CoordGrid? {
-        for ((dx, dz) in DIRECTIONS) {
-            val booth = banker.translate(dx, dz, 0)
-            val front = banker.translate(dx * 2, dz * 2, 0)
-            if (!isWalkable(booth) && isWalkable(front)) {
-                return front
-            }
-        }
-        return null
-    }
-
-    private fun isWalkable(coords: CoordGrid): Boolean =
-        collision.isZoneValid(coords) &&
-            (collision[coords.x, coords.z, coords.level] and CollisionFlag.BLOCK_WALK) == 0
-
-    private fun bankName(coords: CoordGrid): String {
-        val town = TOWNS.minByOrNull { (_, centre) -> centre.chebyshevDistance(coords) }
-        if (town != null && town.second.chebyshevDistance(coords) <= TOWN_RADIUS) {
-            return town.first
-        }
-        val region = LeagueRegions.regionAt(coords)?.name ?: "Bank"
-        return "$region (${coords.x}, ${coords.z})"
-    }
-
     private suspend fun ProtectedAccess.switchSpellbook() {
         if (!player.hasRelic(RelicNames.GRIMOIRE)) {
             mes("You need the Grimoire relic to use this.")
@@ -352,8 +328,40 @@ constructor(
         player.statHeal("stat.prayer", 0, 100)
         VarPlayerIntMapSetter.set(player, SPEC_ENERGY_VARP, constants.sa_max_energy)
         VarPlayerIntMapSetter.set(player, FLASK_READY_VARP, mapClock + FLASK_COOLDOWN_TICKS)
+        VarPlayerIntMapSetter.set(player, FLASK_SHIELD_VARP, mapClock + FLASK_SHIELD_TICKS)
+        flaskExplosions(player)
         anim(DRINK_ANIM)
         mes("You drink from the Flask of Fervour and feel restored.")
+    }
+
+    private fun ProtectedAccess.sacrificeShards() {
+        val id = SOUL_SHARD_ITEM.asRSCM(RSCMType.OBJ)
+        val count = inv.count(SOUL_SHARD_ITEM)
+        if (count <= 0 || player.invDel(player.inv, id, count).failure) {
+            return
+        }
+        anim(BURY_ANIM)
+        player.statAdvance("stat.prayer", SOUL_SHARD_XP * count)
+        mes("You release the souls of $count shards.")
+    }
+
+    private fun flaskExplosions(player: Player) {
+        val damage = player.statBase("stat.prayer") * FLASK_PRAYER_PERCENT / 100
+        if (damage <= 0) {
+            return
+        }
+        val targets =
+            npcList.filter { npc ->
+                npc.hitpoints > 0 &&
+                    npc.coords.level == player.coords.level &&
+                    npc.coords.chebyshevDistance(player.coords) <= FLASK_RADIUS &&
+                    !npc.name.equals(YAMA, ignoreCase = true)
+            }
+        for (npc in targets) {
+            for (explosion in 1..FLASK_EXPLOSIONS) {
+                npc.queueHit(player, explosion, HitType.Typeless, damage, npcHitModifier)
+            }
+        }
     }
 
     private fun Player.listRelics() {
@@ -434,43 +442,54 @@ constructor(
         const val COOKING = "stat.cooking"
         const val SMITHING = "stat.smithing"
         const val FIREMAKING = "stat.firemaking"
+        const val FARMING = "stat.farming"
         const val WOODCUTTING = "stat.woodcutting"
         const val COINS = "obj.coins"
         const val NATURE_RUNE = "obj.naturerune"
 
-        const val BANK_HEIST_ITEM = "obj.league_bank_heist_teleport"
         const val GRIMOIRE_ITEM = "obj.league_3_magic_book"
         const val FLASK_ITEM = "obj.league_flask_of_fervour"
         const val TRANSMUTE_ITEM = "obj.league_transmute_book"
         const val EXECUTIONER_ITEM = "obj.league_executioner_weapon"
+        const val SOUL_SHARD_ITEM = "obj.league_soul_shard"
+        const val BURY_ANIM = "seq.human_pickupfloor"
 
-        const val BANKER_CONTENT = "content.banker"
         const val YAMA = "Yama"
         const val SPEC_ENERGY_VARP = "varp.sa_energy"
         const val FLASK_READY_VARP = "varp.dp_flask_ready"
+        const val FLASK_SHIELD_VARP = "varp.dp_flask_shield"
         const val DRINK_ANIM = "seq.human_eat"
 
         const val LARCENIST_LOOT = 10
         const val ABUNDANCE_BONUS_XP = 2.0
         const val ABUNDANCE_COINS_PER_XP = 2
         const val BARBARIAN_RESCUE_CHANCE = 0.5
-        const val BARBARIAN_BONUS_XP = 1.0 / 9.0
+        const val BARBARIAN_BONUS_XP = 0.1
         const val FORAGER_ODDS = 6
         const val EXECUTE_DIVISOR = 5
         const val FLASK_COOLDOWN_TICKS = 300
-        const val FLASK_DAMAGE_PER_TICK = 2
-        const val MAX_MENU_CHOICES = 127
-        const val BANK_CLUSTER = 12
-        const val TOWN_RADIUS = 60
+        const val FLASK_DAMAGE_PER_TICK = 10
+        const val FLASK_SHIELD_TICKS = 4
+        const val FLASK_EXPLOSIONS = 3
+        const val FLASK_RADIUS = 3
+        const val FLASK_PRAYER_PERCENT = 60
+        const val FORAGER_LEVEL_BONUS = 25
+        const val FORAGER_SECONDARY_SAVE = 90
+        const val NATURES_ACCORD_YIELD = 10
+        const val FLOW_STATE_TICKS = 2
+
+        /** 100 shards give 550 Prayer xp at the Libation bowl. */
+        const val SOUL_SHARD_XP = 5.5
 
         val GATHERING_STATS = setOf("stat.woodcutting", "stat.fishing", "stat.mining")
         val HOTFOOT_STATS = setOf("stat.cooking", "stat.agility")
-        val TELEPORT_OPS = setOf("Teleport", "Rub", "Open", "Use", "Activate", "Heist")
+        val BARE_HAND_STATS = setOf("stat.woodcutting", "stat.mining")
         val GRIMOIRE_OPS = setOf("Change Spellbook", "Read", "Open", "Switch", "Use", "Change", "Spellbook")
+        val SOUL_SHARD_OPS =
+            setOf("Sacrifice", "Offer", "Release", "Absorb", "Consume", "Crush", "Break", "Bury", "Scatter")
         val FLASK_OPS = setOf("Activate", "Drink", "Sip", "Quaff", "Consume", "Use")
         val SPELLBOOK_NAMES =
             listOf("Standard spellbook", "Ancient Magicks", "Lunar spellbook", "Arceuus spellbook")
-        val DIRECTIONS = listOf(0 to 1, 1 to 0, 0 to -1, -1 to 0)
 
         val ORE_TO_BAR =
             mapOf(
@@ -493,33 +512,6 @@ constructor(
                 "obj.mithril_bar" to 30.0,
                 "obj.adamantite_bar" to 37.5,
                 "obj.runite_bar" to 50.0,
-            )
-
-        /** Rough town centres, only used to name bank teleports. */
-        val TOWNS =
-            listOf(
-                "Lumbridge" to CoordGrid(3222, 3218, 0),
-                "Varrock" to CoordGrid(3213, 3424, 0),
-                "Grand Exchange" to CoordGrid(3164, 3486, 0),
-                "Edgeville" to CoordGrid(3093, 3493, 0),
-                "Draynor Village" to CoordGrid(3093, 3244, 0),
-                "Falador" to CoordGrid(2964, 3378, 0),
-                "Al Kharid" to CoordGrid(3293, 3174, 0),
-                "Catherby" to CoordGrid(2808, 3434, 0),
-                "Seers' Village" to CoordGrid(2725, 3485, 0),
-                "East Ardougne" to CoordGrid(2662, 3305, 0),
-                "Yanille" to CoordGrid(2606, 3093, 0),
-                "Burthorpe" to CoordGrid(2898, 3544, 0),
-                "Rellekka" to CoordGrid(2660, 3660, 0),
-                "Canifis" to CoordGrid(3506, 3496, 0),
-                "Port Phasmatys" to CoordGrid(3687, 3467, 0),
-                "Shilo Village" to CoordGrid(2852, 2955, 0),
-                "Nardah" to CoordGrid(3428, 2892, 0),
-                "Civitas illa Fortis" to CoordGrid(1680, 3120, 0),
-                "Hosidius" to CoordGrid(1740, 3600, 0),
-                "Port Piscarilius" to CoordGrid(1800, 3780, 0),
-                "Arceuus" to CoordGrid(1630, 3750, 0),
-                "Lletya" to CoordGrid(2350, 3165, 0),
             )
     }
 }

@@ -105,7 +105,10 @@ object LeagueRelics {
             for ((key, relicStruct) in enum<Int, Int>(relicEnum).backing.toSortedMap()) {
                 relicStruct ?: continue
                 val name = structParam(relicStruct, RELIC_NAME_PARAM) as? String ?: "Relic"
-                val description = descriptions[name.lowercase()] ?: ""
+                val description =
+                    structParam(relicStruct, RELIC_DESCRIPTION_PARAM) as? String
+                        ?: descriptions[name.lowercase()]
+                        ?: ""
                 val item = structParam(relicStruct, RELIC_ITEM_PARAM) as? Int
                 relics += Relic(index, key, clickzone++, relicStruct, name, description, item)
             }
@@ -175,5 +178,6 @@ object LeagueRelics {
     private const val TIER_RELICS_PARAM = 878
     private const val RELIC_NAME_PARAM = 879
     private const val RELIC_ITEM_PARAM = 2049
+    private const val RELIC_DESCRIPTION_PARAM = 880
     private const val RELOADED = "reloaded"
 }

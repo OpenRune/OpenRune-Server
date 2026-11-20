@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.fishing.scripts
 
+import org.rsmod.api.player.stat.SkillModifiers
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -305,8 +306,10 @@ constructor(
     }
 
     // Diabolic worms give a 50% chance for the catch roll to come a tick sooner.
-    private fun ProtectedAccess.rollDelay(bait: String?): Int =
-        if (bait == DIABOLIC_WORMS && random.of(2) == 0) CATCH_CYCLE - 1 else CATCH_CYCLE
+    private fun ProtectedAccess.rollDelay(bait: String?): Int {
+        val delay = if (bait == DIABOLIC_WORMS && random.of(2) == 0) CATCH_CYCLE - 1 else CATCH_CYCLE
+        return SkillModifiers.ticks(player, "stat.fishing", delay)
+    }
 
     private class FishTask(
         val npc: Npc,

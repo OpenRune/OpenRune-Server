@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.mining.scripts
 
+import org.rsmod.api.player.stat.SkillModifiers
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
@@ -130,7 +131,7 @@ constructor(
             anim(miningAnim(pickaxe, data))
         }
 
-        val delay = pickaxeActionDelay(pickaxe)
+        val delay = SkillModifiers.ticks(player, "stat.mining", pickaxeActionDelay(pickaxe))
         var minedOre = false
 
         if (actionDelay < mapClock) {
@@ -437,8 +438,16 @@ constructor(
                     }
                     addAll(carried)
                 }
-            return candidates.maxWithOrNull(pickaxeComparator)
+            return candidates.maxWithOrNull(pickaxeComparator) ?: bareHandPickaxe(player)
         }
+
+        /** Barbarian Gathering's bare hands count as a crystal pickaxe. */
+        private fun bareHandPickaxe(player: Player): InvObj? =
+            if (SkillModifiers.bareHanded(player, "stat.mining")) {
+                InvObj("obj.crystal_pickaxe")
+            } else {
+                null
+            }
 
         /** Higher is better: lower action delay first, then higher mining level req. */
         private val pickaxeComparator: Comparator<InvObj> =

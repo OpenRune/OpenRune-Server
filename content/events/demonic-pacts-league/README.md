@@ -34,27 +34,38 @@ The other 80 nodes (Regenerate, Ranged echoes, Blindbag, overheal, attack speed 
 spell effects, permanent Defence and so on) can be bought and saved, and are marked
 `[unimplemented]` in game. Most need hooks the combat engine does not expose yet.
 
-### Relics that work
+### Relics
+
+The relic window shows the game's own description of each relic. On this server:
 
 | Relic | On this server |
 |---|---|
 | Endless Harvest | Double logs, fish and ore and their XP; trees and rocks don't deplete; resources go to the bank (`::relic bank off`). |
-| Barbarian Gathering | Failed gathering attempts succeed half the time; bonus Strength and Agility XP. Tools are still needed and the knapsack does nothing. |
+| Barbarian Gathering | Chop and mine bare-handed (as crystal tools); failed gathering attempts succeed half the time; 10% bonus Strength and Agility XP. Fishing still needs tools, and the knapsack does nothing. |
 | Abundance | +10 to non-combat skills, +2 XP per drop in them, 2 coins per XP gained in them. |
-| Hotfoot | Caught fish are cooked and mined ore is smelted (level permitting); Cooking never burns; Agility always succeeds; running gives Agility XP. |
-| Friendly Forager | 1 in 6 gathered resources also finds a grimy herb. Herblore perks aren't in. |
-| Woodsman | Cut logs are burned for Firemaking XP (`::relic burn off`); Hunter always succeeds. |
-| Bank Heist | The briefcase teleports to banks in unlocked regions (found from banker spawns). |
-| Transmute | The ledger is an unlimited nature rune source. The new alchemy spells aren't in. |
-| Larcenist | Thieving always succeeds; 10x loot, noted. |
-| Grimoire | The grimoire switches spellbooks. |
+| Hotfoot | Agility and Cooking always succeed. With the searing boots on: fish are cooked, ore is smelted, running gives Agility XP. No Agility courses exist here. |
+| Friendly Forager | With the pouch carried, gathering sometimes finds a grimy herb (Herblore level + 25). Potions are made with 4 doses; secondaries are saved 90% of the time. |
+| Woodsman | Cut logs are burned for Firemaking XP (`::relic burn off`). No Fletching or Hunter here. |
+| Bank Heist | The briefcase teleports to the official list of banks, deposit boxes and bank chests in unlocked areas. |
+| Evil Eye | The necklace teleports to the official list of boss and raid entrances in unlocked areas. |
+| Map of Alacrity | The map teleports to the official list of agility shortcuts in unlocked areas. |
+| Transmute | The ledger is an unlimited nature rune source. Alchemic Divergence and Convergence aren't in. |
+| Conniving Clues | Not in: this server has no clue scrolls. |
+| Butler's Bell | The bell gives the demon butler a job (ores 8, fish 14, logs 10, flax 50 a minute; processed items at half rate with 10 XP each). It keeps working while you're logged out; ring again to collect, noted. |
+| Nature's Accord | No Farming level requirements; 10x noted harvests with 10x XP; the fairy mushroom teleports to fairy rings and tool leprechauns in unlocked areas. Plants still die, and seeds aren't saved. |
+| Larcenist | Thieving always succeeds; 10x loot, noted. No auto-repeat. |
+| Soul Harvest | Bones and ashes that monsters drop become soul shards (by Prayer XP). Shards work as pure essence; the shard item's op releases them for 5.5 Prayer XP each. Farming doesn't give shards. |
+| Grimoire | The grimoire switches spellbooks. Prayer and spell unlocks and Book of the Dead aren't in. |
 | Eternal Sustenance | Food isn't used up. |
+| Culling Spree | Slayer masters offer three tasks to choose from, and you pick 5-200 kills. The other perks aren't in. |
+| Flow State | Woodcutting, Mining, Fishing, Cooking, smelting, anvil smithing and potion making repeat every 2 ticks. |
 | Reloaded | One extra relic from any lower tier, picked in the relics window. |
 | Executioner | Hits with the Sage's axe that leave a monster under 20% HP finish it (not Yama). |
-| Flask of Fervour | Restores HP, Prayer and special attack; 3-minute recharge, shortened by damage dealt. |
+| Minion | The whistle summons a minion for 30 minutes. It hits your target for 3-10 every 3 ticks and loots your kills into your inventory, noted (not bones or ashes if you have Soul Harvest). There's no visible minion. |
+| Flask of Fervour | Restores HP, Prayer and special attack; three explosions of 60% of base Prayer to monsters within 3 tiles; no damage taken for 2.4 seconds; 3-minute recharge, 1 tick less per 10 damage in one hit. |
 
-Not in yet: Evil Eye, Map of Alacrity, Conniving Clues, Butler's Bell, Nature's Accord, Soul
-Harvest, Culling Spree, Flow State and Minion. Their items are still handed out.
+Relic items find their op (Teleport, Rub, Ring, and so on) by name at startup. If one does nothing, the
+server log names the item and lists its ops.
 
 ## Not included
 
@@ -89,6 +100,8 @@ Harvest, Culling Spree, Flow State and Minion. Their items are still handed out.
 | `src/main/resources/demonic_pacts.toml` | Settings: start tile, thresholds, points, pact limits, region lock switch. |
 | `src/main/resources/demonic_pacts_tree.toml` | The pact tree. |
 | `src/main/resources/demonic_pacts_regions.toml` | Region boxes. |
+| `src/main/resources/demonic_pacts_relic_teleports.toml` | Relic teleport destinations, from the [Shortest Path](https://github.com/Skretzo/shortest-path) plugin's `seasonal_transports.tsv` (BSD 2-Clause, as in the map-transports module). |
+| `src/main/resources/demonic_pacts_butler.toml` | Butler's Bell jobs and rates. |
 | `src/main/resources/demonic_pacts_league_tasks.toml` | The official task list with how each is tracked, generated from the cache (enum_5950, dbtable action). |
 | `pack/src/main/resources/pack/configs/demonic_pacts.toml` | Save varps. |
 
@@ -103,6 +116,11 @@ renumber existing ones, or saved progress will point at the wrong entries.
 - `SkillModifiers` (api/player): stat-roll success chance (also used by cooking burns), thieving
   loot multiplier, and food that isn't used up.
 - `InventoryRuneSources` (api/spells-runes): carried objs that count as unlimited runes.
+- `SkillModifiers` also has: ignored level requirements and harvest multipliers (farming), action
+  tick overrides (gathering, cooking, smithing, herblore), bare-handed gathering (woodcutting,
+  mining), extra secondary-save chance (herblore) and Slayer task choice.
+- `SkillActivity` (api/player): a feed of finished skilling actions for the task list.
+- Runecrafting accepts `league_soul_shard` as pure essence.
 - Woodcutting now honours `SkillingProduct.depletes`, like mining.
 - `PlayerCombatModifiers` (api/combat-manager): accuracy and max-hit multipliers for players
   attacking npcs.

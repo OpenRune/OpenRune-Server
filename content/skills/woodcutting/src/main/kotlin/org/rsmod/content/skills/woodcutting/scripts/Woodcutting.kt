@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.woodcutting.scripts
 
+import org.rsmod.api.player.stat.SkillModifiers
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
@@ -79,7 +80,7 @@ constructor(
         }
 
         if (actionDelay < mapClock) {
-            actionDelay = mapClock + 3
+            actionDelay = mapClock + SkillModifiers.ticks(player, "stat.woodcutting", 3)
             skillAnimDelay = mapClock + 3
             opLoc1(tree)
         } else {
@@ -122,7 +123,7 @@ constructor(
         var despawn: Boolean
 
         if (actionDelay < mapClock) {
-            actionDelay = mapClock + 3
+            actionDelay = mapClock + SkillModifiers.ticks(player, "stat.woodcutting", 3)
         } else if (actionDelay == mapClock) {
             val (low, high) = cutSuccessRates(type, axe)
             cutLogs = statRandom("stat.woodcutting", low, high, invisibleLvls)
@@ -306,8 +307,16 @@ constructor(
                     }
                     addAll(carried)
                 }
-            return candidates.maxWithOrNull(axeComparator(tree))
+            return candidates.maxWithOrNull(axeComparator(tree)) ?: bareHandAxe(player)
         }
+
+        /** Barbarian Gathering's bare hands count as a crystal axe. */
+        private fun bareHandAxe(player: Player): InvObj? =
+            if (SkillModifiers.bareHanded(player, "stat.woodcutting")) {
+                InvObj("obj.crystal_axe")
+            } else {
+                null
+            }
 
         private fun axeComparator(tree: ObjectServerType): Comparator<InvObj> =
             Comparator { left, right ->

@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.smithing
 
+import org.rsmod.api.player.stat.SkillModifiers
 import org.rsmod.api.player.stat.SkillActivity
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
@@ -203,7 +204,7 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
         soundSynth("synth.anvil02")
         weakQueue(
             "queue.smithing_anvil",
-            SmithingUtils.anvilActionDelay(player),
+            SkillModifiers.ticks(player, "stat.smithing", SmithingUtils.anvilActionDelay(player)),
             task.copy(completed = completed),
         )
     }

@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.herblore
 
+import org.rsmod.api.player.stat.SkillModifiers
 import org.rsmod.api.player.hat
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.table.herblore.HerbloreFinishedRow
@@ -8,6 +9,7 @@ import org.rsmod.game.inv.isType
 
 
 object HerbloreGoggles {
+    private const val GOGGLES_SAVE_PERCENT = 10
 
     val GOGGLE_TYPES = listOf("obj.mm_alchemist_hat", "obj.mm_alchemist_hat_alt")
 
@@ -31,10 +33,11 @@ object HerbloreGoggles {
         random: GameRandom,
         potion: HerbloreFinishedRow,
     ): SavedSecondaries {
-        if (!isWearing(player) || !canSaveForRecipe(potion)) {
+        val chance = (if (isWearing(player)) GOGGLES_SAVE_PERCENT else 0) + SkillModifiers.secondarySaveChance(player)
+        if (chance <= 0 || !canSaveForRecipe(potion)) {
             return SavedSecondaries.NONE
         }
-        if (!random.randomBoolean(100 / 10)) {
+        if (random.of(100) >= chance) {
             return SavedSecondaries.NONE
         }
         return if (potion.secondaries.size == 1) {

@@ -24,6 +24,9 @@ object RunecraftAction {
     private const val DAEYALT_ESSENCE = EssencePouch.DAEYALT_ESSENCE
     private const val GUARDIAN_ESSENCE = EssencePouch.GUARDIAN_ESSENCE
     private const val DARK_ESSENCE = EssencePouch.DARK_ESSENCE_FRAGMENT
+
+    /** The Soul Harvest league relic's shards work as pure essence. */
+    private const val SOUL_SHARD = "obj.league_soul_shard"
     private const val DAEYALT_XP_MULTIPLIER = 1.5
     private const val OURANIA_XP_MULTIPLIER = 1.7
     private const val CORE_RUNE_MULTIPLIER = 11
@@ -110,7 +113,9 @@ object RunecraftAction {
         ouraniaAltar: Boolean,
     ) {
         val runeEssCount = if (RUNE_ESSENCE in validEssence) inv.count(RUNE_ESSENCE) else 0
-        val pureEssCount = if (PURE_ESSENCE in validEssence) inv.count(PURE_ESSENCE) else 0
+        val pureOnlyCount = if (PURE_ESSENCE in validEssence) inv.count(PURE_ESSENCE) else 0
+        val soulShardCount = if (PURE_ESSENCE in validEssence) inv.count(SOUL_SHARD) else 0
+        val pureEssCount = pureOnlyCount + soulShardCount
         val guardianEssCount =
             if (PURE_ESSENCE in validEssence) {
                 inv.count(GUARDIAN_ESSENCE)
@@ -128,7 +133,10 @@ object RunecraftAction {
             return
         }
 
-        if (pureEssCount > 0 && invDel(inv, PURE_ESSENCE, pureEssCount).failure) {
+        if (pureOnlyCount > 0 && invDel(inv, PURE_ESSENCE, pureOnlyCount).failure) {
+            return
+        }
+        if (soulShardCount > 0 && invDel(inv, SOUL_SHARD, soulShardCount).failure) {
             return
         }
         if (guardianEssCount > 0 && invDel(inv, GUARDIAN_ESSENCE, guardianEssCount).failure) {
@@ -209,7 +217,7 @@ object RunecraftAction {
         val checkIds =
             when {
                 acceptsPureSubstitutes ->
-                    validEssenceIds + DAEYALT_ESSENCE + GUARDIAN_ESSENCE
+                    validEssenceIds + DAEYALT_ESSENCE + GUARDIAN_ESSENCE + SOUL_SHARD
                 DARK_ESSENCE in validEssenceIds ->
                     validEssenceIds
                 else -> validEssenceIds

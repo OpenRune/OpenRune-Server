@@ -1,0 +1,256 @@
+# Butler's Bell jobs, from the relic's description: ores 8, fish 14, logs 10 and flax 50 a
+# minute; processed jobs run at half that and give 10 XP each in the production skill
+# (`xp_stat`). Raw gathering gives no XP. `stat`/`level` is the level you need to set the job.
+# The butler keeps working while you are logged out and holds at most `max_items`.
+
+max_items = 2000
+
+[[job]]
+name = "Chop logs"
+item = "obj.logs"
+stat = "stat.woodcutting"
+level = 1
+per_minute = 10
+
+[[job]]
+name = "Chop oak logs"
+item = "obj.oak_logs"
+stat = "stat.woodcutting"
+level = 15
+per_minute = 10
+
+[[job]]
+name = "Chop willow logs"
+item = "obj.willow_logs"
+stat = "stat.woodcutting"
+level = 30
+per_minute = 10
+
+[[job]]
+name = "Chop maple logs"
+item = "obj.maple_logs"
+stat = "stat.woodcutting"
+level = 45
+per_minute = 10
+
+[[job]]
+name = "Chop yew logs"
+item = "obj.yew_logs"
+stat = "stat.woodcutting"
+level = 60
+per_minute = 10
+
+[[job]]
+name = "Chop magic logs"
+item = "obj.magic_logs"
+stat = "stat.woodcutting"
+level = 75
+per_minute = 10
+
+[[job]]
+name = "Mine copper ore"
+item = "obj.copper_ore"
+stat = "stat.mining"
+level = 1
+per_minute = 8
+
+[[job]]
+name = "Mine tin ore"
+item = "obj.tin_ore"
+stat = "stat.mining"
+level = 1
+per_minute = 8
+
+[[job]]
+name = "Mine iron ore"
+item = "obj.iron_ore"
+stat = "stat.mining"
+level = 15
+per_minute = 8
+
+[[job]]
+name = "Mine coal"
+item = "obj.coal"
+stat = "stat.mining"
+level = 30
+per_minute = 8
+
+[[job]]
+name = "Mine mithril ore"
+item = "obj.mithril_ore"
+stat = "stat.mining"
+level = 55
+per_minute = 8
+
+[[job]]
+name = "Mine adamantite ore"
+item = "obj.adamantite_ore"
+stat = "stat.mining"
+level = 70
+per_minute = 8
+
+[[job]]
+name = "Mine runite ore"
+item = "obj.runite_ore"
+stat = "stat.mining"
+level = 85
+per_minute = 8
+
+[[job]]
+name = "Catch shrimps"
+item = "obj.raw_shrimp"
+stat = "stat.fishing"
+level = 1
+per_minute = 14
+
+[[job]]
+name = "Catch trout"
+item = "obj.raw_trout"
+stat = "stat.fishing"
+level = 20
+per_minute = 14
+
+[[job]]
+name = "Catch lobsters"
+item = "obj.raw_lobster"
+stat = "stat.fishing"
+level = 40
+per_minute = 14
+
+[[job]]
+name = "Catch swordfish"
+item = "obj.raw_swordfish"
+stat = "stat.fishing"
+level = 50
+per_minute = 14
+
+[[job]]
+name = "Catch sharks"
+item = "obj.raw_shark"
+stat = "stat.fishing"
+level = 76
+per_minute = 14
+
+[[job]]
+name = "Pick flax"
+item = "obj.flax"
+stat = "stat.crafting"
+level = 1
+per_minute = 50
+
+[[job]]
+name = "Mine and smelt iron bars"
+item = "obj.iron_bar"
+stat = "stat.mining"
+level = 15
+per_minute = 4.0
+xp_stat = "stat.smithing"
+xp = 10.0
+
+[[job]]
+name = "Mine and smelt steel bars"
+item = "obj.steel_bar"
+stat = "stat.mining"
+level = 30
+per_minute = 4.0
+xp_stat = "stat.smithing"
+xp = 10.0
+
+[[job]]
+name = "Mine and smelt mithril bars"
+item = "obj.mithril_bar"
+stat = "stat.mining"
+level = 55
+per_minute = 4.0
+xp_stat = "stat.smithing"
+xp = 10.0
+
+[[job]]
+name = "Mine and smelt adamantite bars"
+item = "obj.adamantite_bar"
+stat = "stat.mining"
+level = 70
+per_minute = 4.0
+xp_stat = "stat.smithing"
+xp = 10.0
+
+[[job]]
+name = "Mine and smelt runite bars"
+item = "obj.runite_bar"
+stat = "stat.mining"
+level = 85
+per_minute = 4.0
+xp_stat = "stat.smithing"
+xp = 10.0
+
+[[job]]
+name = "Catch and cook shrimps"
+item = "obj.shrimp"
+stat = "stat.fishing"
+level = 1
+per_minute = 7.0
+xp_stat = "stat.cooking"
+xp = 10.0
+
+[[job]]
+name = "Catch and cook trout"
+item = "obj.trout"
+stat = "stat.fishing"
+level = 20
+per_minute = 7.0
+xp_stat = "stat.cooking"
+xp = 10.0
+
+[[job]]
+name = "Catch and cook lobsters"
+item = "obj.lobster"
+stat = "stat.fishing"
+level = 40
+per_minute = 7.0
+xp_stat = "stat.cooking"
+xp = 10.0
+
+[[job]]
+name = "Catch and cook swordfish"
+item = "obj.swordfish"
+stat = "stat.fishing"
+level = 50
+per_minute = 7.0
+xp_stat = "stat.cooking"
+xp = 10.0
+
+[[job]]
+name = "Catch and cook sharks"
+item = "obj.shark"
+stat = "stat.fishing"
+level = 76
+per_minute = 7.0
+xp_stat = "stat.cooking"
+xp = 10.0
+
+[[job]]
+name = "Chop logs into planks"
+item = "obj.woodplank"
+stat = "stat.woodcutting"
+level = 1
+per_minute = 5.0
+xp_stat = "stat.construction"
+xp = 10.0
+
+[[job]]
+name = "Chop oak logs into planks"
+item = "obj.plank_oak"
+stat = "stat.woodcutting"
+level = 15
+per_minute = 5.0
+xp_stat = "stat.construction"
+xp = 10.0
+
+[[job]]
+name = "Pick flax and spin bowstrings"
+item = "obj.bow_string"
+stat = "stat.crafting"
+level = 10
+per_minute = 25.0
+xp_stat = "stat.crafting"
+xp = 10.0

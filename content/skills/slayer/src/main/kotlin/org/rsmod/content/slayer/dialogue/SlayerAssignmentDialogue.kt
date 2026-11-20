@@ -1,7 +1,9 @@
 package org.rsmod.content.slayer.dialogue
 
+import org.rsmod.api.player.stat.SkillModifiers
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.table.slayer.SlayerMastersRow
 import org.rsmod.content.slayer.core.AssignmentRoll
 import org.rsmod.content.slayer.core.SlayerCapePerk
 import org.rsmod.content.slayer.core.SlayerTaskManager
@@ -13,6 +15,9 @@ object SlayerAssignmentDialogue {
     private const val VARP_LAST_MASTER = "varp.slayer_last_master"
     private const val VARP_LAST_AREA = "varp.slayer_last_area"
     private const val KONAR_MASTER_ID = 8
+    private const val CHOSEN_TASK_OPTIONS = 3
+    private const val CHOSEN_MIN_AMOUNT = 5
+    private const val CHOSEN_MAX_AMOUNT = 200
 
     private fun ProtectedAccess.slayerCount(): Int = vars["varp.slayer_count"]
 
@@ -111,6 +116,10 @@ object SlayerAssignmentDialogue {
             }
         val bypassCombat = SlayerCapePerk.hasSlayerCape(access)
 
+        if (SkillModifiers.choosesSlayerTasks(access.player) && chooseTask(master, onAssigned)) {
+            return
+        }
+
         when (val roll = SlayerTaskManager.rollAssignment(access, master, bypassCombatCheck = bypassCombat)) {
             null -> {
                 chatNpc(neutral, SlayerTaskManager.assignmentUnavailableMessage(access, master))
@@ -154,6 +163,25 @@ object SlayerAssignmentDialogue {
                 onAssigned(roll.masterTask.task.nameUppercase, roll.amount)
             }
         }
+    }
+
+    /** Lets the player pick from several tasks and set the kill count (the Culling Spree relic). */
+    private suspend fun Dialogue.chooseTask(
+        master: SlayerMastersRow,
+        onAssigned: suspend Dialogue.(taskName: String, count: Int) -> Unit,
+    ): Boolean {
+        val rolls = SlayerTaskManager.rollDistinctAssignments(access, master, CHOSEN_TASK_OPTIONS)
+        if (rolls.isEmpty()) {
+            return false
+        }
+        val names = rolls.map { it.masterTask.task.nameUppercase }
+        val roll = rolls.getOrNull(access.menu("Choose your task", hotkeys = true, choices = names)) ?: return true
+        val name = roll.masterTask.task.nameUppercase
+        val wanted = access.countDialog("How many $name? ($CHOSEN_MIN_AMOUNT-$CHOSEN_MAX_AMOUNT)")
+        val amount = wanted.coerceIn(CHOSEN_MIN_AMOUNT, CHOSEN_MAX_AMOUNT)
+        SlayerTaskManager.applyRegularAssignment(access, master, roll.masterTask, amount)
+        onAssigned(roll.masterTask.task.nameUppercase, amount)
+        return true
     }
 
     private suspend fun Dialogue.defaultAssignedDialogue(taskName: String, count: Int) {

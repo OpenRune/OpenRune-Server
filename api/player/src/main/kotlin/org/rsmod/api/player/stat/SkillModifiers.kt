@@ -10,6 +10,30 @@ public object SkillModifiers {
     /** Multiplies the loot of a skilling action such as thieving. */
     @Volatile public var lootMultiplier: (Player, String) -> Int = { _, _ -> 1 }
 
+    /** When `true`, the player meets every level requirement of [stat]'s actions. */
+    @Volatile public var ignoresLevels: (Player, String) -> Boolean = { _, _ -> false }
+
+    /** Multiplies how much a harvest of [stat] (such as a farming patch) gives. */
+    @Volatile public var yieldMultiplier: (Player, String) -> Int = { _, _ -> 1 }
+
+    /** Shortens a skilling action's repeat delay in ticks; never below 1. */
+    @Volatile public var actionTicks: (Player, String, Int) -> Int = { _, _, ticks -> ticks }
+
+    public fun meetsLevel(player: Player, stat: String, level: Int, required: Int): Boolean =
+        level >= required || ignoresLevels(player, stat)
+
+    public fun ticks(player: Player, stat: String, ticks: Int): Int =
+        actionTicks(player, stat, ticks).coerceAtLeast(1)
+
+    /** When `true`, Slayer masters let the player pick the task and how many to kill. */
+    @Volatile public var choosesSlayerTasks: (Player) -> Boolean = { false }
+
+    /** When `true`, the player can gather [stat]'s resources without a tool. */
+    @Volatile public var bareHanded: (Player, String) -> Boolean = { _, _ -> false }
+
+    /** Extra percent chance, on top of any gear, that a potion's secondaries are not used up. */
+    @Volatile public var secondarySaveChance: (Player) -> Int = { 0 }
+
     /** When `true`, eating food does not use it up. */
     @Volatile public var keepsFood: (Player) -> Boolean = { false }
 

@@ -122,3 +122,23 @@ transmit = "Never"
 id = "varp.dp_area_viewing"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+id = "varp.dp_minion_until"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_butler_job"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_butler_since"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_flask_shield"
+scope = "Temp"
+transmit = "Never"

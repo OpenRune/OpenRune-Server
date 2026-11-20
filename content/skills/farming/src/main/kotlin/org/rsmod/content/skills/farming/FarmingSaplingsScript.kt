@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.farming
 
+import org.rsmod.api.player.stat.SkillModifiers
 import org.rsmod.api.player.stat.farmingLvl
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerLogin
@@ -13,7 +14,7 @@ class FarmingSaplingsScript : PluginScript() {
         for (chain in FarmingSaplings.chains) {
             onOpHeldU(chain.seed.internalName, "obj.plantpot_compost") {
                 when {
-                    player.farmingLvl < chain.level ->
+                    !SkillModifiers.meetsLevel(player, "stat.farming", player.farmingLvl, chain.level) ->
                         objbox(chain.seed.internalName, "You need to be a level ${chain.level} Farmer to do that.")
                     !inv.contains("obj.gardening_trowel") -> mes("You need a gardening trowel to do that.")
                     else -> FarmingSaplings.sow(player, chain, it.firstSlot, it.secondSlot)

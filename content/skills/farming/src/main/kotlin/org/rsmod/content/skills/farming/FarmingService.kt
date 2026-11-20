@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.farming
 
+import org.rsmod.api.player.stat.SkillModifiers
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
@@ -156,7 +157,8 @@ constructor(
             crop.kind != patch.kind -> mes("You can only plant ${crop.name} seeds in ${article(crop.kind.label)}.")
             !state.cleared -> mes("This patch needs weeding first.")
             state.crop != null -> mes("There is already something growing in this patch.")
-            player.farmingLvl < crop.level -> mes("You need a Farming level of ${crop.level} to plant ${crop.name}.")
+            !SkillModifiers.meetsLevel(player, FARMING_STAT, player.farmingLvl, crop.level) ->
+                mes("You need a Farming level of ${crop.level} to plant ${crop.name}.")
             !inv.contains(DIBBER) -> mes("You need a seed dibber to plant seeds.")
             inv.count(seed) < crop.seedsPerPlant ->
                 mes("You need ${crop.seedsPerPlant} ${crop.name} seeds to plant this patch.")
@@ -175,7 +177,8 @@ constructor(
         }
         val current = state(player, patch)
         if (!current.cleared || current.crop != null || !inv.contains(DIBBER) ||
-            player.farmingLvl < crop.level || inv.count(seed) < crop.seedsPerPlant
+            !SkillModifiers.meetsLevel(player, FARMING_STAT, player.farmingLvl, crop.level) ||
+            inv.count(seed) < crop.seedsPerPlant
         ) {
             resetAnim()
             return
@@ -267,9 +270,11 @@ constructor(
             return true
         }
         val produce = checkNotNull(crop.produce)
-        val amount =
+        val multiplier = SkillModifiers.yieldMultiplier(player, FARMING_STAT)
+        val baseAmount =
             if (crop.harvest == HarvestModel.BATCH) crop.harvestAmount(player.farmingLvl) { random.of(it) } else 1
-        val transaction = prepareHarvest(player, produce, amount)
+        val amount = baseAmount * multiplier
+        val transaction = prepareHarvest(player, produce, amount, cert = multiplier > 1)
         if (!transaction.success) {
             mes("You don't have enough inventory space to hold any more produce.")
             return stop()
@@ -279,7 +284,7 @@ constructor(
         transaction.commitAll()
         store(player, patch, next)
         if (crop.kind == PatchKind.HERB) soundSynth(SOUND_PICK)
-        award(patch, crop.harvestXp + if (final) crop.plantXp else 0.0)
+        award(patch, crop.harvestXp * multiplier + if (final) crop.plantXp else 0.0)
         eventBus.publish(FarmingHarvestEvent(player, patch, crop, produce, amount, final))
         if (final) {
             mes("The ${patch.kind.label} is now empty.")
@@ -300,9 +305,14 @@ constructor(
         if (spade) soundSynth(SOUND_DIG)
     }
 
-    private fun prepareHarvest(player: Player, produce: String, amount: Int): TransactionResultList<InvObj> =
+    private fun prepareHarvest(
+        player: Player,
+        produce: String,
+        amount: Int,
+        cert: Boolean = false,
+    ): TransactionResultList<InvObj> =
         player.invTransaction(player.inv, autoCommit = false) {
-            add(select(player.inv), produce.asRSCM(RSCMType.OBJ), amount)
+            add(select(player.inv), produce.asRSCM(RSCMType.OBJ), amount, cert = cert)
         }
 
     private fun ProtectedAccess.nextAfterHarvest(state: PatchState, crop: Crop, patch: PatchDef): PatchState =
@@ -426,6 +436,7 @@ constructor(
     }
 
     private companion object {
+        const val FARMING_STAT = "stat.farming"
         const val VARP_CLOCK = "varp.farming_clock"
         const val DIG_WARNING_DISABLED = "varbit.settings_farming_dig_disable_warning"
         const val VIAL = "obj.vial_empty"

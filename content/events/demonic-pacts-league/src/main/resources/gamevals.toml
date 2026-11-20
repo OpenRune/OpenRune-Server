@@ -24,6 +24,10 @@ dp_relic_flags = 62121
 dp_flask_ready = 62122
 dp_official_tasks = 62123
 dp_area_viewing = 62124
+dp_minion_until = 62125
+dp_butler_job = 62126
+dp_butler_since = 62127
+dp_flask_shield = 62128
 dp_task_count_0 = 62200
 dp_task_count_1 = 62201
 dp_task_count_2 = 62202
@@ -241,3 +245,4 @@ dp_task_count_212 = 62412
 [gamevals.timer]
 dp_league_tick = 62100
 dp_prayer_regen = 62101
+dp_minion = 62102

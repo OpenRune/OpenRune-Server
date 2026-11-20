@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.smithing.smelting
 
+import org.rsmod.api.player.stat.SkillModifiers
 import org.rsmod.api.player.stat.SkillActivity
 import jakarta.inject.Inject
 import kotlin.random.Random
@@ -202,7 +203,7 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
     ) {
         weakQueue(
             "queue.smithing_bar_smelt",
-            if (completed == 0) SMELT_INITIAL_DELAY else SMELT_CYCLE_DELAY,
+            if (completed == 0) SMELT_INITIAL_DELAY else SkillModifiers.ticks(player, "stat.smithing", SMELT_CYCLE_DELAY),
             SmeltTask(bar, amount, completed, isSuperHeat, furnaceLocInternal, furnaceCoords, regularFurnace),
         )
     }
