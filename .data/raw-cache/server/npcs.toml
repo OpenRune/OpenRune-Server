@@ -8717,23 +8717,68 @@ inherit = "npc.jb_baby_dagganoth"
 [[npc]]
 id = "npc.dagcave_ranged_boss"
 inherit = "npc.dagcave_ranged_boss"
+respawnRate = 150
+huntMode = 6
+huntRange = 7
+maxRange = 1
+attackRange = 10
+defaultMode = "Wander"
+wanderRange = 5
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.killcount_varp"="varp.total_supreme_kills"
+"param.dropped_remains"="obj.dagannoth_king_bones"
+"param.attack_anim"="seq.dagannoth_meganoth_attack_range"
+"param.defend_anim"="seq.dagannoth_meganoth_defend"
+"param.death_anim"="seq.dagannoth_meganoth_death"
+"param.attack_sound"="synth.meganoth_spines"
+"param.defend_sound"="synth.meganoth_hit"
+"param.death_sound"="synth.meganoth_death"
 
 [[npc]]
 id = "npc.dagcave_magic_boss"
 inherit = "npc.dagcave_magic_boss"
+respawnRate = 150
+huntMode = 6
+huntRange = 7
+maxRange = 1
+attackRange = 10
+defaultMode = "Wander"
+wanderRange = 5
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.killcount_varp"="varp.total_prime_kills"
+"param.dropped_remains"="obj.dagannoth_king_bones"
+"param.attack_anim"="seq.dagannoth_meganoth_attack_mage"
+"param.defend_anim"="seq.dagannoth_meganoth_defend"
+"param.death_anim"="seq.dagannoth_meganoth_death"
+"param.attack_sound"="synth.waterwave_cast_and_fire"
+"param.defend_sound"="synth.meganoth_hit"
+"param.death_sound"="synth.meganoth_death"
 
 [[npc]]
 id = "npc.dagcave_melee_boss"
 inherit = "npc.dagcave_melee_boss"
+respawnRate = 150
+huntMode = 6
+huntRange = 5
+maxRange = 4
+attackRange = 1
+defaultMode = "Wander"
+wanderRange = 5
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.killcount_varp"="varp.total_rex_kills"
+"param.dropped_remains"="obj.dagannoth_king_bones"
+"param.attack_anim"="seq.dagannoth_meganoth_attack_melee"
+"param.defend_anim"="seq.dagannoth_meganoth_defend"
+"param.death_anim"="seq.dagannoth_meganoth_death"
+"param.attack_sound"="synth.meganoth_melee_attack"
+"param.defend_sound"="synth.meganoth_hit"
+"param.death_sound"="synth.meganoth_death"
 
 [[npc]]
 id = "npc.warguild_bronze_armour"
