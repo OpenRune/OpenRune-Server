@@ -43,12 +43,12 @@ fun Player.hasRelic(name: String): Boolean = isDemonicPactsLeague && LeagueRelic
 
 /** Relic behaviour that the league tick, movement and the relic interface call into. */
 object RelicEffects {
-    /** What each relic does on this server, shown when it is unlocked and by `::relics`. */
+    /** What each relic does on this server, shown when it is unlocked and by `::dprelics`. */
     val SUPPORT: Map<String, String> =
         mapOf(
             RelicNames.ENDLESS_HARVEST to
                 "Double logs, fish and ore and their XP; trees and rocks don't deplete; resources " +
-                    "go to your bank (::relic bank off to stop).",
+                    "go to your bank (::dprelic bank off to stop).",
             RelicNames.BARBARIAN_GATHERING to
                 "Chop and mine bare-handed (as crystal tools), failed attempts succeed half the time, " +
                     "and gathering gives 10% bonus Strength and Agility XP. Fishing still needs tools.",
@@ -61,11 +61,14 @@ object RelicEffects {
                 "With the pouch carried, gathering finds grimy herbs (Herblore +25). Potions get 4 doses " +
                     "and secondaries are saved 90% of the time.",
             RelicNames.WOODSMAN to
-                "Logs you cut are burned for Firemaking XP (::relic burn off to keep them).",
+                "Logs you cut are burned for Firemaking XP (::dprelic burn off to keep them).",
             RelicNames.BANK_HEIST to "The briefcase teleports to banks, deposit boxes and bank chests in unlocked areas.",
             RelicNames.EVIL_EYE to "The necklace teleports to boss and raid entrances in unlocked areas.",
             RelicNames.MAP_OF_ALACRITY to "The map teleports to agility shortcuts in unlocked areas.",
-            RelicNames.TRANSMUTE to "The ledger is an unlimited source of nature runes.",
+            RelicNames.TRANSMUTE to
+                "The ledger is an unlimited source of nature runes. Alchemic Divergence and " +
+                    "Convergence (the alchemy spells) move up to 10 resources a tier up or down; " +
+                    "::dprelic alchemy off makes them normal alchemy again.",
             RelicNames.BUTLERS_BELL to
                 "Ring the bell to give the demon butler a job; it gathers or processes items even while " +
                     "you're logged out. Ring again to collect.",
@@ -137,7 +140,7 @@ object RelicEffects {
         if (player.invAdd(player.inv, item, 1).success) {
             return true
         }
-        player.mes("You have no room for the ${relic.name} item. Use ::relicitems when you do.")
+        player.mes("You have no room for the ${relic.name} item. Use ::dprelicitems when you do.")
         return false
     }
 
@@ -192,10 +195,18 @@ object RelicEffects {
         VarPlayerIntMapSetter.set(player, FLAGS_VARP, updated)
     }
 
-    /** Moves the stack of [item] that was just added to the inventory into the bank. */
-    fun bankFromInventory(player: Player, item: String): Boolean {
+    /** Moves the [count] of [item] that were just added to the inventory into the bank. */
+    fun bankFromInventory(player: Player, item: String, count: Int = 1): Boolean {
         val id = item.asRSCM(RSCMType.OBJ)
-        val slot = (player.inv.size - 1 downTo 0).firstOrNull { player.inv[it]?.id == id }
-        return slot != null && player.bankAppend(player.inv, slot)
+        var moved = 0
+        while (moved < count) {
+            val slot = (player.inv.size - 1 downTo 0).firstOrNull { player.inv[it]?.id == id } ?: break
+            val stack = player.inv[slot]?.count ?: break
+            if (!player.bankAppend(player.inv, slot)) {
+                break
+            }
+            moved += stack
+        }
+        return moved > 0
     }
 }

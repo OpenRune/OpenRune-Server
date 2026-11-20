@@ -10,6 +10,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
+import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
@@ -18,6 +19,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.protect.clearPendingAction
+import org.rsmod.api.player.stat.SkillModifiers
 import org.rsmod.api.player.ui.IfOverlayButtonT
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -43,6 +45,14 @@ constructor(
         for (alchemy in AlchemySpell.entries) {
             val spell = alchemy.resolveSpell() ?: continue
             val key = EventBus.composeLongKey(spell.component.packed, InventoryItemsComponent)
+            onEvent<IfOverlayButtonT>(key) { opAlchemy(spell, alchemy) }
+        }
+        for ((override, alchemy) in LeagueOverrides) {
+            val spell = alchemy.resolveSpell() ?: continue
+            val type =
+                runCatching { ServerCacheManager.getItem(override.asRSCM(RSCMType.OBJ)) }.getOrNull()
+            val button = type?.paramOrNull(BaseParams.spell_button) ?: continue
+            val key = EventBus.composeLongKey(button.packed, InventoryItemsComponent)
             onEvent<IfOverlayButtonT>(key) { opAlchemy(spell, alchemy) }
         }
         onPlayerQueueWithArgs<PendingAlchemy>(AlchemyQueue) { processQueuedAlchemy(it.args) }
@@ -98,6 +108,10 @@ constructor(
         val invObj = inv[targetSlot]
         if (!invObj.isType(targetObj)) {
             resendSlot(inv, 0)
+            return
+        }
+
+        if (SkillModifiers.alchemyReplacement(this, targetSlot, targetObj, alchemy.high)) {
             return
         }
 
@@ -243,6 +257,11 @@ constructor(
         val logger = InlineLogger()
         val Coins = "obj.coins".asRSCM(RSCMType.OBJ)
         val InventoryItemsComponent = "component.inventory:items".asRSCM(RSCMType.COMPONENT)
+        val LeagueOverrides =
+            listOf(
+                "obj.transmute_upgrade" to AlchemySpell.High,
+                "obj.transmute_downgrade" to AlchemySpell.Low,
+            )
         const val AlchemyQueue = "queue.alchemy"
         const val ToplevelSidebuttonSwitch = 915
         const val SpellbookSideTab = 6

@@ -308,7 +308,51 @@ SPECIAL = {
 }
 
 
+REGION_PHRASE = re.compile(
+    r"\s*(?:anywhere )?(?:in|within|on) (?:the )?(?:varlamore|wilderness|karamja|asgarnia|kandarin|"
+    r"morytania|tirannwn|kourend|kebos|fremennik provinces?|kharidian desert|desert|misthalin)"
+    r"(?: underground)?\b",
+    re.I,
+)
+HARMLESS_PHRASES = re.compile(
+    r"\s*(?:whilst|while) fishing|\s*while trying to cook it|\s*from essence(?: at the [\w ]+? altar)?|"
+    r",? at any dosage|\s*whilst (?:cutting down trees|mining a rock)",
+    re.I,
+)
+CONSTRAINT = re.compile(
+    r"\b(?:using|with|wielding|wearing|at|in|inside|around|near|while|whilst|without|during|on|"
+    r"from the|within|before|after|under|seconds?|in a row|same time|final hit)\b",
+    re.I,
+)
+TRACKED_WITH_CONSTRAINTS = ("action", "kill", "obtain")
+# A named boss only lives in its lair, so "Defeat the Kraken boss in Kraken Cove" names no extra
+# condition; plain monsters ("a Fire Giant in the Wilderness") still need the place checked.
+NAMED_BOSS = re.compile(r"^(?:[Dd]efeat|[Kk]ill) (?:the )?[A-Z]")
+BOSS_LAIR = re.compile(r" (?:in|at|on) (?:the )?[A-Z][\w' -]*?(?= \d[\d,]* times$|$)")
+
+
+def unverifiable(desc, track):
+    """Whether the task asks for something the server can't check (a tool, a place, a spell)."""
+    if track not in TRACKED_WITH_CONSTRAINTS:
+        return False
+    rest = HARMLESS_PHRASES.sub("", REGION_PHRASE.sub("", desc))
+    if track == "kill" and NAMED_BOSS.match(rest):
+        rest = BOSS_LAIR.sub("", rest)
+    if track == "action" and re.match(r"(steal|thieve) from ", rest, re.I):
+        rest = re.sub(r"^(steal|thieve) from ", "", rest, flags=re.I)
+    if re.match(r"(use a furnace|use an anvil) to ", rest, re.I):
+        rest = re.sub(r"^use an? \w+ to ", "", rest, flags=re.I)
+    return CONSTRAINT.search(rest) is not None
+
+
 def classify(task):
+    result = classify_text(task)
+    if result and unverifiable(task["desc"], result["track"]):
+        return None
+    return result
+
+
+def classify_text(task):
     d = task["desc"]
     if d in SPECIAL:
         return SPECIAL[d]
@@ -342,8 +386,28 @@ def toml_value(v):
     raise TypeError(v)
 
 
+def existing_counters(path):
+    """Task index -> counter varp from an earlier output, so saved kill counts keep their varp."""
+    counters = {}
+    index = None
+    try:
+        lines = open(path).read().splitlines()
+    except FileNotFoundError:
+        return counters
+    for line in lines:
+        m = re.match(r"index = (\d+)", line)
+        if m:
+            index = int(m.group(1))
+        m = re.match(r'counter = "varp.dp_task_count_(\d+)"', line)
+        if m and index is not None:
+            counters[index] = int(m.group(1))
+    return counters
+
+
 def main(src, dst):
     tasks = json.load(open(src))
+    previous = existing_counters(dst)
+    next_counter = max(previous.values(), default=-1) + 1
     out = ["# Generated from the cache's Leagues VI task list (enum_5950, dbtable action).",
            "# index = the task's bit in varp league_task_completed_<index / 32>.",
            "# tier = action_difficulty: 1 easy, 2 medium, 3 hard, 4 elite, 5 master.",
@@ -358,7 +422,11 @@ def main(src, dst):
             print("parse error", t["desc"], e, file=sys.stderr)
         tr = tr or dict(track="manual")
         if tr.get("count", 1) > 1 and tr["track"] in ("kill", "action"):
-            tr["counter"] = f"varp.dp_task_count_{len(counters)}"
+            number = previous.get(t["index"])
+            if number is None:
+                number = next_counter
+                next_counter += 1
+            tr["counter"] = f"varp.dp_task_count_{number}"
             counters.append(t["index"])
         stats[tr["track"]] += 1
         out.append("[[task]]")

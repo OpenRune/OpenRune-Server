@@ -83,7 +83,7 @@ object LeagueTasks {
     }
 
     private fun progress(player: Player, task: OfficialTask, amount: Int) {
-        if (player.isTaskDone(task) || !canProgress(player, task)) {
+        if (player.isTaskDone(task) || !canProgress(player, task) || !isInTaskArea(player, task)) {
             return
         }
         val counter = task.counter
@@ -128,6 +128,21 @@ object LeagueTasks {
         checkRegionUnlocks(player)
     }
 
+    /** Reverses [complete]; a bonus pact point the task may have earned is kept. */
+    fun undo(player: Player, task: OfficialTask) {
+        if (!player.isTaskDone(task)) {
+            return
+        }
+        val points = OfficialTasks.pointsFor(task)
+        player.setTaskDone(task, done = false)
+        player.leagueTasksDone = (player.leagueTasksDone - 1).coerceAtLeast(0)
+        player.leaguePoints = (player.leaguePoints - points).coerceAtLeast(0)
+        task.counter?.let { VarPlayerIntMapSetter.set(player, it, 0) }
+        player.mes("<col=ef1020>League task taken back: ${task.name} (-$points points).")
+        refreshDropRate(player)
+        player.syncLeagueClientVars()
+    }
+
     fun grantPactPoint(player: Player) {
         val max = DemonicPactsData.settings.maxPactPointsEarned
         if (player.pactPointsEarned >= max) {
@@ -166,6 +181,15 @@ object LeagueTasks {
         if (settings.regionTaskThresholds.contains(player.leagueTasksDone)) {
             player.mes("<col=ef1020>You can unlock a new area. Open Journal > Leagues > Areas.")
         }
+    }
+
+    /** Kills and skilling for an area's task only count while the player is in that area. */
+    private fun isInTaskArea(player: Player, task: OfficialTask): Boolean {
+        if (task.track != "kill" && task.track != "action") {
+            return true
+        }
+        val region = OfficialTasks.regionFor(task) ?: return true
+        return LeagueRegions.regionAt(player.coords) == region
     }
 
     fun canProgress(player: Player, task: OfficialTask): Boolean {

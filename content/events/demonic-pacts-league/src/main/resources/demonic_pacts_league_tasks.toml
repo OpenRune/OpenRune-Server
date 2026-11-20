@@ -161,11 +161,7 @@ name = "Chop Some Logs With a Steel Axe"
 desc = "Chop any kind of logs using a Steel Axe"
 tier = 1
 area = 0
-track = "action"
-action = "gather"
-stat = "stat.woodcutting"
-items = ["*log", "*logs"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 16
@@ -228,10 +224,7 @@ name = "Cook something with an apron"
 desc = "Cook something with an apron equipped"
 tier = 1
 area = 0
-track = "action"
-action = "cook"
-items = ["something"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 22
@@ -316,9 +309,7 @@ name = "Defeat an Imp with an earth spell"
 desc = "Defeat an Imp with an earth spell"
 tier = 1
 area = 0
-track = "kill"
-npcs = ["imp"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 31
@@ -469,11 +460,7 @@ name = "Mine some Ore With a Steel Pickaxe"
 desc = "Mine any ore using a Steel Pickaxe"
 tier = 1
 area = 0
-track = "action"
-action = "gather"
-stat = "stat.mining"
-items = ["*ore"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 48
@@ -724,11 +711,7 @@ name = "Chop a tree in the Tlati Rainforest"
 desc = "Chop a tree in the Tlati Rainforest"
 tier = 1
 area = 21
-track = "action"
-action = "gather"
-stat = "stat.woodcutting"
-items = ["tree"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 77
@@ -811,9 +794,7 @@ name = "Defeat an Imp in a basement"
 desc = "Defeat an Imp in the Kastori basement in Varlamore"
 tier = 1
 area = 21
-track = "kill"
-npcs = ["imp"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 86
@@ -2138,10 +2119,7 @@ name = "Butter a potato"
 desc = "Make a potato with butter"
 tier = 2
 area = 0
-track = "action"
-action = "make"
-items = ["potato"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 241
@@ -2297,11 +2275,7 @@ name = "Chop Some Logs With a Rune Axe"
 desc = "Chop any kind of logs using a Rune Axe"
 tier = 2
 area = 0
-track = "action"
-action = "gather"
-stat = "stat.woodcutting"
-items = ["*log", "*logs"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 258
@@ -2492,11 +2466,7 @@ name = "Craft 20 Silver items"
 desc = "Craft 20 Silver items using Silver Bars"
 tier = 2
 area = 0
-track = "action"
-action = "craft"
-items = ["silver item", "silver items"]
-count = 20
-counter = "varp.dp_task_count_14"
+track = "manual"
 
 [[task]]
 index = 279
@@ -2553,10 +2523,7 @@ name = "Defeat 3 chickens in 6 seconds"
 desc = "Defeat 3 chickens in 6 seconds"
 tier = 2
 area = 0
-track = "kill"
-npcs = ["chicken", "chickens"]
-count = 3
-counter = "varp.dp_task_count_16"
+track = "manual"
 
 [[task]]
 index = 285
@@ -2575,10 +2542,7 @@ name = "Defeat 5 creatures with a mace"
 desc = "Defeat 5 creatures with a mace as the final hit"
 tier = 2
 area = 0
-track = "kill"
-npcs = ["creature", "creatures"]
-count = 5
-counter = "varp.dp_task_count_18"
+track = "manual"
 
 [[task]]
 index = 287
@@ -2597,9 +2561,7 @@ name = "Defeat a Scorpion with a Mithril Spear"
 desc = "Defeat a Scorpion with a mithril spear as the final hit"
 tier = 2
 area = 0
-track = "kill"
-npcs = ["scorpion"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 289
@@ -3100,10 +3062,7 @@ name = "Make some Flour"
 desc = "Make some Flour in a windmill"
 tier = 2
 area = 0
-track = "action"
-action = "make"
-items = ["flour"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 347
@@ -3150,11 +3109,7 @@ name = "Mine some Ore With a Rune Pickaxe"
 desc = "Mine any ore using a Rune Pickaxe"
 tier = 2
 area = 0
-track = "action"
-action = "gather"
-stat = "stat.mining"
-items = ["*ore"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 351
@@ -3356,10 +3311,7 @@ name = "Slay 250 Creatures"
 desc = "Slay 250 creatures whilst on a Slayer Task"
 tier = 2
 area = 0
-track = "kill"
-npcs = ["creature", "creatures"]
-count = 250
-counter = "varp.dp_task_count_25"
+track = "manual"
 
 [[task]]
 index = 374
@@ -3433,11 +3385,7 @@ name = "Successfully Cook 5 Pieces of Food"
 desc = "Cook 5 pieces of food in a row without burning them"
 tier = 2
 area = 0
-track = "action"
-action = "cook"
-items = ["pieces of food"]
-count = 5
-counter = "varp.dp_task_count_29"
+track = "manual"
 
 [[task]]
 index = 381
@@ -3469,10 +3417,7 @@ name = "Upset the Sandwich lady"
 desc = "Make the Sandwich lady quite cross with you"
 tier = 2
 area = 0
-track = "action"
-action = "make"
-items = ["sandwich lady quite cross"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 385
@@ -3520,10 +3465,7 @@ name = "Bury some Wyrm Bones near a Wyrm skeleton"
 desc = "Bury some Wyrm Bones or Wyrmling Bones near a Wyrm skeleton"
 tier = 2
 area = 21
-track = "action"
-action = "bury"
-items = ["wyrm bone", "wyrm bones", "wyrmling bone", "wyrmling bones"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 391
@@ -3687,9 +3629,7 @@ name = "Defeat a Jaguar without taking any damage from it"
 desc = "Defeat a fully grown Jaguar without taking any damage from it"
 tier = 2
 area = 21
-track = "kill"
-npcs = ["fully grown jaguar"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 410
@@ -3697,9 +3637,7 @@ name = "Defeat a Oryx with melee"
 desc = "Defeat an Oryx in the Avium Savannah with melee"
 tier = 2
 area = 21
-track = "kill"
-npcs = ["oryx"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 411
@@ -3898,12 +3836,7 @@ name = "Mine 20 Mithril Ore in the Stonecutter Outpost"
 desc = "Mine 20 Mithril Ore in the Stonecutter Outpost"
 tier = 2
 area = 21
-track = "action"
-action = "gather"
-stat = "stat.mining"
-items = ["mithril ore"]
-count = 20
-counter = "varp.dp_task_count_33"
+track = "manual"
 
 [[task]]
 index = 433
@@ -4081,11 +4014,7 @@ name = "Cast Degrime Spell Full Clean"
 desc = "Clean 26 herbs at the same time using the Degrime spell"
 tier = 2
 area = 10
-track = "action"
-action = "clean"
-items = ["herb", "herbs"]
-count = 26
-counter = "varp.dp_task_count_40"
+track = "manual"
 
 [[task]]
 index = 451
@@ -4165,11 +4094,7 @@ name = "Catch a Monkfish"
 desc = "Catch a Monkfish at the Piscatoris Fishing Colony"
 tier = 2
 area = 4
-track = "action"
-action = "gather"
-stat = "stat.fishing"
-items = ["monkfish"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 461
@@ -4259,12 +4184,7 @@ name = "Chop 15 Yew Logs in Shayzien"
 desc = "Chop 15 Yew Logs in Shayzien"
 tier = 2
 area = 10
-track = "action"
-action = "gather"
-stat = "stat.woodcutting"
-items = ["yew log", "yew logs"]
-count = 15
-counter = "varp.dp_task_count_43"
+track = "manual"
 
 [[task]]
 index = 471
@@ -4710,10 +4630,7 @@ name = "Craft a Lava Rune at the Fire Altar"
 desc = "Craft a Lava Rune at the Fire Altar"
 tier = 2
 area = 6
-track = "action"
-action = "craft"
-items = ["lava rune"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 523
@@ -4721,10 +4638,7 @@ name = "Craft a Rune Using Daeyalt Essence"
 desc = "Craft any rune using Daeyalt Essence"
 tier = 2
 area = 5
-track = "action"
-action = "craft"
-items = ["rune"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 524
@@ -4732,10 +4646,7 @@ name = "Craft some Pottery In Sophanem"
 desc = "Craft some Pottery In Sophanem"
 tier = 2
 area = 6
-track = "action"
-action = "craft"
-items = ["pottery"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 525
@@ -4767,10 +4678,7 @@ name = "Defeat 150 Lizardmen Shaman"
 desc = "Help the Shayzien House by dealing with 150 Lizardmen shamans"
 tier = 2
 area = 10
-track = "kill"
-npcs = ["lizardmen shaman", "lizardmen shamans"]
-count = 150
-counter = "varp.dp_task_count_47"
+track = "manual"
 
 [[task]]
 index = 529
@@ -4789,10 +4697,7 @@ name = "Defeat 5 Spinners"
 desc = "Defeat 5 Spinners in Pest Control"
 tier = 2
 area = 3
-track = "kill"
-npcs = ["spinner", "spinners"]
-count = 5
-counter = "varp.dp_task_count_49"
+track = "manual"
 
 [[task]]
 index = 531
@@ -4800,10 +4705,7 @@ name = "Defeat 50 Lizardmen Shaman"
 desc = "Help the Shayzien House by dealing with 50 Lizardmen shamans"
 tier = 2
 area = 10
-track = "kill"
-npcs = ["lizardmen shaman", "lizardmen shamans"]
-count = 50
-counter = "varp.dp_task_count_50"
+track = "manual"
 
 [[task]]
 index = 532
@@ -4811,10 +4713,7 @@ name = "Defeat 8 penguins within 5 seconds"
 desc = "Defeat 8 penguins within 5 seconds"
 tier = 2
 area = 8
-track = "kill"
-npcs = ["penguin", "penguins"]
-count = 8
-counter = "varp.dp_task_count_51"
+track = "manual"
 
 [[task]]
 index = 533
@@ -4944,9 +4843,7 @@ name = "Defeat a Drake"
 desc = "Defeat a Drake in the Mount Karuulm Slayer Dungeon"
 tier = 2
 area = 10
-track = "kill"
-npcs = ["drake"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 546
@@ -5004,9 +4901,7 @@ name = "Defeat a Kalphite with the Keris Partisan"
 desc = "Defeat a Kalphite with the Keris Partisan"
 tier = 2
 area = 6
-track = "kill"
-npcs = ["kalphite"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 552
@@ -5074,9 +4969,7 @@ name = "Defeat a Revenant Dragon"
 desc = "Defeat a Revenant Dragon inside the Revenant Caves"
 tier = 2
 area = 11
-track = "kill"
-npcs = ["revenant dragon"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 559
@@ -5094,9 +4987,7 @@ name = "Defeat a Skeletal Wyvern"
 desc = "Defeat a Skeletal Wyvern in the Asgarnian Ice Dungeon"
 tier = 2
 area = 3
-track = "kill"
-npcs = ["skeletal wyvern"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 561
@@ -5144,9 +5035,7 @@ name = "Defeat a Tortoise With Riders in Kandarin"
 desc = "Defeat a Tortoise with riders in Kandarin"
 tier = 2
 area = 4
-track = "kill"
-npcs = ["tortoise"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 566
@@ -5174,9 +5063,7 @@ name = "Defeat a TzHaar"
 desc = "Defeat any TzHaar in Mor Ul Rek"
 tier = 2
 area = 2
-track = "kill"
-npcs = ["tzhaar"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 569
@@ -5184,9 +5071,7 @@ name = "Defeat a Vyrewatch Sentinel"
 desc = "Defeat a Vyrewatch Sentinel in Darkmeyer"
 tier = 2
 area = 5
-track = "kill"
-npcs = ["vyrewatch sentinel"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 570
@@ -5786,9 +5671,7 @@ name = "Inferior Demonslaying"
 desc = "Defeat a demon using the Inferior Demonbane spell"
 tier = 2
 area = 10
-track = "kill"
-npcs = ["demon"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 638
@@ -5861,12 +5744,7 @@ name = "Mine 15 Granite in the Necropolis"
 desc = "Mine 15 Granite in the Necropolis"
 tier = 2
 area = 6
-track = "action"
-action = "gather"
-stat = "stat.mining"
-items = ["granite"]
-count = 15
-counter = "varp.dp_task_count_60"
+track = "manual"
 
 [[task]]
 index = 646
@@ -5887,12 +5765,7 @@ name = "Mine 30 Chunks of Granite"
 desc = "Mine 30 chunks of Granite at the Kharidian Desert Quarry"
 tier = 2
 area = 6
-track = "action"
-action = "gather"
-stat = "stat.mining"
-items = ["chunks of granite"]
-count = 30
-counter = "varp.dp_task_count_62"
+track = "manual"
 
 [[task]]
 index = 648
@@ -5929,9 +5802,7 @@ name = "Obtain 20 Golden Nuggets"
 desc = "Obtain 20 Golden Nuggets from the Motherlode Mine beneath Falador"
 tier = 2
 area = 3
-track = "obtain"
-items = ["Golden Nuggets"]
-count = 20
+track = "manual"
 
 [[task]]
 index = 652
@@ -5969,9 +5840,7 @@ name = "Obtain the Temple Key"
 desc = "Obtain the Temple key in the Forthos Dungeon"
 tier = 2
 area = 10
-track = "obtain"
-items = ["Temple key"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 656
@@ -6242,10 +6111,7 @@ name = "Smelt a Steel Bar in Port Phasmatys"
 desc = "Smelt a Steel Bar in Port Phasmatys"
 tier = 2
 area = 5
-track = "action"
-action = "smelt"
-items = ["steel bar"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 689
@@ -6253,10 +6119,7 @@ name = "Smelt a mithril bar in a volcanic fissure"
 desc = "Smelt a Mithril bar in a volcanic Fissure"
 tier = 2
 area = 10
-track = "action"
-action = "smelt"
-items = ["mithril bar"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 690
@@ -6294,10 +6157,7 @@ name = "Steal 1 Artefact"
 desc = "Steal an artefact for Captain Khaled in Piscarilius"
 tier = 2
 area = 10
-track = "action"
-action = "steal"
-items = ["artefact"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 694
@@ -6305,11 +6165,7 @@ name = "Steal 15 Artefacts"
 desc = "Steal 10 artefacts for Captain Khaled in Piscarilius"
 tier = 2
 area = 10
-track = "action"
-action = "steal"
-items = ["artefact", "artefacts"]
-count = 10
-counter = "varp.dp_task_count_65"
+track = "manual"
 
 [[task]]
 index = 695
@@ -6317,10 +6173,7 @@ name = "Steal a Chisel"
 desc = "Steal a Chisel from a crafting stall in Keldagrim"
 tier = 2
 area = 8
-track = "action"
-action = "steal"
-items = ["chisel"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 696
@@ -6328,10 +6181,7 @@ name = "Steal a Cow bell in Rellekka"
 desc = "Steal a Cow bell in Rellekka"
 tier = 2
 area = 8
-track = "action"
-action = "steal"
-items = ["cow bell"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 697
@@ -6350,10 +6200,7 @@ name = "Steal a Golovanova Fruit Top"
 desc = "Steal a Golovanova fruit top from a fruit stall in Hosidius"
 tier = 2
 area = 10
-track = "action"
-action = "steal"
-items = ["golovanova fruit top"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 699
@@ -7670,9 +7517,7 @@ name = "Defeat the Doom of Mokhiatl"
 desc = "Defeat the Doom of Mokhiatl at any delve level"
 tier = 3
 area = 21
-track = "kill"
-npcs = ["doom of mokhiatl"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 842
@@ -7975,11 +7820,7 @@ name = "Blast Furnace 100 Adamantite Bars"
 desc = "Smelt 100 Adamantite Bars at the Blast Furnace"
 tier = 3
 area = 8
-track = "action"
-action = "smelt"
-items = ["adamantite bar", "adamantite bars"]
-count = 100
-counter = "varp.dp_task_count_95"
+track = "manual"
 
 [[task]]
 index = 876
@@ -7987,11 +7828,7 @@ name = "Blast Furnace 100 Mithril Bars"
 desc = "Smelt 100 Mithril Bars at the Blast Furnace"
 tier = 3
 area = 8
-track = "action"
-action = "smelt"
-items = ["mithril bar", "mithril bars"]
-count = 100
-counter = "varp.dp_task_count_96"
+track = "manual"
 
 [[task]]
 index = 877
@@ -8138,12 +7975,7 @@ name = "Chop 100 Teak Logs in Prifddinas"
 desc = "Chop 100 Teak Logs in Prifddinas"
 tier = 3
 area = 7
-track = "action"
-action = "gather"
-stat = "stat.woodcutting"
-items = ["teak log", "teak logs"]
-count = 100
-counter = "varp.dp_task_count_99"
+track = "manual"
 
 [[task]]
 index = 894
@@ -8164,11 +7996,7 @@ name = "Chop a Magic Log at the Forsaken Tower"
 desc = "Chop a log from the Magic trees around the Forsaken Tower"
 tier = 3
 area = 10
-track = "action"
-action = "gather"
-stat = "stat.woodcutting"
-items = ["log"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 896
@@ -8416,11 +8244,7 @@ name = "Cook 20 Karambwans in a row"
 desc = "Cook 20 Karambwans in a row without buring them"
 tier = 3
 area = 2
-track = "action"
-action = "cook"
-items = ["karambwan", "karambwans"]
-count = 20
-counter = "varp.dp_task_count_102"
+track = "manual"
 
 [[task]]
 index = 926
@@ -8428,11 +8252,7 @@ name = "Cook 20 Sharks in Darkmeyer"
 desc = "Cook 20 Sharks in Darkmeyer"
 tier = 3
 area = 5
-track = "action"
-action = "cook"
-items = ["shark", "sharks"]
-count = 20
-counter = "varp.dp_task_count_103"
+track = "manual"
 
 [[task]]
 index = 927
@@ -8440,11 +8260,7 @@ name = "Craft 100 Blood runes"
 desc = "Craft 100 Blood runes at the Kourend Blood Altar"
 tier = 3
 area = 10
-track = "action"
-action = "craft"
-items = ["blood rune", "blood runes"]
-count = 100
-counter = "varp.dp_task_count_104"
+track = "manual"
 
 [[task]]
 index = 928
@@ -8584,10 +8400,7 @@ name = "Defeat 150 Demonic Gorillas"
 desc = "Defeat 150 Demonic Gorillas in the Crash Site Cavern"
 tier = 3
 area = 4
-track = "kill"
-npcs = ["demonic gorilla", "demonic gorillas"]
-count = 150
-counter = "varp.dp_task_count_110"
+track = "manual"
 
 [[task]]
 index = 943
@@ -8595,10 +8408,7 @@ name = "Defeat 300 Lizardmen Shaman"
 desc = "Help the Shayzien House by dealing with 300 Lizardmen shamans"
 tier = 3
 area = 10
-track = "kill"
-npcs = ["lizardmen shaman", "lizardmen shamans"]
-count = 300
-counter = "varp.dp_task_count_111"
+track = "manual"
 
 [[task]]
 index = 944
@@ -8788,10 +8598,7 @@ name = "Defeat Each Dagannoth King 150 Times"
 desc = "Defeat all three of the Dagannoth Kings in the Waterbirth Island Dungeon 150 times"
 tier = 3
 area = 8
-track = "kill"
-npcs = ["all three of the dagannoth king", "all three of the dagannoth kings"]
-count = 150
-counter = "varp.dp_task_count_124"
+track = "manual"
 
 [[task]]
 index = 962
@@ -8799,10 +8606,7 @@ name = "Defeat Each Dagannoth King 50 Times"
 desc = "Defeat all three of the Dagannoth Kings in the Waterbirth Island Dungeon 50 times"
 tier = 3
 area = 8
-track = "kill"
-npcs = ["all three of the dagannoth king", "all three of the dagannoth kings"]
-count = 50
-counter = "varp.dp_task_count_125"
+track = "manual"
 
 [[task]]
 index = 963
@@ -9223,9 +9027,7 @@ name = "Defeat a Basilisk Knight"
 desc = "Defeat a Basilisk Knight in the Jormungand's Prison"
 tier = 3
 area = 8
-track = "kill"
-npcs = ["basilisk knight"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1003
@@ -9233,9 +9035,7 @@ name = "Defeat a Cave Kraken"
 desc = "Defeat a Cave Kraken in Kraken Cove"
 tier = 3
 area = 4
-track = "kill"
-npcs = ["cave kraken"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1004
@@ -9253,9 +9053,7 @@ name = "Defeat a Demonic Gorilla"
 desc = "Defeat a Demonic Gorilla in the Crash Site Cavern"
 tier = 3
 area = 4
-track = "kill"
-npcs = ["demonic gorilla"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1006
@@ -9273,9 +9071,7 @@ name = "Defeat a Hydra"
 desc = "Defeat a regular Hydra in the Mount Karuulm Slayer Dungeon"
 tier = 3
 area = 10
-track = "kill"
-npcs = ["regular hydra"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1008
@@ -9283,9 +9079,7 @@ name = "Defeat a Jubster while dressed like it"
 desc = "Defeat a Jubster underneath the Tower of Life while wearing a beret"
 tier = 3
 area = 4
-track = "kill"
-npcs = ["jubster underneath the tower of life"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1009
@@ -9293,9 +9087,7 @@ name = "Defeat a Mithril Dragon"
 desc = "Defeat a Mithril Dragon in the Ancient Cavern"
 tier = 3
 area = 4
-track = "kill"
-npcs = ["mithril dragon"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1010
@@ -9313,9 +9105,7 @@ name = "Defeat a Rock Crab in one hit"
 desc = "Defeat a Rock Crab by dealing 50 damage to it in one hit"
 tier = 3
 area = 8
-track = "kill"
-npcs = ["rock crab"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1012
@@ -9333,9 +9123,7 @@ name = "Defeat a Runite golem"
 desc = "Defeat a Runite golem inside the Wilderness resource area"
 tier = 3
 area = 11
-track = "kill"
-npcs = ["runite golem"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1014
@@ -9343,9 +9131,7 @@ name = "Defeat a Smoke Devil"
 desc = "Defeat a Smoke Devil in the Smoke Devil Dungeon"
 tier = 3
 area = 4
-track = "kill"
-npcs = ["smoke devil"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1015
@@ -9436,9 +9222,7 @@ name = "Defeat the Dagannoth Kings Without Leaving"
 desc = "Defeat all three of the Dagannoth Kings in the Waterbirth Island Dungeon without leaving their area"
 tier = 3
 area = 8
-track = "kill"
-npcs = ["all three of the dagannoth king", "all three of the dagannoth kings"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1024
@@ -9573,9 +9357,7 @@ name = "Defeat the Royal Titans solo"
 desc = "Defeat the Royal Titans without any other player joining the encounter"
 tier = 3
 area = 3
-track = "kill"
-npcs = ["royal titan", "royal titans"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1037
@@ -9604,9 +9386,7 @@ name = "Defeat the memory of Seren"
 desc = "Defeat the Fragment of Seren by replaying her fight using the memoriam device"
 tier = 3
 area = 7
-track = "kill"
-npcs = ["fragment of seren"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1040
@@ -10373,11 +10153,7 @@ name = "Make 100 Mahogany Planks in Prifddinas"
 desc = "Make 100 Mahogany Planks in Prifddinas"
 tier = 3
 area = 7
-track = "action"
-action = "make"
-items = ["mahogany plank", "mahogany planks"]
-count = 100
-counter = "varp.dp_task_count_160"
+track = "manual"
 
 [[task]]
 index = 1128
@@ -10430,9 +10206,7 @@ name = "Obtain Every Hallowed Tool"
 desc = "Obtain all four Hallowed Tools from the Hallowed Sepulchre"
 tier = 3
 area = 5
-track = "obtain"
-items = ["all four Hallowed Tools"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1133
@@ -10440,9 +10214,7 @@ name = "Obtain Runite Ore at the Blast Mine"
 desc = "Obtain a piece of Runite ore while taking part in the Blast Mine"
 tier = 3
 area = 10
-track = "obtain"
-items = ["piece of Runite ore"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1134
@@ -12132,9 +11904,7 @@ name = "Slay an Abyssal Demon"
 desc = "Kill an Abyssal Demon whilst on an Abyssal Demon Slayer Task"
 tier = 4
 area = 0
-track = "kill"
-npcs = ["abyssal demon"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1315
@@ -12161,9 +11931,7 @@ name = "Complete 1 Deep delve"
 desc = "Defeat the Doom of Mokhiatl at delve level 8"
 tier = 4
 area = 21
-track = "kill"
-npcs = ["doom of mokhiatl"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1318
@@ -12171,10 +11939,7 @@ name = "Complete 25 Deep delves"
 desc = "Defeat the Doom of Mokhiatl at delve level 8 or above 25 times"
 tier = 4
 area = 21
-track = "kill"
-npcs = ["doom of mokhiatl"]
-count = 25
-counter = "varp.dp_task_count_174"
+track = "manual"
 
 [[task]]
 index = 1319
@@ -12182,10 +11947,7 @@ name = "Complete 75 Deep delves"
 desc = "Defeat the Doom of Mokhiatl at delve level 8 or above 75 times"
 tier = 4
 area = 21
-track = "kill"
-npcs = ["doom of mokhiatl"]
-count = 75
-counter = "varp.dp_task_count_175"
+track = "manual"
 
 [[task]]
 index = 1320
@@ -12386,11 +12148,7 @@ name = "Blast Furnace 100 Runite Bars"
 desc = "Smelt 100 Runite Bars at the Blast Furnace"
 tier = 4
 area = 8
-track = "action"
-action = "smelt"
-items = ["runite bar", "runite bars"]
-count = 100
-counter = "varp.dp_task_count_179"
+track = "manual"
 
 [[task]]
 index = 1343
@@ -12661,11 +12419,7 @@ name = "Craft 100 Aether runes"
 desc = "Craft 100 Aether runes at the cosmic altar in Zanaris"
 tier = 4
 area = 10
-track = "action"
-action = "craft"
-items = ["aether rune", "aether runes"]
-count = 100
-counter = "varp.dp_task_count_181"
+track = "manual"
 
 [[task]]
 index = 1376
@@ -12706,10 +12460,7 @@ name = "Craft a Wrath Rune"
 desc = "Craft a Wrath Rune at the Wrath Altar"
 tier = 4
 area = 4
-track = "action"
-action = "craft"
-items = ["wrath rune"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1380
@@ -12757,10 +12508,7 @@ name = "Defeat 300 Demonic Gorillas"
 desc = "Defeat 300 Demonic Gorillas in the Crash Site Cavern"
 tier = 4
 area = 4
-track = "kill"
-npcs = ["demonic gorilla", "demonic gorillas"]
-count = 300
-counter = "varp.dp_task_count_184"
+track = "manual"
 
 [[task]]
 index = 1386
@@ -12768,10 +12516,7 @@ name = "Defeat 500 Demonic Gorillas"
 desc = "Defeat 500 Demonic Gorillas in the Crash Site Cavern"
 tier = 4
 area = 4
-track = "kill"
-npcs = ["demonic gorilla", "demonic gorillas"]
-count = 500
-counter = "varp.dp_task_count_185"
+track = "manual"
 
 [[task]]
 index = 1387
@@ -12850,10 +12595,7 @@ name = "Defeat Each Dagannoth King 300 Times"
 desc = "Defeat all three of the Dagannoth Kings in the Waterbirth Island Dungeon 300 times"
 tier = 4
 area = 8
-track = "kill"
-npcs = ["all three of the dagannoth king", "all three of the dagannoth kings"]
-count = 300
-counter = "varp.dp_task_count_189"
+track = "manual"
 
 [[task]]
 index = 1395
@@ -12861,9 +12603,7 @@ name = "Defeat Galvek again"
 desc = "Defeat Galvek again using the pool of dreams in the Myths guild"
 tier = 4
 area = 4
-track = "kill"
-npcs = ["galvek again"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1396
@@ -14035,12 +13775,7 @@ name = "Mine 1000 Ancient Essence"
 desc = "Mine 1000 Ancient Essence from Ancient Essence crystals within the Ghorrock dungeon"
 tier = 4
 area = 8
-track = "action"
-action = "gather"
-stat = "stat.mining"
-items = ["ancient essence"]
-count = 1000
-counter = "varp.dp_task_count_209"
+track = "manual"
 
 [[task]]
 index = 1524
@@ -14060,11 +13795,7 @@ name = "Mine some Runite ore with a Dragon Pickaxe"
 desc = "Mine some Runite ore with a Dragon Pickaxe within the Wilderness"
 tier = 4
 area = 11
-track = "action"
-action = "gather"
-stat = "stat.mining"
-items = ["runite ore"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1526
@@ -14082,9 +13813,7 @@ name = "Obtain a Zalcano Shard"
 desc = "Obtain a Zalcano Shard as a drop from Zalcano in Prifddinas"
 tier = 4
 area = 7
-track = "obtain"
-items = ["Zalcano Shard"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1528
@@ -14410,10 +14139,7 @@ name = "Defeat 6,6,6 Unbound Jal-tok Jad"
 desc = "Defeat 18 Unbound Jal-tok Jad's in the infinite Jad challenge"
 tier = 5
 area = 2
-track = "kill"
-npcs = ["unbound jal-tok jad'", "unbound jal-tok jad's"]
-count = 18
-counter = "varp.dp_task_count_211"
+track = "manual"
 
 [[task]]
 index = 1567
@@ -14421,9 +14147,7 @@ name = "Defeat Nex Solo"
 desc = "Defeat Nex in a private instance without help from any other player"
 tier = 5
 area = 3
-track = "kill"
-npcs = ["nex"]
-count = 1
+track = "manual"
 
 [[task]]
 index = 1568

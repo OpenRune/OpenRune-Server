@@ -142,3 +142,28 @@ transmit = "Never"
 id = "varp.dp_flask_shield"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+id = "varp.dp_last_teleport_0"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_last_teleport_1"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_last_teleport_2"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_last_teleport_3"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.dp_previous_spellbook"
+scope = "Perm"
+transmit = "Never"

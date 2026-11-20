@@ -76,6 +76,7 @@ constructor(
 
     override fun ScriptContext.startup() {
         installHooks()
+        TransmuteSpells.install()
         onEvent<SkillingProductPrepareEvent> { onPrepare(product) }
         onEvent<SkillingActionCompleteEvent> { onComplete(player, context) }
         onEvent<NpcHitEvents.ModifyAny> { onPlayerHitsNpc(npc, hit) }
@@ -86,21 +87,24 @@ constructor(
         }
 
         onRelicItemOp(GRIMOIRE_ITEM, GRIMOIRE_OPS) { switchSpellbook() }
+        onRelicItemOp(GRIMOIRE_ITEM, setOf("Previous Spellbook")) { previousSpellbook() }
+        onRelicItemOp(GRIMOIRE_ITEM, setOf("Check Previous")) { checkPreviousSpellbook() }
         onRelicItemOp(FLASK_ITEM, FLASK_OPS) { drinkFlask() }
+        onRelicItemOp(FLASK_ITEM, setOf("Check")) { checkFlask() }
 
-        onCommand("relics") {
+        onCommand("dprelics") {
             desc = "List your relics and what they do here"
             cheat { player.listRelics() }
         }
-        onCommand("relic") {
-            desc = "Toggle relic options: ::relic bank on|off, ::relic burn on|off"
+        onCommand("dprelic") {
+            desc = "Toggle relic options: ::dprelic bank on|off, ::dprelic burn on|off"
             cheat { player.toggleRelicOption(args) }
         }
         onCommand("releaseshards") {
             desc = "Soul Harvest: release your soul shards for Prayer XP (stands in for the Libation bowl)"
             cheat { player.releaseShards() }
         }
-        onCommand("relicitems") {
+        onCommand("dprelicitems") {
             desc = "Get back the items your relics give"
             cheat { player.reclaimRelicItems() }
         }
@@ -272,7 +276,7 @@ constructor(
             }
         }
         if (RelicEffects.banksResources(player)) {
-            RelicEffects.bankFromInventory(player, product.item)
+            RelicEffects.bankFromInventory(player, product.item, product.count)
         }
     }
 
@@ -312,8 +316,44 @@ constructor(
         val books = Spellbook.entries
         val choice = menu("Choose a spellbook", hotkeys = true, choices = SPELLBOOK_NAMES)
         val book = books.getOrNull(choice) ?: return
+        changeSpellbook(choice, book)
+    }
+
+    private fun ProtectedAccess.changeSpellbook(index: Int, book: Spellbook) {
+        val current = player.vars[SPELLBOOK_VARBIT]
+        if (current != index) {
+            VarPlayerIntMapSetter.set(player, PREVIOUS_SPELLBOOK_VARP, current + 1)
+        }
         spellbooks.setSpellbook(player, book)
-        mes("Your spellbook is now the ${SPELLBOOK_NAMES[choice]}.")
+        mes("Your spellbook is now the ${SPELLBOOK_NAMES[index]}.")
+    }
+
+    private fun ProtectedAccess.previousSpellbook() {
+        if (!player.hasRelic(RelicNames.GRIMOIRE)) {
+            mes("You need the Grimoire relic to use this.")
+            return
+        }
+        val index = player.vars[PREVIOUS_SPELLBOOK_VARP] - 1
+        val book = Spellbook.entries.getOrNull(index)
+        if (book == null) {
+            mes("You haven't switched spellbooks with the grimoire yet.")
+            return
+        }
+        changeSpellbook(index, book)
+    }
+
+    private fun ProtectedAccess.checkPreviousSpellbook() {
+        val name = SPELLBOOK_NAMES.getOrNull(player.vars[PREVIOUS_SPELLBOOK_VARP] - 1)
+        mes(if (name == null) "The grimoire has no previous spellbook yet." else "The grimoire's previous spellbook is the $name.")
+    }
+
+    private fun ProtectedAccess.checkFlask() {
+        val ready = player.vars[FLASK_READY_VARP]
+        if (ready > mapClock) {
+            mes("The flask will be ready in about ${(ready - mapClock) * 6 / 10} seconds.")
+        } else {
+            mes("The flask is ready to use.")
+        }
     }
 
     private fun ProtectedAccess.drinkFlask() {
@@ -348,7 +388,7 @@ constructor(
             return
         }
         statAdvance("stat.prayer", SOUL_SHARD_XP * count)
-        mes("You release the souls of $count shards.")
+        mes(if (count == 1) "You release the soul in your shard." else "You release the souls in your $count shards.")
     }
 
     private fun flaskExplosions(player: Player) {
@@ -391,7 +431,7 @@ constructor(
                 else -> null
             }
         if (enabled == null) {
-            mes("Use ::relic bank on|off or ::relic burn on|off.")
+            mes(RELIC_OPTION_USAGE)
             return
         }
         when (option) {
@@ -403,7 +443,12 @@ constructor(
                 RelicEffects.setBurning(this, enabled)
                 mes("Woodsman log burning is now ${if (enabled) "on" else "off"}.")
             }
-            else -> mes("Use ::relic bank on|off or ::relic burn on|off.")
+            "alchemy" -> {
+                TransmuteSpells.setTransmuting(this, enabled)
+                val mode = if (enabled) "transmute resources" else "turn items into coins"
+                mes("Alchemy spells will now $mode.")
+            }
+            else -> mes(RELIC_OPTION_USAGE)
         }
     }
 
@@ -456,6 +501,7 @@ constructor(
         const val GRIMOIRE_ITEM = "obj.league_3_magic_book"
         const val FLASK_ITEM = "obj.league_flask_of_fervour"
         const val TRANSMUTE_ITEM = "obj.league_transmute_book"
+        const val RELIC_OPTION_USAGE = "Use ::dprelic bank|burn|alchemy on|off."
         const val EXECUTIONER_ITEM = "obj.league_executioner_weapon"
         const val SOUL_SHARD_ITEM = "obj.league_soul_shard"
 
@@ -489,8 +535,10 @@ constructor(
         val GATHERING_STATS = setOf("stat.woodcutting", "stat.fishing", "stat.mining")
         val HOTFOOT_STATS = setOf("stat.cooking", "stat.agility")
         val BARE_HAND_STATS = setOf("stat.woodcutting", "stat.mining")
-        val GRIMOIRE_OPS = setOf("Change Spellbook", "Read", "Open", "Switch", "Use", "Change", "Spellbook")
-        val FLASK_OPS = setOf("Activate", "Drink", "Sip", "Quaff", "Consume", "Use")
+        val GRIMOIRE_OPS = setOf("Change Spellbook", "Read", "Open", "Switch", "Change", "Spellbook")
+        val FLASK_OPS = setOf("Activate", "Drink", "Sip", "Quaff", "Consume")
+        const val SPELLBOOK_VARBIT = "varbit.spellbook"
+        const val PREVIOUS_SPELLBOOK_VARP = "varp.dp_previous_spellbook"
         val SPELLBOOK_NAMES =
             listOf("Standard spellbook", "Ancient Magicks", "Lunar spellbook", "Arceuus spellbook")
 

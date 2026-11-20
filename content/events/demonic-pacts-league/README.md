@@ -40,16 +40,16 @@ The relic window shows the game's own description of each relic. On this server:
 
 | Relic | On this server |
 |---|---|
-| Endless Harvest | Double logs, fish and ore and their XP; trees and rocks don't deplete; resources go to the bank (`::relic bank off`). |
+| Endless Harvest | Double logs, fish and ore and their XP; trees and rocks don't deplete; resources go to the bank (`::dprelic bank off`). |
 | Barbarian Gathering | Chop and mine bare-handed (as crystal tools); failed gathering attempts succeed half the time; 10% bonus Strength and Agility XP. Fishing still needs tools, and the knapsack does nothing. |
 | Abundance | +10 to non-combat skills, +2 XP per drop in them, 2 coins per XP gained in them. |
 | Hotfoot | Agility and Cooking always succeed. With the searing boots on: fish are cooked, ore is smelted, running gives Agility XP. No Agility courses exist here. |
 | Friendly Forager | With the pouch carried, gathering sometimes finds a grimy herb (Herblore level + 25). Potions are made with 4 doses; secondaries are saved 90% of the time. |
-| Woodsman | Cut logs are burned for Firemaking XP (`::relic burn off`). No Fletching or Hunter here. |
+| Woodsman | Cut logs are burned for Firemaking XP (`::dprelic burn off`). No Fletching or Hunter here. |
 | Bank Heist | The briefcase teleports to the official list of banks, deposit boxes and bank chests in unlocked areas. |
 | Evil Eye | The necklace teleports to the official list of boss and raid entrances in unlocked areas. |
 | Map of Alacrity | The map teleports to the official list of agility shortcuts in unlocked areas. |
-| Transmute | The ledger is an unlimited nature rune source. Alchemic Divergence and Convergence aren't in. |
+| Transmute | The ledger is an unlimited nature rune source. Alchemic Divergence and Convergence move up to 10 resources a tier up or down (10 Magic XP each), using the cache's transmutation chains. No auto-recast or bank toggle. |
 | Conniving Clues | Not in: this server has no clue scrolls. |
 | Butler's Bell | The bell gives the demon butler a job (ores 8, fish 14, logs 10, flax 50 a minute; processed items at half rate with 10 XP each). It keeps working while you're logged out; ring again to collect, noted. |
 | Nature's Accord | No Farming level requirements; 10x noted harvests with 10x XP; the fairy mushroom teleports to fairy rings and tool leprechauns in unlocked areas. Plants still die, and seeds aren't saved. |
@@ -88,9 +88,9 @@ server log names the item and lists its ops.
 | `::regions` | Region status and free choices. |
 | `::unlockregion <key>` | Use a region choice. |
 | `::dpregion` | Which region the tile you stand on belongs to. |
-| `::relics` | Your relics and what they do here. |
-| `::relic bank on\|off`, `::relic burn on\|off` | Endless Harvest banking, Woodsman log burning. |
-| `::relicitems` | Get back lost relic items. |
+| `::dprelics` | Your relics and what they do here. |
+| `::dprelic bank\|burn\|alchemy on\|off` | Endless Harvest banking, Woodsman log burning, Transmute's alchemy spells. These start with `dp` because the game client turns any `::relic...` into the relic emote. |
+| `::dprelicitems` | Get back lost relic items. |
 | `::dppoints <n>`, `::dppactpoints <n>`, `::dpallregions` | Admin testing shortcuts. |
 
 ## Files

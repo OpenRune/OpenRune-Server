@@ -149,7 +149,12 @@ constructor(
         val received =
             player.invTransaction(inv) {
                 val inventory = select(inv)
-                if (pouch != null) add(inventory, pouch.obj.asRSCM(RSCMType.OBJ), 1)
+                if (pouch != null) {
+                    add(inventory, pouch.obj.asRSCM(RSCMType.OBJ), 1)
+                    if (multiplier > 1) {
+                        add(inventory, COINS.asRSCM(RSCMType.OBJ), (multiplier - 1) * pouch.coins)
+                    }
+                }
                 if (loot != null) {
                     add(inventory, loot.obj.asRSCM(RSCMType.OBJ), count, cert = multiplier > 1)
                 }

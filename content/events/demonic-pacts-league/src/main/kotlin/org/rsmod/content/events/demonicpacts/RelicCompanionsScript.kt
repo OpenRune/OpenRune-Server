@@ -67,7 +67,11 @@ constructor(private val random: GameRandom, private val npcHitModifier: NpcHitMo
 
     override fun ScriptContext.startup() {
         onRelicItem(MINION_ITEM, MINION_OPS) { summonMinion() }
+        onRelicItem(MINION_ITEM, setOf("Banish")) { banishMinion() }
+        onRelicItem(MINION_ITEM, setOf("Check")) { checkMinion() }
+        onRelicItem(MINION_ITEM, setOf("Rules")) { mes(MINION_RULES) }
         onRelicItem(BUTLER_ITEM, BUTLER_OPS) { ringBell() }
+        onRelicItem(BUTLER_ITEM, setOf("Check")) { checkButler() }
         onPlayerSoftTimer(MINION_TIMER) { player.minionAttack() }
     }
 
@@ -79,6 +83,34 @@ constructor(private val random: GameRandom, private val npcHitModifier: NpcHitMo
         VarPlayerIntMapSetter.set(player, MINION_UNTIL, nowSeconds() + MINION_SECONDS)
         player.softTimer(MINION_TIMER, MINION_ATTACK_TICKS)
         mes("<col=ef1020>Your minion answers the whistle. It will fight and loot for you for 30 minutes.")
+    }
+
+    private fun ProtectedAccess.banishMinion() {
+        if (!isMinionActive(player)) {
+            mes("You don't have a minion with you.")
+            return
+        }
+        VarPlayerIntMapSetter.set(player, MINION_UNTIL, 0)
+        player.clearSoftTimer(MINION_TIMER)
+        mes("Your minion returns to the Abyss.")
+    }
+
+    private fun ProtectedAccess.checkMinion() {
+        if (!isMinionActive(player)) {
+            mes("You don't have a minion with you.")
+            return
+        }
+        val minutes = (player.vars[MINION_UNTIL] - nowSeconds() + 59) / 60
+        mes("Your minion will stay for about $minutes more minute${if (minutes == 1) "" else "s"}.")
+    }
+
+    private fun ProtectedAccess.checkButler() {
+        val job = currentJob(player)
+        if (job == null) {
+            mes("The butler has no job. Ring the bell to give him one.")
+            return
+        }
+        mes("The butler is set to ${job.name.lowercase()} and has ${readyItems(player)} ${itemName(job.item)} ready.")
     }
 
     private fun Player.minionAttack() {
@@ -211,8 +243,11 @@ constructor(private val random: GameRandom, private val npcHitModifier: NpcHitMo
         private const val MINION_MAX_HIT = 10
         private const val MINION_RANGE = 10
 
-        private val MINION_OPS = setOf("Summon", "Blow", "Whistle", "Call", "Activate", "Use", "Toggle")
-        private val BUTLER_OPS = setOf("Ring", "Summon", "Use", "Collect", "Activate", "Call")
+        private val MINION_OPS = setOf("Summon", "Blow", "Whistle", "Call", "Activate", "Toggle")
+        private val BUTLER_OPS = setOf("Ring", "Summon", "Collect", "Activate", "Call")
+        private const val MINION_RULES =
+            "Blow the whistle to summon your minion for 30 minutes. It hits whatever you're fighting " +
+                "and puts your kills' loot in your inventory, noted."
 
         fun nowSeconds(): Int = (System.currentTimeMillis() / 1000).toInt()
 

@@ -1,5 +1,7 @@
 package org.rsmod.api.player.stat
 
+import dev.openrune.types.ItemServerType
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.game.entity.Player
 
 /** Server-wide skilling hooks that game modes such as leagues install at startup. */
@@ -36,6 +38,14 @@ public object SkillModifiers {
 
     /** When `true`, eating food does not use it up. */
     @Volatile public var keepsFood: (Player) -> Boolean = { false }
+
+    /**
+     * Lets a game mode replace an alchemy cast on the obj in an inventory slot; returns `true`
+     * when it handled the cast. The flag is `true` for High Level Alchemy.
+     */
+    @Volatile
+    public var alchemyReplacement: (ProtectedAccess, Int, ItemServerType, Boolean) -> Boolean =
+        { _, _, _, _ -> false }
 
     public fun alwaysSucceeds(player: Player, stat: String): Boolean =
         successRate(player, stat, 0.0) >= 1.0

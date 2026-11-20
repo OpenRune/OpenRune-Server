@@ -109,6 +109,7 @@ import org.rsmod.api.player.ui.ifChatPlayer
 import org.rsmod.api.player.ui.ifChoice
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.ui.ifCloseChat
+import org.rsmod.api.player.ui.ifCloseModal
 import org.rsmod.api.player.ui.ifCloseSub
 import org.rsmod.api.player.ui.ifConfirmDestroy
 import org.rsmod.api.player.ui.ifConfirmOverlay
@@ -3015,7 +3016,11 @@ public class ProtectedAccess(
         val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
         chatDefaultRestoreInput(player)
-        return resumeWithMainModalProtectedAccess(input.subcomponent.absoluteValue, modal)
+        val choice = resumeWithMainModalProtectedAccess(input.subcomponent.absoluteValue, modal)
+        // The client closes the menu on its own after a pick; closing it here keeps a later
+        // suspension (count dialog, delay) from seeing that close as an unexpected modal change.
+        player.ifCloseModal("interface.menu", context.eventBus)
+        return choice
     }
 
     /**

@@ -258,6 +258,19 @@ class DemonicPactsLeagueScript @Inject constructor(private val collision: Collis
                 }
             }
         }
+        onCommand("taskundo") {
+            desc = "Admin: take back a completed league task and its points: ::taskundo <number>"
+            invalidArgs = "Use ::taskundo <number>; ::tasks done shows each task's number."
+            requiredRights = Rights.ADMINISTRATOR
+            cheat {
+                val task = args[0].toIntOrNull()?.let { OfficialTasks.byIndex[it] }
+                when {
+                    task == null -> player.mes("There is no task number ${args[0]}.")
+                    !player.isTaskDone(task) -> player.mes("${task.name} isn't complete.")
+                    else -> LeagueTasks.undo(player, task)
+                }
+            }
+        }
         onCommand("regions") {
             desc = "List league regions and unlock slots"
             cheat { player.listRegions() }

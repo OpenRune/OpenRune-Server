@@ -14,6 +14,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.hook.ItemTeleportCaster
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
@@ -69,9 +70,36 @@ class RelicTeleportScript @Inject constructor(private val teleports: ItemTelepor
 
     override fun ScriptContext.startup() {
         for ((item, relic) in TELEPORT_ITEMS) {
-            onRelicItem(item) { teleportMenu(item, relic) }
+            onRelicItem(item, TELEPORT_OPS) { teleportMenu(item, relic) }
+            onRelicItem(item, LAST_DESTINATION_OPS) { lastDestination(item, relic) }
         }
     }
+
+    private suspend fun ProtectedAccess.lastDestination(item: String, relic: String) {
+        if (!player.hasRelic(relic)) {
+            mes("You need the $relic relic to use this.")
+            return
+        }
+        val all = destinations[item].orEmpty()
+        val dest = all.getOrNull(player.vars[lastVarp(item)] - 1)
+        if (dest == null) {
+            mes("You haven't teleported anywhere with this yet.")
+            return
+        }
+        if (!isOpen(player, dest)) {
+            mes("${dest.name} is in an area you haven't unlocked.")
+            return
+        }
+        teleportTo(item, dest)
+    }
+
+    private suspend fun ProtectedAccess.teleportTo(item: String, dest: RelicTeleport) {
+        VarPlayerIntMapSetter.set(player, lastVarp(item), destinations[item].orEmpty().indexOf(dest) + 1)
+        ifClose()
+        with(teleports) { cast(TeleportType.Exempt, dest.coords) }
+    }
+
+    private fun lastVarp(item: String): String = LAST_DESTINATION_VARPS.getValue(item)
 
     private suspend fun ProtectedAccess.teleportMenu(item: String, relic: String) {
         if (!player.hasRelic(relic)) {
@@ -94,7 +122,7 @@ class RelicTeleportScript @Inject constructor(private val teleports: ItemTelepor
         val choices = groups.getValue(group).sortedBy { it.name }.take(MAX_CHOICES)
         val dest = choices.getOrNull(menu("$relic: $group", hotkeys = false, choices = choices.map { it.name }))
         dest ?: return
-        with(teleports) { cast(TeleportType.Exempt, dest.coords) }
+        teleportTo(item, dest)
     }
 
     /** A destination is open when its tile, or failing that its menu group, is unlocked. */
@@ -109,28 +137,29 @@ class RelicTeleportScript @Inject constructor(private val teleports: ItemTelepor
     }
 
     /** Registers [action] on whichever op of [item] has a teleport-like name, held or worn. */
-    private fun ScriptContext.onRelicItem(item: String, action: suspend ProtectedAccess.() -> Unit) {
+    private fun ScriptContext.onRelicItem(
+        item: String,
+        opNames: Set<String>,
+        action: suspend ProtectedAccess.() -> Unit,
+    ) {
         val id = runCatching { item.asRSCM(RSCMType.OBJ) }.getOrNull()
         val type = id?.let { ServerCacheManager.getItem(it) }
         if (type == null) {
             logger.warn { "Demonic Pacts League: relic item $item is not in the cache." }
             return
         }
-        val held = type.interfaceOptions.indexOfFirst { it.isTeleportOp() }
+        val held = type.interfaceOptions.indexOfFirst { op -> op != null && opNames.any { it.equals(op, true) } }
         when (held) {
             0 -> onOpHeld1(item) { action() }
             1 -> onOpHeld2(item) { action() }
             2 -> onOpHeld3(item) { action() }
             3 -> onOpHeld4(item) { action() }
-            else -> logger.warn { "Demonic Pacts League: no teleport op on $item (${type.interfaceOptions})." }
+            else -> logger.warn { "Demonic Pacts League: no $opNames op on $item (${type.interfaceOptions})." }
         }
-        if (item in WEARABLE_ITEMS) {
+        if (item in WEARABLE_ITEMS && opNames == TELEPORT_OPS) {
             onOpWorn2(item) { action() }
         }
     }
-
-    private fun String?.isTeleportOp(): Boolean =
-        this != null && TELEPORT_OPS.any { it.equals(this, ignoreCase = true) }
 
     private companion object {
         const val TELEPORT_FILE = "demonic_pacts_relic_teleports.toml"
@@ -144,10 +173,20 @@ class RelicTeleportScript @Inject constructor(private val teleports: ItemTelepor
                 "obj.league_trailblazer_fairys_flight_teleport" to RelicNames.NATURES_ACCORD,
             )
 
+        val LAST_DESTINATION_VARPS =
+            mapOf(
+                "obj.league_bank_heist_teleport" to "varp.dp_last_teleport_0",
+                "obj.league_evil_eye_necklace" to "varp.dp_last_teleport_1",
+                "obj.league_agility_map" to "varp.dp_last_teleport_2",
+                "obj.league_trailblazer_fairys_flight_teleport" to "varp.dp_last_teleport_3",
+            )
+
+        val LAST_DESTINATION_OPS = setOf("Last-destination")
+
         /** Worn op 1 is Remove; the necklace's teleport is the next one. */
         val WEARABLE_ITEMS = setOf("obj.league_evil_eye_necklace")
 
         val TELEPORT_OPS =
-            setOf("Teleport", "Rub", "Open", "Use", "Activate", "Heist", "Read", "Commune", "Check", "Fly", "Travel")
+            setOf("Teleport", "Rub", "Open", "Activate", "Heist", "Read", "Commune", "Fly", "Travel")
     }
 }
