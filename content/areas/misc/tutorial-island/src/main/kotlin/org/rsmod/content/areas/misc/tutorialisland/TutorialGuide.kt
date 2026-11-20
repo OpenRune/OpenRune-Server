@@ -3,6 +3,7 @@ package org.rsmod.content.areas.misc.tutorialisland
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.player.output.HintArrowPosition
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.ui.ifCloseSub
@@ -32,16 +33,11 @@ constructor(
 
     fun apply(player: Player, stage: Int) {
         progress(stage)?.let { player.tutorialOverlayProgress = it }
+        player.flashSide = FLASH_SIDE[stage] ?: 0
         show(player, stage)
     }
 
     fun show(player: Player, stage: Int) {
-        if (player.ui.containsModal("interface.messagebox")) {
-            return
-        }
-        if (player.ui.containsModal("interface.objectbox")) {
-            return
-        }
         if (stage == TutorialStage.QUEST_HOUSE_ENTERED && player.attr[RUN_TOGGLED] == true) {
             player.openMesOverlay()
             player.runClientScript(MESOVERLAY, MOVING_ON_RUN_TEXT)
@@ -59,17 +55,19 @@ constructor(
             is Arrow.Npc -> {
                 val npc =
                     npcRepo.findAll(ZoneKey.from(arrow.coords), ARROW_NPC_ZONE_RADIUS)
-                        .firstOrNull {
+                        .filter {
                             it.type.internalName == arrow.name ||
                                 it.visType.internalName == arrow.name
                         }
+                        .minByOrNull { it.coords.chebyshevDistance(arrow.coords) }
                 if (npc != null) {
                     MiscOutput.hintArrowNpc(player, npc.slotId)
                     player.currentHintArrow = 1
                 }
             }
             is Arrow.Tile -> {
-                MiscOutput.hintArrowTile(player, arrow.coords, arrow.height)
+                val position = TILE_POSITIONS[stage] ?: HintArrowPosition.CENTER
+                MiscOutput.hintArrowTile(player, arrow.coords, arrow.height, position)
                 player.currentHintArrow = 1
             }
             Arrow.None -> Unit
@@ -83,12 +81,18 @@ constructor(
         player.ifSetHide("component.tutorial_overlay:hint_layer", true)
     }
 
+    fun showSmithingMenuOpened(player: Player) {
+        player.openMesOverlay()
+        player.runClientScript(MESOVERLAY, SMITHING_MENU_OPENED_TEXT)
+    }
+
     private fun Player.openMesOverlay() {
         ifOpenOverlay("interface.mesoverlay", "component.chatbox:chatoverlay", eventBus)
     }
 
     fun clear(player: Player) {
         clearArrow(player)
+        player.flashSide = 0
         player.ifSetHide("component.tutorial_overlay:hint_layer", true)
         player.ifCloseSub("interface.tutorial_overlay", eventBus)
         player.runClientScript(TUTORIAL_END)
@@ -96,20 +100,24 @@ constructor(
 
     private fun progress(stage: Int): Int? =
         when (stage) {
-            TutorialStage.GUIDE_DONE -> 2
-            TutorialStage.QUEST_HOUSE_ENTERED -> 6
-            TutorialStage.QUEST_HOUSE_INSIDE -> 7
-            TutorialStage.LADDER_DOWN -> 8
-            TutorialStage.BAR_SMELTED -> 9
-            TutorialStage.COMBAT_GUIDE_TALKED -> 10
+            TutorialStage.OUTSIDE -> 2
+            TutorialStage.SKILLS_VIEWED -> 3
+            TutorialStage.GATE_OPENED -> 4
+            TutorialStage.DOUGH_MADE -> 5
+            TutorialStage.BREAD_BAKED -> 6
+            TutorialStage.QUEST_HOUSE_ENTERED -> 7
+            TutorialStage.QUEST_LIST_OPENED -> 8
+            TutorialStage.COPPER_MINED -> 9
+            TutorialStage.DAGGER_SMITHED -> 10
             TutorialStage.COMBAT_TAB_OPENED -> 11
-            TutorialStage.COMBAT_GUIDE_DONE -> 12
-            TutorialStage.BANK_OPENED -> 14
+            TutorialStage.RANGED_GIVEN -> 12
+            TutorialStage.COMBAT_GUIDE_DONE -> 14
             TutorialStage.POLL_BOOTH -> 15
             TutorialStage.ACCOUNT_GUIDE_DONE -> 16
-            TutorialStage.PRAYER_GUIDE_DONE -> 17
-            TutorialStage.MAGIC_GUIDE_TALKED -> 18
-            TutorialStage.COMPLETE -> 20
+            TutorialStage.PRAYER_GUIDE_TALKED_2 -> 17
+            TutorialStage.PRAYER_GUIDE_DONE -> 18
+            TutorialStage.MAGIC_BOOK_OPENED -> 19
+            TutorialStage.RUNES_GIVEN -> 20
             else -> null
         }
 
@@ -138,6 +146,58 @@ constructor(
             "<col=0000ff>Moving on</col><br>Follow the path to the next guide. When you get " +
                 "there, click on the door to pass through it. Remember, you can use your arrow " +
                 "keys to rotate the camera."
+        private const val SMITHING_MENU_OPENED_TEXT =
+            "<col=0000ff>Smithing a dagger</col><br>Now you have the smithing menu open, you " +
+                "will see a list of all the things you can make. Only the dagger can be made at " +
+                "your skill level; this is shown by the white text under it. You'll need to " +
+                "select the dagger to continue."
+
+        private val TILE_POSITIONS: Map<Int, HintArrowPosition> =
+            mapOf(
+                TutorialStage.GUIDE_DONE to HintArrowPosition.WEST,
+                TutorialStage.AXE_GIVEN to HintArrowPosition.EAST,
+                TutorialStage.SHRIMP_COOKED to HintArrowPosition.EAST,
+                TutorialStage.GATE_OPENED to HintArrowPosition.WEST,
+                TutorialStage.DOUGH_MADE to HintArrowPosition.EAST,
+                TutorialStage.BREAD_BAKED to HintArrowPosition.EAST,
+                TutorialStage.QUEST_HOUSE_ENTERED to
+                    HintArrowPosition.SOUTH,
+                TutorialStage.QUEST_GUIDE_DONE to
+                    HintArrowPosition.CENTER,
+                TutorialStage.MINING_GUIDE_TALKED to
+                    HintArrowPosition.CENTER,
+                TutorialStage.TIN_MINED to HintArrowPosition.CENTER,
+                TutorialStage.COPPER_MINED to HintArrowPosition.CENTER,
+                TutorialStage.MINING_GUIDE_BAR to
+                    HintArrowPosition.CENTER,
+                TutorialStage.ANVIL_OPENED to HintArrowPosition.CENTER,
+                TutorialStage.DAGGER_SMITHED to HintArrowPosition.EAST,
+                TutorialStage.COMBAT_TAB_OPENED to
+                    HintArrowPosition.EAST,
+                TutorialStage.COMBAT_GUIDE_DONE to
+                    HintArrowPosition.CENTER,
+                TutorialStage.LADDER_UP to HintArrowPosition.CENTER,
+                TutorialStage.BANK_OPENED to HintArrowPosition.CENTER,
+                TutorialStage.POLL_BOOTH to HintArrowPosition.WEST,
+                TutorialStage.ACCOUNT_GUIDE_DONE to
+                    HintArrowPosition.WEST,
+                TutorialStage.PRAYER_GUIDE_DONE to
+                    HintArrowPosition.WEST,
+            )
+
+        private val FLASH_SIDE: Map<Int, Int> =
+            mapOf(
+                TutorialStage.SETTINGS_REQUESTED to 12,
+                TutorialStage.NET_GIVEN to 4,
+                TutorialStage.SHRIMP_CAUGHT to 2,
+                TutorialStage.QUEST_GUIDE_TALKED to 3,
+                TutorialStage.DAGGER_EQUIP_TASK to 5,
+                TutorialStage.SWORD_EQUIPPED to 1,
+                TutorialStage.ACCOUNT_GUIDE_TALKED to 9,
+                TutorialStage.PRAYER_GUIDE_TALKED to 6,
+                TutorialStage.MAGIC_GUIDE_TALKED to 7,
+                TutorialStage.LEFT_ISLAND to 3,
+            )
 
         private val HINTS: Map<Int, Hint> =
             mapOf(
@@ -416,14 +476,6 @@ constructor(
                                 "all about it.",
                         arrow = Arrow.Npc(TutorialNpc.COMBAT_INSTRUCTOR, CoordGrid(3106, 9510, 0)),
                     ),
-                TutorialStage.COMBAT_GUIDE_TALKED to
-                    Hint(
-                        text =
-                            "<col=0000ff>Combat</col><br>In this area you will find out about " +
-                                "melee and ranged combat. Speak to the guide and he will tell you " +
-                                "all about it.",
-                        arrow = Arrow.Npc(TutorialNpc.COMBAT_INSTRUCTOR, CoordGrid(3106, 9510, 0)),
-                    ),
                 TutorialStage.DAGGER_EQUIP_TASK to
                     Hint(
                         text =
@@ -615,7 +667,7 @@ constructor(
                 TutorialStage.PRAYER_GUIDE_DONE to
                     Hint(
                         text =
-                            "<col=0000ff>Your final instructor!</col><br>You're almost " +
+                            "<col=0000ff>Your final instructor!<br>You're almost " +
                                 "finished on tutorial island. Pass through the door to find the " +
                                 "path leading to your final instructor.",
                         hintId = 18,
@@ -680,9 +732,8 @@ constructor(
                         text =
                             "<col=0000ff>To the mainland!</col><br>You're nearly finished " +
                                 "with the tutorial. All you need to do now is move on to the " +
-                                "mainland. Just speak with the magic instructor to continue.",
-                        hintId = 20,
-                        arrow = Arrow.Npc(TutorialNpc.MAGIC_INSTRUCTOR, CoordGrid(3141, 3088, 0)),
+                                "mainland. Cast your Home Teleport spell to be taken to Lumbridge.",
+                        hintId = 23,
                     ),
                 TutorialStage.READY_TO_LEAVE to
                     Hint(

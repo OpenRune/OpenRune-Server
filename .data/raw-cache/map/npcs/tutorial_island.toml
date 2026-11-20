@@ -48,7 +48,7 @@ coords = "0_48_48_63_12"
 
 [[spawn]]
 npc = "npc.ironman_tutor_2"
-coords = "0_48_48_60_13"
+coords = "0_48_48_59_14"
 
 [[spawn]]
 npc = "npc.newbie_survival_instructor"
@@ -84,13 +84,13 @@ coords = "0_48_48_3_13"
 
 [[spawn]]
 npc = "npc.newbie_quest_instructor"
-coords = "0_48_48_13_50"
+coords = "0_48_48_15_51"
 
 ## Tutorial Island Start Building
 
 [[spawn]]
 npc = "npc.newbie_basics_instructor"
-coords = "0_48_48_22_35"
+coords = "0_48_48_23_35"
 
 ## Tutorial Island The Node
 

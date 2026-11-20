@@ -19,7 +19,10 @@ constructor(private val guide: TutorialGuide) : NpcDeathKillHook {
         }
         when (player.tutorialStage) {
             TutorialStage.RAT_ENGAGED -> guide.advance(player, TutorialStage.RAT_KILLED_MELEE)
-            TutorialStage.RAT_ENGAGED_RANGED -> guide.advance(player, TutorialStage.COMBAT_GUIDE_DONE)
+            TutorialStage.RAT_ENGAGED_RANGED -> {
+                guide.advance(player, TutorialStage.COMBAT_GUIDE_DONE)
+                TutorialHighlights.clearItems(player)
+            }
         }
     }
 }

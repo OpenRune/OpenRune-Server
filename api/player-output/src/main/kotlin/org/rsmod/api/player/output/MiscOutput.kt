@@ -15,6 +15,8 @@ import net.rsprot.protocol.message.OutgoingGameMessage
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
+public enum class HintArrowPosition { CENTER, WEST, EAST, NORTH, SOUTH }
+
 public object MiscOutput {
     /**
      * Sends the account feature flags for this client session.
@@ -97,8 +99,31 @@ public object MiscOutput {
     }
 
     public fun hintArrowTile(player: Player, coords: CoordGrid, height: Int) {
-        val position = HintArrow.TileHintArrow.HintArrowTilePosition.CENTER
-        player.client.write(HintArrow(HintArrow.TileHintArrow(coords.x, coords.z, height, position)))
+        hintArrowTile(player, coords, height, HintArrowPosition.CENTER)
+    }
+
+    public fun hintArrowTile(
+        player: Player,
+        coords: CoordGrid,
+        height: Int,
+        position: HintArrowPosition,
+    ) {
+        val protocolPosition =
+            when (position) {
+                HintArrowPosition.CENTER ->
+                    HintArrow.TileHintArrow.HintArrowTilePosition.CENTER
+                HintArrowPosition.WEST ->
+                    HintArrow.TileHintArrow.HintArrowTilePosition.WEST
+                HintArrowPosition.EAST ->
+                    HintArrow.TileHintArrow.HintArrowTilePosition.EAST
+                HintArrowPosition.NORTH ->
+                    HintArrow.TileHintArrow.HintArrowTilePosition.NORTH
+                HintArrowPosition.SOUTH ->
+                    HintArrow.TileHintArrow.HintArrowTilePosition.SOUTH
+            }
+        player.client.write(
+            HintArrow(HintArrow.TileHintArrow(coords.x, coords.z, height, protocolPosition)),
+        )
     }
 
     public fun hintArrowReset(player: Player) {

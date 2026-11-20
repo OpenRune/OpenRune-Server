@@ -11,11 +11,12 @@ internal class TutorialQuest :
     QuestScript(
         questKey = "quest_learningtheropes",
         questVarp = "varp.tutorial",
-        rewards = rewards {},
-        completedQuestItemDisplay = ItemRewardDisplay("", zoom = 400, showQuestPoints = false),
+        rewards = rewards { extra("Access to the Mainland!") },
+        completedQuestItemDisplay = ItemRewardDisplay("", zoom = 400, x = 78, y = 128),
         stageInVarp = true,
         closeDialogue = QuestClose.Never,
         closeScroll = QuestClose.Never,
+        completeJingleId = 153,
     ) {
 
     override fun ScriptContext.init() {

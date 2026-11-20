@@ -131,6 +131,10 @@ constructor(
         add(from.coords, internal, duration, from.angle, from.shape)
     }
 
+    public fun change(from: LocInfo, internal: String, duration: Int) {
+        add(from.coords, internal, duration, from.angle, from.shape)
+    }
+
     private fun ArrayDeque<LocCycleDuration>.removeExisting(loc: LocInfo) {
         val iterator = iterator()
         while (iterator.hasNext()) {

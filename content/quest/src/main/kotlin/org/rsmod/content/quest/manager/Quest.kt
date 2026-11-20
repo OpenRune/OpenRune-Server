@@ -65,6 +65,7 @@ data class Quest(
     val closeDialogue: QuestClose = QuestClose.OnFinished,
     val closeScroll: QuestClose = QuestClose.Never,
     val completeJingle: String = QUEST_COMPLETE_JINGLE,
+    val completeJingleId: Int? = null,
 ) {
 
     private var Player.questState: Int
@@ -96,6 +97,7 @@ data class Quest(
             closeDialogue: QuestClose = QuestClose.OnFinished,
             closeScroll: QuestClose = QuestClose.Never,
             completeJingle: String = QUEST_COMPLETE_JINGLE,
+            completeJingleId: Int? = null,
         ): Quest {
 
             val rowKeyID = "dbrow.${rowKey}".asRSCM()
@@ -117,6 +119,7 @@ data class Quest(
                 closeDialogue = closeDialogue,
                 closeScroll = closeScroll,
                 completeJingle = completeJingle,
+                completeJingleId = completeJingleId,
             )
             questsByKey[rowKey.normalizedQuestKey()] = quest
             return quest
@@ -196,7 +199,7 @@ data class Quest(
         }
 
         if (oldStage == 0 && newStage > 0) {
-            access.mes("You've started a new quest: @q_mes@$displayName</col>")
+            access.mes("You've started a new quest: <col=081190>$displayName</col>")
         }
 
         if (!wasCompleted && newStage >= maxSteps) {
@@ -254,15 +257,17 @@ data class Quest(
 
         access.player.questPoints += questPoints
         access.player.questsCompleted++
-        access.mes("Congratulations, you've completed a quest: @q_mes@$displayName</col>")
+        access.mes(
+            "Congratulations, you've completed a quest: <col=081190>$displayName</col>",
+        )
 
-        access.player.midiJingle(completeJingle)
+        if (completeJingleId != null) {
+            access.player.midiJingle(completeJingleId)
+        } else {
+            access.player.midiJingle(completeJingle)
+        }
 
         scheduleClose(access, closeDialogue, QUEST_DIALOGUE_CLOSE_TIMER) { ifCloseChat() }
-        access.ifOpenMain("interface.questscroll")
-        scheduleClose(access, closeScroll, QUEST_SCROLL_CLOSE_TIMER) {
-            ifCloseSub("interface.questscroll")
-        }
         access.ifSetText("component.questscroll:quest_title", "You have completed ${displayName}!")
         val questPointLabel = if (questPoints == 1) "Quest Point" else "Quest Points"
         val questPointText = if (itemDisplay.showQuestPoints) "$questPoints $questPointLabel" else ""
@@ -281,6 +286,9 @@ data class Quest(
         } else {
             val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
             access.player.client.write(IfSetObject(model, BLANK_OBJ, itemDisplay.zoom))
+            if (itemDisplay.x != null && itemDisplay.y != null) {
+                access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
+            }
         }
 
         val rewardLines = mutableListOf<String>()
@@ -307,6 +315,11 @@ data class Quest(
             val componentId = "component.questscroll:quest_reward${i + 2}"
             val text = linesToShow.getOrNull(i) ?: ""
             access.ifSetText(componentId, text)
+        }
+
+        access.ifOpenMain("interface.questscroll")
+        scheduleClose(access, closeScroll, QUEST_SCROLL_CLOSE_TIMER) {
+            ifCloseSub("interface.questscroll")
         }
     }
 }

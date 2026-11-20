@@ -10,6 +10,9 @@ import org.rsmod.map.CoordGrid
 internal var Player.tutorialStage by intVarp("varp.tutorial")
 internal var Player.tutorialOverlayProgress by intVarp("varp.tutorial_progress_overlay")
 internal var Player.currentHintArrow by intVarBit("varbit.current_hint_arrow")
+internal var Player.flashSide by intVarBit("varbit.flashside")
+internal var Player.comStance by intVarp("varp.com_stance")
+internal var Player.tutorialCombatLogin by intVarBit("varbit.tutorial_combat_login")
 internal var Player.hasDisplayNameTransmitter by boolVarBit("varbit.has_displayname_transmitter")
 internal var Player.displayNameStatus by intVarBit("varbit.displayname_status")
 internal var Player.playerDesignBodyType by intVarBit("varbit.player_design_bodytype")
@@ -57,15 +60,15 @@ internal object TutorialStage {
     const val QUEST_LIST_OPENED = 240
     const val QUEST_GUIDE_DONE = 250
     const val LADDER_DOWN = 260
-    const val MINING_GUIDE_TALKED = 270
-    const val TIN_MINED = 300
-    const val COPPER_MINED = 310
-    const val BAR_SMELTED = 320
-    const val MINING_GUIDE_BAR = 330
-    const val ANVIL_OPENED = 340
-    const val DAGGER_SMITHED = 350
-    const val COMBAT_GATE = 360
-    const val COMBAT_GUIDE_TALKED = 370
+    const val MINING_GUIDE_GREETED = 270
+    const val MINING_GUIDE_TALKED = 300
+    const val TIN_MINED = 310
+    const val COPPER_MINED = 320
+    const val BAR_SMELTED = 330
+    const val MINING_GUIDE_BAR = 340
+    const val ANVIL_OPENED = 350
+    const val DAGGER_SMITHED = 360
+    const val COMBAT_GATE = 370
     const val DAGGER_EQUIP_TASK = 390
     const val WORN_OPENED = 400
     const val EQUIPMENT_STATS_OPENED = 405
@@ -89,6 +92,7 @@ internal object TutorialStage {
     const val CHAPEL_ARRIVED = 550
     const val PRAYER_GUIDE_TALKED = 560
     const val PRAYER_BOOK_OPENED = 570
+    const val PRAYER_GUIDE_TALKED_2 = 580
     const val PRAYER_GUIDE_DONE = 610
     const val MAGIC_GUIDE_ARRIVED = 620
     const val MAGIC_GUIDE_TALKED = 630
@@ -155,6 +159,9 @@ internal object TutorialObj {
     const val BRONZE_ARROW = "obj.bronze_arrow"
     const val AIR_RUNE = "obj.airrune"
     const val MIND_RUNE = "obj.mindrune"
+    const val QUEST_START_ICON = "obj.quest_start_icon_dummy"
+    const val CERT_FURNACE_ICON = "obj.cert_furnace_icon_dummy"
+    const val AP_GUIDE_ICON = "obj.ap_guide_icon_dummy"
     const val WATER_RUNE = "obj.waterrune"
     const val EARTH_RUNE = "obj.earthrune"
     const val BODY_RUNE = "obj.bodyrune"
@@ -196,13 +203,21 @@ internal object TutorialObj {
 internal object TutorialLoc {
     const val TREE = "loc.newbietree"
     const val TREE_2 = "loc.newbietree2"
+    const val TREE_STUMP = "loc.treestump2"
     const val OAK_TREE = "loc.newbieoaktree"
     const val TIN_ROCK = "loc.newbietinrock"
     const val COPPER_ROCK = "loc.newbiecopperrock"
+    const val ROCK_DEPLETED = "loc.newbierocks1"
     const val FURNACE = "loc.newbiefurnace"
     const val ANVIL = "loc.anvil"
     const val RANGE = "loc.newbierange"
-    const val FIRE = "loc.newbiefire"
+    const val FIRE = "loc.fire"
+    const val INVISWALL = "loc.inviswall"
+    const val INACTIVE_POOR_DOOR = "loc.inactivepoordoor"
+    const val INACTIVE_FENCE_GATE_L = "loc.inactivefencegate_l"
+    const val INACTIVE_FENCE_GATE_R = "loc.inactivefencegate_r"
+    const val INACTIVE_METAL_GATE_L = "loc.inacmetalgateopenl"
+    const val INACTIVE_METAL_GATE_R = "loc.inacmetalgateopenr"
     const val BANK_BOOTH = "loc.newbiebankbooth"
     const val POLL_BOOTH = "loc.pollbooth_green"
     const val LADDER_DOWN = "loc.newbieladdertop1"

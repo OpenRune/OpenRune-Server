@@ -3575,6 +3575,10 @@ public class ProtectedAccess(
         player.midiJingle(jingle)
     }
 
+    public fun midiJingle(jingle: Int) {
+        player.midiJingle(jingle)
+    }
+
     public fun midiSong(midi: String) {
         player.midiSong(midi)
     }
@@ -3715,6 +3719,10 @@ public class ProtectedAccess(
 
     /* Sound helper functions */
     public fun soundSynth(synth: String, loops: Int = 1, delay: Int = 0) {
+        player.soundSynth(synth, loops, delay)
+    }
+
+    public fun soundSynth(synth: Int, loops: Int = 1, delay: Int = 0) {
         player.soundSynth(synth, loops, delay)
     }
 

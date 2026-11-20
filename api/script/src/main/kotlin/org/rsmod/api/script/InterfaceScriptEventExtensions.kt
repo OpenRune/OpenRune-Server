@@ -1,6 +1,5 @@
 package org.rsmod.api.script
 
-import dev.openrune.cache.filestore.definition.InterfaceType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -15,6 +14,7 @@ import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.ui.IfOverlayButtonT
 import org.rsmod.api.player.ui.IfOverlayDrag
 import org.rsmod.api.player.ui.IfOverlaySubOpMenu
+import org.rsmod.api.player.ui.IfToplevelButton
 import org.rsmod.events.EventBus
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -28,6 +28,11 @@ public fun ScriptContext.onIfOverlayButton(
     button: String,
     action: suspend ProtectedAccess.(IfOverlayButton) -> Unit,
 ): Unit = onProtectedEvent(button.asRSCM(RSCMType.COMPONENT), action)
+
+public fun ScriptContext.onIfToplevelButton(
+    button: String,
+    action: IfToplevelButton.() -> Unit,
+): Unit = onEvent<IfToplevelButton>(button.asRSCM(RSCMType.COMPONENT), action)
 
 public fun ScriptContext.onIfOverlayButton(
     button: ComponentType,

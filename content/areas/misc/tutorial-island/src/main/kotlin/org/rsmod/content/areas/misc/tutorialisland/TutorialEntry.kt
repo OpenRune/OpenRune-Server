@@ -18,10 +18,12 @@ import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.ui.ifSetHide
 import org.rsmod.api.player.ui.ifSetText
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
+import org.rsmod.api.script.onIfToplevelButton
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.content.quest.manager.Quest
@@ -60,7 +62,85 @@ constructor(
             protectedAccess.launch(player) { confirmDesign(closed = true) }
         }
         onIfClose("interface.tutorial_player_experience") { closeExperience(player) }
+        onTabOpened("stone11", TutorialStage.SETTINGS_REQUESTED, TutorialStage.SETTINGS_OPENED)
+        onTabOpened("stone1", TutorialStage.SHRIMP_CAUGHT, TutorialStage.SKILLS_VIEWED)
+        onTabOpened("stone2", TutorialStage.QUEST_GUIDE_TALKED, TutorialStage.QUEST_LIST_OPENED)
+        onTabOpened("stone4", TutorialStage.DAGGER_EQUIP_TASK, TutorialStage.WORN_OPENED)
+        onTabOpened("stone8", TutorialStage.ACCOUNT_GUIDE_TALKED, TutorialStage.ACCOUNT_MENU_OPENED)
+        onTabOpened("stone5", TutorialStage.PRAYER_GUIDE_TALKED, TutorialStage.PRAYER_BOOK_OPENED)
+        onTabOpened("stone6", TutorialStage.MAGIC_GUIDE_TALKED, TutorialStage.MAGIC_BOOK_OPENED)
+        onIfToplevelButton("component.toplevel_osrs_stretch:stone3") {
+            when (player.tutorialStage) {
+                TutorialStage.NET_GIVEN -> guide.advance(player, TutorialStage.INVENTORY_VIEWED)
+                TutorialStage.COMBAT_TAB_OPENED ->
+                    guide.advance(player, TutorialStage.COMBAT_TAB_CLOSED)
+            }
+        }
+        onIfToplevelButton("component.toplevel_osrs_stretch:stone0") {
+            if (player.tutorialStage == TutorialStage.SWORD_EQUIPPED) {
+                openCombatTab(player)
+                guide.advance(player, TutorialStage.COMBAT_TAB_OPENED)
+            }
+        }
         onPlayerSoftTimer(TUTORIAL_TIMER) { tick() }
+    }
+
+    private fun ScriptContext.onTabOpened(
+        stone: String,
+        stage: Int,
+        next: Int,
+    ) {
+        onIfToplevelButton("component.toplevel_osrs_stretch:$stone") {
+            if (player.tutorialStage == stage) {
+                guide.advance(player, next)
+            }
+        }
+    }
+
+    private fun reconcileInterfaces(player: Player) {
+        val stage = player.tutorialStage
+        val open =
+            when (stage) {
+                TutorialStage.WORN_OPENED ->
+                    player.ui.containsModal("interface.equipment") ||
+                        player.ui.containsModal("interface.equipment_side")
+                TutorialStage.MINING_GUIDE_BAR -> player.ui.containsModal("interface.smithing")
+                TutorialStage.LADDER_UP ->
+                    player.ui.containsOverlay("interface.bankside") ||
+                        player.ui.containsModal("interface.bankmain")
+                else -> return
+            }
+        if (player.attr[INTERFACE_STAGE] != stage) {
+            player.attr[INTERFACE_STAGE] = stage
+            player.attr[INTERFACE_WAS_OPEN] = open
+            return
+        }
+        if (player.attr[INTERFACE_WAS_OPEN] == true) {
+            if (!open) {
+                player.attr[INTERFACE_WAS_OPEN] = false
+            }
+            return
+        }
+        if (!open) {
+            return
+        }
+        when (stage) {
+            TutorialStage.WORN_OPENED -> {
+                player.tutorialCombatLogin = 1
+                guide.advance(player, TutorialStage.EQUIPMENT_STATS_OPENED)
+            }
+            TutorialStage.MINING_GUIDE_BAR -> {
+                guide.advance(player, TutorialStage.ANVIL_OPENED)
+                guide.showSmithingMenuOpened(player)
+                TutorialHighlights.smithingDagger(player)
+            }
+            TutorialStage.LADDER_UP -> guide.advance(player, TutorialStage.BANK_OPENED)
+        }
+    }
+
+    private fun openCombatTab(player: Player) {
+        VarPlayerIntMapSetter.set(player, "varp.com_mode", 1)
+        player.comStance = 2
     }
 
     private fun SessionStateEvent.PrepareLogin.prepareLogin() {
@@ -71,6 +151,7 @@ constructor(
             player.coords = TutorialCoords.START
             player.tutorialStage = TutorialStage.START
             player.displayNameStatus = 1
+            player.comStance = 0
         }
     }
 
@@ -83,12 +164,14 @@ constructor(
         }
         seedTutorialBank(player)
         if (player.tutorialStage <= TutorialStage.START) {
+            player.hasDisplayNameTransmitter = false
             if (player.displayNameStatus < 5) {
                 player.beginName()
             } else {
                 player.beginDesign()
             }
         } else {
+            player.hasDisplayNameTransmitter = true
             player.resumeTutorial()
         }
     }
@@ -191,6 +274,7 @@ constructor(
         }
         val name = text.trim()
         player.attr[CANDIDATE_NAME] = name
+        player.displayNameStatus = 2
         if (!validName(name)) {
             sendNameStatus(player, name, available = false, invalid = true)
             return
@@ -248,7 +332,11 @@ constructor(
         if (player.tutorialStage != TutorialStage.START) {
             return
         }
-        val name = player.attr[CANDIDATE_NAME] ?: player.displayName.ifBlank { player.username }
+        val name = player.attr[CANDIDATE_NAME]
+        if (name == null || player.displayNameStatus != 4) {
+            player.ifSetText("component.tutorial_displayname:status", "Please look up a name first.")
+            return
+        }
         if (!validName(name)) {
             player.ifSetText("component.tutorial_displayname:status", "Please look up a name first.")
             return
@@ -259,10 +347,10 @@ constructor(
         }
         player.displayName = name
         player.displayNameStatus = 5
-        player.hasDisplayNameTransmitter = true
         player.ifSetText("component.tutorial_displayname:status", "Requesting...")
         player.runClientScript(NAME_SET_COMPLETE)
         ifCloseSub("interface.tutorial_displayname")
+        player.hasDisplayNameTransmitter = true
         player.ifSetHide("component.tutorial_overlay:noclick", true)
         player.attr.remove(CANDIDATE_NAME)
         player.attr.remove(SUGGESTIONS)
@@ -273,16 +361,20 @@ constructor(
         if (player.tutorialStage != TutorialStage.START || player.hasDisplayNameTransmitter) {
             return
         }
-        player.hasDisplayNameTransmitter = true
-        player.displayNameStatus = 5
-        if (player.displayName.isBlank()) {
-            player.displayName = player.username
-        }
         protectedAccess.launch(player) {
-            if (player.ui.containsModal("interface.tutorial_displayname")) {
-                ifCloseSub("interface.tutorial_displayname")
+            if (player.tutorialStage != TutorialStage.START ||
+                player.hasDisplayNameTransmitter
+            ) {
+                return@launch
             }
-            openDesign()
+            if (!player.ui.containsModal("interface.tutorial_displayname")) {
+                ifOpenMainModal("interface.tutorial_displayname")
+                player.configureNameInput()
+                player.ifSetText(
+                    "component.tutorial_displayname:status",
+                    "Please look up a name to see whether it is available.",
+                )
+            }
         }
     }
 
@@ -324,7 +416,7 @@ constructor(
         ifOpenMainModal("interface.tutorial_player_experience")
         player.ifSetEvents(
             "component.tutorial_player_experience:content",
-            1..3,
+            0..3,
             IfEvent.PauseButton,
         )
         player.ifSetHide("component.tutorial_overlay:noclick", false)
@@ -332,15 +424,8 @@ constructor(
         if (player.tutorialStage != TutorialStage.START) {
             return
         }
-        if (input.isComponentType("component.tutorial_player_experience:content")) {
-            player.adventurePaths =
-                if (input.subcomponent == ADVENTURE_PATHS_EXPERIENCED) {
-                    ADVENTURE_PATHS_OPTED_OUT
-                } else {
-                    ADVENTURE_PATHS_PARTICIPATING
-                }
-        } else {
-            player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
+        if (!input.isComponentType("component.tutorial_player_experience:content")) {
+            return
         }
         player.attr[EXPERIENCE_CHOSEN] = true
         if (player.ui.containsModal("interface.tutorial_player_experience")) {
@@ -355,7 +440,6 @@ constructor(
         if (player.tutorialStage != TutorialStage.START || player.attr[EXPERIENCE_CHOSEN] == true) {
             return
         }
-        player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
         player.ifSetHide("component.tutorial_overlay:noclick", true)
         guide.advance(player, TutorialStage.EXPERIENCE_SELECTED)
         player.softTimer(TUTORIAL_TIMER, 1)
@@ -368,22 +452,26 @@ constructor(
         player.retryNameInput()
         checkRunToggle(player)
         reconcileInterfaces(player)
-        rules.nextStage(player)?.let { guide.advance(player, it) }
+        rules.nextStage(player)?.let { next ->
+            guide.advance(player, next)
+            when (next) {
+                TutorialStage.DAGGER_SMITHED -> TutorialHighlights.clearSmithingDagger(player)
+                TutorialStage.DAGGER_EQUIPPED -> TutorialHighlights.clearItems(player)
+                TutorialStage.SWORD_EQUIPPED -> {
+                    player.comStance = 1
+                    TutorialHighlights.clearItems(player)
+                }
+            }
+        }
         if (player.tutorialStage == TutorialStage.WIND_STRIKE_RESOLVED) {
             protectedAccess.launch(player) {
                 val quest = Quest.get("quest_learningtheropes")
                 if (quest != null && !quest.isQuestCompleted(player)) {
                     quest.completeQuest(this)
                 }
+                TutorialHighlights.clearWindStrike(player)
                 guide.advance(player, TutorialStage.COMPLETE)
             }
-        }
-        val ticks = player.attr.getOrPut(HINT_TICKS) { 0 } + 1
-        if (ticks >= HINT_REPEAT_TICKS) {
-            guide.show(player, player.tutorialStage)
-            player.attr[HINT_TICKS] = 0
-        } else {
-            player.attr[HINT_TICKS] = ticks
         }
         player.softTimer(TUTORIAL_TIMER, 1)
     }
@@ -402,58 +490,6 @@ constructor(
         if (player.tutorialStage == TutorialStage.QUEST_HOUSE_ENTERED) {
             player.attr[RUN_TOGGLED] = true
             guide.show(player, player.tutorialStage)
-        }
-    }
-
-    private fun reconcileInterfaces(player: Player) {
-        val stage = player.tutorialStage
-        val next =
-            when {
-                stage == TutorialStage.SETTINGS_REQUESTED &&
-                    player.ui.containsOverlay("interface.settings_side") ->
-                    TutorialStage.SETTINGS_OPENED
-                stage == TutorialStage.NET_GIVEN &&
-                    player.ui.containsOverlay("interface.inventory") ->
-                    TutorialStage.INVENTORY_VIEWED
-                stage == TutorialStage.SHRIMP_CAUGHT &&
-                    player.ui.containsOverlay("interface.stats") ->
-                    TutorialStage.SKILLS_VIEWED
-                stage == TutorialStage.DAGGER_EQUIP_TASK &&
-                    player.ui.containsOverlay("interface.wornitems") ->
-                    TutorialStage.WORN_OPENED
-                stage == TutorialStage.WORN_OPENED &&
-                    (player.ui.containsModal("interface.equipment") ||
-                        player.ui.containsModal("interface.equipment_side")) ->
-                    TutorialStage.EQUIPMENT_STATS_OPENED
-                stage == TutorialStage.SWORD_EQUIPPED &&
-                    player.ui.containsOverlay("interface.combat_interface") ->
-                    TutorialStage.COMBAT_TAB_OPENED
-                stage == TutorialStage.COMBAT_TAB_OPENED &&
-                    player.ui.containsOverlay("interface.inventory") ->
-                    TutorialStage.COMBAT_TAB_CLOSED
-                stage == TutorialStage.QUEST_GUIDE_TALKED &&
-                    player.ui.containsOverlay("interface.questlist") ->
-                    TutorialStage.QUEST_LIST_OPENED
-                stage == TutorialStage.MINING_GUIDE_BAR &&
-                    player.ui.containsModal("interface.smithing") ->
-                    TutorialStage.ANVIL_OPENED
-                stage == TutorialStage.PRAYER_GUIDE_TALKED &&
-                    player.ui.containsOverlay("interface.prayerbook") ->
-                    TutorialStage.PRAYER_BOOK_OPENED
-                stage == TutorialStage.MAGIC_GUIDE_TALKED &&
-                    player.ui.containsOverlay("interface.magic_spellbook") ->
-                    TutorialStage.MAGIC_BOOK_OPENED
-                stage == TutorialStage.ACCOUNT_GUIDE_TALKED &&
-                    player.ui.containsOverlay("interface.account") ->
-                    TutorialStage.ACCOUNT_MENU_OPENED
-                stage == TutorialStage.LADDER_UP &&
-                    (player.ui.containsOverlay("interface.bankside") ||
-                        player.ui.containsModal("interface.bankmain")) ->
-                    TutorialStage.BANK_OPENED
-                else -> null
-            }
-        if (next != null) {
-            guide.advance(player, next)
         }
     }
 
@@ -487,14 +523,11 @@ constructor(
 
     private companion object {
         private const val TUTORIAL_TIMER = "timer.tutorial_island"
-        private const val HINT_REPEAT_TICKS = 10
         private const val NAME_INPUT_ATTEMPTS_MAX = 5
         private val MESOVERLAY =
             "clientscript.[clientscript,mesoverlay]".asRSCM(RSCMType.CLIENTSCRIPT)
-        private const val ADVENTURE_PATHS_PARTICIPATING = 1
-        private const val ADVENTURE_PATHS_OPTED_OUT = 2
-        private const val ADVENTURE_PATHS_EXPERIENCED = 2
-        private val HINT_TICKS = AttributeKey<Int>(temp = true)
+        private val INTERFACE_STAGE = AttributeKey<Int>(temp = true)
+        private val INTERFACE_WAS_OPEN = AttributeKey<Boolean>(temp = true)
         private val NAME_INPUT_ATTEMPTS = AttributeKey<Int>(temp = true)
         private val CANDIDATE_NAME = AttributeKey<String>(temp = true)
         private val SUGGESTIONS = AttributeKey<List<String>>(temp = true)

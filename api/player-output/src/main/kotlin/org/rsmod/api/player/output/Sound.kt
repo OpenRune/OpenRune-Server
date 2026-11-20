@@ -19,6 +19,10 @@ public fun Player.soundSynth(synth: String, loops: Int = 1, delay: Int = 0) {
     client.write(SynthSound(synth.asRSCM(RSCMType.SYNTH), loops, delay))
 }
 
+public fun Player.soundSynth(synth: Int, loops: Int = 1, delay: Int = 0) {
+    client.write(SynthSound(synth, loops, delay))
+}
+
 public fun Player.soundSynth(synth: SynthType, loops: Int = 1, delay: Int = 0) {
     client.write(SynthSound(synth.id, loops, delay))
 }

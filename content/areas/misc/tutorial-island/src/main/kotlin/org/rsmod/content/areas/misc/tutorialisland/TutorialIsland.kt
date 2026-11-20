@@ -11,8 +11,10 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.ironman.isAnyIronman
 import org.rsmod.api.player.output.runClientScript
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
+import org.rsmod.api.player.protect.forcedWalk
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.ui.ifOpenMainSidePair
@@ -26,7 +28,6 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerCoordsChanged
-import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
@@ -46,7 +47,6 @@ constructor(
     private val protectedAccess: ProtectedAccessLauncher,
     private val locRepo: LocRepository,
     private val npcRepo: NpcRepository,
-    private val xpMods: XpModifiers,
     private val eventBus: EventBus,
 ) : PluginScript() {
 
@@ -85,7 +85,7 @@ constructor(
                 mesbox("You need to talk to the Gielinor Guide before you are allowed to proceed through this door.")
                 return@onOpLoc1
             }
-            player.openDoor(it.loc)
+            openDoor(it.loc)
             player.advanceIf(TutorialStage.GUIDE_DONE, TutorialStage.OUTSIDE)
         }
         onOpLoc1(TutorialLoc.GATE_LEFT) {
@@ -93,7 +93,7 @@ constructor(
                 mesbox("You need to talk to the Survival Guide and complete her tasks before you are allowed to proceed through this gate.")
                 return@onOpLoc1
             }
-            player.openGate(it.loc, TutorialLoc.GATE_RIGHT)
+            player.openGate(it.loc)
             player.advanceIf(TutorialStage.SHRIMP_COOKED, TutorialStage.GATE_OPENED)
         }
         onOpLoc1(TutorialLoc.GATE_RIGHT) {
@@ -101,11 +101,11 @@ constructor(
                 mesbox("You need to talk to the Survival Guide and complete her tasks before you are allowed to proceed through this gate.")
                 return@onOpLoc1
             }
-            player.openGate(it.loc, TutorialLoc.GATE_LEFT)
+            player.openGate(it.loc)
             player.advanceIf(TutorialStage.SHRIMP_COOKED, TutorialStage.GATE_OPENED)
         }
         onOpLoc1(TutorialLoc.DOOR_2) {
-            player.openDoor(it.loc)
+            openDoor(it.loc)
             player.advanceIf(TutorialStage.GATE_OPENED, TutorialStage.KITCHEN_ENTERED)
         }
         onOpLoc1(TutorialLoc.DOOR_3) {
@@ -113,12 +113,12 @@ constructor(
                 mesbox("You need to finish the Master Chef's tasks first.")
                 return@onOpLoc1
             }
-            player.openDoor(it.loc)
+            openDoor(it.loc)
             player.advanceIf(TutorialStage.BREAD_BAKED, TutorialStage.QUEST_PATH)
             player.advanceIf(TutorialStage.QUEST_PATH, TutorialStage.QUEST_HOUSE_ENTERED)
         }
         onOpLoc1(TutorialLoc.DOOR_4) {
-            player.openDoor(it.loc)
+            openDoor(it.loc)
             player.advanceIf(TutorialStage.QUEST_HOUSE_ENTERED, TutorialStage.QUEST_HOUSE_INSIDE)
         }
         onOpLoc1(TutorialLoc.DOOR_6) {
@@ -130,7 +130,7 @@ constructor(
                 mesbox("You need to visit the poll booth before you can proceed through this door.")
                 return@onOpLoc1
             }
-            player.openDoor(it.loc)
+            openDoor(it.loc)
             player.advanceIf(TutorialStage.POLL_BOOTH, TutorialStage.ACCOUNT_GUIDE_ARRIVED)
         }
         onOpLoc1(TutorialLoc.DOOR_7) {
@@ -138,7 +138,7 @@ constructor(
                 mesbox("You need to talk to the Account Guide before you are allowed to proceed through this door.")
                 return@onOpLoc1
             }
-            player.openDoor(it.loc)
+            openDoor(it.loc)
             player.advanceIf(TutorialStage.ACCOUNT_GUIDE_DONE, TutorialStage.CHAPEL_ARRIVED)
         }
         onOpLoc1(TutorialLoc.DOOR_8) {
@@ -146,7 +146,7 @@ constructor(
                 mesbox("You need to finish Brother Brace's tasks before you are allowed to proceed through this door.")
                 return@onOpLoc1
             }
-            player.openDoor(it.loc)
+            openDoor(it.loc)
             player.advanceIf(TutorialStage.PRAYER_GUIDE_DONE, TutorialStage.MAGIC_GUIDE_ARRIVED)
         }
         onOpLoc1(TutorialLoc.LADDER_DOWN) {
@@ -186,7 +186,7 @@ constructor(
                 mesbox("You need to finish with Mining and Smithing first.")
                 return@onOpLoc1
             }
-            player.openGate(it.loc, TutorialLoc.COMBAT_GATE_RIGHT)
+            player.openGate(it.loc)
             player.advanceIf(TutorialStage.DAGGER_SMITHED, TutorialStage.COMBAT_GATE)
         }
         onOpLoc1(TutorialLoc.COMBAT_GATE_RIGHT) {
@@ -194,11 +194,11 @@ constructor(
                 mesbox("You need to finish with Mining and Smithing first.")
                 return@onOpLoc1
             }
-            player.openGate(it.loc, TutorialLoc.COMBAT_GATE_LEFT)
+            player.openGate(it.loc)
             player.advanceIf(TutorialStage.DAGGER_SMITHED, TutorialStage.COMBAT_GATE)
         }
-        onOpLoc1(TutorialLoc.RAT_GATE_LEFT) { useRatGate(it.loc, TutorialLoc.RAT_GATE_RIGHT) }
-        onOpLoc1(TutorialLoc.RAT_GATE_RIGHT) { useRatGate(it.loc, TutorialLoc.RAT_GATE_LEFT) }
+        onOpLoc1(TutorialLoc.RAT_GATE_LEFT) { useRatGate(it.loc) }
+        onOpLoc1(TutorialLoc.RAT_GATE_RIGHT) { useRatGate(it.loc) }
     }
 
     private fun ScriptContext.bindObjects() {
@@ -220,7 +220,14 @@ constructor(
                         "of 300</col>. To preserve the old-school character of this game, an " +
                         "update must gain <col=7f0000>70%</col> support to be released.",
                 )
-                mesbox("A flag appears on the booth to let you know when you're invited to vote in a poll.")
+                camMoveToV3(CoordGrid(3123, 3123, 0), 450, 232, 100, false)
+                camLookAtV3(CoordGrid(3119, 3121, 0), 350, 232, 100, false)
+                objbox(
+                    TutorialObj.CERT_FURNACE_ICON,
+                    "A flag appears on the booth to let you know when you're invited to vote in " +
+                        "a poll.",
+                )
+                camReset()
                 guide.advance(player, TutorialStage.POLL_BOOTH)
             }
         }
@@ -240,7 +247,7 @@ constructor(
         }
         onOpNpc1(TutorialNpc.FISHING_SPOT) { catchShrimp() }
         for (tree in listOf(TutorialLoc.TREE, TutorialLoc.TREE_2)) {
-            onOpLoc1(tree) { chopTree() }
+            onOpLoc1(tree) { chopTree(it.loc) }
         }
         onOpLoc1(TutorialLoc.OAK_TREE) {
             if (player.tutorialStage == TutorialStage.AXE_GIVEN) {
@@ -254,8 +261,8 @@ constructor(
                 mes("Perhaps you've done enough woodcutting now.")
             }
         }
-        onOpLoc1(TutorialLoc.TIN_ROCK) { mineTin() }
-        onOpLoc1(TutorialLoc.COPPER_ROCK) { mineCopper() }
+        onOpLoc1(TutorialLoc.TIN_ROCK) { mineTin(it.loc) }
+        onOpLoc1(TutorialLoc.COPPER_ROCK) { mineCopper(it.loc) }
         onOpLoc1(TutorialLoc.FURNACE) { smeltBar() }
         onOpHeld1(TutorialObj.BONES) { buryBones() }
     }
@@ -296,16 +303,50 @@ constructor(
         }
     }
 
-    private fun Player.openDoor(loc: BoundLocInfo) {
+    private suspend fun ProtectedAccess.openDoor(loc: BoundLocInfo) {
+        val leaves = DOOR_OPEN[loc.internalName]
+        if (leaves == null) {
+            locRepo.del(loc, DOOR_OPEN_TICKS)
+            return
+        }
         locRepo.del(loc, DOOR_OPEN_TICKS)
+        soundSynth(62)
+        val distance = coords.chebyshevDistance(loc.coords)
+        if (distance > 0) {
+            forcedWalk(loc.coords, crossTiles = distance)
+        }
+        player.addOpenLeaves(leaves, DOOR_OPEN_TICKS - 1)
+        locRepo.change(loc, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS - 1)
     }
 
-    private fun Player.openGate(loc: BoundLocInfo, otherName: String) {
-        locRepo.del(loc, DOOR_OPEN_TICKS)
-        findNearbyLoc(loc.coords, otherName)?.let { locRepo.del(it, DOOR_OPEN_TICKS) }
+    private fun Player.openGate(loc: BoundLocInfo) {
+        val spec = GATE_OPEN[loc.internalName]
+        if (spec == null) {
+            locRepo.del(loc, DOOR_OPEN_TICKS)
+            return
+        }
+        for (half in spec.halves) {
+            if (half.name == loc.internalName && half.coords == loc.coords) {
+                locRepo.change(loc, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS)
+            } else {
+                findNearbyLoc(half.coords, half.name)?.let {
+                    locRepo.change(it, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS)
+                }
+            }
+        }
+        addOpenLeaves(spec.leaves)
+        if (spec === WOODEN_GATE) {
+            soundSynth(67)
+        }
     }
 
-    private suspend fun ProtectedAccess.useRatGate(loc: BoundLocInfo, otherName: String) {
+    private fun Player.addOpenLeaves(leaves: List<OpenLeaf>, duration: Int = DOOR_OPEN_TICKS) {
+        for (leaf in leaves) {
+            locRepo.add(leaf.coords, leaf.id, duration, leaf.angle, LocShape.WallStraight)
+        }
+    }
+
+    private suspend fun ProtectedAccess.useRatGate(loc: BoundLocInfo) {
         if (player.tutorialStage < TutorialStage.COMBAT_TAB_OPENED) {
             sayCombatInstructor("Oi! Get away from there. Only enter the rat cage when I say so.")
             return
@@ -314,7 +355,7 @@ constructor(
             sayCombatInstructor("No, don't enter the pit. Range the rats from outside the cage.")
             return
         }
-        player.openGate(loc, otherName)
+        player.openGate(loc)
     }
 
     private suspend fun ProtectedAccess.sayCombatInstructor(line: String) {
@@ -343,7 +384,7 @@ constructor(
     }
 
     private fun ProtectedAccess.tutorialStat(stat: String, xp: Double) {
-        player.statAdvance(stat, xp * xpMods.get(player, stat))
+        player.statAdvance(stat, xp, rate = 1.0, globalRate = 1.0)
     }
 
     private suspend fun ProtectedAccess.makeDough() {
@@ -365,7 +406,8 @@ constructor(
         invAdd(inv, TutorialObj.BREAD_DOUGH, 1)
         invAdd(inv, TutorialObj.POT_EMPTY, 1)
         invAdd(inv, TutorialObj.BUCKET_EMPTY, 1)
-        mesbox("You make some dough.")
+        objbox(TutorialObj.BREAD_DOUGH, "You make some dough.")
+        TutorialHighlights.clearItems(player)
         guide.advance(player, TutorialStage.DOUGH_MADE)
     }
 
@@ -380,7 +422,7 @@ constructor(
         }
         mesOverlay("Your character is now attempting to light a fire. This should only take a few seconds.")
         anim("seq.human_createfire")
-        delay(4)
+        delay(8)
         if (invDel(inv, TutorialObj.LOGS, 1).failure) {
             return
         }
@@ -392,6 +434,10 @@ constructor(
             LocShape.CentrepieceStraight,
         )
         tutorialStat("stat.firemaking", 40.0)
+        TutorialHighlights.clearItems(player)
+        if (player.inv.contains(TutorialObj.RAW_SHRIMP)) {
+            TutorialHighlights.item(player, TutorialObj.RAW_SHRIMP)
+        }
         guide.advance(player, TutorialStage.FIRE_LIT)
     }
 
@@ -400,11 +446,13 @@ constructor(
             return
         }
         mesOverlay("Your character is now attempting to cook some shrimp. This will only take a few seconds.")
-        delay(2)
+        soundSynth(2577)
+        delay(3)
         if (invDel(inv, TutorialObj.RAW_SHRIMP, 1).failure) {
             return
         }
-        mesbox("You manage to cook some shrimp.")
+        objbox(TutorialObj.SHRIMP, "You manage to cook some shrimp.")
+        TutorialHighlights.clearItems(player)
         tutorialStat("stat.cooking", 30.0)
         invAdd(inv, TutorialObj.SHRIMP, 1)
         guide.advance(player, TutorialStage.SHRIMP_COOKED)
@@ -415,11 +463,12 @@ constructor(
             return
         }
         mesOverlay("Your character is now attempting to bake some bread. This will only take a few seconds.")
-        delay(2)
+        soundSynth(2580)
+        delay(5)
         if (invDel(inv, TutorialObj.BREAD_DOUGH, 1).failure) {
             return
         }
-        mesbox("You manage to bake some bread.")
+        objbox(TutorialObj.BREAD, "You manage to bake some bread.")
         tutorialStat("stat.cooking", 40.0)
         invAdd(inv, TutorialObj.BREAD, 1)
         guide.advance(player, TutorialStage.BREAD_BAKED)
@@ -440,14 +489,15 @@ constructor(
             "Your character is now attempting to catch some shrimp. Sit back for a moment " +
                 "while he does all the hard work.",
         )
-        delay(3)
+        delay(6)
         invAdd(inv, TutorialObj.RAW_SHRIMP, 1)
         tutorialStat("stat.fishing", 10.0)
-        mesbox("You manage to catch some shrimp.")
+        objbox(TutorialObj.RAW_SHRIMP, "You manage to catch some shrimp.")
+        TutorialHighlights.item(player, TutorialObj.RAW_SHRIMP, alert = true)
         guide.advance(player, TutorialStage.SHRIMP_CAUGHT)
     }
 
-    private suspend fun ProtectedAccess.chopTree() {
+    private suspend fun ProtectedAccess.chopTree(loc: BoundLocInfo) {
         if (player.tutorialStage != TutorialStage.AXE_GIVEN) {
             when {
                 player.tutorialStage < TutorialStage.AXE_GIVEN ->
@@ -461,20 +511,23 @@ constructor(
             mes("You need an axe to chop down this tree.")
             return
         }
+        locRepo.change(loc, TutorialLoc.TREE_STUMP, TREE_STUMP_TICKS)
         mesOverlay(
             "Your character is now attempting to cut down the tree. Sit back for a moment " +
                 "while he does all the hard work.",
         )
-        delay(4)
+        delay(5)
         if (invAdd(inv, TutorialObj.LOGS, 1).failure) {
             return
         }
         tutorialStat("stat.woodcutting", 25.0)
-        mesbox("You manage to cut some logs.")
+        objbox(TutorialObj.LOGS, "You manage to cut some logs.")
+        TutorialHighlights.item(player, TutorialObj.LOGS)
+        TutorialHighlights.item(player, TutorialObj.TINDERBOX)
         guide.advance(player, TutorialStage.LOGS_CUT)
     }
 
-    private suspend fun ProtectedAccess.mineTin() {
+    private suspend fun ProtectedAccess.mineTin(loc: BoundLocInfo) {
         if (player.tutorialStage != TutorialStage.MINING_GUIDE_TALKED) {
             if (player.tutorialStage < TutorialStage.MINING_GUIDE_TALKED) {
                 mes("You are not ready to mine yet. Please follow the tutorial and you'll be mining in no time.")
@@ -485,15 +538,17 @@ constructor(
             mes("You need a pickaxe to mine this rock.")
             return
         }
+        locRepo.change(loc, TutorialLoc.ROCK_DEPLETED, ROCK_DEPLETED_TICKS)
         mesOverlay("Your character is now attempting to mine the rock.<br>This should only take a few seconds.")
-        delay(3)
+        delay(5)
         invAdd(inv, TutorialObj.TIN_ORE, 1)
         tutorialStat("stat.mining", 17.5)
-        mesbox("You manage to mine some tin.")
+        objbox(TutorialObj.TIN_ORE, "You manage to mine some tin.")
+        soundSynth(3600)
         guide.advance(player, TutorialStage.TIN_MINED)
     }
 
-    private suspend fun ProtectedAccess.mineCopper() {
+    private suspend fun ProtectedAccess.mineCopper(loc: BoundLocInfo) {
         if (player.tutorialStage != TutorialStage.TIN_MINED) {
             if (player.tutorialStage < TutorialStage.TIN_MINED) {
                 mes("You are not ready to mine yet. Please follow the tutorial and you'll be mining in no time.")
@@ -504,11 +559,13 @@ constructor(
             mes("You need a pickaxe to mine this rock.")
             return
         }
+        locRepo.change(loc, TutorialLoc.ROCK_DEPLETED, ROCK_DEPLETED_TICKS)
         mesOverlay("Your character is now attempting to mine the rock.<br>This should only take a few seconds.")
-        delay(3)
+        delay(5)
         invAdd(inv, TutorialObj.COPPER_ORE, 1)
         tutorialStat("stat.mining", 17.5)
-        mesbox("You manage to mine some copper.")
+        objbox(TutorialObj.COPPER_ORE, "You manage to mine some copper.")
+        soundSynth(3600)
         guide.advance(player, TutorialStage.COPPER_MINED)
     }
 
@@ -526,13 +583,14 @@ constructor(
             return
         }
         mesOverlay("You smelt the copper and tin together in the furnace.")
-        delay(2)
+        soundSynth(2725)
+        delay(3)
         if (invDel(inv, TutorialObj.TIN_ORE, 1).failure ||
             invDel(inv, TutorialObj.COPPER_ORE, 1).failure
         ) {
             return
         }
-        mesbox("You retrieve a bar of bronze.")
+        mesOverlay("You retrieve a bar of bronze.")
         tutorialStat("stat.smithing", 6.2)
         invAdd(inv, TutorialObj.BRONZE_BAR, 1)
         guide.advance(player, TutorialStage.BAR_SMELTED)
@@ -612,7 +670,10 @@ constructor(
                         "this pond here. Let's try and catch some.",
                 )
                 if (access.giveTutorialItems(TutorialObj.NET to 1)) {
-                    mesbox("The survival expert gives you a <col=000080>small fishing net<col=000000>.")
+                    objbox(
+                        TutorialObj.NET,
+                        "The survival expert gives you a <col=000080>small fishing net<col=000000>.",
+                    )
                     guide.advance(player, TutorialStage.NET_GIVEN)
                 }
             }
@@ -625,7 +686,10 @@ constructor(
                 if (!player.inv.contains(TutorialObj.NET) &&
                     access.giveTutorialItems(TutorialObj.NET to 1)
                 ) {
-                    mesbox("The survival expert gives you a <col=000080>small fishing net<col=000000>.")
+                    objbox(
+                        TutorialObj.NET,
+                        "The survival expert gives you a <col=000080>small fishing net<col=000000>.",
+                    )
                 }
             }
             TutorialStage.SHRIMP_CAUGHT ->
@@ -638,7 +702,9 @@ constructor(
                         "need a fire. This brings us on to the Woodcutting and Firemaking skills.",
                 )
                 if (access.giveTutorialItems(TutorialObj.BRONZE_AXE to 1, TutorialObj.TINDERBOX to 1)) {
-                    mesbox(
+                    doubleobjbox(
+                        TutorialObj.BRONZE_AXE,
+                        TutorialObj.TINDERBOX,
                         "The survival expert gives you a <col=000080>bronze axe<col=000000> and a " +
                             "<col=000000><col=000080>tinderbox<col=000000>.",
                     )
@@ -661,10 +727,30 @@ constructor(
                         }
                     }
                 if (missing.isNotEmpty() && access.giveTutorialItems(*missing.toTypedArray())) {
-                    mesbox(
-                        "The survival expert gives you a <col=000080>bronze axe<col=000000> and a " +
-                            "<col=000000><col=000080>tinderbox<col=000000>.",
-                    )
+                    val axe = missing.any { it.first == TutorialObj.BRONZE_AXE }
+                    val tinderbox = missing.any { it.first == TutorialObj.TINDERBOX }
+                    when {
+                        axe && tinderbox ->
+                            doubleobjbox(
+                                TutorialObj.BRONZE_AXE,
+                                TutorialObj.TINDERBOX,
+                                "The survival expert gives you a <col=000080>bronze axe" +
+                                    "<col=000000> and a <col=000000><col=000080>tinderbox" +
+                                    "<col=000000>.",
+                            )
+                        axe ->
+                            objbox(
+                                TutorialObj.BRONZE_AXE,
+                                "The survival expert gives you a <col=000080>bronze axe" +
+                                    "<col=000000>.",
+                            )
+                        tinderbox ->
+                            objbox(
+                                TutorialObj.TINDERBOX,
+                                "The survival expert gives you a <col=000080>tinderbox" +
+                                    "<col=000000>.",
+                            )
+                    }
                 }
             }
             TutorialStage.LOGS_CUT ->
@@ -826,6 +912,8 @@ constructor(
                     "The master chef gives you some <col=000080>flour<col=000000> and some " +
                         "<col=000080>water<col=000000>.",
                 )
+                TutorialHighlights.item(player, TutorialObj.POT_FLOUR)
+                TutorialHighlights.item(player, TutorialObj.BUCKET_WATER)
                 guide.advance(player, TutorialStage.CHEF_TALKED)
             }
         } else if (player.tutorialStage < TutorialStage.BREAD_BAKED) {
@@ -877,10 +965,14 @@ constructor(
             )
             return false
         }
-        mesbox(
+        doubleobjbox(
+            TutorialObj.BRONZE_SWORD,
+            TutorialObj.WOODEN_SHIELD,
             "The combat instructor gives you a <col=000080>bronze sword<col=000000> and a " +
                 "<col=000000><col=000080>wooden shield<col=000000>.",
         )
+        TutorialHighlights.item(player, TutorialObj.BRONZE_SWORD)
+        TutorialHighlights.item(player, TutorialObj.WOODEN_SHIELD)
         return true
     }
 
@@ -904,10 +996,14 @@ constructor(
             )
             return false
         }
-        mesbox(
+        doubleobjbox(
+            TutorialObj.SHORTBOW,
+            TutorialObj.BRONZE_ARROW,
             "The combat instructor gives you a <col=000080>shortbow<col=000000> and some " +
                 "<col=000000><col=000080>bronze arrows<col=000000>.",
         )
+        TutorialHighlights.item(player, TutorialObj.SHORTBOW)
+        TutorialHighlights.item(player, TutorialObj.BRONZE_ARROW)
         return true
     }
 
@@ -971,7 +1067,8 @@ constructor(
                     "It's very easy to find quest start points. Just look out for the quest icon " +
                         "on your minimap. You should see one marking this house.",
                 )
-                mesbox(
+                objbox(
+                    TutorialObj.QUEST_START_ICON,
                     "The minimap in the top right corner of the screen has various icons to show " +
                         "different points of interest. Look for the icon to the left to find quest " +
                         "start points.",
@@ -1019,6 +1116,7 @@ constructor(
     private suspend fun Dialogue.miningInstructor() {
         when (player.tutorialStage) {
             TutorialStage.LADDER_DOWN -> {
+                guide.advance(player, TutorialStage.MINING_GUIDE_GREETED)
                 chatNpc(
                     neutral,
                     "Hi there. You must be new around here. So what do I call you? 'Newcomer' seems " +
@@ -1037,7 +1135,10 @@ constructor(
                         "contain tin and copper. Why don't you get started by mining some?",
                 )
                 if (access.giveTutorialItems(TutorialObj.BRONZE_PICKAXE to 1)) {
-                    mesbox("The mining instructor gives you a <col=000080>bronze pickaxe<col=000000>.")
+                    objbox(
+                        TutorialObj.BRONZE_PICKAXE,
+                        "The mining instructor gives you a <col=000080>bronze pickaxe<col=000000>.",
+                    )
                     guide.advance(player, TutorialStage.MINING_GUIDE_TALKED)
                 }
             }
@@ -1050,7 +1151,10 @@ constructor(
                         "use. See if you can make a bronze dagger.",
                 )
                 if (access.giveTutorialItems(TutorialObj.HAMMER to 1)) {
-                    mesbox("The mining instructor gives you a <col=000080>hammer<col=000000>.")
+                    objbox(
+                        TutorialObj.HAMMER,
+                        "The mining instructor gives you a <col=000080>hammer<col=000000>.",
+                    )
                     guide.advance(player, TutorialStage.MINING_GUIDE_BAR)
                 }
             }
@@ -1059,7 +1163,10 @@ constructor(
                 if (!player.inv.contains(TutorialObj.HAMMER) &&
                     access.giveTutorialItems(TutorialObj.HAMMER to 1)
                 ) {
-                    mesbox("The mining instructor gives you a <col=000080>hammer<col=000000>.")
+                    objbox(
+                        TutorialObj.HAMMER,
+                        "The mining instructor gives you a <col=000080>hammer<col=000000>.",
+                    )
                 }
             }
             else -> miningRecap()
@@ -1071,13 +1178,19 @@ constructor(
             !player.inv.contains(TutorialObj.BRONZE_PICKAXE) &&
             access.giveTutorialItems(TutorialObj.BRONZE_PICKAXE to 1)
         ) {
-            mesbox("The mining instructor gives you a <col=000080>bronze pickaxe<col=000000>.")
+            objbox(
+                        TutorialObj.BRONZE_PICKAXE,
+                        "The mining instructor gives you a <col=000080>bronze pickaxe<col=000000>.",
+                    )
         }
         if (player.tutorialStage >= TutorialStage.MINING_GUIDE_BAR &&
             !player.inv.contains(TutorialObj.HAMMER) &&
             access.giveTutorialItems(TutorialObj.HAMMER to 1)
         ) {
-            mesbox("The mining instructor gives you a <col=000080>hammer<col=000000>.")
+            objbox(
+                        TutorialObj.HAMMER,
+                        "The mining instructor gives you a <col=000080>hammer<col=000000>.",
+                    )
         }
         chatNpc(neutral, "Would you like me to recap anything?")
         when (choice3("Tell me about Mining again.", 1, "Tell me about Smithing again.", 2, "Nothing thanks.", 3)) {
@@ -1119,7 +1232,6 @@ constructor(
     private suspend fun Dialogue.combatInstructor() {
         when (player.tutorialStage) {
             TutorialStage.COMBAT_GATE -> {
-                guide.advance(player, TutorialStage.COMBAT_GUIDE_TALKED)
                 chatPlayer(happy, "Hi! My name's ${player.displayName}.")
                 chatNpc(
                     angry,
@@ -1133,6 +1245,7 @@ constructor(
                 )
                 chatNpc(neutral, "Let's get started by teaching you to wield a weapon.")
                 guide.advance(player, TutorialStage.DAGGER_EQUIP_TASK)
+                TutorialHighlights.item(player, TutorialObj.BRONZE_DAGGER)
             }
             TutorialStage.DAGGER_EQUIP_TASK ->
                 chatNpc(neutral, "Let's get started by teaching you to wield a weapon.")
@@ -1188,7 +1301,7 @@ constructor(
     }
 
     private suspend fun Dialogue.combatRecap() {
-        chatNpc(neutral, "Would you like me to recap anything?")
+        chatNpc(neutral, "Do you need something?")
         when (choice2("Tell me about melee combat again.", 1, "Nothing thanks.", 2)) {
             1 -> {
                 chatPlayer(quiz, "Tell me about melee combat again.")
@@ -1283,7 +1396,8 @@ constructor(
                 chatNpc(
                     happy,
                     "Your account is very valuable and it's important you look after it. Various " +
-                        "tools can help with this, such as Bank PINs and two-factor authentication.",
+                        "tools can help with this, such as Bank PINs and two-factor authentication " +
+                            "options.",
                 )
                 chatNpc(
                     happy,
@@ -1348,6 +1462,7 @@ constructor(
                     "That's all I have to teach you for now. If you need a reminder about your " +
                         "prayers, just speak to me again.",
                 )
+                guide.advance(player, TutorialStage.PRAYER_GUIDE_TALKED_2)
                 guide.advance(player, TutorialStage.PRAYER_GUIDE_DONE)
             }
             else -> {
@@ -1402,10 +1517,13 @@ constructor(
                         "try it out on one of those chickens.",
                 )
                 if (access.giveTutorialItems(TutorialObj.AIR_RUNE to 5, TutorialObj.MIND_RUNE to 5)) {
-                    mesbox(
+                    doubleobjbox(
+                        TutorialObj.AIR_RUNE,
+                        TutorialObj.MIND_RUNE,
                         "Terrova gives you some <col=000080>air runes<col=000000> and " +
                             "<col=000080>mind runes<col=000000>.",
                     )
+                    TutorialHighlights.windStrike(player)
                     guide.advance(player, TutorialStage.RUNES_GIVEN)
                 }
             }
@@ -1423,10 +1541,13 @@ constructor(
                         TutorialObj.MIND_RUNE to 5,
                     )
                 ) {
-                    mesbox(
+                    doubleobjbox(
+                        TutorialObj.AIR_RUNE,
+                        TutorialObj.MIND_RUNE,
                         "Terrova gives you some <col=000080>air runes<col=000000> and " +
                             "<col=000080>mind runes<col=000000>.",
                     )
+                    TutorialHighlights.windStrike(player)
                 }
             }
             player.tutorialStage == TutorialStage.COMPLETE -> finalMagicDialogue()
@@ -1451,6 +1572,10 @@ constructor(
             "Well, you're all finished here now. I'll give you a reasonable number of runes when " +
                 "you leave.",
         )
+        if (choice2("Yes.", 1, "No.", 2, title = "Do you want to go to the mainland?") != 1) {
+            return
+        }
+        player.adventurePaths = 1
         chatNpc(neutral, "Were you planning to become an Ironman, by the way?")
         when (
             choice3(
@@ -1489,7 +1614,8 @@ constructor(
                 "can't miss him; he's wearing light blue armour with a huge sword. There are also " +
                 "many tutors willing to teach you about the many skills you could learn.",
         )
-        mesbox(
+        objbox(
+            TutorialObj.AP_GUIDE_ICON,
             "When you get to Lumbridge, look out for Adventurer Jon, he can be found outside of " +
                 "the Sheared Ram pub.",
         )
@@ -1498,6 +1624,7 @@ constructor(
             "Excellent, I think that covers everything. When you're ready to go, use your home " +
                 "teleport spell to teleport to Lumbridge!",
         )
+        TutorialHighlights.homeTeleport(player)
         guide.advance(player, TutorialStage.READY_TO_LEAVE)
     }
 
@@ -1625,10 +1752,154 @@ constructor(
             else -> "Ironman"
         }
 
+    private data class OpenLeaf(val id: String, val coords: CoordGrid, val angle: LocAngle)
+
+    private data class GateHalf(val name: String, val coords: CoordGrid)
+
+    private data class GateSpec(val halves: List<GateHalf>, val leaves: List<OpenLeaf>)
+
     private companion object {
         private const val FIRE_DURATION = 200
         private const val DOOR_OPEN_TICKS = 5
+        private const val TREE_STUMP_TICKS = 5
+        private const val ROCK_DEPLETED_TICKS = 5
         private val MESOVERLAY =
             "clientscript.[clientscript,mesoverlay]".asRSCM(RSCMType.CLIENTSCRIPT)
+
+        private val WOODEN_GATE =
+            GateSpec(
+                halves =
+                    listOf(
+                        GateHalf(TutorialLoc.GATE_LEFT, CoordGrid(3089, 3092, 0)),
+                        GateHalf(TutorialLoc.GATE_RIGHT, CoordGrid(3089, 3091, 0)),
+                    ),
+                leaves =
+                    listOf(
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_FENCE_GATE_L,
+                            CoordGrid(3090, 3092, 0),
+                            LocAngle.North,
+                        ),
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_FENCE_GATE_R,
+                            CoordGrid(3091, 3092, 0),
+                            LocAngle.North,
+                        ),
+                    ),
+            )
+
+        private val COMBAT_GATE =
+            GateSpec(
+                halves =
+                    listOf(
+                        GateHalf(TutorialLoc.COMBAT_GATE_LEFT, CoordGrid(3094, 9503, 0)),
+                        GateHalf(TutorialLoc.COMBAT_GATE_RIGHT, CoordGrid(3094, 9502, 0)),
+                    ),
+                leaves =
+                    listOf(
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_METAL_GATE_L,
+                            CoordGrid(3095, 9502, 0),
+                            LocAngle.South,
+                        ),
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_METAL_GATE_L,
+                            CoordGrid(3095, 9503, 0),
+                            LocAngle.North,
+                        ),
+                    ),
+            )
+
+        private val RAT_GATE =
+            GateSpec(
+                halves =
+                    listOf(
+                        GateHalf(TutorialLoc.RAT_GATE_LEFT, CoordGrid(3111, 9518, 0)),
+                        GateHalf(TutorialLoc.RAT_GATE_RIGHT, CoordGrid(3111, 9519, 0)),
+                    ),
+                leaves =
+                    listOf(
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_METAL_GATE_L,
+                            CoordGrid(3110, 9518, 0),
+                            LocAngle.South,
+                        ),
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_METAL_GATE_R,
+                            CoordGrid(3110, 9519, 0),
+                            LocAngle.North,
+                        ),
+                    ),
+            )
+
+        private val DOOR_OPEN: Map<String, List<OpenLeaf>> =
+            mapOf(
+                TutorialLoc.DOOR_1 to
+                    listOf(
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_POOR_DOOR,
+                            CoordGrid(3097, 3107, 0),
+                            LocAngle.North,
+                        ),
+                    ),
+                TutorialLoc.DOOR_2 to
+                    listOf(
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_POOR_DOOR,
+                            CoordGrid(3078, 3084, 0),
+                            LocAngle.North,
+                        ),
+                    ),
+                TutorialLoc.DOOR_3 to
+                    listOf(
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_POOR_DOOR,
+                            CoordGrid(3073, 3090, 0),
+                            LocAngle.South,
+                        ),
+                    ),
+                TutorialLoc.DOOR_4 to
+                    listOf(
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_POOR_DOOR,
+                            CoordGrid(3086, 3125, 0),
+                            LocAngle.West,
+                        ),
+                    ),
+                TutorialLoc.DOOR_6 to
+                    listOf(
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_POOR_DOOR,
+                            CoordGrid(3124, 3124, 0),
+                            LocAngle.North,
+                        ),
+                    ),
+                TutorialLoc.DOOR_7 to
+                    listOf(
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_POOR_DOOR,
+                            CoordGrid(3129, 3124, 0),
+                            LocAngle.North,
+                        ),
+                    ),
+                TutorialLoc.DOOR_8 to
+                    listOf(
+                        OpenLeaf(
+                            TutorialLoc.INACTIVE_POOR_DOOR,
+                            CoordGrid(3122, 3103, 0),
+                            LocAngle.East,
+                        ),
+                    ),
+            )
+
+        private val GATE_OPEN: Map<String, GateSpec> =
+            mapOf(
+                TutorialLoc.GATE_LEFT to WOODEN_GATE,
+                TutorialLoc.GATE_RIGHT to WOODEN_GATE,
+                TutorialLoc.COMBAT_GATE_LEFT to COMBAT_GATE,
+                TutorialLoc.COMBAT_GATE_RIGHT to COMBAT_GATE,
+                TutorialLoc.RAT_GATE_LEFT to RAT_GATE,
+                TutorialLoc.RAT_GATE_RIGHT to RAT_GATE,
+            )
     }
 }

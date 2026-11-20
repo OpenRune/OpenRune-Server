@@ -4,7 +4,6 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -17,12 +16,6 @@ private var Player.adventurePaths by intVarBit("varbit.adventurepath_player_part
 /** The Doomsayer, Count Check, Nigel and Adventurer Jon, all north of Lumbridge Castle. */
 class LumbridgeAdvisors : PluginScript() {
     override fun ScriptContext.startup() {
-        // Adventurer Jon is only visible to players the varbit marks as taking part.
-        onPlayerLogin {
-            if (player.adventurePaths == ADVENTURE_PATHS_UNSET) {
-                player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
-            }
-        }
         for (doomsayer in listOf("npc.cws_doomsayer", "npc.doomsayer_normal")) {
             onOpNpc1(doomsayer) { startDialogue(it.npc) { doomsayer() } }
         }
@@ -399,6 +392,10 @@ class LumbridgeAdvisors : PluginScript() {
                         "Once you've completed an Adventure Path task, come back to me and I'll give you a " +
                             "reward.",
                     )
+                    chatNpc(
+                        happy,
+                        "Start by opening your quest panel and then selecting the flashing yellow star.",
+                    )
                     return
                 }
                 2 -> {
@@ -432,7 +429,6 @@ class LumbridgeAdvisors : PluginScript() {
     }
 
     private companion object {
-        const val ADVENTURE_PATHS_UNSET = 0
         const val ADVENTURE_PATHS_PARTICIPATING = 1
         const val ADVENTURE_PATHS_OPTED_OUT = 2
 

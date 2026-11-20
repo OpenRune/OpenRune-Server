@@ -1,18 +1,15 @@
 package org.rsmod.content.areas.misc.tutorialisland
 
 import jakarta.inject.Inject
-import org.rsmod.api.repo.loc.LocRepository
-import org.rsmod.api.repo.loc.locNearby
 import org.rsmod.game.entity.Player
 
-internal class TutorialRules @Inject constructor(private val locRepo: LocRepository) {
+internal class TutorialRules @Inject constructor() {
 
     fun nextStage(player: Player): Int? {
         val stage = player.tutorialStage
         return when {
             stage == TutorialStage.AXE_GIVEN && player.inv.contains(TutorialObj.LOGS) ->
                 TutorialStage.LOGS_CUT
-            stage == TutorialStage.LOGS_CUT && hasFireNearby(player) -> TutorialStage.FIRE_LIT
             stage == TutorialStage.FIRE_LIT && player.inv.contains(TutorialObj.SHRIMP) ->
                 TutorialStage.SHRIMP_COOKED
             stage == TutorialStage.CHEF_TALKED && player.inv.contains(TutorialObj.BREAD_DOUGH) ->
@@ -42,11 +39,7 @@ internal class TutorialRules @Inject constructor(private val locRepo: LocReposit
         return coords.x in QUEST_HOUSE_X && coords.z in QUEST_HOUSE_Z && coords.level == 0
     }
 
-    private fun hasFireNearby(player: Player): Boolean =
-        locRepo.locNearby(player.coords, FIRE_RADIUS, null, listOf(TutorialLoc.FIRE))
-
     private companion object {
-        private const val FIRE_RADIUS = 4
         private val QUEST_HOUSE_X = 3085..3089
         private val QUEST_HOUSE_Z = 3120..3126
     }
