@@ -16,6 +16,7 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.ui.ifOpenMainSidePair
+import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onEvent
@@ -337,6 +338,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.mesOverlay(text: String) {
+        player.ifOpenOverlay("interface.mesoverlay", "component.chatbox:chatoverlay", eventBus)
         runClientScript(MESOVERLAY, text)
     }
 

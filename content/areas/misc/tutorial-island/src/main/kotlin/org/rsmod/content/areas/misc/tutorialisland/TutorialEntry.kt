@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.misc.tutorialisland
 
+import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -12,6 +13,8 @@ import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifOpenFullOverlay
+import org.rsmod.api.player.ui.ifOpenOverlay
+import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.ui.ifSetHide
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.boolVarBit
@@ -76,13 +79,33 @@ constructor(
         }
         seedTutorialBank(player)
         if (player.tutorialStage <= TutorialStage.START) {
-            player.beginName()
+            if (player.displayNameStatus < 5) {
+                player.beginName()
+            } else {
+                player.beginDesign()
+            }
         } else {
+            player.resumeTutorial()
+        }
+    }
+
+    private fun Player.resumeTutorial() {
+        ifOpenFullOverlay("interface.tutorial_overlay", eventBus)
+        ifSetHide("component.tutorial_overlay:noclick", true)
+        guide.apply(this, tutorialStage)
+        attr[LAST_RUN_STATE] = vars["varp.option_run"]
+        softTimer(TUTORIAL_TIMER, 1)
+    }
+
+    private fun Player.beginDesign() {
+        protectedAccess.launch(this) {
+            if (player.tutorialStage > TutorialStage.START) {
+                return@launch
+            }
             player.ifOpenFullOverlay("interface.tutorial_overlay", eventBus)
-            player.ifSetHide("component.tutorial_overlay:noclick", true)
-            guide.apply(player, player.tutorialStage)
-            player.attr[LAST_RUN_STATE] = player.vars["varp.option_run"]
-            player.softTimer(TUTORIAL_TIMER, 1)
+            player.ifSetHide("component.tutorial_overlay:noclick", false)
+            player.ifSetHide("component.tutorial_overlay:hint_layer", true)
+            openDesign()
         }
     }
 
@@ -113,16 +136,36 @@ constructor(
                 "component.tutorial_displayname:status",
                 "Please look up a name to see whether it is available.",
             )
-            player.runClientScript(
-                NAME_ALLOW_INPUT,
-                NAME_LOOK_UP.asRSCM(RSCMType.COMPONENT),
-                NAME_SET.asRSCM(RSCMType.COMPONENT),
-                NAME_TEXT.asRSCM(RSCMType.COMPONENT),
-                NAME_HIGHLIGHT.asRSCM(RSCMType.COMPONENT),
-                NAME_INPUT.asRSCM(RSCMType.COMPONENT),
-                1,
-            )
+            player.configureNameInput()
+            player.softTimer(TUTORIAL_TIMER, 1)
         }
+    }
+
+    private fun Player.configureNameInput() {
+        runClientScript(
+            NAME_ALLOW_INPUT,
+            NAME_LOOK_UP.asRSCM(RSCMType.COMPONENT),
+            NAME_SET.asRSCM(RSCMType.COMPONENT),
+            NAME_TEXT.asRSCM(RSCMType.COMPONENT),
+            NAME_HIGHLIGHT.asRSCM(RSCMType.COMPONENT),
+            NAME_INPUT.asRSCM(RSCMType.COMPONENT),
+            1,
+        )
+    }
+
+    private fun Player.retryNameInput() {
+        if (tutorialStage != TutorialStage.START) {
+            return
+        }
+        if (!ui.containsModal("interface.tutorial_displayname")) {
+            return
+        }
+        val attempts = attr.getOrPut(NAME_INPUT_ATTEMPTS) { 0 }
+        if (attempts >= NAME_INPUT_ATTEMPTS_MAX) {
+            return
+        }
+        attr[NAME_INPUT_ATTEMPTS] = attempts + 1
+        configureNameInput()
     }
 
     private fun StringDialogInput.lookupName() {
@@ -219,7 +262,7 @@ constructor(
             player.displayName = player.username
         }
         protectedAccess.launch(player) {
-            if (player.ui.getModalOrNull("interface.tutorial_displayname") != null) {
+            if (player.ui.containsModal("interface.tutorial_displayname")) {
                 ifCloseSub("interface.tutorial_displayname")
             }
             openDesign()
@@ -252,7 +295,7 @@ constructor(
         player.attr[DESIGN_DONE] = true
         player.appearance.bodyType = player.playerDesignBodyType
         player.appearance.pronoun = player.transmitPronouns
-        if (!closed && player.ui.getModalOrNull("interface.player_design") != null) {
+        if (!closed && player.ui.containsModal("interface.player_design")) {
             ifCloseSub("interface.player_design")
         }
         player.ifSetHide("component.tutorial_overlay:noclick", true)
@@ -262,6 +305,11 @@ constructor(
         )
         player.attr[EXPERIENCE_CHOSEN] = false
         ifOpenMainModal("interface.tutorial_player_experience")
+        player.ifSetEvents(
+            "component.tutorial_player_experience:content",
+            1..3,
+            IfEvent.PauseButton,
+        )
         player.ifSetHide("component.tutorial_overlay:noclick", false)
         val input = coroutine.pause(ResumePauseButtonInput::class)
         if (player.tutorialStage != TutorialStage.START) {
@@ -278,7 +326,7 @@ constructor(
             player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
         }
         player.attr[EXPERIENCE_CHOSEN] = true
-        if (player.ui.getModalOrNull("interface.tutorial_player_experience") != null) {
+        if (player.ui.containsModal("interface.tutorial_player_experience")) {
             ifCloseSub("interface.tutorial_player_experience")
         }
         player.ifSetHide("component.tutorial_overlay:noclick", true)
@@ -300,6 +348,7 @@ constructor(
         if (!player.inTutorial) {
             return
         }
+        player.retryNameInput()
         checkRunToggle(player)
         reconcileInterfaces(player)
         rules.nextStage(player)?.let { guide.advance(player, it) }
@@ -392,7 +441,12 @@ constructor(
     }
 
     private fun ProtectedAccess.mesOverlay(text: String) {
+        player.openMesOverlay()
         player.runClientScript(MESOVERLAY, text)
+    }
+
+    private fun Player.openMesOverlay() {
+        ifOpenOverlay("interface.mesoverlay", "component.chatbox:chatoverlay", eventBus)
     }
 
     private fun validName(name: String): Boolean {
@@ -417,12 +471,14 @@ constructor(
     private companion object {
         private const val TUTORIAL_TIMER = "timer.tutorial_island"
         private const val HINT_REPEAT_TICKS = 10
+        private const val NAME_INPUT_ATTEMPTS_MAX = 5
         private val MESOVERLAY =
             "clientscript.[clientscript,mesoverlay]".asRSCM(RSCMType.CLIENTSCRIPT)
         private const val ADVENTURE_PATHS_PARTICIPATING = 1
         private const val ADVENTURE_PATHS_OPTED_OUT = 2
         private const val ADVENTURE_PATHS_EXPERIENCED = 2
         private val HINT_TICKS = AttributeKey<Int>(temp = true)
+        private val NAME_INPUT_ATTEMPTS = AttributeKey<Int>(temp = true)
         private val CANDIDATE_NAME = AttributeKey<String>(temp = true)
         private val SUGGESTIONS = AttributeKey<List<String>>(temp = true)
         private val DESIGN_DONE = AttributeKey<Boolean>(temp = true)

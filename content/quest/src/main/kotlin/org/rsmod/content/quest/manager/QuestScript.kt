@@ -78,6 +78,7 @@ abstract class QuestScript(
     val rewards: QuestReward,
     val completedQuestItemDisplay: ItemRewardDisplay,
     val questVarbit: String? = null,
+    val stageInVarp: Boolean = false,
     val closeDialogue: QuestClose = QuestClose.OnFinished,
     val closeScroll: QuestClose = QuestClose.Never,
     val completeJingle: String = QUEST_COMPLETE_JINGLE,
@@ -90,6 +91,7 @@ abstract class QuestScript(
             completedQuestItemDisplay,
             rewards,
             questVarbit,
+            stageInVarp,
             closeDialogue,
             closeScroll,
             completeJingle,
@@ -117,7 +119,13 @@ abstract class QuestScript(
 
         onPlayerLogin {
             quest.migrateLegacyStage(player)
-            VarPlayerIntMapSetter.set(player, questVarbit ?: questVarp, quest.getQuestStage(player))
+            if (!stageInVarp) {
+                VarPlayerIntMapSetter.set(
+                    player,
+                    questVarbit ?: questVarp,
+                    quest.getQuestStage(player),
+                )
+            }
         }
 
         this.init()

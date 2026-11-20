@@ -61,6 +61,7 @@ data class Quest(
     val rewards: QuestReward,
     val itemDisplay: ItemRewardDisplay,
     val questVarbit: String? = null,
+    val stageInVarp: Boolean = false,
     val closeDialogue: QuestClose = QuestClose.OnFinished,
     val closeScroll: QuestClose = QuestClose.Never,
     val completeJingle: String = QUEST_COMPLETE_JINGLE,
@@ -91,6 +92,7 @@ data class Quest(
             itemDisplay: ItemRewardDisplay,
             rewards: QuestReward,
             varbit: String? = null,
+            stageInVarp: Boolean = false,
             closeDialogue: QuestClose = QuestClose.OnFinished,
             closeScroll: QuestClose = QuestClose.Never,
             completeJingle: String = QUEST_COMPLETE_JINGLE,
@@ -109,6 +111,7 @@ data class Quest(
                 questPoints = questRow.questpointsOverride,
                 questVarp = varp,
                 questVarbit = varbit,
+                stageInVarp = stageInVarp,
                 itemDisplay = itemDisplay,
                 rewards = rewards,
                 closeDialogue = closeDialogue,
@@ -121,7 +124,7 @@ data class Quest(
     }
 
     fun getQuestStage(access: Player): Int {
-        if (questVarbit != null) return access.questState
+        if (questVarbit != null || stageInVarp) return access.questState
         val stages = access.attr.getOrPut(QUEST_STAGE_MAP_ATTR) { mutableMapOf() }
         return stages[key] ?: 0
     }
@@ -135,7 +138,7 @@ data class Quest(
     }
 
     private fun storeQuestStage(access: ProtectedAccess, stage: Int) {
-        if (questVarbit != null) return
+        if (questVarbit != null || stageInVarp) return
         val clampedStage = stage.coerceIn(0, maxSteps)
         val stages = access.player.attr.getOrPut(QUEST_STAGE_MAP_ATTR) { mutableMapOf() }
         stages[key] = clampedStage

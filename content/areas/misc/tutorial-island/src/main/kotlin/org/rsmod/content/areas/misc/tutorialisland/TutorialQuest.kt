@@ -13,6 +13,7 @@ internal class TutorialQuest :
         questVarp = "varp.tutorial",
         rewards = rewards {},
         completedQuestItemDisplay = ItemRewardDisplay("", zoom = 400, showQuestPoints = false),
+        stageInVarp = true,
         closeDialogue = QuestClose.Never,
         closeScroll = QuestClose.Never,
     ) {

@@ -6,6 +6,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.ui.ifCloseSub
+import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.ui.ifSetHide
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.events.EventBus
@@ -36,12 +37,14 @@ constructor(
 
     fun show(player: Player, stage: Int) {
         if (stage == TutorialStage.QUEST_HOUSE_ENTERED && player.attr[RUN_TOGGLED] == true) {
+            player.openMesOverlay()
             player.runClientScript(MESOVERLAY, MOVING_ON_RUN_TEXT)
             clearArrow(player)
             return
         }
         val hint = HINTS[stage] ?: return
         hint.text?.let { text ->
+            player.openMesOverlay()
             player.runClientScript(MESOVERLAY, text)
         }
         hint.hintId?.let { id ->
@@ -74,6 +77,10 @@ constructor(
         MiscOutput.hintArrowReset(player)
         player.currentHintArrow = 0
         player.ifSetHide("component.tutorial_overlay:hint_layer", true)
+    }
+
+    private fun Player.openMesOverlay() {
+        ifOpenOverlay("interface.mesoverlay", "component.chatbox:chatoverlay", eventBus)
     }
 
     fun clear(player: Player) {
