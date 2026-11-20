@@ -81,6 +81,7 @@ constructor(private val eventBus: EventBus, private val teleports: ItemTeleportC
     private fun ProtectedAccess.viewArea(area: Int) {
         val (state, reason) = areaState(player, area)
         VarPlayerIntMapSetter.set(player, AREA_VIEWING, area)
+        VarPlayerIntMapSetter.set(player, AREA_LAST_VIEWED, area)
         val details = DETAIL_COMPONENTS.map { it.asRSCM(RSCMType.COMPONENT) }
         val confirm = CONFIRM_COMPONENTS.map { it.asRSCM(RSCMType.COMPONENT) }
         val args = listOf<Any>(area) + details + listOf(state) + confirm + listOf(reason)
@@ -156,6 +157,7 @@ constructor(private val eventBus: EventBus, private val teleports: ItemTeleportC
         const val SIDE_PANEL_TASKS_BUTTON = "component.league_side_panel:tasks_button"
         const val SIDE_PANEL_AREAS_BUTTON = "component.league_side_panel:areas_button"
         const val AREA_VIEWING = "varp.dp_area_viewing"
+        const val AREA_LAST_VIEWED = "varbit.league_area_last_viewed"
         const val KARAMJA = "karamja"
 
         /** league_areas_show_detailed: draws one area's details page. */
