@@ -12,6 +12,7 @@ import org.rsmod.api.player.input.StringDialogInput
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
+import org.rsmod.api.player.ui.ifCloseSub
 import org.rsmod.api.player.ui.ifOpenFullOverlay
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.ui.ifSetEvents
@@ -74,6 +75,9 @@ constructor(
     }
 
     private fun SessionStateEvent.Login.login() {
+        if (player.tutorialStage >= TutorialStage.COMPLETE && player.vars["varp.qp"] == 0) {
+            player.repairQuestCompletion()
+        }
         if (!player.inTutorial) {
             return
         }
@@ -86,6 +90,19 @@ constructor(
             }
         } else {
             player.resumeTutorial()
+        }
+    }
+
+    private fun Player.repairQuestCompletion() {
+        val stage = tutorialStage
+        protectedAccess.launch(this) {
+            val quest = Quest.get("quest_learningtheropes") ?: return@launch
+            player.tutorialStage = TutorialStage.COMPLETE - 1
+            quest.completeQuest(this)
+            player.tutorialStage = stage
+            if (player.ui.containsModal("interface.questscroll")) {
+                ifCloseSub("interface.questscroll")
+            }
         }
     }
 
@@ -353,12 +370,12 @@ constructor(
         reconcileInterfaces(player)
         rules.nextStage(player)?.let { guide.advance(player, it) }
         if (player.tutorialStage == TutorialStage.WIND_STRIKE_RESOLVED) {
-            guide.advance(player, TutorialStage.COMPLETE)
-        }
-        if (player.tutorialStage == TutorialStage.COMPLETE) {
-            val quest = Quest.get("quest_learningtheropes")
-            if (quest != null && !quest.isQuestCompleted(player)) {
-                protectedAccess.launch(player) { quest.completeQuest(this) }
+            protectedAccess.launch(player) {
+                val quest = Quest.get("quest_learningtheropes")
+                if (quest != null && !quest.isQuestCompleted(player)) {
+                    quest.completeQuest(this)
+                }
+                guide.advance(player, TutorialStage.COMPLETE)
             }
         }
         val ticks = player.attr.getOrPut(HINT_TICKS) { 0 } + 1

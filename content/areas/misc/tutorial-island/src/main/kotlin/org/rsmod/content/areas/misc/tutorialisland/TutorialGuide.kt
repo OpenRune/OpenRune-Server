@@ -36,6 +36,12 @@ constructor(
     }
 
     fun show(player: Player, stage: Int) {
+        if (player.ui.containsModal("interface.messagebox")) {
+            return
+        }
+        if (player.ui.containsModal("interface.objectbox")) {
+            return
+        }
         if (stage == TutorialStage.QUEST_HOUSE_ENTERED && player.attr[RUN_TOGGLED] == true) {
             player.openMesOverlay()
             player.runClientScript(MESOVERLAY, MOVING_ON_RUN_TEXT)

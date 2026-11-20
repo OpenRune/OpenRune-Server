@@ -347,7 +347,9 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.makeDough() {
-        if (player.tutorialStage != TutorialStage.CHEF_TALKED) {
+        if (player.tutorialStage !in
+            TutorialStage.CHEF_TALKED until TutorialStage.BREAD_BAKED
+        ) {
             return
         }
         if (!player.inv.contains(TutorialObj.POT_FLOUR) ||

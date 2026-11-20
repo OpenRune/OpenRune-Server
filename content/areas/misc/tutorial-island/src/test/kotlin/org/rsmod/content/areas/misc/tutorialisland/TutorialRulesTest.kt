@@ -30,6 +30,14 @@ class TutorialRulesTest {
         }
 
     @Test
+    fun GameTestState.`a smithed dagger advances from the bar stage`() =
+        runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
+            player.tutorialStage = TutorialStage.BAR_SMELTED
+            player.invAdd(player.inv, TutorialObj.BRONZE_DAGGER, 1)
+            assertEquals(TutorialStage.DAGGER_SMITHED, rules.nextStage(player))
+        }
+
+    @Test
     fun GameTestState.`an equipped sword advances the combat stage`() =
         runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
             player.tutorialStage = TutorialStage.COMBAT_GUIDE_SWORD

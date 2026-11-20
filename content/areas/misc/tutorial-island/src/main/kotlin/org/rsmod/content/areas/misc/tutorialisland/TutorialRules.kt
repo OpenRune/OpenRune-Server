@@ -25,7 +25,7 @@ internal class TutorialRules @Inject constructor(private val locRepo: LocReposit
                 TutorialStage.COPPER_MINED
             stage == TutorialStage.COPPER_MINED &&
                 player.inv.contains(TutorialObj.BRONZE_BAR) -> TutorialStage.BAR_SMELTED
-            stage in TutorialStage.MINING_GUIDE_BAR..TutorialStage.ANVIL_OPENED &&
+            stage in TutorialStage.BAR_SMELTED..TutorialStage.ANVIL_OPENED &&
                 player.inv.contains(TutorialObj.BRONZE_DAGGER) -> TutorialStage.DAGGER_SMITHED
             stage in TutorialStage.DAGGER_EQUIP_TASK..TutorialStage.EQUIPMENT_STATS_OPENED &&
                 player.worn.contains(TutorialObj.BRONZE_DAGGER) -> TutorialStage.DAGGER_EQUIPPED
