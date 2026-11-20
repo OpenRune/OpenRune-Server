@@ -1,0 +1,20 @@
+[[npc]]
+id = "npc.snakeboss_boss_ranged"
+inherit = "npc.snakeboss_boss_ranged"
+
+[npc.params]
+"param.killcount_varp" = "varp.total_snakeboss_kills"
+
+[[npc]]
+id = "npc.snakeboss_boss_melee"
+inherit = "npc.snakeboss_boss_melee"
+
+[npc.params]
+"param.killcount_varp" = "varp.total_snakeboss_kills"
+
+[[npc]]
+id = "npc.snakeboss_boss_magic"
+inherit = "npc.snakeboss_boss_magic"
+
+[npc.params]
+"param.killcount_varp" = "varp.total_snakeboss_kills"
