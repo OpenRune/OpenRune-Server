@@ -8720,7 +8720,7 @@ inherit = "npc.dagcave_ranged_boss"
 respawnRate = 150
 huntMode = 6
 huntRange = 7
-maxRange = 1
+maxRange = 15
 attackRange = 10
 defaultMode = "Wander"
 wanderRange = 5
@@ -8742,7 +8742,7 @@ inherit = "npc.dagcave_magic_boss"
 respawnRate = 150
 huntMode = 6
 huntRange = 7
-maxRange = 1
+maxRange = 15
 attackRange = 10
 defaultMode = "Wander"
 wanderRange = 5
@@ -8764,7 +8764,7 @@ inherit = "npc.dagcave_melee_boss"
 respawnRate = 150
 huntMode = 6
 huntRange = 5
-maxRange = 4
+maxRange = 15
 attackRange = 1
 defaultMode = "Wander"
 wanderRange = 5
@@ -8779,6 +8779,30 @@ wanderRange = 5
 "param.attack_sound"="synth.meganoth_melee_attack"
 "param.defend_sound"="synth.meganoth_hit"
 "param.death_sound"="synth.meganoth_death"
+
+[[npc]]
+id = "npc.dagannoth_weak_door_south"
+inherit = "npc.dagannoth_weak_door_south"
+respawnRate = 50
+[npc.params]
+"param.death_anim"="seq.weak_door_fall"
+"param.death_sound"="synth.dagganoth_pressure_door_fall"
+
+[[npc]]
+id = "npc.dagannoth_weak_door_west"
+inherit = "npc.dagannoth_weak_door_west"
+respawnRate = 50
+[npc.params]
+"param.death_anim"="seq.weak_door_fall_west"
+"param.death_sound"="synth.dagganoth_pressure_door_fall"
+
+[[npc]]
+id = "npc.dagannoth_weak_door_north"
+inherit = "npc.dagannoth_weak_door_north"
+respawnRate = 50
+[npc.params]
+"param.death_anim"="seq.weak_door_fall_north"
+"param.death_sound"="synth.dagganoth_pressure_door_fall"
 
 [[npc]]
 id = "npc.warguild_bronze_armour"
