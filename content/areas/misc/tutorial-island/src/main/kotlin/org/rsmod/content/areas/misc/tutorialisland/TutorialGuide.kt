@@ -43,10 +43,8 @@ constructor(
             return
         }
         val hint = HINTS[stage] ?: return
-        hint.text?.let { text ->
-            player.openMesOverlay()
-            player.runClientScript(MESOVERLAY, text)
-        }
+        player.openMesOverlay()
+        player.runClientScript(MESOVERLAY, hint.text ?: " ")
         hint.hintId?.let { id ->
             player.runClientScript(OVERLAY_HINT, id)
         }
