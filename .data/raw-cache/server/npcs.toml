@@ -17347,3 +17347,70 @@ id = "npc.pmoon_boss_winter_storm"
 inherit = "npc.pmoon_boss_winter_storm"
 moveRestrict = "NoClip"
 defaultMode = "None"
+
+[[npc]]
+id = "npc.newbiegiantrat"
+inherit = "npc.newbiegiantrat"
+respawnRate = 60
+wanderRange = 6
+maxRange = 8
+attack = 3
+strength = 3
+defence = 3
+[npc.params]
+"param.attack_sound"=710
+"param.defend_sound"=713
+"param.death_sound"=711
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.newbiegiantrat2"
+inherit = "npc.newbiegiantrat2"
+respawnRate = 60
+wanderRange = 6
+maxRange = 8
+attack = 3
+strength = 3
+defence = 3
+[npc.params]
+"param.attack_sound"=710
+"param.defend_sound"=713
+"param.death_sound"=711
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.newbiegiantrat3"
+inherit = "npc.newbiegiantrat3"
+respawnRate = 60
+wanderRange = 6
+maxRange = 8
+attack = 3
+strength = 3
+defence = 3
+[npc.params]
+"param.attack_sound"=710
+"param.defend_sound"=713
+"param.death_sound"=711
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.newbiechicken"
+inherit = "npc.newbiechicken"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"=355
+"param.defend_sound"=357
+"param.death_sound"=356
+"param.attack_anim"="seq.lore_chicken_attack"
+"param.defend_anim"="seq.lore_chicken_defend"
+"param.death_anim"="seq.lore_chicken_death"
+"param.npc_attack_type"="category.attacktype_stab"

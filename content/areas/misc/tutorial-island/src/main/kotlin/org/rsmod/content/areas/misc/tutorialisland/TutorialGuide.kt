@@ -169,6 +169,7 @@ constructor(
                 TutorialStage.MINING_GUIDE_TALKED to
                     HintArrowPosition.CENTER,
                 TutorialStage.TIN_MINED to HintArrowPosition.CENTER,
+                TutorialStage.COPPER_MINED_FIRST to HintArrowPosition.CENTER,
                 TutorialStage.COPPER_MINED to HintArrowPosition.CENTER,
                 TutorialStage.MINING_GUIDE_BAR to
                     HintArrowPosition.CENTER,
@@ -424,6 +425,15 @@ constructor(
                                 "click on it.",
                         hintId = 12,
                         arrow = Arrow.Tile(CoordGrid(3083, 9501, 0), 45),
+                    ),
+                TutorialStage.COPPER_MINED_FIRST to
+                    Hint(
+                        text =
+                            "<col=0000ff>Mining</col><br>Now that you have some copper ore, you " +
+                                "just need some tin. To mine a rock, all you need to do is " +
+                                "click on it.",
+                        hintId = 12,
+                        arrow = Arrow.Tile(CoordGrid(3077, 9504, 0), 45),
                     ),
                 TutorialStage.COPPER_MINED to
                     Hint(

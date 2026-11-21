@@ -62,6 +62,7 @@ internal object TutorialStage {
     const val LADDER_DOWN = 260
     const val MINING_GUIDE_GREETED = 270
     const val MINING_GUIDE_TALKED = 300
+    const val COPPER_MINED_FIRST = 305
     const val TIN_MINED = 310
     const val COPPER_MINED = 320
     const val BAR_SMELTED = 330

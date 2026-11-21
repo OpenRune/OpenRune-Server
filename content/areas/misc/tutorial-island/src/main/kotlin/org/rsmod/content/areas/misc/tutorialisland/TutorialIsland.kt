@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.misc.tutorialisland
 
+import dev.openrune.map.MapSingletons.collision
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ObjectServerType
@@ -34,11 +35,14 @@ import org.rsmod.content.skills.mining.scripts.Mining.Companion.pickaxeAnim
 import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.axeWoodcuttingAnim
 import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.findAxe
 import org.rsmod.events.EventBus
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
+import org.rsmod.game.map.Direction
+import org.rsmod.game.map.collision.firstStepDestination
 import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
@@ -251,9 +255,10 @@ constructor(
                 mes("You haven't got anything suitable for cooking! The master chef can help you out with that.")
             }
         }
-        onOpNpc1(TutorialNpc.FISHING_SPOT) { catchShrimp() }
+        onOpNpc1(TutorialNpc.FISHING_SPOT) { catchShrimp(it.npc) }
         for (tree in listOf(TutorialLoc.TREE, TutorialLoc.TREE_2)) {
             onOpLoc1(tree) { chopTree(it.loc, it.type) }
+            onOpLocU(tree, TutorialObj.BRONZE_AXE) { chopTree(it.loc, it.type) }
         }
         onOpLoc1(TutorialLoc.OAK_TREE) {
             if (player.tutorialStage == TutorialStage.AXE_GIVEN) {
@@ -269,8 +274,18 @@ constructor(
         }
         onOpLoc1(TutorialLoc.TIN_ROCK) { mineTin(it.loc, it.type) }
         onOpLoc1(TutorialLoc.COPPER_ROCK) { mineCopper(it.loc, it.type) }
+        onOpLocU(TutorialLoc.TIN_ROCK, TutorialObj.BRONZE_PICKAXE) { mineTin(it.loc, it.type) }
+        onOpLocU(TutorialLoc.COPPER_ROCK, TutorialObj.BRONZE_PICKAXE) {
+            mineCopper(it.loc, it.type)
+        }
+        onOpLoc1(TutorialLoc.ROCK_DEPLETED) {
+            mes("There is no ore currently available in this rock.")
+            soundSynth("synth.prospect")
+        }
         onOpLoc1(TutorialLoc.FURNACE) { smeltBar() }
-        onOpHeld1(TutorialObj.BONES) { buryBones() }
+        onOpLocU(TutorialLoc.FURNACE, TutorialObj.TIN_ORE) { smeltBar() }
+        onOpLocU(TutorialLoc.FURNACE, TutorialObj.COPPER_ORE) { smeltBar() }
+        onOpHeld1(TutorialObj.BONES) { buryBones(it.slot) }
     }
 
     private fun ScriptContext.bindDamageFloor() {
@@ -435,6 +450,10 @@ constructor(
         ) {
             return
         }
+        if (inv.freeSpace() < 1) {
+            mesbox("You need a free inventory slot to make dough.")
+            return
+        }
         if (invDel(inv, TutorialObj.POT_FLOUR, 1).failure ||
             invDel(inv, TutorialObj.BUCKET_WATER, 1).failure
         ) {
@@ -459,12 +478,17 @@ constructor(
         }
         mesOverlay("Your character is now attempting to light a fire. This should only take a few seconds.")
         anim("seq.human_createfire")
-        delay(8)
+        soundSynth("synth.tinderbox_strike")
+        delay(3)
+        soundSynth("synth.tinderbox_strike")
+        delay(2)
+        resetAnim()
         if (invDel(inv, TutorialObj.LOGS, 1).failure) {
             return
         }
+        val fireCoords = player.coords
         locRepo.add(
-            player.coords,
+            fireCoords,
             TutorialLoc.FIRE,
             FIRE_DURATION,
             LocAngle.West,
@@ -476,6 +500,11 @@ constructor(
             TutorialHighlights.item(player, TutorialObj.RAW_SHRIMP)
         }
         guide.advance(player, TutorialStage.FIRE_LIT)
+        val destination = collision.firstStepDestination(fireCoords, FIRE_WALK_DIRECTIONS)
+        if (destination != null) {
+            walk(destination)
+        }
+        faceSquare(fireCoords)
     }
 
     private suspend fun ProtectedAccess.cookShrimp() {
@@ -483,8 +512,10 @@ constructor(
             return
         }
         mesOverlay("Your character is now attempting to cook some shrimp. This will only take a few seconds.")
-        soundSynth(2577)
-        delay(3)
+        anim("seq.human_firecooking")
+        soundSynth("synth.fry")
+        delay(2)
+        resetAnim()
         if (invDel(inv, TutorialObj.RAW_SHRIMP, 1).failure) {
             return
         }
@@ -500,8 +531,10 @@ constructor(
             return
         }
         mesOverlay("Your character is now attempting to bake some bread. This will only take a few seconds.")
-        soundSynth(2580)
-        delay(5)
+        anim("seq.human_cooking")
+        soundSynth("synth.fry")
+        delay(2)
+        resetAnim()
         if (invDel(inv, TutorialObj.BREAD_DOUGH, 1).failure) {
             return
         }
@@ -511,7 +544,7 @@ constructor(
         objbox(TutorialObj.BREAD, "You manage to bake some bread.")
     }
 
-    private suspend fun ProtectedAccess.catchShrimp() {
+    private suspend fun ProtectedAccess.catchShrimp(spot: Npc) {
         if (player.tutorialStage != TutorialStage.INVENTORY_VIEWED) {
             if (player.tutorialStage < TutorialStage.INVENTORY_VIEWED) {
                 mes("You cannot fish here yet. You must progress further in the tutorial.")
@@ -519,16 +552,32 @@ constructor(
             return
         }
         if (!player.inv.contains(TutorialObj.NET)) {
-            mes("You need a net to catch shrimp.")
+            mesbox("You need to use a net to catch these fish.<br>Talk to the survival expert to get one.")
             return
         }
+        if (inv.isFull()) {
+            mesbox(
+                "Your inventory is too full to hold any more shrimp.<br>" +
+                    "To drop an item right-click on it and select drop.",
+            )
+            return
+        }
+        faceSquare(spot.coords)
         anim("seq.human_smallnet")
+        soundSynth("synth.fishing_cast")
         mesOverlay(
             "Your character is now attempting to catch some shrimp. Sit back for a moment " +
                 "while he does all the hard work.",
         )
-        delay(6)
-        invAdd(inv, TutorialObj.RAW_SHRIMP, 1)
+        delay(2)
+        soundSynth("synth.fishing_cast")
+        delay(2)
+        soundSynth("synth.fishing_cast")
+        delay(1)
+        resetAnim()
+        if (invAdd(inv, TutorialObj.RAW_SHRIMP, 1).failure) {
+            return
+        }
         tutorialStat("stat.fishing", 10.0)
         TutorialHighlights.item(player, TutorialObj.RAW_SHRIMP, alert = true)
         guide.advance(player, TutorialStage.SHRIMP_CAUGHT)
@@ -536,30 +585,45 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.chopTree(loc: BoundLocInfo, type: ObjectServerType) {
-        if (player.tutorialStage != TutorialStage.AXE_GIVEN) {
-            when {
-                player.tutorialStage < TutorialStage.AXE_GIVEN ->
-                    mes("You cannot cut down this tree yet. You must progress further in the tutorial.")
-                player.tutorialStage >= TutorialStage.LOGS_CUT ->
-                    mes("Perhaps you've done enough woodcutting now.")
-            }
+        if (player.tutorialStage < TutorialStage.AXE_GIVEN) {
+            mesbox("You cannot cut down this tree yet.<br>You must progress further in the tutorial.")
+            return
+        }
+        if (player.tutorialStage > TutorialStage.LOGS_CUT) {
+            mesbox("Perhaps you've done enough woodcutting now.")
+            return
+        }
+        if (inv.isFull()) {
+            mesbox(
+                "Your inventory is too full to hold any more logs.<br>" +
+                    "To drop an item right-click on it and select drop.",
+            )
+            return
+        }
+        if (inv.count(TutorialObj.LOGS) > 2) {
+            mesbox("Perhaps you've got enough logs for now.")
             return
         }
         val axe = findAxe(player, type)
         if (axe == null) {
-            mes("You need an axe to chop down this tree.")
+            mesbox("You need an axe to chop this tree.<br>Talk to the survival expert to get one.")
             return
         }
+        faceLoc(loc)
         anim(getInvObj(axe).axeWoodcuttingAnim.internalName)
-        locRepo.change(loc, TutorialLoc.TREE_STUMP, TREE_STUMP_TICKS)
+        soundSynth("synth.woodchop_4")
         mesOverlay(
             "Your character is now attempting to cut down the tree. Sit back for a moment " +
                 "while he does all the hard work.",
         )
-        delay(5)
+        delay(2)
+        soundSynth("synth.woodchop_4")
+        delay(2)
+        resetAnim()
         if (invAdd(inv, TutorialObj.LOGS, 1).failure) {
             return
         }
+        locRepo.change(loc, TutorialLoc.TREE_STUMP, TREE_STUMP_TICKS)
         tutorialStat("stat.woodcutting", 25.0)
         TutorialHighlights.item(player, TutorialObj.LOGS)
         TutorialHighlights.item(player, TutorialObj.TINDERBOX)
@@ -568,49 +632,94 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.mineTin(loc: BoundLocInfo, type: ObjectServerType) {
-        if (player.tutorialStage != TutorialStage.MINING_GUIDE_TALKED) {
-            if (player.tutorialStage < TutorialStage.MINING_GUIDE_TALKED) {
-                mes("You are not ready to mine yet. Please follow the tutorial and you'll be mining in no time.")
+        val nextStage =
+            if (player.tutorialStage == TutorialStage.COPPER_MINED_FIRST) {
+                TutorialStage.COPPER_MINED
+            } else {
+                TutorialStage.TIN_MINED
             }
-            return
-        }
-        val pickaxe = findPickaxe(player)
-        if (pickaxe == null) {
-            mes("You need a pickaxe to mine this rock.")
-            return
-        }
-        anim(getInvObj(pickaxe).pickaxeAnim.internalName)
-        locRepo.change(loc, TutorialLoc.ROCK_DEPLETED, ROCK_DEPLETED_TICKS)
-        mesOverlay("Your character is now attempting to mine the rock.<br>This should only take a few seconds.")
-        delay(5)
-        invAdd(inv, TutorialObj.TIN_ORE, 1)
-        tutorialStat("stat.mining", 17.5)
-        soundSynth(3600)
-        guide.advance(player, TutorialStage.TIN_MINED)
-        objbox(TutorialObj.TIN_ORE, "You manage to mine some tin.")
+        mineOre(
+            loc = loc,
+            type = type,
+            ore = TutorialObj.TIN_ORE,
+            oreName = "tin",
+            otherStage = TutorialStage.COPPER_MINED_FIRST,
+            nextStage = nextStage,
+        )
     }
 
     private suspend fun ProtectedAccess.mineCopper(loc: BoundLocInfo, type: ObjectServerType) {
-        if (player.tutorialStage != TutorialStage.TIN_MINED) {
-            if (player.tutorialStage < TutorialStage.TIN_MINED) {
-                mes("You are not ready to mine yet. Please follow the tutorial and you'll be mining in no time.")
+        val nextStage =
+            if (player.tutorialStage == TutorialStage.TIN_MINED) {
+                TutorialStage.COPPER_MINED
+            } else {
+                TutorialStage.COPPER_MINED_FIRST
+            }
+        mineOre(
+            loc = loc,
+            type = type,
+            ore = TutorialObj.COPPER_ORE,
+            oreName = "copper",
+            otherStage = TutorialStage.TIN_MINED,
+            nextStage = nextStage,
+        )
+    }
+
+    private suspend fun ProtectedAccess.mineOre(
+        loc: BoundLocInfo,
+        type: ObjectServerType,
+        ore: String,
+        oreName: String,
+        otherStage: Int,
+        nextStage: Int,
+    ) {
+        if (player.tutorialStage != TutorialStage.MINING_GUIDE_TALKED &&
+            player.tutorialStage != otherStage
+        ) {
+            if (player.tutorialStage < TutorialStage.MINING_GUIDE_TALKED) {
+                mesbox(
+                    "You are not ready to mine yet.<br>" +
+                        "Please follow the tutorial and you'll be mining in no time.",
+                )
             }
             return
         }
         val pickaxe = findPickaxe(player)
         if (pickaxe == null) {
-            mes("You need a pickaxe to mine this rock.")
+            mesbox(
+                "You need a Pickaxe to mine this rock.<br>" +
+                    "You do not have a Pickaxe which you have the Mining level to use.",
+            )
             return
         }
+        if (inv.isFull()) {
+            mesbox(
+                "Your inventory is too full to hold anymore $oreName.<br>" +
+                    "To drop an item right-click on it and select drop.",
+            )
+            return
+        }
+        faceLoc(loc)
         anim(getInvObj(pickaxe).pickaxeAnim.internalName)
+        mesOverlay(
+            "Your character is now attempting to mine the rock.<br>" +
+                "This should only take a few seconds.",
+        )
+        delay(1)
+        soundSynth("synth.mine_quick")
+        delay(1)
+        soundSynth("synth.mine_quick")
+        delay(1)
+        soundSynth("synth.mine_quick")
+        delay(1)
+        resetAnim()
+        if (invAdd(inv, ore, 1).failure) {
+            return
+        }
         locRepo.change(loc, TutorialLoc.ROCK_DEPLETED, ROCK_DEPLETED_TICKS)
-        mesOverlay("Your character is now attempting to mine the rock.<br>This should only take a few seconds.")
-        delay(5)
-        invAdd(inv, TutorialObj.COPPER_ORE, 1)
         tutorialStat("stat.mining", 17.5)
-        soundSynth(3600)
-        guide.advance(player, TutorialStage.COPPER_MINED)
-        objbox(TutorialObj.COPPER_ORE, "You manage to mine some copper.")
+        guide.advance(player, nextStage)
+        objbox(ore, "You manage to mine some $oreName.")
     }
 
     private suspend fun ProtectedAccess.smeltBar() {
@@ -620,32 +729,41 @@ constructor(
             }
             return
         }
-        if (!player.inv.contains(TutorialObj.TIN_ORE) ||
-            !player.inv.contains(TutorialObj.COPPER_ORE)
-        ) {
-            mes("You need some tin and copper ore to smelt a bronze bar.")
+        if (!player.inv.contains(TutorialObj.TIN_ORE)) {
+            mesbox("You also need some tin ore to make a bronze bar.")
             return
         }
-        mesOverlay("You smelt the copper and tin together in the furnace.")
-        soundSynth(2725)
+        if (!player.inv.contains(TutorialObj.COPPER_ORE)) {
+            mesbox("You also need some copper ore to make a bronze bar.")
+            return
+        }
+        mes("You smelt the copper and tin together in the furnace.")
+        anim("seq.human_furnace")
+        soundSynth("synth.furnace")
         delay(3)
+        resetAnim()
         if (invDel(inv, TutorialObj.TIN_ORE, 1).failure ||
             invDel(inv, TutorialObj.COPPER_ORE, 1).failure
         ) {
             return
         }
-        mesOverlay("You retrieve a bar of bronze.")
+        mes("You retrieve a bar of bronze.")
         tutorialStat("stat.smithing", 6.2)
         invAdd(inv, TutorialObj.BRONZE_BAR, 1)
         guide.advance(player, TutorialStage.BAR_SMELTED)
     }
 
-    private suspend fun ProtectedAccess.buryBones() {
-        if (invDel(inv, TutorialObj.BONES, 1).failure) {
+    private suspend fun ProtectedAccess.buryBones(slot: Int) {
+        mes("You dig a hole in the ground...")
+        anim("seq.human_pickupfloor")
+        soundSynth("synth.bones_down")
+        delay(2)
+        resetAnim()
+        if (invDel(inv, TutorialObj.BONES, 1, slot = slot).failure) {
             return
         }
-        mes("You bury the bones.")
         tutorialStat("stat.prayer", 4.5)
+        mes("You bury the bones.")
     }
 
     private suspend fun Dialogue.gielinorGuide() {
@@ -1807,14 +1925,16 @@ constructor(
     )
 
     private companion object {
-        private const val FIRE_DURATION = 200
+        private const val FIRE_DURATION = 150
         private const val DOOR_OPEN_TICKS = 3
         private const val DOOR_BLOCK_TICKS = 1
         private const val DOOR_SOUND = 62
         private const val WOODEN_GATE_SOUND = 67
         private const val METAL_GATE_SOUND = 71
-        private const val TREE_STUMP_TICKS = 3
-        private const val ROCK_DEPLETED_TICKS = 3
+        private const val TREE_STUMP_TICKS = 16
+        private const val ROCK_DEPLETED_TICKS = 10
+        private val FIRE_WALK_DIRECTIONS =
+            listOf(Direction.West, Direction.East, Direction.South, Direction.North)
         private val MESOVERLAY =
             "clientscript.[clientscript,mesoverlay]".asRSCM(RSCMType.CLIENTSCRIPT)
 

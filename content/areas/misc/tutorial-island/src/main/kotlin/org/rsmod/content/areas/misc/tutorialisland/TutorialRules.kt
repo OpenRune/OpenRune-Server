@@ -18,6 +18,10 @@ internal class TutorialRules @Inject constructor() {
                 TutorialStage.BREAD_BAKED
             stage == TutorialStage.MINING_GUIDE_TALKED &&
                 player.inv.contains(TutorialObj.TIN_ORE) -> TutorialStage.TIN_MINED
+            stage == TutorialStage.MINING_GUIDE_TALKED &&
+                player.inv.contains(TutorialObj.COPPER_ORE) -> TutorialStage.COPPER_MINED_FIRST
+            stage == TutorialStage.COPPER_MINED_FIRST &&
+                player.inv.contains(TutorialObj.TIN_ORE) -> TutorialStage.COPPER_MINED
             stage == TutorialStage.TIN_MINED && player.inv.contains(TutorialObj.COPPER_ORE) ->
                 TutorialStage.COPPER_MINED
             stage == TutorialStage.COPPER_MINED &&

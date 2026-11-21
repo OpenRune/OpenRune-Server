@@ -22,6 +22,17 @@ class TutorialRulesTest {
         }
 
     @Test
+    fun GameTestState.`copper can be mined before tin`() =
+        runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
+            player.tutorialStage = TutorialStage.MINING_GUIDE_TALKED
+            player.invAdd(player.inv, TutorialObj.COPPER_ORE, 1)
+            assertEquals(TutorialStage.COPPER_MINED_FIRST, rules.nextStage(player))
+            player.tutorialStage = TutorialStage.COPPER_MINED_FIRST
+            player.invAdd(player.inv, TutorialObj.TIN_ORE, 1)
+            assertEquals(TutorialStage.COPPER_MINED, rules.nextStage(player))
+        }
+
+    @Test
     fun GameTestState.`a bronze bar advances the smelting stage`() =
         runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
             player.tutorialStage = TutorialStage.COPPER_MINED
@@ -64,7 +75,7 @@ class TutorialRulesTest {
         }
 
     @Test
-    fun GameTestState.`exit grants the completion kit and preserves the bank`() =
+    fun GameTestState.`exit grants the completion kit and clears the bank`() =
         runInjectedGameTest(TutorialExit::class, TestHooks()) { exit ->
             player.tutorialStage = TutorialStage.READY_TO_LEAVE
             player.adventurePaths = 2
@@ -89,8 +100,8 @@ class TutorialRulesTest {
             assertEquals(2, player.inv.count(TutorialObj.BODY_RUNE))
             assertEquals(0, player.worn.count(TutorialObj.BRONZE_SWORD))
             assertEquals(25, bank.count(TutorialObj.COINS))
-            assertEquals(1, bank.count(TutorialObj.BREAD))
-            assertEquals(1, bank.count("obj.shark"))
+            assertEquals(0, bank.count(TutorialObj.BREAD))
+            assertEquals(0, bank.count("obj.shark"))
             assertEquals(1, player.tutorialFreeStuffCheck)
         }
 

@@ -38,6 +38,9 @@ constructor(
         player.usedHomeTeleport = 1
         invClear(inv)
         invClear(worn)
+        val bank = player.invMap.getOrPut("inv.bank")
+        invClear(bank)
+        invAdd(bank, TutorialObj.COINS, 25)
         for ((item, count) in COMPLETION_KIT) {
             invAdd(inv, item, count)
         }
