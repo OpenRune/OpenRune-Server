@@ -40,6 +40,7 @@ constructor(
     private val protectedAccess: ProtectedAccessLauncher,
     private val guide: TutorialGuide,
     private val rules: TutorialRules,
+    private val exit: TutorialExit,
     private val eventBus: EventBus,
     private val playerList: PlayerList,
 ) : PluginScript() {
@@ -57,6 +58,14 @@ constructor(
         onIfClose("interface.tutorial_displayname") { closeName(player) }
         onIfModalButton("component.player_design:gender_male") { setBodyType(0, 0) }
         onIfModalButton("component.player_design:gender_female") { setBodyType(1, 1) }
+        for (part in DESIGN_PARTS) {
+            onIfModalButton("component.player_design:${part}_left") {
+                TutorialDesign.cycle(player, part, -1)
+            }
+            onIfModalButton("component.player_design:${part}_right") {
+                TutorialDesign.cycle(player, part, 1)
+            }
+        }
         onIfModalButton("component.player_design:confirm") { confirmDesign(closed = false) }
         onIfClose("interface.player_design") {
             protectedAccess.launch(player) { confirmDesign(closed = true) }
@@ -64,7 +73,15 @@ constructor(
         onIfClose("interface.tutorial_player_experience") { closeExperience(player) }
         onTabOpened("stone11", TutorialStage.SETTINGS_REQUESTED, TutorialStage.SETTINGS_OPENED)
         onTabOpened("stone1", TutorialStage.SHRIMP_CAUGHT, TutorialStage.SKILLS_VIEWED)
-        onTabOpened("stone2", TutorialStage.QUEST_GUIDE_TALKED, TutorialStage.QUEST_LIST_OPENED)
+        onIfToplevelButton("component.toplevel_osrs_stretch:stone2") {
+            when {
+                player.tutorialStage == TutorialStage.QUEST_GUIDE_TALKED ->
+                    guide.advance(player, TutorialStage.QUEST_LIST_OPENED)
+                player.tutorialStage == TutorialStage.LEFT_ISLAND &&
+                    player.adventurePaths == 1 ->
+                    protectedAccess.launch(player) { with(exit) { calloutJon() } }
+            }
+        }
         onTabOpened("stone4", TutorialStage.DAGGER_EQUIP_TASK, TutorialStage.WORN_OPENED)
         onTabOpened("stone8", TutorialStage.ACCOUNT_GUIDE_TALKED, TutorialStage.ACCOUNT_MENU_OPENED)
         onTabOpened("stone5", TutorialStage.PRAYER_GUIDE_TALKED, TutorialStage.PRAYER_BOOK_OPENED)
@@ -159,6 +176,7 @@ constructor(
         if (player.tutorialStage >= TutorialStage.COMPLETE && player.vars["varp.qp"] == 0) {
             player.repairQuestCompletion()
         }
+        TutorialTabs.sync(player)
         if (!player.inTutorial) {
             return
         }
@@ -391,10 +409,7 @@ constructor(
     }
 
     private fun ProtectedAccess.setBodyType(bodyType: Int, pronoun: Int) {
-        player.playerDesignBodyType = bodyType
-        player.transmitPronouns = pronoun
-        player.appearance.bodyType = bodyType
-        player.appearance.pronoun = pronoun
+        TutorialDesign.setGender(player, bodyType, pronoun)
     }
 
     private suspend fun ProtectedAccess.confirmDesign(closed: Boolean) {
@@ -526,6 +541,21 @@ constructor(
         private const val NAME_INPUT_ATTEMPTS_MAX = 5
         private val MESOVERLAY =
             "clientscript.[clientscript,mesoverlay]".asRSCM(RSCMType.CLIENTSCRIPT)
+        private val DESIGN_PARTS =
+            listOf(
+                "head",
+                "jaw",
+                "torso",
+                "arms",
+                "hands",
+                "legs",
+                "feet",
+                "hair",
+                "torso_col",
+                "legs_col",
+                "feet_col",
+                "skin",
+            )
         private val INTERFACE_STAGE = AttributeKey<Int>(temp = true)
         private val INTERFACE_WAS_OPEN = AttributeKey<Boolean>(temp = true)
         private val NAME_INPUT_ATTEMPTS = AttributeKey<Int>(temp = true)

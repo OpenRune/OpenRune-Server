@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.misc.tutorialisland
 
+import dev.openrune.types.NpcMode
 import jakarta.inject.Inject
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.game.entity.NpcList
@@ -7,9 +8,14 @@ import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
-internal class TutorialSpawnGuide @Inject constructor(private val npcList: NpcList) :
-    PluginScript() {
+internal class TutorialSpawnGuide
+@Inject
+constructor(
+    private val npcList: NpcList,
+    private val collision: CollisionFlagMap,
+) : PluginScript() {
 
     override fun ScriptContext.startup() {
         onPlayerLogin {
@@ -26,12 +32,22 @@ internal class TutorialSpawnGuide @Inject constructor(private val npcList: NpcLi
             val visible = npc.visType.internalName
             val spec =
                 SPAWNS[type]?.get(npc.spawnCoords) ?: SPAWNS[visible]?.get(npc.spawnCoords) ?: continue
+            npc.teleport(collision, npc.spawnCoords)
             npc.respawnDir = spec.facing
+            npc.faceDirection(spec.facing)
             spec.wander?.let { npc.wanderRange = it }
+            if (spec.isStatic) {
+                npc.mode = NpcMode.None
+                npc.movementLocked = true
+            }
         }
     }
 
-    private data class SpawnSpec(val facing: Direction, val wander: Int? = null)
+    private data class SpawnSpec(
+        val facing: Direction,
+        val wander: Int? = null,
+        val isStatic: Boolean = false,
+    )
 
     private companion object {
         private fun spawn(
@@ -39,15 +55,16 @@ internal class TutorialSpawnGuide @Inject constructor(private val npcList: NpcLi
             z: Int,
             facing: Direction,
             wander: Int? = null,
-        ): Pair<CoordGrid, SpawnSpec> = CoordGrid(x, z, 0) to SpawnSpec(facing, wander)
+            isStatic: Boolean = false,
+        ): Pair<CoordGrid, SpawnSpec> = CoordGrid(x, z, 0) to SpawnSpec(facing, wander, isStatic)
 
         private val SPAWNS: Map<String, Map<CoordGrid, SpawnSpec>> =
             mapOf(
                 "npc.0_48_48_newbiefishing" to
                     mapOf(
-                        spawn(3099, 3090, Direction.South, 0),
-                        spawn(3101, 3092, Direction.South, 0),
-                        spawn(3103, 3092, Direction.South, 0),
+                        spawn(3099, 3090, Direction.South, 0, isStatic = true),
+                        spawn(3101, 3092, Direction.South, 0, isStatic = true),
+                        spawn(3103, 3092, Direction.South, 0, isStatic = true),
                     ),
                 "npc.newbie_basics_instructor" to
                     mapOf(spawn(3095, 3107, Direction.SouthEast, 2)),

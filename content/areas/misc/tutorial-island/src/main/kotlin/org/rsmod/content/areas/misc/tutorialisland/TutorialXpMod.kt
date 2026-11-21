@@ -9,10 +9,11 @@ internal class TutorialXpMod : XpMod {
         if (!inTutorial) {
             return 0.0
         }
-        if (stat == "stat.hitpoints") {
+        if (stat == "stat.hitpoints" || stat(stat) >= TUTORIAL_SKILL_CAP) {
             return -1.0
         }
-        return if (stat(stat) >= TUTORIAL_SKILL_CAP) -1.0 else 0.0
+        val rate = xpRate * globalXpRate
+        return if (rate > 0.0) (1.0 / rate) - 1.0 else -1.0
     }
 
     private companion object {

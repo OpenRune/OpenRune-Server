@@ -34,6 +34,7 @@ constructor(
     fun apply(player: Player, stage: Int) {
         progress(stage)?.let { player.tutorialOverlayProgress = it }
         player.flashSide = FLASH_SIDE[stage] ?: 0
+        TutorialTabs.sync(player)
         show(player, stage)
     }
 
@@ -738,9 +739,9 @@ constructor(
                 TutorialStage.READY_TO_LEAVE to
                     Hint(
                         text =
-                            "<col=0000ff>To the mainland!</col><br>You have completed the " +
-                                "tutorial! All you need to do now is move on to the mainland. " +
-                                "Just cast Home Teleport and you'll arrive in Lumbridge.",
+                            "<col=0000ff>To the mainland!</col><br>You're nearly finished " +
+                                "with the tutorial. All you need to do now is move on to the " +
+                                "mainland. Cast your Home Teleport spell to be taken to Lumbridge.",
                         hintId = 23,
                     ),
             )

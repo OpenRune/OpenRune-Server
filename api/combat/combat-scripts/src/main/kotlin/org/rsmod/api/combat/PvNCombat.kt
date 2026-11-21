@@ -313,6 +313,7 @@ constructor(
                     mes(result.message)
                     return false
                 }
+                NpcAttackValidateResult.DenySilent -> return false
                 NpcAttackValidateResult.BypassSingleWayPvnRestriction,
                 NpcAttackValidateResult.Pass -> Unit
             }

@@ -123,6 +123,9 @@ constructor(
                     return if (hook.stopsApproach) AttackCheck.DeniedStopApproach
                     else AttackCheck.Denied
                 }
+                NpcAttackValidateResult.DenySilent ->
+                    return if (hook.stopsApproach) AttackCheck.DeniedStopApproach
+                    else AttackCheck.Denied
                 NpcAttackValidateResult.BypassSingleWayPvnRestriction -> bypassSingleWayPvn = true
                 NpcAttackValidateResult.Pass -> Unit
             }

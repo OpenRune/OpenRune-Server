@@ -12,6 +12,9 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 private var Player.countCheckTeleport by boolVarBit("varbit.count_check_stronghold_teleport")
 private var Player.adventurePaths by intVarBit("varbit.adventurepath_player_participating")
+private var Player.apGuideFirst by intVarBit("varbit.ap_guide_first")
+private var Player.apGuideTutorial by intVarBit("varbit.ap_guide_tutorial")
+private var Player.flashSide by intVarBit("varbit.flashside")
 
 /** The Doomsayer, Count Check, Nigel and Adventurer Jon, all north of Lumbridge Castle. */
 class LumbridgeAdvisors : PluginScript() {
@@ -359,6 +362,45 @@ class LumbridgeAdvisors : PluginScript() {
             }
             return
         }
+        if (player.apGuideTutorial == 0 && player.adventurePaths == ADVENTURE_PATHS_PARTICIPATING) {
+            val guide = npc
+            if (guide != null && player.coords.chebyshevDistance(guide.coords) > 1) {
+                chatNpc(neutral, "Hey ${player.displayName}! Come over here.")
+                return
+            }
+            chatNpc(neutral, "You look new around here, welcome to the world of Gielinor!")
+            chatPlayer(neutral, "Thanks, it's my first time here and I'm not sure where to start.")
+            chatNpc(neutral, "Well, lucky for you, that is exactly why I am here.")
+            chatPlayer(quiz, "What are Adventure Paths?")
+            chatNpc(
+                happy,
+                "A long time ago, I was a newbie just like you who didn't know what to do and I " +
+                    "would be more than happy to pass on my experience.",
+            )
+            chatNpc(
+                happy,
+                "I've created some Adventure Paths which I recommend you to start off with. An " +
+                    "Adventure Path is a list of tasks which you can complete in any order.",
+            )
+            chatNpc(
+                happy,
+                "To help you get started on your Adventure Path, I'll also give you a starter kit " +
+                    "with some useful items.",
+            )
+            chatNpc(
+                happy,
+                "Once you've completed an Adventure Path task, come back to me and I'll give you a " +
+                    "reward.",
+            )
+            chatNpc(
+                happy,
+                "Start by opening your quest panel and then selecting the flashing yellow star.",
+            )
+            player.apGuideFirst = 1
+            player.apGuideTutorial = 1
+            player.flashSide = 3
+            return
+        }
         chatNpc(neutral, "Hello ${player.displayName}, what can I do for you?")
         while (true) {
             when (
@@ -396,6 +438,9 @@ class LumbridgeAdvisors : PluginScript() {
                         happy,
                         "Start by opening your quest panel and then selecting the flashing yellow star.",
                     )
+                    player.apGuideFirst = 1
+                    player.apGuideTutorial = 1
+                    player.flashSide = 3
                     return
                 }
                 2 -> {

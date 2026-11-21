@@ -3,9 +3,9 @@ package org.rsmod.content.areas.misc.tutorialisland
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import org.rsmod.api.invtx.invDel
+import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.output.ChatType
-import org.rsmod.api.player.output.ClientScripts.toplevelSidebuttonSwitch
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -32,78 +32,39 @@ constructor(
             quest.completeQuest(this)
         }
         player.tutorialStage = TutorialStage.LEFT_ISLAND
+        TutorialTabs.unlockAll(player)
         player.tutorialFreeStuffCheck = 1
         player.hasDisplayNameTransmitter = true
         player.usedHomeTeleport = 1
         invClear(inv)
         invClear(worn)
-        val bank = player.invMap.getOrPut("inv.bank")
-        for (item in TutorialObj.TUTORIAL_ITEMS) {
-            val count = bank.count(item)
-            if (count > 0) {
-                player.invDel(bank, item, count)
-            }
+        for ((item, count) in COMPLETION_KIT) {
+            invAdd(inv, item, count)
         }
         player.mes("Welcome to Old School RuneScape.", ChatType.Welcome)
         player.ifClose(eventBus)
         player.ifCloseSub("interface.tutorial_overlay", eventBus)
+        player.ifCloseSub("interface.mesoverlay", eventBus)
         TutorialHighlights.clearAll(player)
         camReset()
         player.flashSide = 0
         player.runClientScript(TUTORIAL_END)
-        if (player.adventurePaths == ADVENTURE_PATHS_PARTICIPATING) {
-            val jon =
-                npcRepo.findAll(ZoneKey.from(player.coords), 2).firstOrNull {
-                    it.visType.internalName in AP_GUIDES || it.type.internalName in AP_GUIDES
-                }
-            if (jon != null) {
-                delay(1)
-                startDialogue(jon) {
-                    chatNpc(neutral, "Hey ${player.displayName}! Come over here.")
-                    chatNpc(
-                        neutral,
-                        "You look new around here, welcome to the world of Gielinor!",
-                    )
-                    chatPlayer(
-                        neutral,
-                        "Thanks, it's my first time here and I'm not sure where to start.",
-                    )
-                    chatNpc(
-                        neutral,
-                        "Well, lucky for you, that is exactly why I am here.",
-                    )
-                    chatPlayer(quiz, "What are Adventure Paths?")
-                    chatNpc(
-                        happy,
-                        "A long time ago, I was a newbie just like you who didn't know what to " +
-                            "do and I would be more than happy to pass on my experience.",
-                    )
-                    chatNpc(
-                        happy,
-                        "I've created some Adventure Paths which I recommend you to start off " +
-                            "with. An Adventure Path is a list of tasks which you can complete " +
-                            "in any order.",
-                    )
-                    chatNpc(
-                        happy,
-                        "To help you get started on your Adventure Path, I'll also give you a " +
-                            "starter kit with some useful items.",
-                    )
-                    chatNpc(
-                        happy,
-                        "Once you've completed an Adventure Path task, come back to me and I'll " +
-                            "give you a reward.",
-                    )
-                    chatNpc(
-                        happy,
-                        "Start by opening your quest panel and then selecting the flashing " +
-                            "yellow star.",
-                    )
-                }
-                toplevelSidebuttonSwitch(player, 3)
-                player.flashSide = 3
-            }
+    }
+
+    suspend fun ProtectedAccess.calloutJon() {
+        if (player.tutorialStage != TutorialStage.LEFT_ISLAND ||
+            player.adventurePaths != ADVENTURE_PATHS_PARTICIPATING ||
+            player.vars["varbit.ap_guide_tutorial"] != 0 ||
+            player.attr[JON_CALLOUT_SHOWN] == true
+        ) {
+            return
         }
+        val jon =
+            npcRepo.findAll(ZoneKey.from(player.coords), 2).firstOrNull {
+                it.visType.internalName in AP_GUIDES || it.type.internalName in AP_GUIDES
+            } ?: return
+        player.attr[JON_CALLOUT_SHOWN] = true
+        startDialogue(jon) { chatNpc(neutral, "Hey ${player.displayName}! Come over here.") }
     }
 
     private companion object {
@@ -112,5 +73,27 @@ constructor(
             setOf("npc.ap_guide_parent", "npc.ap_guide_active", "npc.ap_guide_opt_out")
         private val TUTORIAL_END =
             "clientscript.[clientscript,tutorial_end]".asRSCM(RSCMType.CLIENTSCRIPT)
+        private val JON_CALLOUT_SHOWN = AttributeKey<Boolean>(temp = true)
+        private val COMPLETION_KIT =
+            listOf(
+                TutorialObj.BRONZE_AXE to 1,
+                TutorialObj.BRONZE_PICKAXE to 1,
+                TutorialObj.TINDERBOX to 1,
+                TutorialObj.NET to 1,
+                TutorialObj.SHRIMP to 1,
+                TutorialObj.BRONZE_DAGGER to 1,
+                TutorialObj.BRONZE_SWORD to 1,
+                TutorialObj.WOODEN_SHIELD to 1,
+                TutorialObj.SHORTBOW to 1,
+                TutorialObj.BRONZE_ARROW to 25,
+                TutorialObj.AIR_RUNE to 25,
+                TutorialObj.MIND_RUNE to 15,
+                TutorialObj.BUCKET_EMPTY to 1,
+                TutorialObj.POT_EMPTY to 1,
+                TutorialObj.BREAD to 1,
+                TutorialObj.WATER_RUNE to 6,
+                TutorialObj.EARTH_RUNE to 4,
+                TutorialObj.BODY_RUNE to 2,
+            )
     }
 }

@@ -1,0 +1,20 @@
+[[area]]
+name = "Tutorial Island"
+area_id = "area.tutorial_island"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [3072, 3072],
+    [3151, 3072],
+    [3151, 3135],
+    [3072, 3135],
+]
+
+[[area.polygons]]
+vertices = [
+    [3072, 9472],
+    [3151, 9472],
+    [3151, 9535],
+    [3072, 9535],
+]

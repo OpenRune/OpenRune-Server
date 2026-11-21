@@ -2,8 +2,8 @@ package org.rsmod.content.areas.misc.tutorialisland
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
-import kotlin.math.sign
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.dialogue.Dialogue
@@ -29,12 +29,17 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerCoordsChanged
+import org.rsmod.content.skills.mining.scripts.Mining.Companion.findPickaxe
+import org.rsmod.content.skills.mining.scripts.Mining.Companion.pickaxeAnim
+import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.axeWoodcuttingAnim
+import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.findAxe
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
+import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
@@ -248,7 +253,7 @@ constructor(
         }
         onOpNpc1(TutorialNpc.FISHING_SPOT) { catchShrimp() }
         for (tree in listOf(TutorialLoc.TREE, TutorialLoc.TREE_2)) {
-            onOpLoc1(tree) { chopTree(it.loc) }
+            onOpLoc1(tree) { chopTree(it.loc, it.type) }
         }
         onOpLoc1(TutorialLoc.OAK_TREE) {
             if (player.tutorialStage == TutorialStage.AXE_GIVEN) {
@@ -262,8 +267,8 @@ constructor(
                 mes("Perhaps you've done enough woodcutting now.")
             }
         }
-        onOpLoc1(TutorialLoc.TIN_ROCK) { mineTin(it.loc) }
-        onOpLoc1(TutorialLoc.COPPER_ROCK) { mineCopper(it.loc) }
+        onOpLoc1(TutorialLoc.TIN_ROCK) { mineTin(it.loc, it.type) }
+        onOpLoc1(TutorialLoc.COPPER_ROCK) { mineCopper(it.loc, it.type) }
         onOpLoc1(TutorialLoc.FURNACE) { smeltBar() }
         onOpHeld1(TutorialObj.BONES) { buryBones() }
     }
@@ -304,24 +309,25 @@ constructor(
         }
     }
 
-    private fun doorExit(from: CoordGrid, loc: BoundLocInfo, leaves: List<OpenLeaf>): CoordGrid {
-        val door = loc.coords
-        val leaf = leaves.firstOrNull()?.coords
-        val dx = (door.x - from.x).sign
-        val dz = (door.z - from.z).sign
+    private fun doorExit(from: CoordGrid, loc: BoundLocInfo): CoordGrid {
+        if (!checkAxis(from, loc.coords, loc.angle)) {
+            return loc.coords
+        }
         return when (loc.angle) {
-            LocAngle.West,
-            LocAngle.East -> {
-                val step = if (dx != 0) dx else leaf?.let { (it.x - door.x).sign } ?: dz
-                door.translateX(step)
-            }
-            LocAngle.North,
-            LocAngle.South -> {
-                val step = if (dz != 0) dz else leaf?.let { (it.z - door.z).sign } ?: dx
-                door.translateZ(step)
-            }
+            LocAngle.West -> loc.coords.translateX(-1)
+            LocAngle.North -> loc.coords.translateZ(1)
+            LocAngle.East -> loc.coords.translateX(1)
+            LocAngle.South -> loc.coords.translateZ(-1)
         }
     }
+
+    private fun checkAxis(from: CoordGrid, loc: CoordGrid, angle: LocAngle): Boolean =
+        when (angle) {
+            LocAngle.West,
+            LocAngle.East -> from.x == loc.x
+            LocAngle.North,
+            LocAngle.South -> from.z == loc.z
+        }
 
     private suspend fun ProtectedAccess.openDoor(loc: BoundLocInfo) {
         val leaves = DOOR_OPEN[loc.internalName]
@@ -330,14 +336,14 @@ constructor(
             return
         }
         locRepo.del(loc, DOOR_OPEN_TICKS)
-        soundSynth(62)
+        soundSynth(DOOR_SOUND)
+        player.addOpenLeaves(leaves, DOOR_OPEN_TICKS)
         val from = coords
-        val dest = doorExit(from, loc, leaves)
+        val dest = doorExit(from, loc)
         if (from != dest) {
             forcedWalk(listOf(loc.coords, dest), crossTiles = from.chebyshevDistance(dest))
         }
-        player.addOpenLeaves(leaves, DOOR_OPEN_TICKS - 1)
-        locRepo.change(loc, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS - 1)
+        locRepo.change(loc, TutorialLoc.INVISWALL, DOOR_BLOCK_TICKS)
     }
 
     private suspend fun ProtectedAccess.openGate(loc: BoundLocInfo) {
@@ -359,18 +365,16 @@ constructor(
                 halves += gate
             }
         }
-        if (spec === WOODEN_GATE) {
-            soundSynth(67)
-        }
+        soundSynth(spec.sound)
+        player.addOpenLeaves(spec.leaves, DOOR_OPEN_TICKS)
         val from = coords
-        val dest = doorExit(from, loc, spec.leaves)
+        val dest = doorExit(from, loc)
         if (from != dest) {
             forcedWalk(listOf(loc.coords, dest), crossTiles = from.chebyshevDistance(dest))
         }
         for (gate in halves) {
-            locRepo.change(gate, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS - 1)
+            locRepo.change(gate, TutorialLoc.INVISWALL, DOOR_BLOCK_TICKS)
         }
-        player.addOpenLeaves(spec.leaves, DOOR_OPEN_TICKS - 1)
     }
 
     private fun Player.addOpenLeaves(leaves: List<OpenLeaf>, duration: Int = DOOR_OPEN_TICKS) {
@@ -518,6 +522,7 @@ constructor(
             mes("You need a net to catch shrimp.")
             return
         }
+        anim("seq.human_smallnet")
         mesOverlay(
             "Your character is now attempting to catch some shrimp. Sit back for a moment " +
                 "while he does all the hard work.",
@@ -530,7 +535,7 @@ constructor(
         objbox(TutorialObj.RAW_SHRIMP, "You manage to catch some shrimp.")
     }
 
-    private suspend fun ProtectedAccess.chopTree(loc: BoundLocInfo) {
+    private suspend fun ProtectedAccess.chopTree(loc: BoundLocInfo, type: ObjectServerType) {
         if (player.tutorialStage != TutorialStage.AXE_GIVEN) {
             when {
                 player.tutorialStage < TutorialStage.AXE_GIVEN ->
@@ -540,10 +545,12 @@ constructor(
             }
             return
         }
-        if (!player.inv.contains(TutorialObj.BRONZE_AXE)) {
+        val axe = findAxe(player, type)
+        if (axe == null) {
             mes("You need an axe to chop down this tree.")
             return
         }
+        anim(getInvObj(axe).axeWoodcuttingAnim.internalName)
         locRepo.change(loc, TutorialLoc.TREE_STUMP, TREE_STUMP_TICKS)
         mesOverlay(
             "Your character is now attempting to cut down the tree. Sit back for a moment " +
@@ -560,17 +567,19 @@ constructor(
         objbox(TutorialObj.LOGS, "You manage to cut some logs.")
     }
 
-    private suspend fun ProtectedAccess.mineTin(loc: BoundLocInfo) {
+    private suspend fun ProtectedAccess.mineTin(loc: BoundLocInfo, type: ObjectServerType) {
         if (player.tutorialStage != TutorialStage.MINING_GUIDE_TALKED) {
             if (player.tutorialStage < TutorialStage.MINING_GUIDE_TALKED) {
                 mes("You are not ready to mine yet. Please follow the tutorial and you'll be mining in no time.")
             }
             return
         }
-        if (!player.inv.contains(TutorialObj.BRONZE_PICKAXE)) {
+        val pickaxe = findPickaxe(player)
+        if (pickaxe == null) {
             mes("You need a pickaxe to mine this rock.")
             return
         }
+        anim(getInvObj(pickaxe).pickaxeAnim.internalName)
         locRepo.change(loc, TutorialLoc.ROCK_DEPLETED, ROCK_DEPLETED_TICKS)
         mesOverlay("Your character is now attempting to mine the rock.<br>This should only take a few seconds.")
         delay(5)
@@ -581,17 +590,19 @@ constructor(
         objbox(TutorialObj.TIN_ORE, "You manage to mine some tin.")
     }
 
-    private suspend fun ProtectedAccess.mineCopper(loc: BoundLocInfo) {
+    private suspend fun ProtectedAccess.mineCopper(loc: BoundLocInfo, type: ObjectServerType) {
         if (player.tutorialStage != TutorialStage.TIN_MINED) {
             if (player.tutorialStage < TutorialStage.TIN_MINED) {
                 mes("You are not ready to mine yet. Please follow the tutorial and you'll be mining in no time.")
             }
             return
         }
-        if (!player.inv.contains(TutorialObj.BRONZE_PICKAXE)) {
+        val pickaxe = findPickaxe(player)
+        if (pickaxe == null) {
             mes("You need a pickaxe to mine this rock.")
             return
         }
+        anim(getInvObj(pickaxe).pickaxeAnim.internalName)
         locRepo.change(loc, TutorialLoc.ROCK_DEPLETED, ROCK_DEPLETED_TICKS)
         mesOverlay("Your character is now attempting to mine the rock.<br>This should only take a few seconds.")
         delay(5)
@@ -1789,13 +1800,21 @@ constructor(
 
     private data class GateHalf(val name: String, val coords: CoordGrid)
 
-    private data class GateSpec(val halves: List<GateHalf>, val leaves: List<OpenLeaf>)
+    private data class GateSpec(
+        val halves: List<GateHalf>,
+        val leaves: List<OpenLeaf>,
+        val sound: Int,
+    )
 
     private companion object {
         private const val FIRE_DURATION = 200
-        private const val DOOR_OPEN_TICKS = 5
-        private const val TREE_STUMP_TICKS = 5
-        private const val ROCK_DEPLETED_TICKS = 5
+        private const val DOOR_OPEN_TICKS = 3
+        private const val DOOR_BLOCK_TICKS = 1
+        private const val DOOR_SOUND = 62
+        private const val WOODEN_GATE_SOUND = 67
+        private const val METAL_GATE_SOUND = 71
+        private const val TREE_STUMP_TICKS = 3
+        private const val ROCK_DEPLETED_TICKS = 3
         private val MESOVERLAY =
             "clientscript.[clientscript,mesoverlay]".asRSCM(RSCMType.CLIENTSCRIPT)
 
@@ -1819,6 +1838,7 @@ constructor(
                             LocAngle.North,
                         ),
                     ),
+                sound = WOODEN_GATE_SOUND,
             )
 
         private val COMBAT_GATE =
@@ -1841,6 +1861,7 @@ constructor(
                             LocAngle.North,
                         ),
                     ),
+                sound = METAL_GATE_SOUND,
             )
 
         private val RAT_GATE =
@@ -1863,6 +1884,7 @@ constructor(
                             LocAngle.North,
                         ),
                     ),
+                sound = METAL_GATE_SOUND,
             )
 
         private val DOOR_OPEN: Map<String, List<OpenLeaf>> =

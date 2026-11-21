@@ -54,7 +54,17 @@ class TutorialRulesTest {
         }
 
     @Test
-    fun GameTestState.`exit wipes tutorial items and keeps bank coins`() =
+    fun GameTestState.`tutorial xp normalizes the realm rate`() =
+        runInjectedGameTest(TutorialXpMod::class, TestHooks()) { mod ->
+            player.tutorialStage = TutorialStage.SHRIMP_CAUGHT
+            player.xpRate = 150.0
+            player.globalXpRate = 1.0
+            val modifier = with(mod) { player.modifier("stat.strength") }
+            assertEquals(1.0 / 150.0 - 1.0, modifier, 0.0001)
+        }
+
+    @Test
+    fun GameTestState.`exit grants the completion kit and preserves the bank`() =
         runInjectedGameTest(TutorialExit::class, TestHooks()) { exit ->
             player.tutorialStage = TutorialStage.READY_TO_LEAVE
             player.adventurePaths = 2
@@ -69,10 +79,17 @@ class TutorialRulesTest {
             advance(2)
 
             assertEquals(TutorialStage.LEFT_ISLAND, player.tutorialStage)
-            assertEquals(0, player.inv.count(TutorialObj.SHRIMP))
+            assertEquals(1, player.inv.count(TutorialObj.SHRIMP))
+            assertEquals(1, player.inv.count(TutorialObj.BRONZE_SWORD))
+            assertEquals(25, player.inv.count(TutorialObj.BRONZE_ARROW))
+            assertEquals(25, player.inv.count(TutorialObj.AIR_RUNE))
+            assertEquals(15, player.inv.count(TutorialObj.MIND_RUNE))
+            assertEquals(6, player.inv.count(TutorialObj.WATER_RUNE))
+            assertEquals(4, player.inv.count(TutorialObj.EARTH_RUNE))
+            assertEquals(2, player.inv.count(TutorialObj.BODY_RUNE))
             assertEquals(0, player.worn.count(TutorialObj.BRONZE_SWORD))
             assertEquals(25, bank.count(TutorialObj.COINS))
-            assertEquals(0, bank.count(TutorialObj.BREAD))
+            assertEquals(1, bank.count(TutorialObj.BREAD))
             assertEquals(1, bank.count("obj.shark"))
             assertEquals(1, player.tutorialFreeStuffCheck)
         }

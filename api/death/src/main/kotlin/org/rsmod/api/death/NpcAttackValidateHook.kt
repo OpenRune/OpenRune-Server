@@ -15,6 +15,8 @@ public sealed class NpcAttackValidateResult {
 
     public data class Deny(val message: String) : NpcAttackValidateResult()
 
+    public data object DenySilent : NpcAttackValidateResult()
+
     /**
      * Allow attacking this npc in single-way combat even if the player is already engaged in PvN
      * combat (superior slayer monsters).
