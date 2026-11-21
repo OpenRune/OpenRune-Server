@@ -8717,7 +8717,7 @@ inherit = "npc.jb_baby_dagganoth"
 [[npc]]
 id = "npc.dagcave_ranged_boss"
 inherit = "npc.dagcave_ranged_boss"
-respawnDir = "SouthWest"
+respawnDir = "East"
 respawnRate = 150
 huntMode = 6
 huntRange = 7
@@ -8740,7 +8740,7 @@ wanderRange = 5
 [[npc]]
 id = "npc.dagcave_magic_boss"
 inherit = "npc.dagcave_magic_boss"
-respawnDir = "West"
+respawnDir = "South"
 respawnRate = 150
 huntMode = 6
 huntRange = 7

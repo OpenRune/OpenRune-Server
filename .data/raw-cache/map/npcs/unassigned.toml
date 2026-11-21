@@ -2124,10 +2124,6 @@ coords = "0_39_158_47_31"
 
 [[spawn]]
 npc = "npc.dagcave_magic_boss"
-coords = "0_41_151_7_3"
-
-[[spawn]]
-npc = "npc.dagcave_magic_boss"
 coords = "0_45_68_31_35"
 
 [[spawn]]
@@ -2136,27 +2132,11 @@ coords = "0_45_69_31_35"
 
 [[spawn]]
 npc = "npc.dagcave_melee_boss"
-coords = "0_41_150_9_61"
-
-[[spawn]]
-npc = "npc.dagcave_melee_boss"
-coords = "0_42_150_1_61"
-
-[[spawn]]
-npc = "npc.dagcave_melee_boss"
 coords = "0_45_68_33_29"
 
 [[spawn]]
 npc = "npc.dagcave_melee_boss"
 coords = "0_45_69_33_29"
-
-[[spawn]]
-npc = "npc.dagcave_ranged_boss"
-coords = "0_41_151_2_0"
-
-[[spawn]]
-npc = "npc.dagcave_ranged_boss"
-coords = "0_41_151_58_0"
 
 [[spawn]]
 npc = "npc.dagcave_ranged_boss"

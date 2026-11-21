@@ -1,10 +1,6 @@
 ## Witchaven Dungeon First Section
 
 [[spawn]]
-npc = "npc.dagcave_magic_boss"
-coords = "0_41_151_63_3"
-
-[[spawn]]
 npc = "npc.hellhound"
 coords = "0_42_151_46_19"
 
