@@ -33,7 +33,6 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerCoordsChanged
-import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.content.skills.mining.scripts.Mining.Companion.findPickaxe
 import org.rsmod.content.skills.mining.scripts.Mining.Companion.pickaxeAnim
 import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.axeWoodcuttingAnim
@@ -42,7 +41,6 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
@@ -75,7 +73,6 @@ constructor(
         bindObjects()
         bindSkilling()
         bindDamageFloor()
-        onPlayerQueueWithArgs<TutorialFishTask>(FISH_QUEUE) { attemptTutorialCatch(it.args) }
         onPlayerCoordsChanged {
             if (player.tutorialStage == TutorialStage.READY_TO_LEAVE &&
                 player.coords.chebyshevDistance(TutorialCoords.LUMBRIDGE) <= 4
@@ -639,38 +636,15 @@ constructor(
             )
             return
         }
+        if (player.hasMovedThisCycle || player.hasMovedPreviousCycle) {
+            delay(1)
+        }
         faceSquare(spot.coords)
         anim("seq.human_smallnet")
         mesOverlay(
             "Your character is now attempting to catch some shrimp. Sit back for a moment " +
                 "while ${player.actionPronoun()} all the hard work.",
         )
-        clearWeakQueue(FISH_QUEUE)
-        weakQueue(FISH_QUEUE, 1, TutorialFishTask(spot, spot.uid))
-    }
-
-    private suspend fun ProtectedAccess.attemptTutorialCatch(task: TutorialFishTask) {
-        if (task.npc.uid != task.uid) {
-            return
-        }
-        if (player.tutorialStage < TutorialStage.INVENTORY_VIEWED ||
-            !player.inv.contains(TutorialObj.NET) ||
-            inv.isFull()
-        ) {
-            return
-        }
-        if (!isWithinDistance(task.npc, FISH_MAX_RANGE) || player.hasMovedPreviousCycle) {
-            if (task.ticks < MAX_FISH_ARRIVAL_TICKS) {
-                weakQueue(FISH_QUEUE, 1, task.copy(ticks = task.ticks + 1))
-            }
-            return
-        }
-        catchShrimpNow(task.npc)
-    }
-
-    private suspend fun ProtectedAccess.catchShrimpNow(spot: Npc) {
-        faceSquare(spot.coords)
-        anim("seq.human_smallnet")
         delay(6)
         resetAnim()
         if (invAdd(inv, TutorialObj.RAW_SHRIMP, 1).failure) {
@@ -2400,8 +2374,6 @@ constructor(
         val sound: Int,
     )
 
-    private data class TutorialFishTask(val npc: Npc, val uid: NpcUid, val ticks: Int = 0)
-
     private companion object {
         private const val FIRE_DURATION = 150
         private const val EXTRA_COOK_BURN_CHANCE = 50
@@ -2412,9 +2384,6 @@ constructor(
         private const val METAL_GATE_SOUND = 71
         private const val LOGOUT_TAB = 10
         private const val ACCOUNT_TAB = 8
-        private const val FISH_QUEUE = "queue.tutorial_fishing"
-        private const val MAX_FISH_ARRIVAL_TICKS = 30
-        private const val FISH_MAX_RANGE = 5
         private const val TREE_STUMP_TICKS = 16
         private const val ROCK_DEPLETED_TICKS = 10
         private val FIRE_WALK_DIRECTIONS =

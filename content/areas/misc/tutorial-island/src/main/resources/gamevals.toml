@@ -1,9 +1,6 @@
 [gamevals.timer]
 tutorial_island = 63520
 
-[gamevals.queue]
-tutorial_fishing = 64423
-
 [gamevals.area]
 tutorial_island = 32762
 
