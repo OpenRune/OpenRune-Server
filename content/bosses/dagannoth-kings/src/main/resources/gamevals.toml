@@ -8,3 +8,6 @@ music_modern_dagannoth_dawn = 98138
 
 [gamevals.param]
 npc_hp_name = 510
+
+[gamevals.varn]
+spinolyp_transform = 102

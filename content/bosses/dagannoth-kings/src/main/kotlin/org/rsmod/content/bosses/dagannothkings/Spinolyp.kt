@@ -41,6 +41,9 @@ class Spinolyp @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             "npc.dagannoth_water_creature_1x1",
             "npc.dagannoth_water_creature_1x12",
             "npc.dagannoth_water_creature_1x13",
+            "npc.dagannoth_water_creature_1x1_invisible",
+            "npc.dagannoth_water_creature_1x1_invisible2",
+            "npc.dagannoth_water_creature_1x1_invisible3",
         ) {
             stats(attackRate = 4)
 

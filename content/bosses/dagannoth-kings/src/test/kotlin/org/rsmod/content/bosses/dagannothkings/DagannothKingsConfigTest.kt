@@ -8,6 +8,7 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
 import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
@@ -39,6 +40,17 @@ class DagannothKingsConfigTest {
             assertEquals(10, spinolyp.huntRange, name)
             assertEquals(7, spinolyp.attackRange, name)
             assertEquals(10, spinolyp.respawnRate, name)
+            assertEquals(1, spinolyp.timer, name)
+        }
+    }
+
+    @Test
+    fun `suspicious water is passive and cycles back to spinolyps`() {
+        for (name in SUSPICIOUS_WATER) {
+            val water = npc(name)
+            assertNull(water.huntMode, name)
+            assertEquals(1, water.timer, name)
+            assertEquals(10, water.respawnRate, name)
         }
     }
 
@@ -65,6 +77,12 @@ class DagannothKingsConfigTest {
                 "npc.dagannoth_water_creature_1x1",
                 "npc.dagannoth_water_creature_1x12",
                 "npc.dagannoth_water_creature_1x13",
+            )
+        val SUSPICIOUS_WATER =
+            listOf(
+                "npc.dagannoth_water_creature_1x1_invisible",
+                "npc.dagannoth_water_creature_1x1_invisible2",
+                "npc.dagannoth_water_creature_1x1_invisible3",
             )
         lateinit var NPCS: Map<Int, NpcServerType>
 
