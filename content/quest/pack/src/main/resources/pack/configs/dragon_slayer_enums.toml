@@ -1,0 +1,28 @@
+[[enum]]
+isServerOnly = true
+id = "enum.dragon_slayer_wear_locked"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+1 = "obj.rune_platebody"
+2 = "obj.rune_platebody_gold"
+3 = "obj.rune_platebody_trim"
+4 = "obj.rune_platebody_goldplate"
+5 = "obj.rune_platebody_saradomin"
+6 = "obj.rune_platebody_guthix"
+7 = "obj.rune_platebody_zamorak"
+8 = "obj.rune_platebody_ancient"
+9 = "obj.rune_platebody_armadyl"
+10 = "obj.rune_platebody_bandos"
+11 = "obj.rune_platebody_h1"
+12 = "obj.rune_platebody_h2"
+13 = "obj.rune_platebody_h3"
+14 = "obj.rune_platebody_h4"
+15 = "obj.rune_platebody_h5"
+16 = "obj.dragonhide_body"
+17 = "obj.dragonhide_body_trim"
+18 = "obj.dragonhide_body_trim_gold"
+19 = "obj.dragon_platebody"
+20 = "obj.dragon_platebody_gold"
+21 = "obj.dragonstone_platebody"

@@ -9,12 +9,20 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.script.onOpNpc5
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerQuest
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerShip
 import org.rsmod.content.travel.teleports.CharterShips
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class PortSarimDocksScript @Inject constructor(private val shops: Shops) : PluginScript() {
+class PortSarimDocksScript
+@Inject
+constructor(
+    private val shops: Shops,
+    private val dragonSlayer: DragonSlayerQuest,
+    private val ladyLumbridge: DragonSlayerShip,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.klarense") { startDialogue(it.npc) { klarense() } }
         onOpNpc1("npc.port_task_master_port_sarim") { startDialogue(it.npc) { portMaster() } }
@@ -40,6 +48,10 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
     }
 
     private suspend fun Dialogue.klarense() {
+        if (!dragonSlayer.isComplete(player)) {
+            with(ladyLumbridge) { klarense() }
+            return
+        }
         chatPlayer(quiz, "Hey, that's my ship!")
         chatNpc(
             neutral,

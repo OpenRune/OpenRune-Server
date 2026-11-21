@@ -2085,10 +2085,6 @@ npc = "npc.deadly_red_spider"
 coords = "0_44_149_26_47"
 
 [[spawn]]
-npc = "npc.dragonslayer_elvarg_cutscene"
-coords = "0_44_150_36_37"
-
-[[spawn]]
 npc = "npc.elvarg"
 coords = "0_44_150_36_37"
 

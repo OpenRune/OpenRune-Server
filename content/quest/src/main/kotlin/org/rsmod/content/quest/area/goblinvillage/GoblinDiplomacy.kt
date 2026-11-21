@@ -33,6 +33,7 @@ import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.content.quest.area.misthalin.SceneFadeTicks
 import org.rsmod.content.quest.area.misthalin.SceneRegion
 import org.rsmod.content.quest.area.misthalin.SceneSnapRate
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerQuest
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.rewards
@@ -56,6 +57,7 @@ constructor(
     private val worldRepo: WorldRepository,
     private val collision: CollisionFlagMap,
     private val search: NpcSearch,
+    private val dragonSlayer: DragonSlayerQuest,
 ) :
     QuestScript(
     "quest_goblindiplomacy",
@@ -310,6 +312,30 @@ constructor(
     }
 
     private suspend fun Dialogue.generalsDialogue() {
+        if (dragonSlayer.canAskGenerals(player)) {
+            val askMap =
+                choice2(
+                    "I've heard that one of your number has got hold of part of a map.",
+                    true,
+                    "So how is life for the goblins?",
+                    false,
+                )
+            if (askMap) {
+                chatPlayer(
+                    quiz,
+                    "I've heard that one of your number has got hold of part of a map.",
+                )
+                bentnoze(neutral, "Aha, that'd be Wormbrain.")
+                chatPlayer(quiz, "Where would he be?")
+                dragonSlayer.markAskedGenerals(player)
+                bentnoze(
+                    neutral,
+                    "Wormbrain steals too much. He got caught. Now he lives in Port Sarim town jail.",
+                )
+                return
+            }
+            chatPlayer(quiz, "So how is life for the goblins?")
+        }
         val stage = stage(player)
         if (stage >= COMPLETE) {
             afterQuest()

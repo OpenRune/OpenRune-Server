@@ -53,6 +53,7 @@ pirates_treasure_chest_opened = 64625
 pirates_treasure_gardener = 64626
 pirates_treasure_progress = 64627
 pirates_treasure_rum_retrieved = 64628
+dragon_slayer_progress = 64640
 
 [gamevals.bas]
 waterfall_wading = 1
@@ -104,6 +105,7 @@ glarial_forbidden_parts = 63684
 glarial_allowed_parts = 63679
 
 [gamevals.enum]
+dragon_slayer_wear_locked = 64640
 daddys_home_hammers = 65460
 daddys_home_saws = 65461
 daddys_home_nails = 65462

@@ -1021,6 +1021,7 @@ class EffectInterpreter internal constructor(
                 BossHitType.Magic,
                 BossHitType.Dragonfire,
                 BossHitType.DragonfireMetal,
+                BossHitType.DragonfireElvarg,
                 BossHitType.WyvernIce -> deps.maxHit.getMagicMaxHit(npc, t)
                 BossHitType.Melee,
                 BossHitType.Typeless -> deps.maxHit.getMeleeMaxHit(npc, t, expr.meleeAttackType)
@@ -1033,6 +1034,7 @@ class EffectInterpreter internal constructor(
         when (t) {
             BossHitType.Dragonfire -> DragonfireProtection.DragonfireType.Chromatic
             BossHitType.DragonfireMetal -> DragonfireProtection.DragonfireType.Metal
+            BossHitType.DragonfireElvarg -> DragonfireProtection.DragonfireType.Elvarg
             BossHitType.WyvernIce -> DragonfireProtection.DragonfireType.WyvernIce
             else -> null
         }
@@ -1096,6 +1098,7 @@ class EffectInterpreter internal constructor(
             BossHitType.Magic,
             BossHitType.Dragonfire,
             BossHitType.DragonfireMetal,
+            BossHitType.DragonfireElvarg,
             BossHitType.WyvernIce -> deps.accuracy.rollMagicAccuracy(npc, t, deps.random)
             BossHitType.Typeless -> true
         }

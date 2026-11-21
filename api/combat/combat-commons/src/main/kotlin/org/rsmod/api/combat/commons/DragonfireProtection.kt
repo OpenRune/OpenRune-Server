@@ -4,7 +4,7 @@ import org.rsmod.game.entity.Player
 
 public object DragonfireProtection {
 
-    public enum class DragonfireType { Chromatic, Metal, WyvernIce }
+    public enum class DragonfireType { Chromatic, Metal, WyvernIce, Elvarg }
 
     private val antifireShields = setOf(
         "obj.antidragonbreathshield",
@@ -36,11 +36,17 @@ public object DragonfireProtection {
             }
         }
 
-        if (hasSuperAntifire(player)) return 0
+        val started = hasStartedDragonSlayer(player)
+        if (started && hasSuperAntifire(player)) return 0
 
-        val shield = hasAntifireShield(player)
+        val shield = started && hasAntifireShield(player)
+        val antifire = started && hasAntifire(player)
+
+        if (type == DragonfireType.Elvarg) {
+            return elvargMaxHit(shield, isProtectingFromMagic(player), antifire, baseMax)
+        }
+
         val protect = type == DragonfireType.Chromatic && isProtectingFromMagic(player)
-        val antifire = hasAntifire(player)
 
         if (antifire && (shield || protect)) return 0
 
@@ -52,6 +58,21 @@ public object DragonfireProtection {
         if (antifire) cap = (cap - 15).coerceAtLeast(0)
         return cap
     }
+
+    /** Elvarg's breath reaches past melee range, so her caps differ from other chromatic dragons. */
+    internal fun elvargMaxHit(shield: Boolean, protect: Boolean, antifire: Boolean, baseMax: Int): Int =
+        when {
+            shield && protect && antifire -> 4
+            shield && (protect || antifire) -> 7
+            shield -> 10
+            protect && antifire -> 40
+            protect || antifire -> 55
+            else -> baseMax
+        }
+
+    /** Dragonfire protection only works once Dragon Slayer I has been started. */
+    private fun hasStartedDragonSlayer(player: Player): Boolean =
+        player.vars["varp.dragonquest"] > 0
 
     private fun hasAntifireShield(player: Player): Boolean =
         antifireShields.any { it in player.worn }

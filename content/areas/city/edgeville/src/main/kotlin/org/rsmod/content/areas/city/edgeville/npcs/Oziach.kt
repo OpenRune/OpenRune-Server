@@ -6,40 +6,37 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
-import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerQuest
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /** Oziach, who only sells rune platebodies to those who have slain Elvarg. */
-class Oziach @Inject constructor(private val shops: Shops) : PluginScript() {
+class Oziach
+@Inject
+constructor(private val shops: Shops, private val dragonSlayer: DragonSlayerQuest) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.oziach") { talk(it.npc) }
         onOpNpc3("npc.oziach") { trade(it.npc) }
     }
 
     private suspend fun ProtectedAccess.talk(npc: Npc) {
-        val slayer = QuestRequirements.hasCompleted(player, DRAGON_SLAYER)
-        startDialogue(npc) { if (slayer) dragonSlayer(npc) else fairDay() }
+        if (!dragonSlayer.isComplete(player)) {
+            startDialogue(npc) { with(dragonSlayer) { oziach(npc) } }
+            return
+        }
+        startDialogue(npc) { dragonSlayer(npc) }
     }
 
     private suspend fun ProtectedAccess.trade(npc: Npc) {
-        if (QuestRequirements.hasCompleted(player, DRAGON_SLAYER)) {
+        if (dragonSlayer.isComplete(player)) {
             player.openRunePlateShop(npc)
             return
         }
         startDialogue(npc) {
             chatNpc(angry, "I ain't got nothing to sell ye, adventurer. Leave me be!")
-        }
-    }
-
-    private suspend fun Dialogue.fairDay() {
-        chatNpc(shifty, "Aye, 'tis a fair day my friend.")
-        if (choice2("I'm not your friend.", true, "Yes, it's a very nice day.", false)) {
-            notYourFriend()
-        } else {
-            niceDay()
         }
     }
 
@@ -86,9 +83,5 @@ class Oziach @Inject constructor(private val shops: Shops) : PluginScript() {
 
     private fun Player.openRunePlateShop(npc: Npc) {
         shops.open(this, npc, "Oziach", "inv.runeplateshop")
-    }
-
-    private companion object {
-        private const val DRAGON_SLAYER = "quest_dragonslayer1"
     }
 }

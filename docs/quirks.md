@@ -176,3 +176,36 @@ the Falador park gardener (rev 235) and Hector's chest (rev 232). Known differen
 - Taking the white apron in Gerrant's shop is an ordinary ground item pickup, without the
   "freshly starched" message.
 - Chathead expressions for Frank, Luthas, Wydin and the customs officer are chosen by hand.
+
+## Dragon Slayer I
+
+Built from the OSRS wiki transcript, Quest Helper and the cache. No RSProx capture of the quest in
+progress exists (every capture that touches it is an account that had already finished it), so
+only the post-quest mechanics are capture-checked: Melzar's front door (rev 233), Thalzar's magic
+door and chest (rev 233) and the Oracle (rev 233). Known differences:
+
+- The quest journal uses the text from before the 14 January 2026 rewrite; no capture of the new
+  text exists.
+- Stage values 3 to 6 follow Quest Helper: buying the Lady Lumbridge sets 3 and the last plank sets
+  6. Values 4 and 5 are never used. The five Guildmaster question bits are set together when
+  Oziach gives the task and cleared one by one as the Guildmaster answers.
+- The voyage to Crandor plays in a private copy of the ship-at-sea map. Its camera, timing and fire
+  placement are not taken from a capture. The quest moves to the Crandor stage when the ship sets
+  sail, so a player who logs out mid-voyage wakes up on the beach.
+- Leaving Crandor does not unlock the secret passage on its own; the wiki contradicts itself on
+  this, and Quest Helper expects the ship to be repaired again if the passage was never opened.
+- Elvarg's corpse is a world loc, so another player in the chamber sees it for the few ticks it
+  lasts. Her breath on entering the chamber does not wait for her attack timer.
+- Melzar's key doors have no open variant in the cache: the door is swapped for an invisible wall
+  while the player steps through. Melzar the Mad does not make cabbages appear.
+- Wormbrain dies and respawns like any npc when beaten; on the wiki he only says "Ow!". Lozar's
+  piece lies in his cell for the attacker only.
+- The Champions' Guild door only checks for 32 quest points when quest requirements respect real
+  progress; under the default assume-completed policy anyone may enter.
+- Messages not found on the wiki or in a capture are best guesses: the armour wear refusal, the
+  guild door refusal, the sawmill confirmation and the Crandor map's "Study" text.
+- Trader Stan's crew do not give their Crandor refusal from the charter map, and Captain Barnaby
+  has no Crandor option.
+- Dragonfire protection (anti-dragon shields, antifire and super antifire potions) only works once
+  the quest is started; Protect from Magic always works. Elvarg uses her own cap table (10 with the
+  shield alone, 4 with shield, prayer and antifire).

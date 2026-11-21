@@ -13,6 +13,9 @@ import org.rsmod.api.shops.Shops
 import org.rsmod.content.areas.city.draynor.npcs.DiangoHolidayItems.Companion.openHolidayItems
 import org.rsmod.content.interfaces.omnishop.openOmnishop
 import org.rsmod.content.quest.area.draynor.vampyreslayer.VampyreSlayerQuest
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerQuest
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerQuest.Companion.askedNed
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerShip
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
@@ -21,8 +24,12 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class DraynorVillageNpcs
 @Inject
-constructor(private val shops: Shops, private val vampyreSlayer: VampyreSlayerQuest) :
-    PluginScript() {
+constructor(
+    private val shops: Shops,
+    private val vampyreSlayer: VampyreSlayerQuest,
+    private val dragonSlayer: DragonSlayerQuest,
+    private val ladyLumbridge: DragonSlayerShip,
+) : PluginScript() {
     private var Player.morganThanked by intVarBit("varbit.morgan_postquest_dialogue")
     private var Player.metAggie by intVarBit("varbit.gobdip_met_aggie")
     private var Player.bankJob by intVarBit("varbit.wom_bankjob")
@@ -259,17 +266,38 @@ constructor(private val shops: Shops, private val vampyreSlayer: VampyreSlayerQu
     }
 
     private suspend fun Dialogue.ned() {
-        if (!QuestRequirements.hasCompleted(player, DRAGON_SLAYER)) {
-            chatNpc(
-                neutral,
-                "Why, hello there, ${if (isLad()) "lad" else "lass"}. Me friends call me Ned. I " +
-                    "was a man of the sea, but it's past me now. Could I be making or selling " +
-                    "you some rope?",
-            )
-            if (menu("Yes, I would like some rope." to true, NED_DECLINE to false)) {
-                access.openRopeShop()
+        val stage = dragonSlayer.stage(player)
+        if (stage < DragonSlayerQuest.STAGE_CRANDOR) {
+            val questTopic = ladyLumbridge.nedHasQuestTopic(player)
+            val returning = questTopic && (player.askedNed == 1 || stage == DragonSlayerQuest.STAGE_NED_HIRED)
+            if (returning) {
+                chatNpc(
+                    neutral,
+                    "Hello again, ${if (isLad()) "lad" else "lass"}. Something I can help you with? " +
+                        "Want to buy some rope perhaps?",
+                )
             } else {
-                nedDecline()
+                chatNpc(
+                    neutral,
+                    "Why, hello there, ${if (isLad()) "lad" else "lass"}. Me friends call me Ned. I " +
+                        "was a man of the sea, but it's past me now. Could I be making or selling " +
+                        "you some rope?",
+                )
+            }
+            val options = buildList {
+                if (questTopic) {
+                    val label =
+                        if (returning) "Will you take me to Crandor now, then?"
+                        else "You're a sailor? Could you take me to Crandor?"
+                    add(label to NedTopic.Crandor)
+                }
+                add("Yes, I would like some rope." to NedTopic.Rope)
+                add(NED_DECLINE to NedTopic.Leave)
+            }
+            when (menu(options)) {
+                NedTopic.Crandor -> with(ladyLumbridge) { nedQuestTopic() }
+                NedTopic.Rope -> access.openRopeShop()
+                NedTopic.Leave -> nedDecline()
             }
             return
         }
@@ -1229,7 +1257,6 @@ constructor(private val shops: Shops, private val vampyreSlayer: VampyreSlayerQu
     }
 
     private companion object {
-        const val DRAGON_SLAYER = "quest_dragonslayer1"
         const val PRINCE_ALI_RESCUE = "quest_princealirescue"
         const val FREMENNIK_ISLES = "quest_fremennikisles"
 

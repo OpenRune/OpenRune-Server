@@ -18,6 +18,8 @@ dependencies {
     implementation(projects.content.generic.genericLocs)
     implementation(projects.api.areaChecker)
     implementation(projects.api.death)
+    implementation(projects.api.bosses)
+    implementation(projects.api.combat.combatCommons)
     implementation(projects.api.serverConfig)
     implementation(projects.api.registry)
     implementation(projects.api.shops)

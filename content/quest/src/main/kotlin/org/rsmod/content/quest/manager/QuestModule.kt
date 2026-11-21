@@ -3,6 +3,7 @@ package org.rsmod.content.quest.manager
 import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
 import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcDeathKillHook
+import org.rsmod.api.player.hook.HeldEquipValidateHook
 import org.rsmod.api.player.hook.SpadeDigHook
 import org.rsmod.content.bosses.moons.neypotzli.NeypotzliHook
 import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
@@ -27,6 +28,14 @@ import org.rsmod.content.quest.area.varrock.demonslayer.DelrithAttackHook
 import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerCutscenes
 import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerQuest
 import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerScenes
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerQuest
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerShip
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerVoyage
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerWearHook
+import org.rsmod.content.quest.area.varrock.dragonslayer.ElvargAttackHook
+import org.rsmod.content.quest.area.varrock.dragonslayer.ElvargKillHook
+import org.rsmod.content.quest.area.varrock.dragonslayer.WormbrainAttackHook
+import org.rsmod.content.quest.area.varrock.dragonslayer.WormbrainKillHook
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest
 import org.rsmod.plugin.module.PluginModule
 
@@ -43,6 +52,9 @@ public class QuestModule : PluginModule() {
         bindInstance<VampyreSlayerQuest>()
         bindInstance<DemonSlayerQuest>()
         bindBaseInstance<DemonSlayerScenes>(DemonSlayerCutscenes::class.java)
+        bindInstance<DragonSlayerQuest>()
+        bindInstance<DragonSlayerShip>()
+        bindInstance<DragonSlayerVoyage>()
         bindInstance<PiratesTreasureQuest>()
         bindInstance<PiratesTreasureSmuggling>()
         bindInstance<PiratesTreasureDig>()
@@ -56,6 +68,11 @@ public class QuestModule : PluginModule() {
         addSetBinding<NpcDeathKillHook>(PiratesTreasureGardenerKillHook::class.java)
         addSetBinding<NpcAttackValidateHook>(PiratesTreasureGardenerAttackHook::class.java)
         addSetBinding<NpcDeathKillHook>(PerilousMoonsNaguaKill::class.java)
+        addSetBinding<NpcAttackValidateHook>(WormbrainAttackHook::class.java)
+        addSetBinding<NpcDeathKillHook>(WormbrainKillHook::class.java)
+        addSetBinding<NpcAttackValidateHook>(ElvargAttackHook::class.java)
+        addSetBinding<NpcDeathKillHook>(ElvargKillHook::class.java)
+        addSetBinding<HeldEquipValidateHook>(DragonSlayerWearHook::class.java)
         addSetBinding<NeypotzliHook>(PerilousMoonsRuins::class.java)
     }
 }

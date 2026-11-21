@@ -7,13 +7,18 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureQuest
 import org.rsmod.content.quest.area.portsarim.piratestreasure.confiscateRum
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerQuest
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class KaramjaFerryScript @Inject constructor(private val piratesTreasure: PiratesTreasureQuest) :
-    PluginScript() {
+class KaramjaFerryScript
+@Inject
+constructor(
+    private val piratesTreasure: PiratesTreasureQuest,
+    private val dragonSlayer: DragonSlayerQuest,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         for (sailor in SARIM_CREW) {
             onOpNpc1(sailor) { startDialogue(it.npc) { offerTrip() } }
@@ -29,10 +34,25 @@ class KaramjaFerryScript @Inject constructor(private val piratesTreasure: Pirate
             "Hello there. Do you want to go on a trip to Karamja? We can take you to Musa Point " +
                 "for only $FARE coins.",
         )
-        if (!choice2("Yes please.", true, "No thank you.", false)) {
-            chatPlayer(neutral, "No thank you.")
-            chatNpc(neutral, "Fair enough.")
-            return
+        val options = buildList {
+            if (dragonSlayer.isSeekingCrandor(player)) {
+                add("I'd rather go to Crandor." to FerryTopic.Crandor)
+            }
+            add("Yes please." to FerryTopic.Yes)
+            add("No thank you." to FerryTopic.No)
+        }
+        when (menu(options)) {
+            FerryTopic.Crandor -> {
+                chatPlayer(neutral, "I'd rather go to Crandor.")
+                chatNpc(angry, "Crandor? No chance! You may have a death wish, but we don't!")
+                return
+            }
+            FerryTopic.No -> {
+                chatPlayer(neutral, "No thank you.")
+                chatNpc(neutral, "Fair enough.")
+                return
+            }
+            FerryTopic.Yes -> Unit
         }
         chatPlayer(happy, "Yes please.")
         board(MUSA_POINT, MUSA_POINT_NAME)
@@ -155,6 +175,12 @@ class KaramjaFerryScript @Inject constructor(private val piratesTreasure: Pirate
         Why,
         Search,
         Refuse,
+    }
+
+    private enum class FerryTopic {
+        Crandor,
+        Yes,
+        No,
     }
 
     private companion object {

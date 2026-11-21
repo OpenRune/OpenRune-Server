@@ -497,6 +497,7 @@ val Ranged: HitType = HitType.Ranged
 val Magic: HitType = HitType.Magic
 val Dragonfire: HitType = HitType.Dragonfire
 val DragonfireMetal: HitType = HitType.DragonfireMetal
+val DragonfireElvarg: HitType = HitType.DragonfireElvarg
 val WyvernIce: HitType = HitType.WyvernIce
 val Typeless: HitType = HitType.Typeless
 val MagicalRanged: AccuracyKind = AccuracyKind.MagicalRanged

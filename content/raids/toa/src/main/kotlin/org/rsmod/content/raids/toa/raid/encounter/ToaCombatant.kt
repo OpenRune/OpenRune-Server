@@ -60,6 +60,7 @@ internal class ToaCombatant(private val room: ToaEncounter, val npc: Npc, privat
                 HitType.Magic,
                 HitType.Dragonfire,
                 HitType.DragonfireMetal,
+                HitType.DragonfireElvarg,
                 HitType.WyvernIce ->
                     deps.nvpMagicAccuracy.computeAttackRoll(npc, type) to
                         deps.nvpMagicAccuracy.computeDefenceRoll(target)
