@@ -8805,6 +8805,20 @@ respawnRate = 50
 "param.death_sound"="synth.dagganoth_pressure_door_fall"
 
 [[npc]]
+id = "npc.dagannoth_dungeon_pressure_pet_rock"
+inherit = "npc.dagannoth_dungeon_pressure_pet_rock"
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
+
+[[npc]]
+id = "npc.dagannoth_dungeon_pressure_pet_egg"
+inherit = "npc.dagannoth_dungeon_pressure_pet_egg"
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
+
+[[npc]]
 id = "npc.warguild_bronze_armour"
 inherit = "npc.warguild_bronze_armour"
 [npc.params]

@@ -45,8 +45,9 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
             playerRepo
                 .findAll(zone, zoneRadius = 2)
                 .count {
-                    val z = it.coords.z
-                    if (normalLair) z in NORMAL_LAIR_Z else z in SLAYER_LAIR_Z
+                    val coords = it.coords
+                    if (coords.x !in LAIR_X) return@count false
+                    if (normalLair) coords.z in NORMAL_LAIR_Z else coords.z in SLAYER_LAIR_Z
                 }
         when (count) {
             0 -> mes("You see nobody in the lair.")
@@ -69,6 +70,7 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
         val SLAYER_LAIR_ENTRY = CoordGrid(2900, 4385, 0)
         val LAIR_EXIT = CoordGrid(1910, 4367, 0)
 
+        val LAIR_X = 2880..2943
         val NORMAL_LAIR_Z = 4416..4479
         val SLAYER_LAIR_Z = 4352..4415
     }
