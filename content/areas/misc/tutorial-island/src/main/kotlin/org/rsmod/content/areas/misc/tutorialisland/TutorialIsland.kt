@@ -674,6 +674,10 @@ constructor(
             )
             return
         }
+        if (inv.count(TutorialObj.LOGS) > 2) {
+            mesbox("Perhaps you've done enough woodcutting now.")
+            return
+        }
         val axe = findAxe(player, type)
         if (axe == null) {
             mesbox("You need an axe to chop this tree.<br>Talk to the survival expert to get one.")
