@@ -16,13 +16,22 @@ import org.rsmod.game.entity.Player
 @JvmField
 public val zombieRatDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tableIdentifier = "Zombie rat Drops",
-    npcs = npcs("npc.dragonslayer_giantrat_1_key", "npc.dragonslayer_giantrat_2", "npc.dragonslayer_giantrat_3"),
+    npcs = npcs("npc.dragonslayer_giantrat_1_key"),
     guaranteed = rsPlayerGuaranteedTable {
-        "obj.redkey" count 1 condition { player ->
-            // Drops Need Manual: Only dropped by the small rat with a long tail.
-             true
+        "obj.redkey" count 1
+    },
+    tertiaries = rsPlayerTertiaryTable {
+        1 outOf 1 weight "obj.rag_giant_rat_bone" count 1 condition {
+            player -> player.isOnQuest("quest_ragandboneman1")
         }
     },
+)
+
+@field:RegisterDropTable
+@JvmField
+public val zombieRatDropTableNoKey: RSDropTable<Player, DropRollItem> = RSDropTable(
+    tableIdentifier = "Zombie rat Drops (no key)",
+    npcs = npcs("npc.dragonslayer_giantrat_2", "npc.dragonslayer_giantrat_3"),
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 1 weight "obj.rag_giant_rat_bone" count 1 condition {
             player -> player.isOnQuest("quest_ragandboneman1")

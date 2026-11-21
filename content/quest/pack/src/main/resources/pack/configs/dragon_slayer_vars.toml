@@ -1,0 +1,6 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.dragon_slayer_progress"
+varp = "varp.dragonquest"
+startBit = 0
+endBit = 3

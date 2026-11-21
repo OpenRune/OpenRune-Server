@@ -199,9 +199,9 @@ constructor(
             1 -> {
                 chatPlayer(happy, "Elvarg, the dragon of Crandor island!")
                 chatNpc(shocked, "Elvarg? Are you sure?")
-                when (choice2("Yes.", 1, "I'd better leave that dragon alone.", 2, title = "Well, are you sure?")) {
+                when (choice2("Yes", 1, "No", 2, title = "Well, are you sure?")) {
                     1 -> {
-                        chatPlayer(happy, "Yes.")
+                        chatPlayer(happy, "Yes!")
                         val gender =
                             if (player.appearance.bodyType == Constants.bodytype_a) "man" else "woman"
                         chatNpc(happy, "Well, you're a braver $gender than I!")
@@ -235,12 +235,15 @@ constructor(
                             2 -> leaveDragonAlone()
                         }
                     }
-                    2 -> leaveDragonAlone()
+                    2 -> {
+                        chatPlayer(neutral, "No.")
+                        chatNpc(neutral, "Very wise. There are some monsters that are best left alone.")
+                    }
                 }
             }
             2 -> {
                 chatPlayer(quiz, "Oh, no dragon in particular. I just feel like killing a dragon.")
-                if (player.dragonQuest >= 2) {
+                if (player.dragonQuest >= DRAGON_SLAYER_COMPLETE) {
                     chatNpc(
                         happy,
                         "Of course. Now you've slain Elvarg, you've earned the right to call the " +
@@ -293,5 +296,6 @@ constructor(
 
     private companion object {
         const val ANTI_DRAGON_SHIELD = "obj.antidragonbreathshield"
+        const val DRAGON_SLAYER_COMPLETE = 10
     }
 }

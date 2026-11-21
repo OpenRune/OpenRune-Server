@@ -101,5 +101,6 @@ internal fun BossHitType.toEngine(): HitType =
         BossHitType.Magic,
         BossHitType.Dragonfire,
         BossHitType.DragonfireMetal,
+        BossHitType.DragonfireElvarg,
         BossHitType.WyvernIce -> HitType.Magic
     }

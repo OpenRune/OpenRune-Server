@@ -7,7 +7,9 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
-import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.api.script.onOpLocU
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerQuest
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerQuest.Companion.MAGIC_DOOR_ITEMS
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
@@ -18,7 +20,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class DwarvenMineLocScript
 @Inject
-constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepository) : PluginScript() {
+constructor(
+    private val locRepo: LocRepository,
+    private val worldRepo: WorldRepository,
+    private val dragonSlayer: DragonSlayerQuest,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpLoc1("loc.stairs_falador") { useStairs(FALADOR_HOUSE) }
         onOpLoc1("loc.stairs_cellar") {
@@ -29,11 +35,17 @@ constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepo
 
         onOpLoc1("loc.dwarf_mines_sc_wall_crack") { squeezeThroughCrevice(it.loc) }
 
-        onOpLoc1("loc.dragon_slayer_qip_magic_door") { openMagicDoor(it.loc) }
+        onOpLoc1(MAGIC_DOOR) { openMagicDoor(it.loc) }
+        for (item in MAGIC_DOOR_ITEMS) {
+            onOpLocU(MAGIC_DOOR, item) { useOnMagicDoor(it.loc, item) }
+        }
 
         onOpLoc1("loc.oraclechestshut") { openOracleChest(it.loc) }
-        onOpLoc1("loc.oraclechestopen") { mes("You search the chest but find nothing.") }
-        onOpLoc2("loc.oraclechestopen") { locRepo.change(it.loc, "loc.oraclechestshut", CHEST_OPEN_CYCLES) }
+        onOpLoc1("loc.oraclechestopen") { searchOracleChest(it.loc) }
+        onOpLoc2("loc.oraclechestopen") {
+            arriveDelay()
+            shutOracleChest(it.loc, "You shut the chest.")
+        }
     }
 
     private suspend fun ProtectedAccess.useStairs(dest: CoordGrid) {
@@ -70,12 +82,24 @@ constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepo
         spam("You climb your way through the narrow crevice.")
     }
 
+    private suspend fun ProtectedAccess.useOnMagicDoor(door: BoundLocInfo, item: String) {
+        arriveDelay()
+        val opens = with(dragonSlayer) { putInMagicDoor(item) }
+        if (opens) {
+            passMagicDoor(door)
+        }
+    }
+
     private suspend fun ProtectedAccess.openMagicDoor(door: BoundLocInfo) {
         arriveDelay()
-        if (!QuestRequirements.hasCompleted(player, DRAGON_SLAYER)) {
+        if (!dragonSlayer.canPassMagicDoor(player)) {
             mes("There is something in this door for me to put objects in.")
             return
         }
+        passMagicDoor(door)
+    }
+
+    private suspend fun ProtectedAccess.passMagicDoor(door: BoundLocInfo) {
         val fromWest = coords.x < door.coords.x
         val centre = door.coords.translateZ(1)
         val approach = centre.translateX(if (fromWest) -1 else 1)
@@ -134,7 +158,22 @@ constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepo
         )
         anim("seq.human_openchest")
         soundSynth(CHEST_OPEN_SOUND)
+        delay(1)
         locRepo.change(chest, "loc.oraclechestopen", CHEST_OPEN_CYCLES)
+    }
+
+    private suspend fun ProtectedAccess.searchOracleChest(chest: BoundLocInfo) {
+        arriveDelay()
+        if (with(dragonSlayer) { searchThalzarChest() }) {
+            return
+        }
+        shutOracleChest(chest, "You find nothing in the chest.")
+    }
+
+    private fun ProtectedAccess.shutOracleChest(chest: BoundLocInfo, message: String) {
+        mes(message)
+        locRepo.change(chest, "loc.oraclechestshut", CHEST_OPEN_CYCLES)
+        soundSynth(CHEST_CLOSE_SOUND)
     }
 
     private companion object {
@@ -151,12 +190,13 @@ constructor(private val locRepo: LocRepository, private val worldRepo: WorldRepo
         const val FACE_WEST = 512
         const val FACE_EAST = 1536
 
-        const val DRAGON_SLAYER = "quest_dragonslayer1"
+        const val MAGIC_DOOR = "loc.dragon_slayer_qip_magic_door"
         const val MAGIC_DOOR_OPEN_CYCLES = 6
         const val PANEL_CYCLES = 3
         const val INVISIBLE_WALL = "loc.inviswall"
 
         const val CHEST_OPEN_SOUND = "synth.chest_open"
+        const val CHEST_CLOSE_SOUND = "synth.chest_close"
         const val CHEST_OPEN_CYCLES = 500
     }
 }

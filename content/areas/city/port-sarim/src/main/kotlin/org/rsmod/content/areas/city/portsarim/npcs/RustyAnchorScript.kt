@@ -1,13 +1,16 @@
 package org.rsmod.content.areas.city.portsarim.npcs
 
+import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.area.varrock.dragonslayer.DragonSlayerQuest
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class RustyAnchorScript : PluginScript() {
+class RustyAnchorScript @Inject constructor(private val dragonSlayer: DragonSlayerQuest) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.sarim_pub_sitting_patron") { startDialogue(it.npc) { ahab() } }
         onOpNpc1("npc.rustyanchor_bartender") { startDialogue(it.npc) { bartender() } }
@@ -21,6 +24,9 @@ class RustyAnchorScript : PluginScript() {
             val options = buildList {
                 if (!foundRedbeard()) add("I'm looking for Redbeard Frank." to AhabTopic.Redbeard)
                 add("Arrr!" to AhabTopic.Arrr)
+                if (dragonSlayer.isSeekingCrandor(player)) {
+                    add("Can you help me get to Crandor Island?" to AhabTopic.Crandor)
+                }
                 add("Are you going to sit there all day?" to AhabTopic.SitAllDay)
                 add("Do you want to trade?" to AhabTopic.Trade)
             }
@@ -31,6 +37,7 @@ class RustyAnchorScript : PluginScript() {
                     chatNpc(drunk, "Arrr, matey!")
                 }
                 AhabTopic.SitAllDay -> return ahabsShip()
+                AhabTopic.Crandor -> return ahabCrandor()
                 AhabTopic.Trade -> {
                     chatPlayer(quiz, "Do you have anything for trade?")
                     chatNpc(neutral, CUSTOMS_REPLY)
@@ -38,6 +45,22 @@ class RustyAnchorScript : PluginScript() {
                 }
             }
         }
+    }
+
+    private suspend fun Dialogue.ahabCrandor() {
+        chatPlayer(quiz, "Can you help me get to Crandor Island?")
+        chatNpc(drunk, "Arrr, matey, ye canna be serious! That be the home of Elvarg the Dragon!")
+        chatPlayer(
+            neutral,
+            "Yes, that's right. I 've got to go there and kill the dragon for this quest I'm doing.",
+        )
+        chatNpc(
+            sad,
+            "I canna help ye. And right sorry I be to see a fine young ${laddie()} like yerself go " +
+                "off to yer doom.",
+        )
+        chatPlayer(happy, "Thanks, but I'll be fine!")
+        chatNpc(drunk, "Arrr...")
     }
 
     private suspend fun Dialogue.ahabsShip() {
@@ -59,7 +82,7 @@ class RustyAnchorScript : PluginScript() {
             "Perhaps a $youngOne like yerself would like to help me? I be needing another ship " +
                 "to go a-hunting my enemy.",
         )
-        if (QuestRequirements.hasCompleted(player, DRAGON_SLAYER)) {
+        if (dragonSlayer.isComplete(player)) {
             chatPlayer(happy, "Well, I do have a ship that I'm not using. It's the Lady Lumbridge.")
             chatNpc(happy, "Arrr! That ship be known to me, and a fine lass she is.")
             chatPlayer(shifty, "I suppose she might be...")
@@ -129,6 +152,9 @@ class RustyAnchorScript : PluginScript() {
                 add("What are you doing here?" to DrinkerTopic.Doing)
             }
             add("Have you got any quests I could do?" to DrinkerTopic.Quests)
+            if (dragonSlayer.isSeekingCrandor(player)) {
+                add("Can you help me get to Crandor Island?" to DrinkerTopic.Crandor)
+            }
         }
         when (menu(options)) {
             DrinkerTopic.Redbeard -> lookingForRedbeard()
@@ -138,12 +164,48 @@ class RustyAnchorScript : PluginScript() {
                 chatPlayer(neutral, "Fair enough.")
             }
             DrinkerTopic.Name -> longbowBenStory()
+            DrinkerTopic.Crandor -> drinkerCrandor(name)
             DrinkerTopic.Quests -> {
                 chatPlayer(happy, "Have you got any quests I could do?")
                 chatNpc(sad, questHint())
                 chatPlayer(happy, "Thanks.")
             }
         }
+    }
+
+    private suspend fun Dialogue.drinkerCrandor(name: String) {
+        chatPlayer(quiz, "Can you help me get to Crandor Island?")
+        if (name == LONGBOW_BEN_NAME) {
+            chatNpc(
+                drunk,
+                "Arrr, ye may be wanting to go to Crandor Island now, but if ye gets there, ye'll be " +
+                    "a-wantin' to get off it again quickly enough!",
+            )
+            chatPlayer(quiz, "So that's a 'No', then?")
+            chatNpc(drunk, "Aye, ${laddie()}, that it is.")
+            chatPlayer(quiz, "Do you know anyone who would take me there?")
+            chatNpc(
+                drunk,
+                "There's only one sailor alive daft enough to go there. Old Ned, the ropemaker in " +
+                    "Draynor Village. I can't think of any other fools just now. Except for old " +
+                    "Jack Seagull there.",
+            )
+            chatNpcSpecific(JACK_SEAGULL_NAME, JACK_SEAGULL, angry, "Arrr, who are ye calling old?")
+        } else {
+            chatNpc(drunk, "Crandor Island, ye say?")
+            chatNpc(angry, "Arrr, keep yeself away from that accursed place if ye values yer skin!")
+            chatPlayer(quiz, "So that's a 'No', then?")
+            chatNpc(drunk, "Aye, that it be.")
+            chatPlayer(quiz, "Do you know anyone who would take me there?")
+            chatNpc(drunk, "No, I don't know many idiots. Except for young Ben there.")
+            chatNpcSpecific(
+                LONGBOW_BEN_NAME,
+                LONGBOW_BEN,
+                angry,
+                "Arrr, get away with ye, ye scurvy scallywag!",
+            )
+        }
+        chatPlayer(neutral, "Okay, thanks anyway.")
     }
 
     private suspend fun Dialogue.longbowBenStory() {
@@ -236,6 +298,7 @@ class RustyAnchorScript : PluginScript() {
         Arrr,
         SitAllDay,
         Trade,
+        Crandor,
     }
 
     private enum class DrinkerTopic {
@@ -243,6 +306,7 @@ class RustyAnchorScript : PluginScript() {
         Doing,
         Name,
         Quests,
+        Crandor,
     }
 
     private companion object {
@@ -253,7 +317,6 @@ class RustyAnchorScript : PluginScript() {
         const val BEER_PRICE = 2
         const val PIRATES_TREASURE = "quest_piratestreasure"
         const val GOBLIN_DIPLOMACY = "quest_goblindiplomacy"
-        const val DRAGON_SLAYER = "quest_dragonslayer1"
         const val CUSTOMS_REPLY =
             "Nothin' at the moment, but then again the Customs Agents are on the warpath right now."
     }

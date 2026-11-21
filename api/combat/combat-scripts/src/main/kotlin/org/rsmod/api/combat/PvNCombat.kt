@@ -322,7 +322,7 @@ constructor(
             return false
         }
 
-        val hasAttackOp = npc.visType.hasOp(InteractionOp.Op2.slot)
+        val hasAttackOp = npcVisType(npc).hasOp(InteractionOp.Op2.slot)
         if (!hasAttackOp) {
             mes("You can't attack this npc.")
             return false

@@ -353,6 +353,7 @@ enum class HitType {
     Magic,
     Dragonfire,
     DragonfireMetal,
+    DragonfireElvarg,
     WyvernIce,
     Typeless,
 }

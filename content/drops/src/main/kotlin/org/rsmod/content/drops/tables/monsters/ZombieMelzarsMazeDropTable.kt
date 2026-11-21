@@ -16,13 +16,23 @@ import org.rsmod.game.entity.Player
 @JvmField
 public val zombieMelzarsMazeDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tableIdentifier = "Zombie (Melzar's Maze) Drops",
-    npcs = npcs("npc.dragonslayer_zombie_1_key", "npc.dragonslayer_zombie_2"),
+    npcs = npcs("npc.dragonslayer_zombie_1_key"),
     guaranteed = rsPlayerGuaranteedTable {
-        "obj.bluekey" count 1 condition { player ->
-            // Drops Need Manual: Only dropped by one of the spawns.
-             true
-        }
+        "obj.bluekey" count 1
     },
+    tertiaries = rsPlayerTertiaryTable {
+        1 outOf 4 weight "obj.rag_zombie_bone" count 1 condition {
+            player -> player.isOnQuest("quest_ragandboneman2")
+        }
+        1 outOf 5000 weight "obj.champions_challenge_zombie" count 1
+    },
+)
+
+@field:RegisterDropTable
+@JvmField
+public val zombieMelzarsMazeDropTableNoKey: RSDropTable<Player, DropRollItem> = RSDropTable(
+    tableIdentifier = "Zombie (Melzar's Maze) Drops (no key)",
+    npcs = npcs("npc.dragonslayer_zombie_2"),
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 4 weight "obj.rag_zombie_bone" count 1 condition {
             player -> player.isOnQuest("quest_ragandboneman2")

@@ -14,13 +14,23 @@ import org.rsmod.game.entity.Player
 @JvmField
 public val skeletonMelzarsMazeDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tableIdentifier = "Skeleton (Melzar's Maze) Drops",
-    npcs = npcs("npc.dragonslayer_skeleton_1_key", "npc.dragonslayer_skeleton_2", "npc.dragonslayer_skeleton_3"),
+    npcs = npcs("npc.dragonslayer_skeleton_1_key"),
     guaranteed = rsPlayerGuaranteedTable {
-        "obj.yellowkey" count 1 condition { player ->
-            // Drops Need Manual: Only dropped by the skeleton with a round shield.
+        "obj.yellowkey" count 1
+    },
+    tertiaries = rsPlayerTertiaryTable {
+        1 outOf 5000 weight "obj.champions_challenge_skeleton" count 1 condition { player ->
+            // Drops Need Manual: Only dropped if access to Champions' Guild is available, and the Skeleton Champion hasn't been previously killed in the Champions' Challenge.
              true
         }
     },
+)
+
+@field:RegisterDropTable
+@JvmField
+public val skeletonMelzarsMazeDropTableNoKey: RSDropTable<Player, DropRollItem> = RSDropTable(
+    tableIdentifier = "Skeleton (Melzar's Maze) Drops (no key)",
+    npcs = npcs("npc.dragonslayer_skeleton_2", "npc.dragonslayer_skeleton_3"),
     tertiaries = rsPlayerTertiaryTable {
         1 outOf 5000 weight "obj.champions_challenge_skeleton" count 1 condition { player ->
             // Drops Need Manual: Only dropped if access to Champions' Guild is available, and the Skeleton Champion hasn't been previously killed in the Champions' Challenge.

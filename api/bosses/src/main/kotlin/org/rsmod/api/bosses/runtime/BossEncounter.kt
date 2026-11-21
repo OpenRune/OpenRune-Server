@@ -360,6 +360,7 @@ class BossEncounter(
             HitType.Magic,
             HitType.Dragonfire,
             HitType.DragonfireMetal,
+            HitType.DragonfireElvarg,
             HitType.WyvernIce -> vars[PROTECT_FROM_MAGIC] > 0
             HitType.Typeless -> false
         }
