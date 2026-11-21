@@ -8717,6 +8717,7 @@ inherit = "npc.jb_baby_dagganoth"
 [[npc]]
 id = "npc.dagcave_ranged_boss"
 inherit = "npc.dagcave_ranged_boss"
+respawnDir = "SouthWest"
 respawnRate = 150
 huntMode = 6
 huntRange = 7
@@ -8739,6 +8740,7 @@ wanderRange = 5
 [[npc]]
 id = "npc.dagcave_magic_boss"
 inherit = "npc.dagcave_magic_boss"
+respawnDir = "West"
 respawnRate = 150
 huntMode = 6
 huntRange = 7
@@ -8761,6 +8763,7 @@ wanderRange = 5
 [[npc]]
 id = "npc.dagcave_melee_boss"
 inherit = "npc.dagcave_melee_boss"
+respawnDir = "NorthWest"
 respawnRate = 150
 huntMode = 6
 huntRange = 5
@@ -8783,7 +8786,10 @@ wanderRange = 5
 [[npc]]
 id = "npc.dagannoth_weak_door_south"
 inherit = "npc.dagannoth_weak_door_south"
+respawnDir = "North"
 respawnRate = 50
+defaultMode = "None"
+wanderRange = 0
 [npc.params]
 "param.death_anim"="seq.weak_door_fall"
 "param.death_sound"="synth.dagganoth_pressure_door_fall"
@@ -8791,7 +8797,10 @@ respawnRate = 50
 [[npc]]
 id = "npc.dagannoth_weak_door_west"
 inherit = "npc.dagannoth_weak_door_west"
+respawnDir = "West"
 respawnRate = 50
+defaultMode = "None"
+wanderRange = 0
 [npc.params]
 "param.death_anim"="seq.weak_door_fall_west"
 "param.death_sound"="synth.dagganoth_pressure_door_fall"
@@ -8799,7 +8808,10 @@ respawnRate = 50
 [[npc]]
 id = "npc.dagannoth_weak_door_north"
 inherit = "npc.dagannoth_weak_door_north"
+respawnDir = "South"
 respawnRate = 50
+defaultMode = "None"
+wanderRange = 0
 [npc.params]
 "param.death_anim"="seq.weak_door_fall_north"
 "param.death_sound"="synth.dagganoth_pressure_door_fall"
@@ -11239,6 +11251,13 @@ inherit = "npc.dagannoth_rock_lobster_2x2"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=25
+
+[[npc]]
+id = "npc.dagannoth_rock_lobster_2x2_loc"
+inherit = "npc.dagannoth_rock_lobster_2x2_loc"
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
 
 [[npc]]
 id = "npc.battle_tortoise"
