@@ -527,6 +527,5 @@ constructor(
                 "Swab the deck!" to "Aye aye, cap'n!",
                 "Weigh the anchor!" to "It's too heavy, cap'n!",
             )
-
     }
 }
