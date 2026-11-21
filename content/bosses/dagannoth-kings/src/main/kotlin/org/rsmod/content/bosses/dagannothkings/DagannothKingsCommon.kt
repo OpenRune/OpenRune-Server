@@ -9,6 +9,10 @@ internal object DagannothKingsCommon {
     const val PRIME = "npc.dagcave_magic_boss"
     const val SUPREME = "npc.dagcave_ranged_boss"
 
+    val BOSS_IDS = setOf(REX, PRIME, SUPREME)
+    const val BONES = "obj.dagannoth_king_bones"
+    const val NOTED_BONES = "obj.cert_dagannoth_king_bones"
+
     const val ATTACK_RATE = 4
 
     const val REX_MAX_HIT = 26
@@ -38,7 +42,7 @@ internal object DagannothKingsCommon {
 
     val SUPREME_AREA =
         area(
-            TargetExpr.Offset(TargetExpr.CurrentTargetTile, -3, -3),
+            TargetExpr.Offset(TargetExpr.CurrentTargetTile, -2, -2),
             TargetExpr.Offset(TargetExpr.CurrentTargetTile, 3, 3),
         )
 

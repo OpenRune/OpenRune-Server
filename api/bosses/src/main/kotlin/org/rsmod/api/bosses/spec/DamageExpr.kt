@@ -33,4 +33,7 @@ enum class AccuracyKind {
 
     /** The npc's ranged attack roll against the target's magic defence roll. */
     MagicalRanged,
+
+    /** The npc's ranged attack roll against the target's ranged defence roll. */
+    Ranged,
 }

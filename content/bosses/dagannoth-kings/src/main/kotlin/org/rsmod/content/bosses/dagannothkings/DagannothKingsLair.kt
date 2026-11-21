@@ -18,11 +18,11 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
     override fun ScriptContext.startup() {
         onOpLoc1("loc.dagexp_bossroomladder_down") { descendLair(LAIR_ENTRY) }
         onOpLoc2("loc.dagexp_bossroomladder_down") { descendLair(SLAYER_LAIR_ENTRY) }
-        onOpLoc3("loc.dagexp_bossroomladder_down") { peek(normalLair = true) }
+        onOpLoc3("loc.dagexp_bossroomladder_down") { peekLadder() }
 
         onOpLoc1("loc.dagexp_bossroomladder_up") { ascendLair() }
 
-        onOpLoc1("loc.dk_peek_crack") { peek(normalLair = false) }
+        onOpLoc1("loc.dk_peek_crack") { peekCrack() }
 
         onOpLoc1("loc.dk_peek_root") { stepOver(it.loc.coords) }
     }
@@ -39,29 +39,35 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
         telejump(LAIR_EXIT)
     }
 
-    private fun ProtectedAccess.peek(normalLair: Boolean) {
-        val zone = ZoneKey.from(CoordGrid(2900, 4449, 0))
-        val count =
-            playerRepo
-                .findAll(zone, zoneRadius = 2)
-                .count {
-                    val coords = it.coords
-                    if (coords.x !in LAIR_X) return@count false
-                    if (normalLair) coords.z in NORMAL_LAIR_Z else coords.z in SLAYER_LAIR_Z
-                }
-        when (count) {
-            0 -> mes("You see nobody in the lair.")
-            1 -> mes("You see one adventurer in the lair.")
-            else -> mes("You see $count adventurers in the lair.")
-        }
+    private fun ProtectedAccess.peekLadder() {
+        mes("Standard cave: ${adventurers(countPlayers(NORMAL_LAIR_Z))}")
+        mes("Slayer cave: ${adventurers(countPlayers(SLAYER_LAIR_Z))}")
     }
+
+    private fun ProtectedAccess.peekCrack() {
+        mes("Standard cave: ${adventurers(countPlayers(NORMAL_LAIR_Z))}")
+    }
+
+    private fun countPlayers(zRange: IntRange): Int {
+        val zone = ZoneKey.from(CoordGrid(2900, 4449, 0))
+        return playerRepo
+            .findAll(zone, zoneRadius = 2)
+            .count { it.coords.x in LAIR_X && it.coords.z in zRange }
+    }
+
+    private fun adventurers(count: Int): String =
+        when (count) {
+            0 -> "No adventurers."
+            1 -> "1 adventurer."
+            else -> "$count adventurers."
+        }
 
     private suspend fun ProtectedAccess.stepOver(root: CoordGrid) {
         arriveDelay()
-        val east = root.translateX(1)
-        val west = root.translateX(-1)
-        val destination = if (coords.x < root.x) east else west
-        delay(1)
+        val destination =
+            if (coords.z >= root.z) root.translateZ(-1) else root.translateZ(1)
+        anim("seq.human_walk_style")
+        delay(2)
         telejump(destination)
     }
 

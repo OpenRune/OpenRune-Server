@@ -1068,6 +1068,8 @@ class EffectInterpreter internal constructor(
                 val landed =
                     if (expr.kind == AccuracyKind.MagicalRanged) {
                         deps.accuracy.rollMagicalRangedAccuracy(npc, t, deps.random)
+                    } else if (expr.kind == AccuracyKind.Ranged) {
+                        deps.accuracy.rollRangedAccuracy(npc, t, deps.random)
                     } else {
                         rollAccuracy(hitType, t, expr.meleeAttackType)
                     }

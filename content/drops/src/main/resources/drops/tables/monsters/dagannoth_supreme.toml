@@ -6,6 +6,12 @@ brimstone_key_roll = true
 obj = "obj.dagganoth_hide"
 count = 1
 
+[[guaranteed]]
+obj = "obj.rag_dagganoth_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
 [main]
 total = 128
 name = "Dagannoth Supreme Drops"
@@ -163,14 +169,6 @@ nothing = true
 
 [[tertiary]]
 numerator = 1
-denominator = 4
-obj = "obj.rag_dagganoth_bone"
-count = 1
-quest = "quest_ragandboneman2"
-quest_mode = "during"
-
-[[tertiary]]
-numerator = 1
 denominator = 20
 obj = "obj.arceuus_corpse_dagannoth"
 count = 1
@@ -183,14 +181,14 @@ count = 1
 
 [[tertiary]]
 numerator = 1
-denominator = 39
+denominator = 42
 obj = "obj.trail_clue_hard_map001"
 count = 1
 clue_scroll_box = true
 
 [[tertiary]]
 numerator = 1
-denominator = 712
+denominator = 750
 obj = "obj.trail_elite_emote_exp1"
 count = 1
 clue_scroll_box = true

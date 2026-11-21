@@ -55,6 +55,18 @@ object Music {
                 columnRSCM(1, "dbrow.music_restinpeace")
                 column(2, false)
             }
+
+            row("dbrow.music_modern_xenophobe") {
+                column(0, "xenophobe")
+                columnRSCM(1, "dbrow.music_xenophobe")
+                column(2, true)
+            }
+
+            row("dbrow.music_modern_dagannoth_dawn") {
+                column(0, "dagannoth_dawn")
+                columnRSCM(1, "dbrow.music_dagannoth_dawn")
+                column(2, true)
+            }
         }
 
     fun musicClassic() =

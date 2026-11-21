@@ -2,6 +2,7 @@ package org.rsmod.api.death
 
 import dev.openrune.types.ItemServerType
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
@@ -11,6 +12,8 @@ public data class NpcDeathDropContext(
     public val dropCoords: CoordGrid,
     public val duration: Int,
     public val objRepo: ObjRepository,
+    public val npc: Npc? = null,
+    public val lootTrackerEventId: Int = 0,
 )
 
 public fun interface NpcDeathDropHook {

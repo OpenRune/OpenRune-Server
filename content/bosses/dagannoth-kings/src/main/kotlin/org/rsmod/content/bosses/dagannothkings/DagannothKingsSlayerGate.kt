@@ -21,12 +21,7 @@ internal class DagannothKingsSlayerGate : NpcAttackValidateHook {
     }
 
     private companion object {
-        val BOSS_IDS =
-            setOf(
-                "npc.dagcave_melee_boss".asRSCM(RSCMType.NPC),
-                "npc.dagcave_magic_boss".asRSCM(RSCMType.NPC),
-                "npc.dagcave_ranged_boss".asRSCM(RSCMType.NPC),
-            )
+        val BOSS_IDS = DagannothKingsCommon.BOSS_IDS.map { it.asRSCM(RSCMType.NPC) }.toSet()
         val SLAYER_LAIR_Z = 4352..4415
     }
 }
