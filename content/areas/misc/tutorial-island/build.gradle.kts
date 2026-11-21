@@ -12,6 +12,7 @@ tasks.named<Test>("test") {
 dependencies {
     implementation(projects.api.attr)
     implementation(projects.api.pluginCommons)
+    implementation(projects.api.registry)
     implementation(projects.api.scriptAdvanced)
     implementation(projects.api.spells)
     implementation(projects.content.quest)

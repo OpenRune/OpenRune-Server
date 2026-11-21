@@ -36,6 +36,7 @@ constructor(
         player.tutorialFreeStuffCheck = 1
         player.hasDisplayNameTransmitter = true
         player.usedHomeTeleport = 1
+        player.runEnergy = 10_000
         invClear(inv)
         invClear(worn)
         val bank = player.invMap.getOrPut("inv.bank")

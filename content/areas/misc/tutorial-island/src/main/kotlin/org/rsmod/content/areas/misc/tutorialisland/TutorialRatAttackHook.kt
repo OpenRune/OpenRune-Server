@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.tutorialisland
 
 import jakarta.inject.Inject
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.death.NpcAttackType
 import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -14,7 +15,14 @@ constructor(
     private val guide: TutorialGuide,
     private val protectedAccess: ProtectedAccessLauncher,
 ) : NpcAttackValidateHook {
-    override fun validate(player: Player, npc: Npc): NpcAttackValidateResult {
+    override fun validate(player: Player, npc: Npc): NpcAttackValidateResult =
+        validate(player, npc, NpcAttackType.Melee)
+
+    override fun validate(
+        player: Player,
+        npc: Npc,
+        attackType: NpcAttackType,
+    ): NpcAttackValidateResult {
         if (!player.inTutorial) {
             return NpcAttackValidateResult.Pass
         }
@@ -24,6 +32,12 @@ constructor(
         if (isChicken) {
             if (player.tutorialStage >= TutorialStage.COMPLETE) {
                 return deny(player, "You've already done that.<br>Perhaps you should move on.")
+            }
+            if (attackType != NpcAttackType.Magic) {
+                return deny(
+                    player,
+                    "Cast the Wind Strike spell from your spellbook to fight the chicken.",
+                )
             }
             return NpcAttackValidateResult.Pass
         }
@@ -41,8 +55,6 @@ constructor(
                     player,
                     "You've already done that.<br>Perhaps you should move on to learn about ranged combat.",
                 )
-            TutorialStage.COMBAT_GUIDE_DONE ->
-                return deny(player, "You've already done that.<br>Perhaps you should move on.")
         }
         return NpcAttackValidateResult.Pass
     }

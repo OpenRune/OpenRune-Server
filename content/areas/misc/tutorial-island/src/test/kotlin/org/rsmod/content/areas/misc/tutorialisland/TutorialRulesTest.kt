@@ -136,6 +136,7 @@ class TutorialRulesTest {
             assertEquals(25, bank.count(TutorialObj.COINS))
             assertEquals(0, bank.count(TutorialObj.BREAD))
             assertEquals(0, bank.count("obj.shark"))
+            assertEquals(10_000, player.runEnergy)
             assertEquals(1, player.tutorialFreeStuffCheck)
         }
 

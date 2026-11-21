@@ -21,6 +21,7 @@ import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.player.ui.ifOpenOverlay
+import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onEvent
@@ -35,6 +36,7 @@ import org.rsmod.content.skills.mining.scripts.Mining.Companion.pickaxeAnim
 import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.axeWoodcuttingAnim
 import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.findAxe
 import org.rsmod.events.EventBus
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
@@ -43,6 +45,7 @@ import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
 import org.rsmod.game.map.collision.firstStepDestination
+import org.rsmod.game.obj.Obj
 import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
@@ -57,6 +60,8 @@ constructor(
     private val protectedAccess: ProtectedAccessLauncher,
     private val locRepo: LocRepository,
     private val npcRepo: NpcRepository,
+    private val objRegistry: ObjRegistry,
+    private val worldClock: MapClock,
     private val eventBus: EventBus,
 ) : PluginScript() {
 
@@ -498,6 +503,10 @@ constructor(
             FIRE_DURATION,
             LocAngle.West,
             LocShape.CentrepieceStraight,
+            onDespawn = {
+                val ashes = Obj.fromServer(worldClock, fireCoords, TutorialObj.ASHES, 1)
+                objRegistry.add(ashes)
+            },
         )
         tutorialStat("stat.firemaking", 40.0)
         TutorialHighlights.clearItems(player)
@@ -516,6 +525,7 @@ constructor(
         if (player.tutorialStage < TutorialStage.FIRE_LIT) {
             return
         }
+        val firstCook = player.tutorialStage == TutorialStage.FIRE_LIT
         mesOverlay("Your character is now attempting to cook some shrimp. This will only take a few seconds.")
         arriveDelay()
         anim("seq.human_firecooking")
@@ -525,17 +535,30 @@ constructor(
         if (invDel(inv, TutorialObj.RAW_SHRIMP, 1).failure) {
             return
         }
-        tutorialStat("stat.cooking", 30.0)
-        invAdd(inv, TutorialObj.SHRIMP, 1)
-        TutorialHighlights.clearItems(player)
-        guide.advance(player, TutorialStage.SHRIMP_COOKED)
-        objbox(TutorialObj.SHRIMP, "You manage to cook some shrimp.")
+        if (firstCook || !rollExtraCookBurn()) {
+            tutorialStat("stat.cooking", 30.0)
+            invAdd(inv, TutorialObj.SHRIMP, 1)
+            if (firstCook) {
+                TutorialHighlights.clearItems(player)
+                guide.advance(player, TutorialStage.SHRIMP_COOKED)
+            } else if (!player.inv.contains(TutorialObj.RAW_SHRIMP)) {
+                TutorialHighlights.clearItems(player)
+            }
+            objbox(TutorialObj.SHRIMP, "You manage to cook some shrimp.")
+        } else {
+            invAdd(inv, TutorialObj.BURNT_SHRIMP, 1)
+            if (!player.inv.contains(TutorialObj.RAW_SHRIMP)) {
+                TutorialHighlights.clearItems(player)
+            }
+            objbox(TutorialObj.BURNT_SHRIMP, "You accidently burn the shrimps.")
+        }
     }
 
     private suspend fun ProtectedAccess.bakeBread() {
         if (player.tutorialStage < TutorialStage.DOUGH_MADE) {
             return
         }
+        val firstBake = player.tutorialStage == TutorialStage.DOUGH_MADE
         mesOverlay("Your character is now attempting to bake some bread. This will only take a few seconds.")
         arriveDelay()
         anim("seq.human_cooking")
@@ -545,11 +568,21 @@ constructor(
         if (invDel(inv, TutorialObj.BREAD_DOUGH, 1).failure) {
             return
         }
-        tutorialStat("stat.cooking", 40.0)
-        invAdd(inv, TutorialObj.BREAD, 1)
-        guide.advance(player, TutorialStage.BREAD_BAKED)
-        objbox(TutorialObj.BREAD, "You manage to bake some bread.")
+        if (firstBake || !rollExtraCookBurn()) {
+            tutorialStat("stat.cooking", 40.0)
+            invAdd(inv, TutorialObj.BREAD, 1)
+            if (firstBake) {
+                guide.advance(player, TutorialStage.BREAD_BAKED)
+            }
+            objbox(TutorialObj.BREAD, "You manage to bake some bread.")
+        } else {
+            invAdd(inv, TutorialObj.BURNT_BREAD, 1)
+            objbox(TutorialObj.BURNT_BREAD, "You accidently burn the bread.")
+        }
     }
+
+    private fun ProtectedAccess.rollExtraCookBurn(): Boolean =
+        random.of(0, 99) < EXTRA_COOK_BURN_CHANCE
 
     private suspend fun ProtectedAccess.catchShrimp(spot: Npc) {
         if (player.tutorialStage < TutorialStage.INVENTORY_VIEWED) {
@@ -1527,6 +1560,15 @@ constructor(
     }
 
     private suspend fun Dialogue.replaceCombatItems() {
+        if (player.tutorialStage >= TutorialStage.DAGGER_SMITHED &&
+            !player.hasItem(TutorialObj.BRONZE_DAGGER) &&
+            access.giveTutorialItems(TutorialObj.BRONZE_DAGGER to 1)
+        ) {
+            objbox(
+                TutorialObj.BRONZE_DAGGER,
+                "The combat instructor gives you a <col=000080>bronze dagger<col=000000>.",
+            )
+        }
         when {
             player.tutorialStage in
                 (TutorialStage.COMBAT_GUIDE_SWORD + 1) until TutorialStage.RANGED_GIVEN ->
@@ -1999,6 +2041,7 @@ constructor(
 
     private companion object {
         private const val FIRE_DURATION = 150
+        private const val EXTRA_COOK_BURN_CHANCE = 50
         private const val DOOR_OPEN_TICKS = 3
         private const val DOOR_BLOCK_TICKS = 1
         private const val DOOR_SOUND = 62
