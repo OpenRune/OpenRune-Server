@@ -510,7 +510,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.lightFire() {
-        if (player.tutorialStage !in TutorialStage.LOGS_CUT until TutorialStage.SHRIMP_COOKED) {
+        if (!player.inTutorial || player.tutorialStage < TutorialStage.LOGS_CUT) {
             return
         }
         if (!player.inv.contains(TutorialObj.LOGS) ||
@@ -639,12 +639,14 @@ constructor(
             )
             return
         }
+        faceSquare(spot.coords)
+        anim("seq.human_smallnet")
+        mesOverlay(
+            "Your character is now attempting to catch some shrimp. Sit back for a moment " +
+                "while ${player.actionPronoun()} all the hard work.",
+        )
         clearWeakQueue(FISH_QUEUE)
-        if (isWithinDistance(spot, 1) && !player.hasMovedPreviousCycle) {
-            catchShrimpNow(spot)
-        } else {
-            weakQueue(FISH_QUEUE, 1, TutorialFishTask(spot, spot.uid))
-        }
+        weakQueue(FISH_QUEUE, 1, TutorialFishTask(spot, spot.uid))
     }
 
     private suspend fun ProtectedAccess.attemptTutorialCatch(task: TutorialFishTask) {
@@ -657,7 +659,7 @@ constructor(
         ) {
             return
         }
-        if (!isWithinDistance(task.npc, 1) || player.hasMovedPreviousCycle) {
+        if (!isWithinDistance(task.npc, FISH_MAX_RANGE) || player.hasMovedPreviousCycle) {
             if (task.ticks < MAX_FISH_ARRIVAL_TICKS) {
                 weakQueue(FISH_QUEUE, 1, task.copy(ticks = task.ticks + 1))
             }
@@ -669,10 +671,6 @@ constructor(
     private suspend fun ProtectedAccess.catchShrimpNow(spot: Npc) {
         faceSquare(spot.coords)
         anim("seq.human_smallnet")
-        mesOverlay(
-            "Your character is now attempting to catch some shrimp. Sit back for a moment " +
-                "while ${player.actionPronoun()} all the hard work.",
-        )
         delay(6)
         resetAnim()
         if (invAdd(inv, TutorialObj.RAW_SHRIMP, 1).failure) {
@@ -698,10 +696,6 @@ constructor(
                 "Your inventory is too full to hold any more logs.<br>" +
                     "To drop an item right-click on it and select drop.",
             )
-            return
-        }
-        if (inv.count(TutorialObj.LOGS) > 2) {
-            mesbox("Perhaps you've got enough logs for now.")
             return
         }
         val axe = findAxe(player, type)
@@ -2420,6 +2414,7 @@ constructor(
         private const val ACCOUNT_TAB = 8
         private const val FISH_QUEUE = "queue.tutorial_fishing"
         private const val MAX_FISH_ARRIVAL_TICKS = 30
+        private const val FISH_MAX_RANGE = 5
         private const val TREE_STUMP_TICKS = 16
         private const val ROCK_DEPLETED_TICKS = 10
         private val FIRE_WALK_DIRECTIONS =
