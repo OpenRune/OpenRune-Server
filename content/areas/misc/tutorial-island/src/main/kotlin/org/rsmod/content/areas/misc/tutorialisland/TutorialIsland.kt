@@ -473,7 +473,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.lightFire() {
-        if (player.tutorialStage != TutorialStage.LOGS_CUT) {
+        if (player.tutorialStage !in TutorialStage.LOGS_CUT until TutorialStage.SHRIMP_COOKED) {
             return
         }
         if (!player.inv.contains(TutorialObj.LOGS) ||
@@ -513,7 +513,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.cookShrimp() {
-        if (player.tutorialStage != TutorialStage.FIRE_LIT) {
+        if (player.tutorialStage < TutorialStage.FIRE_LIT) {
             return
         }
         mesOverlay("Your character is now attempting to cook some shrimp. This will only take a few seconds.")
@@ -533,7 +533,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.bakeBread() {
-        if (player.tutorialStage != TutorialStage.DOUGH_MADE) {
+        if (player.tutorialStage < TutorialStage.DOUGH_MADE) {
             return
         }
         mesOverlay("Your character is now attempting to bake some bread. This will only take a few seconds.")
@@ -552,10 +552,8 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.catchShrimp(spot: Npc) {
-        if (player.tutorialStage != TutorialStage.INVENTORY_VIEWED) {
-            if (player.tutorialStage < TutorialStage.INVENTORY_VIEWED) {
-                mes("You cannot fish here yet. You must progress further in the tutorial.")
-            }
+        if (player.tutorialStage < TutorialStage.INVENTORY_VIEWED) {
+            mes("You cannot fish here yet. You must progress further in the tutorial.")
             return
         }
         if (!player.inv.contains(TutorialObj.NET)) {
@@ -597,7 +595,7 @@ constructor(
             mesbox("You cannot cut down this tree yet.<br>You must progress further in the tutorial.")
             return
         }
-        if (player.tutorialStage > TutorialStage.LOGS_CUT) {
+        if (player.tutorialStage > TutorialStage.SHRIMP_COOKED) {
             mesbox("Perhaps you've done enough woodcutting now.")
             return
         }
@@ -652,7 +650,6 @@ constructor(
             type = type,
             ore = TutorialObj.TIN_ORE,
             oreName = "tin",
-            otherStage = TutorialStage.COPPER_MINED_FIRST,
             nextStage = nextStage,
         )
     }
@@ -669,7 +666,6 @@ constructor(
             type = type,
             ore = TutorialObj.COPPER_ORE,
             oreName = "copper",
-            otherStage = TutorialStage.TIN_MINED,
             nextStage = nextStage,
         )
     }
@@ -679,18 +675,13 @@ constructor(
         type: ObjectServerType,
         ore: String,
         oreName: String,
-        otherStage: Int,
         nextStage: Int,
     ) {
-        if (player.tutorialStage != TutorialStage.MINING_GUIDE_TALKED &&
-            player.tutorialStage != otherStage
-        ) {
-            if (player.tutorialStage < TutorialStage.MINING_GUIDE_TALKED) {
-                mesbox(
-                    "You are not ready to mine yet.<br>" +
-                        "Please follow the tutorial and you'll be mining in no time.",
-                )
-            }
+        if (player.tutorialStage < TutorialStage.MINING_GUIDE_TALKED) {
+            mesbox(
+                "You are not ready to mine yet.<br>" +
+                    "Please follow the tutorial and you'll be mining in no time.",
+            )
             return
         }
         val pickaxe = findPickaxe(player)
@@ -734,10 +725,8 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.smeltBar() {
-        if (player.tutorialStage != TutorialStage.COPPER_MINED) {
-            if (player.tutorialStage < TutorialStage.COPPER_MINED) {
-                mes("This is a furnace for smelting metal. You'll learn how to use it soon.")
-            }
+        if (player.tutorialStage < TutorialStage.MINING_GUIDE_TALKED) {
+            mes("This is a furnace for smelting metal. You'll learn how to use it soon.")
             return
         }
         if (!player.inv.contains(TutorialObj.TIN_ORE)) {
@@ -866,8 +855,10 @@ constructor(
                     )
                 }
             }
-            TutorialStage.SHRIMP_CAUGHT ->
+            TutorialStage.SHRIMP_CAUGHT -> {
+                replaceSurvivalItems()
                 chatNpc(neutral, "Hello again. You should take a look at that menu before we continue.")
+            }
             TutorialStage.SKILLS_VIEWED -> {
                 chatPlayer(happy, "I've managed to catch some shrimp.")
                 chatNpc(
@@ -875,71 +866,90 @@ constructor(
                     "Excellent work. Next you'll want to cook those shrimp. To do that, you'll " +
                         "need a fire. This brings us on to the Woodcutting and Firemaking skills.",
                 )
-                if (access.giveTutorialItems(TutorialObj.BRONZE_AXE to 1, TutorialObj.TINDERBOX to 1)) {
+                replaceSurvivalItems()
+                if (player.hasItem(TutorialObj.BRONZE_AXE) &&
+                    player.hasItem(TutorialObj.TINDERBOX)
+                ) {
                     guide.advance(player, TutorialStage.AXE_GIVEN)
-                    doubleobjbox(
-                        TutorialObj.BRONZE_AXE,
-                        TutorialObj.TINDERBOX,
-                        "The survival expert gives you a <col=000080>bronze axe<col=000000> and a " +
-                            "<col=000000><col=000080>tinderbox<col=000000>.",
-                    )
                 }
             }
             TutorialStage.AXE_GIVEN -> {
+                replaceSurvivalItems()
                 chatNpc(
                     happy,
                     "Next up you need to make a fire. First, you'll need to cut down a tree to get " +
                         "some logs.",
                 )
-                val missing =
-                    buildList {
-                        if (!player.inv.contains(TutorialObj.BRONZE_AXE)) {
-                            add(TutorialObj.BRONZE_AXE to 1)
-                        }
-                        if (!player.inv.contains(TutorialObj.TINDERBOX)) {
-                            add(TutorialObj.TINDERBOX to 1)
-                        }
-                    }
-                if (missing.isNotEmpty() && access.giveTutorialItems(*missing.toTypedArray())) {
-                    val axe = missing.any { it.first == TutorialObj.BRONZE_AXE }
-                    val tinderbox = missing.any { it.first == TutorialObj.TINDERBOX }
-                    when {
-                        axe && tinderbox ->
-                            doubleobjbox(
-                                TutorialObj.BRONZE_AXE,
-                                TutorialObj.TINDERBOX,
-                                "The survival expert gives you a <col=000080>bronze axe" +
-                                    "<col=000000> and a <col=000000><col=000080>tinderbox" +
-                                    "<col=000000>.",
-                            )
-                        axe ->
-                            objbox(
-                                TutorialObj.BRONZE_AXE,
-                                "The survival expert gives you a <col=000080>bronze axe" +
-                                    "<col=000000>.",
-                            )
-                        tinderbox ->
-                            objbox(
-                                TutorialObj.TINDERBOX,
-                                "The survival expert gives you a <col=000080>tinderbox" +
-                                    "<col=000000>.",
-                            )
-                    }
-                }
             }
-            TutorialStage.LOGS_CUT ->
+            TutorialStage.LOGS_CUT -> {
+                replaceSurvivalItems()
                 chatNpc(
                     happy,
                     "Now that you have some shrimp, you're going to want to cook them. To do " +
                         "that, you'll need a fire.",
                 )
-            TutorialStage.FIRE_LIT ->
+            }
+            TutorialStage.FIRE_LIT -> {
+                replaceSurvivalItems()
                 chatNpc(
                     happy,
                     "Now that you have some shrimp, you're going to want to cook them. All you " +
                         "need to do is use them on a fire.",
                 )
-            else -> survivalRecap()
+            }
+            else -> {
+                replaceSurvivalItems()
+                survivalRecap()
+            }
+        }
+    }
+
+    private suspend fun Dialogue.replaceSurvivalItems() {
+        val missing =
+            buildList {
+                if (player.tutorialStage >= TutorialStage.NET_GIVEN &&
+                    !player.hasItem(TutorialObj.NET)
+                ) {
+                    add(TutorialObj.NET to 1)
+                }
+                if (player.tutorialStage >= TutorialStage.SKILLS_VIEWED) {
+                    if (!player.hasItem(TutorialObj.BRONZE_AXE)) {
+                        add(TutorialObj.BRONZE_AXE to 1)
+                    }
+                    if (!player.hasItem(TutorialObj.TINDERBOX)) {
+                        add(TutorialObj.TINDERBOX to 1)
+                    }
+                }
+            }
+        if (missing.isEmpty() || !access.giveTutorialItems(*missing.toTypedArray())) {
+            return
+        }
+        val axe = missing.any { it.first == TutorialObj.BRONZE_AXE }
+        val tinderbox = missing.any { it.first == TutorialObj.TINDERBOX }
+        when {
+            axe && tinderbox ->
+                doubleobjbox(
+                    TutorialObj.BRONZE_AXE,
+                    TutorialObj.TINDERBOX,
+                    "The survival expert gives you a <col=000080>bronze axe<col=000000> and a " +
+                        "<col=000000><col=000080>tinderbox<col=000000>.",
+                )
+            axe ->
+                objbox(
+                    TutorialObj.BRONZE_AXE,
+                    "The survival expert gives you a <col=000080>bronze axe<col=000000>.",
+                )
+            tinderbox ->
+                objbox(
+                    TutorialObj.TINDERBOX,
+                    "The survival expert gives you a <col=000080>tinderbox<col=000000>.",
+                )
+        }
+        if (missing.any { it.first == TutorialObj.NET }) {
+            objbox(
+                TutorialObj.NET,
+                "The survival expert gives you a <col=000080>small fishing net<col=000000>.",
+            )
         }
     }
 
@@ -1288,6 +1298,7 @@ constructor(
     }
 
     private suspend fun Dialogue.miningInstructor() {
+        replaceMiningItems()
         when (player.tutorialStage) {
             TutorialStage.LADDER_DOWN -> {
                 guide.advance(player, TutorialStage.MINING_GUIDE_GREETED)
@@ -1344,6 +1355,46 @@ constructor(
                 }
             }
             else -> miningRecap()
+        }
+    }
+
+    private suspend fun Dialogue.replaceMiningItems() {
+        val missing =
+            buildList {
+                if (player.tutorialStage >= TutorialStage.MINING_GUIDE_TALKED &&
+                    !player.hasItem(TutorialObj.BRONZE_PICKAXE)
+                ) {
+                    add(TutorialObj.BRONZE_PICKAXE to 1)
+                }
+                if (player.tutorialStage >= TutorialStage.MINING_GUIDE_BAR &&
+                    !player.hasItem(TutorialObj.HAMMER)
+                ) {
+                    add(TutorialObj.HAMMER to 1)
+                }
+            }
+        if (missing.isEmpty() || !access.giveTutorialItems(*missing.toTypedArray())) {
+            return
+        }
+        val pickaxe = missing.any { it.first == TutorialObj.BRONZE_PICKAXE }
+        val hammer = missing.any { it.first == TutorialObj.HAMMER }
+        when {
+            pickaxe && hammer ->
+                doubleobjbox(
+                    TutorialObj.BRONZE_PICKAXE,
+                    TutorialObj.HAMMER,
+                    "The mining instructor gives you a <col=000080>bronze pickaxe<col=000000> " +
+                        "and a <col=000080>hammer<col=000000>.",
+                )
+            pickaxe ->
+                objbox(
+                    TutorialObj.BRONZE_PICKAXE,
+                    "The mining instructor gives you a <col=000080>bronze pickaxe<col=000000>.",
+                )
+            hammer ->
+                objbox(
+                    TutorialObj.HAMMER,
+                    "The mining instructor gives you a <col=000080>hammer<col=000000>.",
+                )
         }
     }
 
@@ -1404,6 +1455,7 @@ constructor(
     }
 
     private suspend fun Dialogue.combatInstructor() {
+        replaceCombatItems()
         when (player.tutorialStage) {
             TutorialStage.COMBAT_GATE -> {
                 chatPlayer(happy, "Hi! My name's ${player.displayName}.")
@@ -1471,6 +1523,15 @@ constructor(
                 giveRangedGear()
             }
             else -> combatRecap()
+        }
+    }
+
+    private suspend fun Dialogue.replaceCombatItems() {
+        when {
+            player.tutorialStage in
+                (TutorialStage.COMBAT_GUIDE_SWORD + 1) until TutorialStage.RANGED_GIVEN ->
+                giveCombatGear()
+            player.tutorialStage > TutorialStage.RANGED_GIVEN -> giveRangedGear()
         }
     }
 
