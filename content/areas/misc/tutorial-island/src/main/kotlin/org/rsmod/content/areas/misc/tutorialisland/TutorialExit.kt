@@ -32,7 +32,7 @@ constructor(
             quest.completeQuest(this)
         }
         player.tutorialStage = TutorialStage.LEFT_ISLAND
-        TutorialTabs.unlockAll(player)
+        TutorialTabs.unlockAll(player, eventBus)
         player.tutorialFreeStuffCheck = 1
         player.hasDisplayNameTransmitter = true
         player.usedHomeTeleport = 1

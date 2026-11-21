@@ -34,7 +34,7 @@ constructor(
     fun apply(player: Player, stage: Int) {
         progress(stage)?.let { player.tutorialOverlayProgress = it }
         player.flashSide = FLASH_SIDE[stage] ?: 0
-        TutorialTabs.sync(player)
+        TutorialTabs.sync(player, eventBus)
         show(player, stage)
     }
 

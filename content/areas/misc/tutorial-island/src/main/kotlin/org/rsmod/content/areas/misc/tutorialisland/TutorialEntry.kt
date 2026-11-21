@@ -176,7 +176,7 @@ constructor(
         if (player.tutorialStage >= TutorialStage.COMPLETE && player.vars["varp.qp"] == 0) {
             player.repairQuestCompletion()
         }
-        TutorialTabs.sync(player)
+        TutorialTabs.sync(player, eventBus)
         if (!player.inTutorial) {
             return
         }
