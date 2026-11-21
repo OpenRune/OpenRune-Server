@@ -29,6 +29,8 @@ class WaterbirthDungeon @Inject constructor() : PluginScript() {
 
         onOpLoc1("loc.dagannoth_crevice") { squeezeThrough(it.loc.coords) }
 
+        onOpLoc1("loc.dagexp_exit_ladder") { enter(LIGHTHOUSE_EXIT) }
+
         onOpLoc1("loc.dagannoth_ladder_base_ext2") { enter(DUNGEON_ENTRY) }
         onOpLoc2("loc.dagannoth_ladder_base_ext2") { enter(ASKELADDEN_EXIT) }
         onOpLoc3("loc.dagannoth_ladder_base_ext2") { enter(DUNGEON_ENTRY) }
@@ -72,6 +74,7 @@ class WaterbirthDungeon @Inject constructor() : PluginScript() {
         val LADDER_ROOM = CoordGrid(2545, 10143, 0)
 
         val DUNGEON_ENTRY = CoordGrid(1799, 4406, 3)
+        val LIGHTHOUSE_EXIT = CoordGrid(2515, 10007, 0)
 
         const val CREVICE_AGILITY = 81
         val CREVICE_DOWN = CoordGrid(1862, 4406, 1)
