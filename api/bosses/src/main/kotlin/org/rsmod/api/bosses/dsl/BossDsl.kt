@@ -430,12 +430,24 @@ class AbilityBuilder {
         effects += Effect.TransitionTo(phase.name)
     }
 
-    fun poison(damage: Int, chance: Int = 1, outOf: Int = 1) {
-        effects += Effect.Poison(damage, chance, outOf)
+    fun poison(damage: Int = 0, chance: Int = 1, outOf: Int = 1, severity: Int = 0) {
+        effects +=
+            Effect.Poison(
+                damage = damage,
+                chance = chance,
+                outOf = outOf,
+                severity = severity,
+            )
     }
 
-    fun poison(damage: Int, odds: Odds) {
-        effects += Effect.Poison(damage, odds.chance, odds.outOf)
+    fun poison(damage: Int = 0, odds: Odds, severity: Int = 0) {
+        effects +=
+            Effect.Poison(
+                damage = damage,
+                chance = odds.chance,
+                outOf = odds.outOf,
+                severity = severity,
+            )
     }
 
     fun venom(chance: Int = 1, outOf: Int = 1) {

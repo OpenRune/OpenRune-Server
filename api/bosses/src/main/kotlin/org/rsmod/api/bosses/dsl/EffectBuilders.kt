@@ -357,9 +357,11 @@ fun lastAbility(ability: AbilityRef): Condition = Condition.LastAbility(ability.
 operator fun Condition.not(): Condition = Condition.Not(this)
 
 fun transmog(to: String, durationTicks: Int): Effect = Effect.Transmog(to, durationTicks)
-fun poison(damage: Int, chance: Int = 1, outOf: Int = 1): Effect = Effect.Poison(damage, chance, outOf)
+fun poison(damage: Int = 0, chance: Int = 1, outOf: Int = 1, severity: Int = 0): Effect =
+    Effect.Poison(damage = damage, chance = chance, outOf = outOf, severity = severity)
 
-fun poison(damage: Int, odds: Odds): Effect = Effect.Poison(damage, odds.chance, odds.outOf)
+fun poison(damage: Int = 0, odds: Odds, severity: Int = 0): Effect =
+    Effect.Poison(damage = damage, chance = odds.chance, outOf = odds.outOf, severity = severity)
 
 fun venom(chance: Int = 1, outOf: Int = 1): Effect = Effect.Venom(chance, outOf)
 

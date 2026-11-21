@@ -807,8 +807,13 @@ class EffectInterpreter internal constructor(
         }
 
     private fun applyPoison(effect: Effect.Poison) {
-        if (deps.random.of(effect.outOf) < effect.chance) {
-            CombatEffects.poison(target, effect.damage)
+        if (deps.random.of(effect.outOf) >= effect.chance) {
+            return
+        }
+        when {
+            effect.severity > 0 -> CombatEffects.poison(target, severity = effect.severity)
+            effect.damage > 0 -> CombatEffects.poison(target, damage = effect.damage)
+            else -> CombatEffects.poisonFromNpc(target, npc)
         }
     }
 

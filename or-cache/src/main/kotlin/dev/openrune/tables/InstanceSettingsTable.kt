@@ -60,6 +60,24 @@ object InstanceSettingsTable {
             columnRSCM(EXIT_OBJECT, "loc.rat_boss_exit")
         }
 
+        row("dbrow.instance_bryophyta") {
+            column(KEY, "bryophyta")
+            columnCoord(EXIT_COORD, CoordGrid(3174, 9900))
+            columnCoord(ENTER_COORD, CoordGrid(3214, 9937))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.gb_mossgiant")
+            column(BOSS_NAME, "Bryophyta")
+            column(RECOMMENDED_COMBAT, 50, 80)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "The Moss Giantess in her lair beneath Varrock.")
+            columnRSCM(ENTER_OBJECT, "loc.gb_moss_door_in")
+            columnRSCM(EXIT_OBJECT, "loc.gb_moss_caverock_exit")
+        }
+
         row("dbrow.instance_kbd") {
             column(KEY, "kbd")
             columnCoord(EXIT_COORD, CoordGrid(0, 47, 160, 59, 14))
