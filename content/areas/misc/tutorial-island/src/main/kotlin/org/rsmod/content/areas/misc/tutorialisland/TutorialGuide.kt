@@ -48,8 +48,10 @@ constructor(
         val hint = HINTS[stage] ?: return
         player.openMesOverlay()
         player.runClientScript(MESOVERLAY, hint.text ?: " ")
-        hint.hintId?.let { id ->
-            player.runClientScript(OVERLAY_HINT, id)
+        if (hint.hintId != null) {
+            player.runClientScript(OVERLAY_HINT, hint.hintId)
+        } else {
+            player.ifSetHide("component.tutorial_overlay:hint_layer", true)
         }
         clearArrow(player)
         when (val arrow = hint.arrow) {
@@ -79,7 +81,6 @@ constructor(
     fun clearArrow(player: Player) {
         MiscOutput.hintArrowReset(player)
         player.currentHintArrow = 0
-        player.ifSetHide("component.tutorial_overlay:hint_layer", true)
     }
 
     fun showSmithingMenuOpened(player: Player) {
@@ -208,6 +209,7 @@ constructor(
                             "<col=0000ff>Getting started</col><br>When you're ready to get " +
                                 "started, click on the Gielinor Guide. He is indicated by a " +
                                 "flashing yellow arrow.",
+                        hintId = 4,
                         arrow = Arrow.Npc(TutorialNpc.GIELINOR_GUIDE, CoordGrid(3096, 3107, 0)),
                     ),
                 TutorialStage.SETTINGS_REQUESTED to
@@ -355,6 +357,7 @@ constructor(
                                 "able to make other things like pies and cakes. You can now use " +
                                 "the next door to move on. If you need a recap on anything, talk " +
                                 "to the master chef.",
+                        hintId = 21,
                         arrow = Arrow.Tile(CoordGrid(3072, 3090, 0), 128),
                     ),
                 TutorialStage.QUEST_HOUSE_ENTERED to
@@ -365,7 +368,6 @@ constructor(
                                 "long as you'll soon run out of energy. You can use the flashing " +
                                 "orb next to the minimap to toggle running. Why not try it as you " +
                                 "head to the next section?",
-                        hintId = 21,
                         arrow = Arrow.Tile(CoordGrid(3086, 3126, 0), 128),
                     ),
                 TutorialStage.QUEST_HOUSE_INSIDE to
@@ -420,6 +422,7 @@ constructor(
                             "<col=0000ff>Mining</col><br>Now that you have some tin ore, you " +
                                 "just need some copper. To mine a rock, all you need to do is " +
                                 "click on it.",
+                        hintId = 12,
                         arrow = Arrow.Tile(CoordGrid(3083, 9501, 0), 45),
                     ),
                 TutorialStage.COPPER_MINED to
@@ -543,6 +546,7 @@ constructor(
                             "<col=0000ff>Attacking</col><br>It's time to slay some rats! To " +
                                 "attack a rat, all you have to do is click on it. This will " +
                                 "cause you to walk over and start hitting it.",
+                        hintId = 15,
                         arrow = Arrow.Npc(TutorialNpc.GIANT_RAT, CoordGrid(3108, 9519, 0)),
                     ),
                 TutorialStage.RAT_ENGAGED to
@@ -718,6 +722,7 @@ constructor(
                                 "the better you'll get. Let's try again. Click on the spell to " +
                                 "select it and then click on a chicken to cast it. Talk to the " +
                                 "instructor if you need more runes.",
+                        hintId = 19,
                     ),
                 TutorialStage.WIND_STRIKE_RESOLVED to
                     Hint(
