@@ -20,9 +20,7 @@ import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
-import org.rsmod.api.script.advanced.onApPlayer1
 import org.rsmod.api.script.advanced.onApPlayer2
-import org.rsmod.api.script.advanced.onOpPlayer1
 import org.rsmod.api.script.advanced.onOpPlayer2
 import org.rsmod.api.script.onApPlayerT
 import org.rsmod.api.script.onEvent
@@ -49,9 +47,7 @@ constructor(
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onEvent<PlayerHitpointsChangedEvent> { pjTimer.onHitpointsChanged(this) }
-        onApPlayer1 { attemptCombatAp(it.target) }
         onApPlayer2 { attemptCombatAp(it.target) }
-        onOpPlayer1 { attemptCombatOp(it.target) }
         onOpPlayer2 { attemptCombatOp(it.target) }
         for (spell in spells.combatSpells()) {
             onApPlayerT(spell.component) { attemptCombatSpell(it.target, spell) }
