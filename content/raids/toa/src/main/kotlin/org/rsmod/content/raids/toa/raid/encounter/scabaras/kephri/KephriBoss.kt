@@ -322,7 +322,7 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             }
         val firstOnTile =
             targetCondition<KephriEncounter> { room, player ->
-                room.targets().first { it.coords == player.coords } === player
+                room.targets().firstOrNull { it.coords == player.coords } === player
             }
 
         fun flightSteps(steps: Int) =

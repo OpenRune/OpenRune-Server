@@ -2,6 +2,7 @@ package org.rsmod.content.raids.toa.raid.encounter.wardens
 
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 import org.rsmod.api.table.ToaWardensSlamsRow
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
@@ -51,11 +52,13 @@ internal class WardensSlams(private val room: WardensSecondEncounter) {
         val row = tiles.getOrPut(slam) { ToaWardensSlamsRow.getRow(slam.row).tiles }
         val kinds = variants.getOrPut(slam) { ToaWardensSlamsRow.getRow(slam.row).variants }
         val struck = HashMap<Int, MutableSet<CoordGrid>>()
+        val speed = room.slamRate
         for ((index, tile) in row.withIndex()) {
             val coords = room.coords(tile)
-            val delay = delay(tile)
+            val delay = delay(tile, speed, centre = slam == WardenSlam.BOTH)
+            val damageTick = Math.ceilDiv(delay, CYCLES_PER_TICK)
             deps.worldRepo.spotanimMap(spotanim(VARIANTS[kinds[index]]), coords, delay = delay)
-            struck.getOrPut(Math.ceilDiv(delay, CYCLES_PER_TICK)) { HashSet() } += coords
+            struck.getOrPut(damageTick) { HashSet() } += coords
         }
         for ((ticks, set) in struck) room.schedule(ticks) { damage(set) }
     }
@@ -75,8 +78,20 @@ internal class WardensSlams(private val room: WardensSecondEncounter) {
         for ((ticks, set) in struck) room.schedule(ticks) { damage(set, damage, 0) }
     }
 
-    private fun delay(tile: CoordGrid): Int =
-        BASE_DELAY + STEP_DELAY * max(abs(tile.x - ORIGIN.x), abs(tile.z - ORIGIN.z))
+    private fun distance(tile: CoordGrid): Int =
+        max(abs(tile.x - ORIGIN.x), abs(tile.z - ORIGIN.z))
+
+    /**
+     * Client cycles until a slam tile's graphic and damage. The lead scales with the slam interval
+     * (`speed * 10` cycles, plus [STEP_DELAY] per tile) and is capped at one cycle short of the next
+     * slam (`speed * 30 - 1`), so the whole wave lands within its own interval: the damage tick is
+     * never later than [speed]. The centre (double) slam gives 6 cycles less warning.
+     */
+    private fun delay(tile: CoordGrid, speed: Int, centre: Boolean): Int {
+        var delay = speed * LEAD_PER_TICK + STEP_DELAY * distance(tile)
+        if (centre) delay -= CENTRE_REDUCTION
+        return min(delay, speed * CYCLES_PER_TICK - 1)
+    }
 
     private fun damage(tiles: Set<CoordGrid>, base: Int = DAMAGE, spread: Int = DAMAGE_SPREAD) {
         for (player in room.targets()) {
@@ -98,7 +113,8 @@ internal class WardensSlams(private val room: WardensSecondEncounter) {
         val FLOOR_X = 3926..3946
         val FLOOR_Z = 5157..5165
         const val FLOOR_BASE_DELAY = 30
-        const val BASE_DELAY = 90
+        const val LEAD_PER_TICK = 10
+        const val CENTRE_REDUCTION = 6
         const val STEP_DELAY = 6
         const val CYCLES_PER_TICK = 30
         const val DAMAGE = 18
