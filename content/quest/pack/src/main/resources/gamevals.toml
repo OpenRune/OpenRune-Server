@@ -14,6 +14,7 @@ vampyre_slayer_state = 64600
 demon_slayer_state = 64610
 demon_slayer_return_tile = 64611
 pirates_treasure_state = 64620
+shield_of_arrav_state = 64630
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -53,6 +54,7 @@ pirates_treasure_chest_opened = 64625
 pirates_treasure_gardener = 64626
 pirates_treasure_progress = 64627
 pirates_treasure_rum_retrieved = 64628
+notarrav_call_wait = 64630
 
 [gamevals.bas]
 waterfall_wading = 1
@@ -122,3 +124,12 @@ pmoon_ruins_ancient_prison = 32449
 pmoon_ruins_earthbound_cavern = 32450
 pmoon_ruins_streambound_cavern = 32451
 pmoon_ruins_vault = 32452
+
+[gamevals.npc]
+notarrav = 64630
+notarrav_blackarm = 64631
+notarrav_phoenix = 64632
+notarrav_blackarm_museum = 64633
+
+[gamevals.loc]
+phoenixdoor_open = 64630

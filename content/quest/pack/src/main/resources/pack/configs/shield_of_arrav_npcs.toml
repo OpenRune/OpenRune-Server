@@ -1,0 +1,58 @@
+[[npc]]
+isServerOnly = true
+id = "npc.weaponsmaster"
+inherit = "npc.weaponsmaster"
+[npc.params]
+"param.attack_anim" = "seq.human_sword_slash"
+"param.defend_anim" = "seq.human_sword_def"
+"param.death_anim" = "seq.human_death"
+"param.attackrate" = 5
+
+[[npc]]
+id = "npc.notarrav"
+inherit = "npc.coa_arrav_vis"
+name = "NotArrav"
+combatLevel = 0
+models = [50175, 44180]
+chatheadModels = [50581, 20828]
+examine = "Definitely not Arrav. Just a man in glasses and a moustache."
+wanderRange = 1
+
+[[npc]]
+id = "npc.notarrav_blackarm"
+inherit = "npc.coa_arrav_vis"
+name = "NotArrav"
+combatLevel = 0
+# The last entry is the fallback for every higher value.
+multiVarp = "varp.blackarmgang"
+transforms = [-1, -1, "npc.notarrav", -1]
+multiDefault = -1
+wanderRange = 1
+timer = 3
+
+[[npc]]
+id = "npc.notarrav_blackarm_museum"
+inherit = "npc.coa_arrav_vis"
+name = "NotArrav"
+combatLevel = 0
+multiVarp = "varp.blackarmgang"
+transforms = [-1, -1, -1, "npc.notarrav", -1]
+multiDefault = -1
+wanderRange = 1
+timer = 3
+
+[[npc]]
+id = "npc.notarrav_phoenix"
+inherit = "npc.coa_arrav_vis"
+name = "NotArrav"
+combatLevel = 0
+multiVarp = "varp.phoenixgang"
+transforms = [-1, -1, -1, -1, -1, -1, -1, -1, -1, "npc.notarrav", -1]
+multiDefault = -1
+wanderRange = 1
+timer = 3
+
+
+[[object]]
+id = "loc.phoenixdoor_open"
+inherit = "loc.phoenixdoor2"
