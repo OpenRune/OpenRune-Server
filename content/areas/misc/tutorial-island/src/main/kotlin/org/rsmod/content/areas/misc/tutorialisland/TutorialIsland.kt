@@ -12,6 +12,7 @@ import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.ironman.isAnyIronman
+import org.rsmod.api.player.output.ClientScripts.toplevelSidebuttonSwitch
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -19,6 +20,7 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.protect.forcedWalk
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.statAdvance
+import org.rsmod.api.player.subjectPronoun
 import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.registry.obj.ObjRegistry
@@ -170,30 +172,23 @@ constructor(
                 TutorialStage.QUEST_GUIDE_DONE,
                 TutorialStage.LADDER_DOWN,
                 "I don't think you're ready to go down there yet.",
+                TutorialNpc.QUEST_GUIDE,
+                down = true,
             )
         }
         onOpLoc1(TutorialLoc.LADDER_DOWN_2) {
-            climb(
-                CoordGrid(3111, 9526, 0),
-                TutorialStage.QUEST_GUIDE_DONE,
-                TutorialStage.LADDER_DOWN,
-                "I don't think you're ready to go down there yet.",
-            )
+            climbFree(CoordGrid(3111, 9531, 0), down = true)
         }
         onOpLoc1(TutorialLoc.LADDER_UP) {
-            climb(
-                CoordGrid(3088, 3120, 0),
-                TutorialStage.COMBAT_GUIDE_DONE,
-                TutorialStage.LADDER_UP,
-                "You need to finish the combat tutorial first.",
-            )
+            climbFree(CoordGrid(3088, 3120, 0), down = false)
         }
         onOpLoc1(TutorialLoc.LADDER_UP_2) {
             climb(
                 CoordGrid(3111, 3125, 0),
                 TutorialStage.COMBAT_GUIDE_DONE,
                 TutorialStage.LADDER_UP,
-                "You need to finish the combat tutorial first.",
+                "You're not ready to continue yet. You need to know about combat before you go on.",
+                TutorialNpc.COMBAT_INSTRUCTOR,
             )
         }
         onOpLoc1(TutorialLoc.COMBAT_GATE_LEFT) {
@@ -224,6 +219,10 @@ constructor(
             player.ifOpenMainSidePair("interface.bankmain", "interface.bankside", -1, -2, eventBus)
         }
         onOpLoc1(TutorialLoc.POLL_BOOTH) {
+            if (player.tutorialStage < TutorialStage.BANK_OPENED) {
+                mes("You can come back to this when you've learnt about the bank.")
+                return@onOpLoc1
+            }
             if (player.tutorialStage == TutorialStage.BANK_OPENED) {
                 mesbox(
                     "Poll booths are found in towns across the world. The Old School RuneScape " +
@@ -309,18 +308,39 @@ constructor(
         from: Int,
         to: Int,
         denial: String,
+        denialNpc: String,
+        down: Boolean = false,
     ) {
         if (player.tutorialStage < from) {
-            mesbox(denial)
+            sayNpc(denialNpc, denial)
             return
         }
-        if (player.tutorialStage != from) {
-            return
+        climbTo(destination, down)
+        if (player.tutorialStage == from) {
+            guide.advance(player, to)
         }
-        anim("seq.human_reachforladder")
+    }
+
+    private suspend fun ProtectedAccess.climbFree(destination: CoordGrid, down: Boolean) {
+        climbTo(destination, down)
+    }
+
+    private suspend fun ProtectedAccess.climbTo(destination: CoordGrid, down: Boolean) {
+        anim(if (down) "seq.human_pickupfloor" else "seq.human_reachforladder")
         delay(1)
         telejump(destination, TeleportType.Exempt)
-        guide.advance(player, to)
+    }
+
+    private suspend fun ProtectedAccess.sayNpc(npcName: String, line: String) {
+        val npc =
+            npcRepo.findAll(ZoneKey.from(player.coords), 4).firstOrNull {
+                it.visType.internalName == npcName || it.type.internalName == npcName
+            }
+        if (npc != null) {
+            startDialogue(npc) { chatNpc(neutral, line) }
+        } else {
+            mesbox(line)
+        }
     }
 
     private fun Player.advanceIf(from: Int, to: Int) {
@@ -413,10 +433,8 @@ constructor(
             return
         }
         openGate(loc)
-        if (player.tutorialStage == TutorialStage.COMBAT_TAB_OPENED ||
-            player.tutorialStage == TutorialStage.COMBAT_TAB_CLOSED
-        ) {
-            guide.advance(player, TutorialStage.RAT_PIT_ENTERED)
+        if (player.tutorialStage == TutorialStage.COMBAT_TAB_OPENED) {
+            guide.advance(player, TutorialStage.ATTACK_RAT)
         }
     }
 
@@ -442,6 +460,7 @@ constructor(
 
     private suspend fun ProtectedAccess.mesOverlay(text: String) {
         player.ifOpenOverlay("interface.mesoverlay", "component.chatbox:chatoverlay", eventBus)
+        player.chatoverlayAllowMesOverlap = 1
         runClientScript(MESOVERLAY, text)
     }
 
@@ -488,10 +507,7 @@ constructor(
         }
         mesOverlay("Your character is now attempting to light a fire. This should only take a few seconds.")
         anim("seq.human_createfire")
-        soundSynth("synth.tinderbox_strike")
-        delay(3)
-        soundSynth("synth.tinderbox_strike")
-        delay(2)
+        delay(8)
         resetAnim()
         if (invDel(inv, TutorialObj.LOGS, 1).failure) {
             return
@@ -508,6 +524,7 @@ constructor(
                 objRegistry.add(ashes)
             },
         )
+        soundSynth("synth.fire_lit")
         tutorialStat("stat.firemaking", 40.0)
         TutorialHighlights.clearItems(player)
         if (player.inv.contains(TutorialObj.RAW_SHRIMP)) {
@@ -530,7 +547,7 @@ constructor(
         arriveDelay()
         anim("seq.human_firecooking")
         soundSynth("synth.fry")
-        delay(2)
+        delay(3)
         resetAnim()
         if (invDel(inv, TutorialObj.RAW_SHRIMP, 1).failure) {
             return
@@ -559,11 +576,14 @@ constructor(
             return
         }
         val firstBake = player.tutorialStage == TutorialStage.DOUGH_MADE
+        if (firstBake) {
+            guide.overlay(player, 5)
+        }
         mesOverlay("Your character is now attempting to bake some bread. This will only take a few seconds.")
         arriveDelay()
         anim("seq.human_cooking")
-        soundSynth("synth.fry")
-        delay(2)
+        soundSynth("synth.oven")
+        delay(5)
         resetAnim()
         if (invDel(inv, TutorialObj.BREAD_DOUGH, 1).failure) {
             return
@@ -603,16 +623,11 @@ constructor(
         faceSquare(spot.coords)
         arriveDelay()
         anim("seq.human_smallnet")
-        soundSynth("synth.fishing_cast")
         mesOverlay(
             "Your character is now attempting to catch some shrimp. Sit back for a moment " +
-                "while he does all the hard work.",
+                "while ${player.actionPronoun()} all the hard work.",
         )
-        delay(2)
-        soundSynth("synth.fishing_cast")
-        delay(2)
-        soundSynth("synth.fishing_cast")
-        delay(1)
+        delay(6)
         resetAnim()
         if (invAdd(inv, TutorialObj.RAW_SHRIMP, 1).failure) {
             return
@@ -651,14 +666,11 @@ constructor(
         faceLoc(loc)
         arriveDelay()
         anim(getInvObj(axe).axeWoodcuttingAnim.internalName)
-        soundSynth("synth.woodchop_4")
         mesOverlay(
             "Your character is now attempting to cut down the tree. Sit back for a moment " +
-                "while he does all the hard work.",
+                "while ${player.actionPronoun()} all the hard work.",
         )
-        delay(2)
-        soundSynth("synth.woodchop_4")
-        delay(2)
+        delay(4)
         resetAnim()
         if (invAdd(inv, TutorialObj.LOGS, 1).failure) {
             return
@@ -739,13 +751,7 @@ constructor(
             "Your character is now attempting to mine the rock.<br>" +
                 "This should only take a few seconds.",
         )
-        delay(1)
-        soundSynth("synth.mine_quick")
-        delay(1)
-        soundSynth("synth.mine_quick")
-        delay(1)
-        soundSynth("synth.mine_quick")
-        delay(1)
+        delay(5)
         resetAnim()
         if (invAdd(inv, ore, 1).failure) {
             return
@@ -1165,63 +1171,133 @@ constructor(
     private fun Player.hasItem(obj: String): Boolean =
         inv.contains(obj) || worn.contains(obj)
 
-    private suspend fun Dialogue.giveCombatGear(): Boolean {
-        val items = buildList {
-            if (!player.hasItem(TutorialObj.BRONZE_SWORD)) add(TutorialObj.BRONZE_SWORD to 1)
-            if (!player.hasItem(TutorialObj.WOODEN_SHIELD)) add(TutorialObj.WOODEN_SHIELD to 1)
+    private fun Player.actionPronoun(): String =
+        when (subjectPronoun()) {
+            "She" -> "she does"
+            "They" -> "they do"
+            else -> "he does"
         }
-        if (items.isEmpty()) {
+
+    private suspend fun Dialogue.giveCombatGear(): Boolean {
+        val hasSword = player.hasItem(TutorialObj.BRONZE_SWORD)
+        val hasShield = player.hasItem(TutorialObj.WOODEN_SHIELD)
+        if (hasSword && hasShield) {
             return true
         }
-        if (!access.giveTutorialItems(*items.toTypedArray())) {
-            mesbox(
-                "You need some new weapons for this section of the tutorial but you don't have " +
-                    "enough inventory room. You'll need to drop something. To do so, right-click " +
-                    "on an item you don't want and select drop. Once you've done that, speak to " +
-                    "the combat instructor again.",
+        val freeSpace = player.inv.freeSpace()
+        if (!hasSword && !hasShield && freeSpace >= 2) {
+            access.giveTutorialItems(TutorialObj.BRONZE_SWORD to 1, TutorialObj.WOODEN_SHIELD to 1)
+            doubleobjbox(
+                TutorialObj.BRONZE_SWORD,
+                TutorialObj.WOODEN_SHIELD,
+                "The combat instructor gives you a <col=000080>bronze sword<col=000000> and a " +
+                    "<col=000080>wooden shield<col=000000>.",
             )
+            TutorialHighlights.item(player, TutorialObj.BRONZE_SWORD)
+            TutorialHighlights.item(player, TutorialObj.WOODEN_SHIELD)
+            return true
+        }
+        if (!hasSword && !hasShield && freeSpace == 1) {
+            access.giveTutorialItems(TutorialObj.BRONZE_SWORD to 1)
+            mesbox(
+                "The combat instructor gives you a <col=000080>bronze sword<col=000000>. He " +
+                    "would have given you a <col=000080>wooden shield<col=000000> as well but " +
+                    "you didn't have room for it. To get one, drop something and talk to the " +
+                    "combat instructor again.",
+            )
+            TutorialHighlights.item(player, TutorialObj.BRONZE_SWORD)
             return false
         }
-        doubleobjbox(
-            TutorialObj.BRONZE_SWORD,
-            TutorialObj.WOODEN_SHIELD,
-            "The combat instructor gives you a <col=000080>bronze sword<col=000000> and a " +
-                "<col=000000><col=000080>wooden shield<col=000000>.",
+        if (!hasSword && freeSpace >= 1) {
+            access.giveTutorialItems(TutorialObj.BRONZE_SWORD to 1)
+            objbox(
+                TutorialObj.BRONZE_SWORD,
+                "The combat instructor gives you a <col=000080>bronze sword<col=000000>.",
+            )
+            TutorialHighlights.item(player, TutorialObj.BRONZE_SWORD)
+            return true
+        }
+        if (!hasShield && freeSpace >= 1) {
+            access.giveTutorialItems(TutorialObj.WOODEN_SHIELD to 1)
+            objbox(
+                TutorialObj.WOODEN_SHIELD,
+                "The combat instructor gives you a <col=000080>wooden shield<col=000000>.",
+            )
+            TutorialHighlights.item(player, TutorialObj.WOODEN_SHIELD)
+            return true
+        }
+        mesbox(
+            "You need some new weapons for this section of the tutorial but you don't have " +
+                "enough inventory room. You'll need to drop something. To do so, right-click " +
+                "on an item you don't want and select drop. Once you've done that, speak to " +
+                "the combat instructor again.",
         )
-        TutorialHighlights.item(player, TutorialObj.BRONZE_SWORD)
-        TutorialHighlights.item(player, TutorialObj.WOODEN_SHIELD)
-        return true
+        return false
     }
 
     private suspend fun Dialogue.giveRangedGear(): Boolean {
-        val items = buildList {
-            if (!player.hasItem(TutorialObj.SHORTBOW)) add(TutorialObj.SHORTBOW to 1)
-            val arrows = player.inv.count(TutorialObj.BRONZE_ARROW) +
+        val hasBow = player.hasItem(TutorialObj.SHORTBOW)
+        val arrows =
+            player.inv.count(TutorialObj.BRONZE_ARROW) +
                 player.worn.count(TutorialObj.BRONZE_ARROW)
-            val missingArrows = (50 - arrows).coerceAtLeast(0)
-            if (missingArrows > 0) add(TutorialObj.BRONZE_ARROW to missingArrows)
-        }
-        if (items.isEmpty()) {
+        val missingArrows = (50 - arrows).coerceAtLeast(0)
+        if (hasBow && missingArrows == 0) {
             return true
         }
-        if (!access.giveTutorialItems(*items.toTypedArray())) {
-            mesbox(
-                "You need some new weapons for this section of the tutorial but you don't have " +
-                    "enough inventory room. You'll need to drop something. To do so, right-click " +
-                    "on an item you don't want and select drop. Once you've done that, speak to " +
-                    "the combat instructor again.",
+        val freeSpace = player.inv.freeSpace()
+        if (!hasBow && missingArrows > 0 && freeSpace >= 2) {
+            access.giveTutorialItems(
+                TutorialObj.SHORTBOW to 1,
+                TutorialObj.BRONZE_ARROW to missingArrows,
             )
+            doubleobjbox(
+                TutorialObj.SHORTBOW,
+                TutorialObj.BRONZE_ARROW,
+                "The combat instructor gives you a <col=000080>shortbow<col=000000> and some " +
+                    "<col=000080>bronze arrows<col=000000>.",
+            )
+            TutorialHighlights.item(player, TutorialObj.SHORTBOW)
+            TutorialHighlights.item(player, TutorialObj.BRONZE_ARROW)
+            return true
+        }
+        if (!hasBow && missingArrows > 0 && freeSpace == 1) {
+            access.giveTutorialItems(TutorialObj.SHORTBOW to 1)
+            mesbox(
+                "The combat instructor gives you a <col=000080>shortbow<col=000000>. He would " +
+                    "have given you some <col=000080>bronze arrows<col=000000> as well but you " +
+                    "didn't have room for them. To get some, drop something and talk to the " +
+                    "combat instructor again.",
+            )
+            TutorialHighlights.item(player, TutorialObj.SHORTBOW)
             return false
         }
-        doubleobjbox(
-            TutorialObj.SHORTBOW,
-            TutorialObj.BRONZE_ARROW,
-            "The combat instructor gives you a <col=000080>shortbow<col=000000> and some " +
-                "<col=000000><col=000080>bronze arrows<col=000000>.",
+        if (!hasBow && freeSpace >= 1) {
+            access.giveTutorialItems(TutorialObj.SHORTBOW to 1)
+            objbox(
+                TutorialObj.SHORTBOW,
+                "The combat instructor gives you a <col=000080>shortbow<col=000000>.",
+            )
+            TutorialHighlights.item(player, TutorialObj.SHORTBOW)
+            return true
+        }
+        if (hasBow && missingArrows > 0 &&
+            (freeSpace >= 1 || player.inv.contains(TutorialObj.BRONZE_ARROW))
+        ) {
+            access.giveTutorialItems(TutorialObj.BRONZE_ARROW to missingArrows)
+            objbox(
+                TutorialObj.BRONZE_ARROW,
+                "The combat instructor gives you some <col=000080>bronze arrows<col=000000>.",
+            )
+            TutorialHighlights.item(player, TutorialObj.BRONZE_ARROW)
+            return true
+        }
+        mesbox(
+            "You need some new weapons for this section of the tutorial but you don't have " +
+                "enough inventory room. You'll need to drop something. To do so, right-click " +
+                "on an item you don't want and select drop. Once you've done that, speak to " +
+                "the combat instructor again.",
         )
-        TutorialHighlights.item(player, TutorialObj.SHORTBOW)
-        TutorialHighlights.item(player, TutorialObj.BRONZE_ARROW)
-        return true
+        return false
     }
 
     private suspend fun Dialogue.giveFlourAndWater() {
@@ -1525,7 +1601,7 @@ constructor(
             }
             TutorialStage.SWORD_EQUIPPED ->
                 chatNpc(neutral, "You should check out the combat interface.")
-            TutorialStage.COMBAT_TAB_OPENED, TutorialStage.COMBAT_TAB_CLOSED ->
+            TutorialStage.COMBAT_TAB_OPENED, TutorialStage.ATTACK_RAT ->
                 chatNpc(
                     neutral,
                     "Time for some actual combat! Head into the pen through the nearby gate and " +
@@ -1578,23 +1654,222 @@ constructor(
     }
 
     private suspend fun Dialogue.combatRecap() {
-        chatNpc(neutral, "Do you need something?")
-        when (choice2("Tell me about melee combat again.", 1, "Nothing thanks.", 2)) {
-            1 -> {
-                chatPlayer(quiz, "Tell me about melee combat again.")
-                chatNpc(
-                    neutral,
-                    "To attack a monster with melee, click on it while you have a weapon equipped. " +
-                        "You will walk over to it and start attacking.",
+        while (true) {
+            chatNpc(neutral, "Do you need something?")
+            when (
+                choice5(
+                    "Tell me about combat stats.",
+                    1,
+                    "Tell me about melee combat again.",
+                    2,
+                    "Tell me about ranged combat again.",
+                    3,
+                    "Tell me about the Wilderness.",
+                    4,
+                    "Nope, I'm ready to move on!",
+                    5,
                 )
-                chatNpc(
-                    neutral,
-                    "Different attack styles give experience in different skills. You can choose " +
-                        "your attack style in the combat interface.",
-                )
+            ) {
+                1 -> combatStatsRecap()
+                2 -> meleeRecap()
+                3 -> rangedRecap()
+                4 -> wildernessRecap()
+                else -> {
+                    chatPlayer(neutral, "Nope, I'm ready to move on!")
+                    chatNpc(neutral, "Okay then.")
+                    return
+                }
             }
-            else -> chatPlayer(neutral, "Nothing thanks.")
         }
+    }
+
+    private suspend fun Dialogue.combatStatsRecap() {
+        chatPlayer(quiz, "Tell me about combat stats again.")
+        chatNpc(
+            neutral,
+            "Certainly. You have three main combat stats: Strength, Defence and Attack.",
+        )
+        chatNpc(
+            neutral,
+            "Strength determines the maximum hit you will be able to deal with your blows, " +
+                "Defence determines the amount of damage you will be able to defend and Attack " +
+                "determines the accuracy of your blows.",
+        )
+        chatNpc(
+            neutral,
+            "Other stats are used in combat such as Prayer, Hitpoints, Magic and Ranged. All of " +
+                "these stats can go towards determining your combat level, which is shown near " +
+                "the top of your combat interface screen.",
+        )
+        chatNpc(
+            neutral,
+            "You will find out on the mainland that certain items can also affect your stats. " +
+                "There are potions that can be drunk that can alter your stats temporarily, such " +
+                "as raising Strength.",
+        )
+        chatNpc(
+            neutral,
+            "You will also raise your Defence and Attack values by using different weapons and " +
+                "armours.",
+        )
+        chatNpc(
+            neutral,
+            "Before going into combat with an opponent it is wise to put the mouse over them and " +
+                "see what combat level they are.",
+        )
+        chatNpc(
+            neutral,
+            "Green coloured writing usually means it will be an easy fight for you, red means you " +
+                "will probably lose, yellow means they are around your level and orange means " +
+                "they are slightly stronger.",
+        )
+        chatNpc(
+            neutral,
+            "Sometimes things will go your way, sometimes they won't. There is no such thing as a " +
+                "guaranteed win, but if the odds are on your side, you stand the best chance of " +
+                "walking away victorious.",
+        )
+        chatNpc(neutral, "Now, was there something else you wanted to hear about again?")
+    }
+
+    private suspend fun Dialogue.meleeRecap() {
+        chatPlayer(quiz, "Tell me about melee combat again.")
+        chatNpc(
+            neutral,
+            "Ah, my speciality. Close combat fighting, which is also known as melee fighting, " +
+                "covers all combat done at close range to your opponent.",
+        )
+        chatNpc(
+            neutral,
+            "Melee fighting depends entirely upon your three basic combat stats: Attack, " +
+                "Defence, and Strength.",
+        )
+        chatNpc(
+            neutral,
+            "Also, of course, it depends on the quality of your armour and weaponry. A " +
+                "high-levelled fighter with good armour and weapons will be deadly up close.",
+        )
+        chatNpc(
+            neutral,
+            "If this is the path you wish to take, remember your success depends on getting as " +
+                "close to your enemy as quickly as possible.",
+        )
+        chatNpc(
+            neutral,
+            "Personally, I consider the fine art of melee combat to be the ONLY combat method " +
+                "worth using.",
+        )
+        chatNpc(neutral, "Now, did you want to hear anything else?")
+    }
+
+    private suspend fun Dialogue.rangedRecap() {
+        chatPlayer(quiz, "Tell me about ranged combat again.")
+        chatNpc(
+            neutral,
+            "Thinking of being a ranger, eh? Well, okay. I don't enjoy it myself, but I can see " +
+                "the appeal.",
+        )
+        chatNpc(
+            neutral,
+            "Ranging employs a lot of different weapons as a skill, not just the shortbow you " +
+                "have there. Spears, throwing knives, and crossbows are all used best at a " +
+                "distance from your enemy.",
+        )
+        chatNpc(
+            neutral,
+            "Now, those rats were easy pickings, but on the mainland you will be very lucky if " +
+                "you can find a spot where you can shoot at your enemies without them being able " +
+                "to retaliate.",
+        )
+        chatNpc(
+            neutral,
+            "At close range, rangers often do badly in combat. Your best tactic as a ranger is to " +
+                "hit and run, keeping your foe at a distance.",
+        )
+        chatNpc(
+            neutral,
+            "Your effectiveness as a ranger is almost entirely dependent on your Ranged stat. As " +
+                "with all skills, the more you train it, the more powerful it will become.",
+        )
+        chatNpc(neutral, "Anything else you wanted to know?")
+    }
+
+    private suspend fun Dialogue.wildernessRecap() {
+        chatPlayer(quiz, "Tell me about the Wilderness again.")
+        chatNpc(
+            neutral,
+            "Ah yes, the Wilderness. It is a place of evil, mark my words. Many is the colleague " +
+                "I have lost in that foul place.",
+        )
+        chatNpc(
+            neutral,
+            "It is also a place of both adventure and wealth, so if you are brave enough and " +
+                "strong enough to survive it, you will make a killing. Literally!",
+        )
+        chatNpc(
+            neutral,
+            "It is also the only place in the land of Gielinor where players are able to attack " +
+                "each other at will, and as such is the haunt of many Player Killers, or PKers if " +
+                "you will.",
+        )
+        chatNpc(
+            neutral,
+            "There are a few things different in the Wilderness in comparison to the rest of the " +
+                "lands of Gielinor. Firstly, as I just mentioned, you can and will be attacked by " +
+                "other players.",
+        )
+        chatNpc(
+            neutral,
+            "For this reason, you will be given a warning when you approach the Wilderness, as it " +
+                "is not a place you would wish to enter by accident.",
+        )
+        chatNpc(
+            neutral,
+            "Secondly, there are a number of 'levels' to it. The further into it you travel, the " +
+                "greater the range of people you can attack.",
+        )
+        chatNpc(
+            neutral,
+            "In level 1 wilderness you will only be able to attack, or be attacked by, those " +
+                "players within one combat level of yourself.",
+        )
+        chatNpc(
+            neutral,
+            "In level 50, any player within fifty levels of you will be able to attack, or be " +
+                "attacked by you. Always keep an eye on what level of the Wilderness you are " +
+                "currently in.",
+        )
+        chatNpc(
+            neutral,
+            "Your current Wilderness level is shown at the bottom right of the screen. The final " +
+                "thing you should know about the Wilderness is being 'skulled'.",
+        )
+        chatNpc(
+            neutral,
+            "If you attack another player without them having attacked first, you will gain a " +
+                "skull above your character's head.",
+        )
+        chatNpc(
+            neutral,
+            "What this means is that if you die while skulled, you will lose EVERYTHING that your " +
+                "character was carrying.",
+        )
+        chatNpc(
+            neutral,
+            "When skulled, you should try to avoid dying for the twenty minutes or so it will " +
+                "take for the skull to wear off.",
+        )
+        chatNpc(
+            neutral,
+            "If you wish to find the Wilderness, head north from where you start on the mainland. " +
+                "It is rather large and hard to miss.",
+        )
+        chatNpc(
+            neutral,
+            "If you don't wish to end up there, take notice of the warning you will receive when " +
+                "getting near to it.",
+        )
+        chatNpc(neutral, "Now, was there anything more?")
     }
 
     private suspend fun Dialogue.accountGuide() {
@@ -1626,12 +1901,14 @@ constructor(
                         "give you access to extra skills, areas, quests, and more!",
                 )
                 chatPlayer(quiz, "What's a world?")
+                toplevelSidebuttonSwitch(player, LOGOUT_TAB)
                 chatNpc(
                     happy,
                     "A world is what you play the game on. Most worlds can hold up to 2000 players. " +
                         "They are split into two main types: free worlds and members' worlds. You " +
                         "can swap worlds with the World Switcher in the Logout menu.",
                 )
+                toplevelSidebuttonSwitch(player, ACCOUNT_TAB)
                 chatNpc(
                     happy,
                     "You are currently on a free world. If you want to switch to a members' world " +
@@ -1805,26 +2082,30 @@ constructor(
                 }
             }
             player.tutorialStage == TutorialStage.RUNES_GIVEN -> {
-                val hasRunes =
-                    player.inv.count(TutorialObj.AIR_RUNE) >= 1 &&
-                        player.inv.count(TutorialObj.MIND_RUNE) >= 1
-                if (hasRunes) {
+                val airRunes = player.inv.count(TutorialObj.AIR_RUNE)
+                val mindRunes = player.inv.count(TutorialObj.MIND_RUNE)
+                if (airRunes >= 5 && mindRunes >= 5) {
                     chatNpc(
                         neutral,
                         "Sorry, I don't have any more runes just now. But I see you have plenty.",
                     )
-                } else if (access.giveTutorialItems(
-                        TutorialObj.AIR_RUNE to 5,
-                        TutorialObj.MIND_RUNE to 5,
-                    )
-                ) {
-                    doubleobjbox(
-                        TutorialObj.AIR_RUNE,
-                        TutorialObj.MIND_RUNE,
-                        "Terrova gives you some <col=000080>air runes<col=000000> and " +
-                            "<col=000080>mind runes<col=000000>.",
-                    )
-                    TutorialHighlights.windStrike(player)
+                } else {
+                    val missing =
+                        buildList {
+                            val missingAir = (5 - airRunes).coerceAtLeast(0)
+                            val missingMind = (5 - mindRunes).coerceAtLeast(0)
+                            if (missingAir > 0) add(TutorialObj.AIR_RUNE to missingAir)
+                            if (missingMind > 0) add(TutorialObj.MIND_RUNE to missingMind)
+                        }
+                    if (access.giveTutorialItems(*missing.toTypedArray())) {
+                        doubleobjbox(
+                            TutorialObj.AIR_RUNE,
+                            TutorialObj.MIND_RUNE,
+                            "Terrova gives you some <col=000080>air runes<col=000000> and " +
+                                "<col=000080>mind runes<col=000000>.",
+                        )
+                        TutorialHighlights.windStrike(player)
+                    }
                 }
             }
             player.tutorialStage == TutorialStage.COMPLETE -> finalMagicDialogue()
@@ -1853,6 +2134,10 @@ constructor(
             return
         }
         player.adventurePaths = 1
+        if (player.isAnyIronman) {
+            lumbridgeGuideSendOff()
+            return
+        }
         chatNpc(neutral, "Were you planning to become an Ironman, by the way?")
         when (
             choice3(
@@ -1895,6 +2180,33 @@ constructor(
             TutorialObj.AP_GUIDE_ICON,
             "When you get to Lumbridge, look out for Adventurer Jon, he can be found outside of " +
                 "the Sheared Ram pub.",
+        )
+        chatNpc(
+            happy,
+            "Excellent, I think that covers everything. When you're ready to go, use your home " +
+                "teleport spell to teleport to Lumbridge!",
+        )
+        TutorialHighlights.homeTeleport(player)
+        guide.advance(player, TutorialStage.READY_TO_LEAVE)
+    }
+
+    private suspend fun Dialogue.lumbridgeGuideSendOff() {
+        chatNpc(
+            neutral,
+            "When you get to the mainland you will find yourself in the town of Lumbridge. " +
+                "If you want some ideas on where to go next, talk to my friend the Lumbridge " +
+                "Guide. You can't miss him; he's holding a big staff with",
+        )
+        chatNpc(
+            neutral,
+            "a question mark on the end. He also has a white beard and carries a rucksack full " +
+                "of scrolls. There are also many tutors willing to teach you about the many " +
+                "skills you could learn.",
+        )
+        objbox(
+            TutorialObj.LUMBRIDGE_GUIDE_ICON,
+            "When you get to Lumbridge, look for this icon on your minimap. That's where " +
+                "you'll find the Lumbridge Guide.",
         )
         chatNpc(
             happy,
@@ -2042,11 +2354,13 @@ constructor(
     private companion object {
         private const val FIRE_DURATION = 150
         private const val EXTRA_COOK_BURN_CHANCE = 50
-        private const val DOOR_OPEN_TICKS = 3
+        private const val DOOR_OPEN_TICKS = 2
         private const val DOOR_BLOCK_TICKS = 1
         private const val DOOR_SOUND = 62
         private const val WOODEN_GATE_SOUND = 67
         private const val METAL_GATE_SOUND = 71
+        private const val LOGOUT_TAB = 10
+        private const val ACCOUNT_TAB = 8
         private const val TREE_STUMP_TICKS = 16
         private const val ROCK_DEPLETED_TICKS = 10
         private val FIRE_WALK_DIRECTIONS =

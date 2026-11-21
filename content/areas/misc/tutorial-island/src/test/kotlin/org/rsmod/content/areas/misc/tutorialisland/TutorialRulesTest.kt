@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule
 import com.google.inject.multibindings.Multibinder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
@@ -48,6 +49,29 @@ class TutorialRulesTest {
         }
 
     @Test
+    fun GameTestState.`the mining journal uses the captured wording`() =
+        runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
+            player.tutorialStage = TutorialStage.DAGGER_SMITHED
+            var log = ""
+            player.withProtectedAccess { log = quest.questLog(this) }
+            assertTrue(log.contains("I then met Dezzick, the Mining Instructor."))
+            assertTrue(log.contains("which I managed to successfully complete!"))
+            assertTrue(log.contains("To that end, he handed me a hammer"))
+        }
+
+    @Test
+    fun GameTestState.`the completed journal has the post-completion lines last`() =
+        runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
+            player.tutorialStage = TutorialStage.LEFT_ISLAND
+            var log = ""
+            player.withProtectedAccess { log = quest.completedLog(this) }
+            val complete = log.indexOf("QUEST COMPLETE!")
+            val stay = log.indexOf("I can stay on Tutorial Island")
+            assertTrue(complete >= 0)
+            assertTrue(stay > complete)
+        }
+
+    @Test
     fun GameTestState.`the bank journal starts with the bank objective`() =
         runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
             player.tutorialStage = TutorialStage.BANK_OPENED
@@ -83,10 +107,19 @@ class TutorialRulesTest {
         }
 
     @Test
-    fun GameTestState.`an equipped sword advances the combat stage`() =
+    fun GameTestState.`an equipped sword alone does not advance the combat stage`() =
         runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
             player.tutorialStage = TutorialStage.COMBAT_GUIDE_SWORD
             player.invAdd(player.worn, TutorialObj.BRONZE_SWORD, 1)
+            assertNull(rules.nextStage(player))
+        }
+
+    @Test
+    fun GameTestState.`an equipped sword and shield advance the combat stage`() =
+        runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
+            player.tutorialStage = TutorialStage.COMBAT_GUIDE_SWORD
+            player.invAdd(player.worn, TutorialObj.BRONZE_SWORD, 1)
+            player.invAdd(player.worn, TutorialObj.WOODEN_SHIELD, 1)
             assertEquals(TutorialStage.SWORD_EQUIPPED, rules.nextStage(player))
         }
 

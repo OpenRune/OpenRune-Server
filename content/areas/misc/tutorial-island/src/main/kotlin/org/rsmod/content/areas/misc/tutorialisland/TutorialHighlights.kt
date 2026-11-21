@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.output.ClientScripts.invHighlightClearAll
 import org.rsmod.api.player.output.ClientScripts.invHighlightItemOn
+import org.rsmod.api.player.output.ClientScripts.toplevelSidebuttonSwitch
 import org.rsmod.api.player.output.ClientScripts.uiHighlightClear
 import org.rsmod.api.player.output.ClientScripts.uiHighlightClearAll
 import org.rsmod.api.player.output.ClientScripts.uiHighlightUpdate
@@ -12,11 +13,13 @@ import org.rsmod.game.entity.Player
 internal object TutorialHighlights {
     private const val STYLE_CTA = 7034
     private const val STYLE_ALERT = 7036
+    private const val INVENTORY_TAB = 3
     private const val SMITHING_DAGGER = (312 shl 16) or 9
     private const val WIND_STRIKE = (218 shl 16) or 11
     private const val HOME_TELEPORT = (218 shl 16) or 6
 
     fun item(player: Player, obj: String, alert: Boolean = false) {
+        toplevelSidebuttonSwitch(player, INVENTORY_TAB)
         invHighlightItemOn(
             player,
             obj.asRSCM(RSCMType.OBJ),

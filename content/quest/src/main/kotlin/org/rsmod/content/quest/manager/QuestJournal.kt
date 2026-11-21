@@ -40,6 +40,11 @@ class QuestJournalBuilder internal constructor(
     private val isCompletion: Boolean = false,
 ) {
     private val lines = mutableListOf<String>()
+    private val postCompletionLines = mutableListOf<String>()
+
+    fun afterCompletion(text: String) {
+        postCompletionLines += "<str>$text</str>"
+    }
 
     fun description(
         text: String,
@@ -86,7 +91,7 @@ class QuestJournalBuilder internal constructor(
         lines += text
     }
 
-    fun build(): String = lines.joinToString("\n")
+    fun build(): String = (lines + postCompletionLines).joinToString("\n")
 
     @QuestJournalDsl
     inner class DescriptionContext {

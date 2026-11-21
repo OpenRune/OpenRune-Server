@@ -44,16 +44,43 @@ internal class TutorialQuest :
     }
 
     override fun completedLog(player: ProtectedAccess): String = completionJournal(player) {
-        line("I arrived on Tutorial Island and met the Gielinor Guide, who welcomed me on my journey to becoming an adventurer.")
-        line("I met Brynna, the Survival Expert. She taught me how to catch shrimp with a fishing net, and then how to cook those shrimp on a fire made from logs I had cut myself.")
-        line("Lev, the Master Chef, explained proper cooking techniques to me. With his guidance I made a loaf of bread from flour and water.")
-        line("The Quest Guide taught me about my quest list and quest journals.")
-        line("The Mining Instructor taught me how to mine tin and copper and smith them into a bronze dagger.")
-        line("The Combat Instructor taught me how to fight with melee and ranged weapons.")
-        line("I visited the bank and learned how to store my items.")
-        line("Brother Brace taught me about Prayer.")
-        line("The Magic Instructor taught me how to cast Wind Strike.")
-        line("I completed the tutorial and can now travel to the mainland.")
+        line("I arrived on Tutorial Island and met the Gielinor Guide, who")
+        line("welcomed me on my journey to becoming an adventurer.")
+        line("I met Brynna, the Survival Expert. She taught me how to catch")
+        line("shrimp with a fishing net, and then how to cook those shrimp")
+        line("on a fire made from logs I had cut myself.")
+        line("Lev, the Master Chef, explained proper cooking techniques to")
+        line("me. With his guidance I made a loaf of bread from flour and")
+        line("water.")
+        line("The Quest Guide taught me about my quest list and quest")
+        line("journals. These are a useful tool for tracking my progress")
+        line("through quests in Gielinor.")
+        line("I then met Dezzick, the Mining Instructor. He handed me a")
+        line("pickaxe and tasked me with mining some copper and tin ores")
+        line("in order to smelt a bronze bar in the furnace, which I managed")
+        line("to successfully complete!")
+        line("Dezzick told me to make a bronze dagger with the bronze bar I")
+        line("had smelted. To that end, he handed me a hammer and pointed")
+        line("me to the anvils.")
+        line("Vannaka taught me how to equip and unequip my weapons and")
+        line("armour from my inventory in order to prepare me for combat.")
+        line("I managed to kill a rat in Vannaka's cage.")
+        line("Vannaka taught me the basics of melee and ranged combat,")
+        line("giving me the weapons I needed to achieve that.")
+        line("It would appear I can safely store my items with the Bank of")
+        line("Gielinor, which will make them accessible from any branch and")
+        line("means I don't have to carry them everywhere with me.")
+        line("According to the Account Guide, I should be proactive with my")
+        line("security to protect my account.")
+        line("Brother Brace taught me about the Prayer skill. It can provide")
+        line("a number of benefits to my regular activities, but costs")
+        line("prayer points which can be restored at any altar or holy site. I")
+        line("can train it by burying bones and scattering ashes.")
+        line("Having met Terrova, I was instructed to cast Wind Strike on")
+        line("one of his chickens. Fortunately, my magical prowess allowed")
+        line("me to successfully achieve this.")
+        afterCompletion("I can stay on Tutorial Island to learn more about Ironman")
+        afterCompletion("mode, or use my Home Teleport to travel to the mainland.")
     }
 
     private fun QuestJournalBuilder.openingLines(stage: Int) {
@@ -85,7 +112,7 @@ internal class TutorialQuest :
                     "The Quest Guide is teaching me about the quest list and quest journals. " +
                         "The journals are useful tools for tracking my progress through quests " +
                         "in Gielinor, and I can keep reminders here of what I have to do next. " +
-                        "Right now I should open the quest list and speak to him again!",
+                        "Right now I should speak to the Quest Guide again!",
                 )
             else ->
                 strike(
@@ -111,8 +138,9 @@ internal class TutorialQuest :
             return
         }
         val mined =
-            "I met Dezzick, the Mining Instructor. He gave me a pickaxe and asked me to mine " +
-                "some copper and tin ore to smelt a bronze bar."
+            "I then met Dezzick, the Mining Instructor. He handed me a pickaxe and tasked me " +
+                "with mining some copper and tin ores in order to smelt a bronze bar in the " +
+                "furnace, which I managed to successfully complete!"
         if (stage >= TutorialStage.BAR_SMELTED) strike(mined) else line(mined)
         when (stage) {
             TutorialStage.COPPER_MINED_FIRST ->
@@ -130,14 +158,14 @@ internal class TutorialQuest :
         }
         if (stage >= TutorialStage.MINING_GUIDE_BAR) {
             val dagger =
-                "Dezzick told me to make a bronze dagger with the bronze bar I smelted. He gave " +
-                    "me a hammer and pointed me to the anvils."
+                "Dezzick told me to make a bronze dagger with the bronze bar I had smelted. To " +
+                    "that end, he handed me a hammer and pointed me to the anvils."
             if (stage >= TutorialStage.DAGGER_SMITHED) strike(dagger) else line(dagger)
         }
         if (stage >= TutorialStage.DAGGER_SMITHED) {
             val moving =
-                "Now that I have learned how to mine and smith, it is time to move on. I should " +
-                    "go through the nearby gate to find my next instructor."
+                "Now that I've learned how to mine and smith, it's time to move on. I should go " +
+                    "through the nearby gate to find my next instructor."
             if (stage >= TutorialStage.COMBAT_GATE) strike(moving) else line(moving)
         }
     }
@@ -163,7 +191,7 @@ internal class TutorialQuest :
                     "Vannaka gave me a bronze sword and wooden shield. I should equip them and " +
                         "open the combat interface.",
                 )
-            stage < TutorialStage.RAT_PIT_ENTERED ->
+            stage < TutorialStage.ATTACK_RAT ->
                 line(
                     "I have equipped my sword and shield and opened the combat interface. I " +
                         "should enter the rat cage through the gate.",

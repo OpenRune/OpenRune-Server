@@ -41,13 +41,20 @@ constructor(
     fun show(player: Player, stage: Int) {
         if (stage == TutorialStage.QUEST_HOUSE_ENTERED && player.attr[RUN_TOGGLED] == true) {
             player.openMesOverlay()
+            player.chatoverlayAllowMesOverlap = 1
             player.runClientScript(MESOVERLAY, MOVING_ON_RUN_TEXT)
             clearArrow(player)
             return
         }
         val hint = HINTS[stage] ?: return
-        player.openMesOverlay()
-        player.runClientScript(MESOVERLAY, hint.text ?: " ")
+        if (hint.text == null) {
+            player.ifCloseSub("interface.mesoverlay", eventBus)
+            player.chatoverlayAllowMesOverlap = 0
+        } else {
+            player.openMesOverlay()
+            player.chatoverlayAllowMesOverlap = 1
+            player.runClientScript(MESOVERLAY, hint.text)
+        }
         if (hint.hintId != null) {
             player.runClientScript(OVERLAY_HINT, hint.hintId)
         } else {
@@ -94,10 +101,15 @@ constructor(
 
     fun clear(player: Player) {
         clearArrow(player)
+        player.chatoverlayAllowMesOverlap = 0
         player.flashSide = 0
         player.ifSetHide("component.tutorial_overlay:hint_layer", true)
         player.ifCloseSub("interface.tutorial_overlay", eventBus)
         player.runClientScript(TUTORIAL_END)
+    }
+
+    fun overlay(player: Player, value: Int) {
+        player.tutorialOverlayProgress = value
     }
 
     private fun progress(stage: Int): Int? =
@@ -105,22 +117,22 @@ constructor(
             TutorialStage.OUTSIDE -> 2
             TutorialStage.SKILLS_VIEWED -> 3
             TutorialStage.GATE_OPENED -> 4
-            TutorialStage.DOUGH_MADE -> 5
-            TutorialStage.BREAD_BAKED -> 6
-            TutorialStage.QUEST_HOUSE_ENTERED -> 7
-            TutorialStage.QUEST_LIST_OPENED -> 8
+            TutorialStage.DOUGH_MADE -> 4
+            TutorialStage.BREAD_BAKED -> 5
+            TutorialStage.QUEST_PATH -> 6
+            TutorialStage.QUEST_HOUSE_INSIDE -> 7
+            TutorialStage.LADDER_DOWN -> 8
             TutorialStage.COPPER_MINED -> 9
-            TutorialStage.DAGGER_SMITHED -> 10
+            TutorialStage.COMBAT_GATE -> 10
             TutorialStage.COMBAT_TAB_OPENED -> 11
-            TutorialStage.RAT_PIT_ENTERED -> 12
-            TutorialStage.RANGED_GIVEN -> 12
-            TutorialStage.RAT_ENGAGED_RANGED -> 13
-            TutorialStage.COMBAT_GUIDE_DONE -> 14
-            TutorialStage.POLL_BOOTH -> 15
-            TutorialStage.ACCOUNT_GUIDE_DONE -> 16
+            TutorialStage.RANGED_GIVEN -> 11
+            TutorialStage.RAT_ENGAGED_RANGED -> 12
+            TutorialStage.LADDER_UP -> 14
+            TutorialStage.ACCOUNT_GUIDE_ARRIVED -> 15
+            TutorialStage.CHAPEL_ARRIVED -> 16
             TutorialStage.PRAYER_GUIDE_TALKED_2 -> 17
-            TutorialStage.PRAYER_GUIDE_DONE -> 18
-            TutorialStage.MAGIC_BOOK_OPENED -> 19
+            TutorialStage.PRAYER_GUIDE_DONE -> 17
+            TutorialStage.MAGIC_GUIDE_ARRIVED -> 18
             TutorialStage.RUNES_GIVEN -> 20
             else -> null
         }
@@ -187,7 +199,7 @@ constructor(
                 TutorialStage.ACCOUNT_GUIDE_DONE to
                     HintArrowPosition.WEST,
                 TutorialStage.PRAYER_GUIDE_DONE to
-                    HintArrowPosition.WEST,
+                    HintArrowPosition.NORTH,
             )
 
         private val FLASH_SIDE: Map<Int, Int> =
@@ -360,7 +372,6 @@ constructor(
                                 "able to make other things like pies and cakes. You can now use " +
                                 "the next door to move on. If you need a recap on anything, talk " +
                                 "to the master chef.",
-                        hintId = 21,
                         arrow = Arrow.Tile(CoordGrid(3072, 3090, 0), 128),
                     ),
                 TutorialStage.QUEST_HOUSE_ENTERED to
@@ -371,6 +382,7 @@ constructor(
                                 "long as you'll soon run out of energy. You can use the flashing " +
                                 "orb next to the minimap to toggle running. Why not try it as you " +
                                 "head to the next section?",
+                        hintId = 21,
                         arrow = Arrow.Tile(CoordGrid(3086, 3126, 0), 128),
                     ),
                 TutorialStage.QUEST_HOUSE_INSIDE to
@@ -552,16 +564,7 @@ constructor(
                         hintId = 15,
                         arrow = Arrow.Tile(CoordGrid(3110, 9518, 0), 128),
                     ),
-                TutorialStage.COMBAT_TAB_CLOSED to
-                    Hint(
-                        text =
-                            "<col=0000ff>Attacking</col><br>It's time to slay some rats! To " +
-                                "attack a rat, all you have to do is click on it. This will " +
-                                "cause you to walk over and start hitting it.",
-                        hintId = 15,
-                        arrow = Arrow.Npc(TutorialNpc.GIANT_RAT, CoordGrid(3108, 9519, 0)),
-                    ),
-                TutorialStage.RAT_PIT_ENTERED to
+                TutorialStage.ATTACK_RAT to
                     Hint(
                         text =
                             "<col=0000ff>Attacking</col><br>It's time to slay some rats! To " +

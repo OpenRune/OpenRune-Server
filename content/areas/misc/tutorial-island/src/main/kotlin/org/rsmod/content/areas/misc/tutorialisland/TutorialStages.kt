@@ -20,9 +20,33 @@ internal var Player.transmitPronouns by intVarBit("varbit.settings_transmit_pron
 internal var Player.tutorialFreeStuffCheck by intVarBit("varbit.tutorial_freestuff_check")
 internal var Player.adventurePaths by intVarBit("varbit.adventurepath_player_participating")
 internal var Player.usedHomeTeleport by intVarBit("varbit.steam_used_home_teleport")
+internal var Player.chatoverlayAllowMesOverlap by
+    intVarBit("varbit.chatoverlay_allowmesoverlap")
 
 internal val RUN_TOGGLED = AttributeKey<Boolean>(temp = true)
 internal val LAST_RUN_STATE = AttributeKey<Int>(temp = true)
+
+private val TUTORIAL_EXPERIENCE = AttributeKey<Int>(persistenceKey = "tutorial_island_experience")
+
+internal var Player.tutorialExperience: Int
+    get() = attr[TUTORIAL_EXPERIENCE] ?: TutorialExperience.NEW
+    set(value) {
+        attr[TUTORIAL_EXPERIENCE] = value
+    }
+
+internal object TutorialExperience {
+    const val NEW = 0
+    const val RETURNING = 1
+    const val EXPERIENCED = 2
+
+    fun fromSlot(slot: Int): Int? =
+        when (slot) {
+            1 -> NEW
+            2 -> RETURNING
+            3 -> EXPERIENCED
+            else -> null
+        }
+}
 
 internal val Player.inTutorial: Boolean
     get() = tutorialStage in TutorialStage.START until TutorialStage.LEFT_ISLAND
@@ -77,8 +101,7 @@ internal object TutorialStage {
     const val COMBAT_GUIDE_SWORD = 420
     const val SWORD_EQUIPPED = 430
     const val COMBAT_TAB_OPENED = 440
-    const val COMBAT_TAB_CLOSED = 450
-    const val RAT_PIT_ENTERED = 455
+    const val ATTACK_RAT = 450
     const val RAT_ENGAGED = 460
     const val RAT_KILLED_MELEE = 470
     const val RANGED_GIVEN = 480
@@ -167,6 +190,7 @@ internal object TutorialObj {
     const val QUEST_START_ICON = "obj.quest_start_icon_dummy"
     const val CERT_FURNACE_ICON = "obj.cert_furnace_icon_dummy"
     const val AP_GUIDE_ICON = "obj.ap_guide_icon_dummy"
+    const val LUMBRIDGE_GUIDE_ICON = "obj.main_tutor_icon_dummy"
     const val WATER_RUNE = "obj.waterrune"
     const val EARTH_RUNE = "obj.earthrune"
     const val BODY_RUNE = "obj.bodyrune"

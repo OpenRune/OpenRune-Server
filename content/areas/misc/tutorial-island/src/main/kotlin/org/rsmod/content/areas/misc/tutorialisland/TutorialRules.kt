@@ -31,7 +31,8 @@ internal class TutorialRules @Inject constructor() {
             stage in TutorialStage.WORN_OPENED..TutorialStage.EQUIPMENT_STATS_OPENED &&
                 player.worn.contains(TutorialObj.BRONZE_DAGGER) -> TutorialStage.DAGGER_EQUIPPED
             stage == TutorialStage.COMBAT_GUIDE_SWORD &&
-                player.worn.contains(TutorialObj.BRONZE_SWORD) -> TutorialStage.SWORD_EQUIPPED
+                player.worn.contains(TutorialObj.BRONZE_SWORD) &&
+                player.worn.contains(TutorialObj.WOODEN_SHIELD) -> TutorialStage.SWORD_EQUIPPED
             stage == TutorialStage.QUEST_HOUSE_ENTERED && isInsideQuestHouse(player) ->
                 TutorialStage.QUEST_HOUSE_INSIDE
             else -> null

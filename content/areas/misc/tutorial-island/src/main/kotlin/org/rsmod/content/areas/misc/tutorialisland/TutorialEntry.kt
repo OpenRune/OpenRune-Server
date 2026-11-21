@@ -87,10 +87,8 @@ constructor(
         onTabOpened("stone5", TutorialStage.PRAYER_GUIDE_TALKED, TutorialStage.PRAYER_BOOK_OPENED)
         onTabOpened("stone6", TutorialStage.MAGIC_GUIDE_TALKED, TutorialStage.MAGIC_BOOK_OPENED)
         onIfToplevelButton("component.toplevel_osrs_stretch:stone3") {
-            when (player.tutorialStage) {
-                TutorialStage.NET_GIVEN -> guide.advance(player, TutorialStage.INVENTORY_VIEWED)
-                TutorialStage.COMBAT_TAB_OPENED ->
-                    guide.advance(player, TutorialStage.COMBAT_TAB_CLOSED)
+            if (player.tutorialStage == TutorialStage.NET_GIVEN) {
+                guide.advance(player, TutorialStage.INVENTORY_VIEWED)
             }
         }
         onIfToplevelButton("component.toplevel_osrs_stretch:stone0") {
@@ -435,12 +433,17 @@ constructor(
             IfEvent.PauseButton,
         )
         player.ifSetHide("component.tutorial_overlay:noclick", false)
-        val input = coroutine.pause(ResumePauseButtonInput::class)
-        if (player.tutorialStage != TutorialStage.START) {
-            return
-        }
-        if (!input.isComponentType("component.tutorial_player_experience:content")) {
-            return
+        while (true) {
+            val input = coroutine.pause(ResumePauseButtonInput::class)
+            if (player.tutorialStage != TutorialStage.START) {
+                return
+            }
+            if (!input.isComponentType("component.tutorial_player_experience:content")) {
+                continue
+            }
+            val experience = TutorialExperience.fromSlot(input.subcomponent) ?: continue
+            player.tutorialExperience = experience
+            break
         }
         player.attr[EXPERIENCE_CHOSEN] = true
         if (player.ui.containsModal("interface.tutorial_player_experience")) {
@@ -510,6 +513,7 @@ constructor(
 
     private fun ProtectedAccess.mesOverlay(text: String) {
         player.openMesOverlay()
+        player.chatoverlayAllowMesOverlap = 1
         player.runClientScript(MESOVERLAY, text)
     }
 
