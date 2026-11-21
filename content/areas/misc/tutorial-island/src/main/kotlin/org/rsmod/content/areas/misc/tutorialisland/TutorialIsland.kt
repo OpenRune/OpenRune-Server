@@ -636,8 +636,10 @@ constructor(
             )
             return
         }
-        if (player.hasMovedThisCycle || player.hasMovedPreviousCycle) {
+        var settleTicks = 0
+        while ((player.hasMovedThisCycle || player.hasMovedPreviousCycle) && settleTicks < 3) {
             delay(1)
+            settleTicks++
         }
         faceSquare(spot.coords)
         anim("seq.human_smallnet")
