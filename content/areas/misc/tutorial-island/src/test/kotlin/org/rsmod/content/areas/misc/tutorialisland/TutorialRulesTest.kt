@@ -3,6 +3,8 @@ package org.rsmod.content.areas.misc.tutorialisland
 import com.google.inject.AbstractModule
 import com.google.inject.multibindings.Multibinder
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
@@ -30,6 +32,38 @@ class TutorialRulesTest {
             player.tutorialStage = TutorialStage.COPPER_MINED_FIRST
             player.invAdd(player.inv, TutorialObj.TIN_ORE, 1)
             assertEquals(TutorialStage.COPPER_MINED, rules.nextStage(player))
+        }
+
+    @Test
+    fun GameTestState.`the journal only shows reached sections`() =
+        runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
+            player.tutorialStage = TutorialStage.SWORD_EQUIPPED
+            var log = ""
+            player.withProtectedAccess { log = quest.questLog(this) }
+            assertTrue(log.contains("Vannaka"))
+            assertFalse(log.contains("Bank of Gielinor"))
+            assertFalse(log.contains("Brother Brace"))
+            assertFalse(log.contains("Magic Instructor"))
+            assertFalse(log.contains("I completed the tutorial"))
+        }
+
+    @Test
+    fun GameTestState.`the bank journal starts with the bank objective`() =
+        runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
+            player.tutorialStage = TutorialStage.BANK_OPENED
+            var log = ""
+            player.withProtectedAccess { log = quest.questLog(this) }
+            assertTrue(log.contains("I opened my bank"))
+            assertFalse(log.contains("I visited the Bank of Gielinor"))
+        }
+
+    @Test
+    fun GameTestState.`the bank journal completes after the account guide`() =
+        runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
+            player.tutorialStage = TutorialStage.ACCOUNT_GUIDE_DONE
+            var log = ""
+            player.withProtectedAccess { log = quest.questLog(this) }
+            assertTrue(log.contains("I visited the Bank of Gielinor"))
         }
 
     @Test

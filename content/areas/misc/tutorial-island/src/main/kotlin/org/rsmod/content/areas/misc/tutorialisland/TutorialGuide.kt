@@ -112,7 +112,9 @@ constructor(
             TutorialStage.COPPER_MINED -> 9
             TutorialStage.DAGGER_SMITHED -> 10
             TutorialStage.COMBAT_TAB_OPENED -> 11
+            TutorialStage.RAT_PIT_ENTERED -> 12
             TutorialStage.RANGED_GIVEN -> 12
+            TutorialStage.RAT_ENGAGED_RANGED -> 13
             TutorialStage.COMBAT_GUIDE_DONE -> 14
             TutorialStage.POLL_BOOTH -> 15
             TutorialStage.ACCOUNT_GUIDE_DONE -> 16
@@ -551,6 +553,15 @@ constructor(
                         arrow = Arrow.Tile(CoordGrid(3110, 9518, 0), 128),
                     ),
                 TutorialStage.COMBAT_TAB_CLOSED to
+                    Hint(
+                        text =
+                            "<col=0000ff>Attacking</col><br>It's time to slay some rats! To " +
+                                "attack a rat, all you have to do is click on it. This will " +
+                                "cause you to walk over and start hitting it.",
+                        hintId = 15,
+                        arrow = Arrow.Npc(TutorialNpc.GIANT_RAT, CoordGrid(3108, 9519, 0)),
+                    ),
+                TutorialStage.RAT_PIT_ENTERED to
                     Hint(
                         text =
                             "<col=0000ff>Attacking</col><br>It's time to slay some rats! To " +

@@ -78,6 +78,7 @@ internal object TutorialStage {
     const val SWORD_EQUIPPED = 430
     const val COMBAT_TAB_OPENED = 440
     const val COMBAT_TAB_CLOSED = 450
+    const val RAT_PIT_ENTERED = 455
     const val RAT_ENGAGED = 460
     const val RAT_KILLED_MELEE = 470
     const val RANGED_GIVEN = 480

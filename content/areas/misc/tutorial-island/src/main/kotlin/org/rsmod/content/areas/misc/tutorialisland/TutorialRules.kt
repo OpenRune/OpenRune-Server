@@ -28,7 +28,7 @@ internal class TutorialRules @Inject constructor() {
                 player.inv.contains(TutorialObj.BRONZE_BAR) -> TutorialStage.BAR_SMELTED
             stage in TutorialStage.BAR_SMELTED..TutorialStage.ANVIL_OPENED &&
                 player.inv.contains(TutorialObj.BRONZE_DAGGER) -> TutorialStage.DAGGER_SMITHED
-            stage in TutorialStage.DAGGER_EQUIP_TASK..TutorialStage.EQUIPMENT_STATS_OPENED &&
+            stage in TutorialStage.WORN_OPENED..TutorialStage.EQUIPMENT_STATS_OPENED &&
                 player.worn.contains(TutorialObj.BRONZE_DAGGER) -> TutorialStage.DAGGER_EQUIPPED
             stage == TutorialStage.COMBAT_GUIDE_SWORD &&
                 player.worn.contains(TutorialObj.BRONZE_SWORD) -> TutorialStage.SWORD_EQUIPPED

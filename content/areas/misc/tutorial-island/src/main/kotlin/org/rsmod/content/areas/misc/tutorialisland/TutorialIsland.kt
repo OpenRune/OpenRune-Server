@@ -403,11 +403,16 @@ constructor(
             sayCombatInstructor("Oi! Get away from there. Only enter the rat cage when I say so.")
             return
         }
-        if (player.tutorialStage in TutorialStage.RANGED_GIVEN until TutorialStage.RAT_ENGAGED_RANGED) {
+        if (player.tutorialStage in TutorialStage.RANGED_GIVEN until TutorialStage.COMBAT_GUIDE_DONE) {
             sayCombatInstructor("No, don't enter the pit. Range the rats from outside the cage.")
             return
         }
         openGate(loc)
+        if (player.tutorialStage == TutorialStage.COMBAT_TAB_OPENED ||
+            player.tutorialStage == TutorialStage.COMBAT_TAB_CLOSED
+        ) {
+            guide.advance(player, TutorialStage.RAT_PIT_ENTERED)
+        }
     }
 
     private suspend fun ProtectedAccess.sayCombatInstructor(line: String) {
@@ -512,6 +517,7 @@ constructor(
             return
         }
         mesOverlay("Your character is now attempting to cook some shrimp. This will only take a few seconds.")
+        arriveDelay()
         anim("seq.human_firecooking")
         soundSynth("synth.fry")
         delay(2)
@@ -531,6 +537,7 @@ constructor(
             return
         }
         mesOverlay("Your character is now attempting to bake some bread. This will only take a few seconds.")
+        arriveDelay()
         anim("seq.human_cooking")
         soundSynth("synth.fry")
         delay(2)
@@ -563,6 +570,7 @@ constructor(
             return
         }
         faceSquare(spot.coords)
+        arriveDelay()
         anim("seq.human_smallnet")
         soundSynth("synth.fishing_cast")
         mesOverlay(
@@ -610,6 +618,7 @@ constructor(
             return
         }
         faceLoc(loc)
+        arriveDelay()
         anim(getInvObj(axe).axeWoodcuttingAnim.internalName)
         soundSynth("synth.woodchop_4")
         mesOverlay(
@@ -700,6 +709,7 @@ constructor(
             return
         }
         faceLoc(loc)
+        arriveDelay()
         anim(getInvObj(pickaxe).pickaxeAnim.internalName)
         mesOverlay(
             "Your character is now attempting to mine the rock.<br>" +
@@ -716,6 +726,7 @@ constructor(
         if (invAdd(inv, ore, 1).failure) {
             return
         }
+        soundSynth("synth.mine_ore")
         locRepo.change(loc, TutorialLoc.ROCK_DEPLETED, ROCK_DEPLETED_TICKS)
         tutorialStat("stat.mining", 17.5)
         guide.advance(player, nextStage)
@@ -738,6 +749,7 @@ constructor(
             return
         }
         mes("You smelt the copper and tin together in the furnace.")
+        arriveDelay()
         anim("seq.human_furnace")
         soundSynth("synth.furnace")
         delay(3)

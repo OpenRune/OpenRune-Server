@@ -33,7 +33,8 @@ constructor(
             return NpcAttackValidateResult.Pass
         }
         when (player.tutorialStage) {
-            TutorialStage.COMBAT_TAB_CLOSED -> guide.advance(player, TutorialStage.RAT_ENGAGED)
+            TutorialStage.COMBAT_TAB_CLOSED,
+            TutorialStage.RAT_PIT_ENTERED -> guide.advance(player, TutorialStage.RAT_ENGAGED)
             TutorialStage.RANGED_GIVEN -> guide.advance(player, TutorialStage.RAT_ENGAGED_RANGED)
             TutorialStage.RAT_KILLED_MELEE ->
                 return deny(
