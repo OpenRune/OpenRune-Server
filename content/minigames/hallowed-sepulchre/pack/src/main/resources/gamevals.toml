@@ -1,0 +1,124 @@
+[gamevals.dbtable]
+hallowed_floors = 63015
+hallowed_obstacles = 63016
+hallowed_traps = 63017
+hallowed_strange_tiles = 63026
+
+[gamevals.dbrow]
+hallowed_floor_1 = 63456
+hallowed_floor_2 = 63457
+hallowed_floor_3 = 63458
+hallowed_floor_4 = 63459
+hallowed_floor_5 = 63460
+hallowed_platform_west = 63461
+hallowed_platform_east = 63462
+hallowed_platform_north = 63463
+hallowed_platform_south = 63464
+hallowed_platform_floor3 = 63465
+hallowed_platform_floor5 = 63466
+hallowed_gate_floor4 = 63467
+hallowed_drop_floor1_north = 63468
+hallowed_drop_floor1_west = 63469
+hallowed_drop_floor2_west = 63470
+hallowed_drop_floor3_east = 63471
+hallowed_drop_floor3_west = 63472
+hallowed_drop_floor4_north = 63473
+hallowed_drop_floor5_first = 63474
+hallowed_drop_floor5_second = 63475
+hallowed_stairs_floor2_east = 63476
+hallowed_stairs_floor4_south = 63477
+hallowed_stairs_floor1_east = 63478
+hallowed_stairs_floor1_south = 63479
+hallowed_stairs_floor2_north = 63480
+hallowed_stairs_floor2_south = 63481
+hallowed_trap_floor1_flames = 63482
+hallowed_trap_floor2_flames = 63483
+hallowed_trap_floor3_flames_a = 63484
+hallowed_trap_floor3_flames_ab = 63485
+hallowed_trap_floor3_flames_b = 63486
+hallowed_trap_floor4_flames_a = 63487
+hallowed_trap_floor4_flames_ab = 63488
+hallowed_trap_floor4_flames_b = 63489
+hallowed_trap_floor5_flames_a = 63490
+hallowed_trap_floor5_flames_b = 63491
+hallowed_trap_floor1_sword_north = 63492
+hallowed_trap_floor1_sword_south = 63493
+hallowed_trap_floor1_sword_east = 63494
+hallowed_trap_floor1_bolts_north = 63495
+hallowed_trap_floor1_bolts_south = 63496
+hallowed_trap_floor1_bolts_east = 63497
+hallowed_trap_floor2_sword_lower = 63498
+hallowed_trap_floor2_sword_south = 63499
+hallowed_trap_floor2_sword_west = 63648
+hallowed_trap_floor2_sword_north = 63649
+hallowed_trap_floor2_bolts_south = 63650
+hallowed_trap_floor2_bolts_north = 63651
+hallowed_trap_floor2_bolts_lower = 63652
+hallowed_trap_floor2_bolts_east = 63653
+hallowed_trap_floor3_sword_northwest = 63654
+hallowed_trap_floor3_sword_southwest = 63655
+hallowed_trap_floor3_sword_northeast = 63656
+hallowed_trap_floor3_sword_southeast = 63657
+hallowed_trap_floor3_bolts_west = 63658
+hallowed_trap_floor3_bolts_centre = 63659
+hallowed_trap_floor3_bolts_lower = 63660
+hallowed_trap_floor3_bolts_east = 63661
+hallowed_trap_floor4_sword_north = 63662
+hallowed_trap_floor4_sword_south = 63663
+hallowed_trap_floor4_sword_lower_west = 63664
+hallowed_trap_floor4_sword_lower_east = 63665
+hallowed_trap_floor4_bolts_lower_west = 63666
+hallowed_trap_floor4_bolts_north = 63667
+hallowed_trap_floor4_bolts_lower_east = 63668
+hallowed_trap_floor4_bolts_east = 63669
+hallowed_trap_floor4_bolts_south = 63796
+hallowed_trap_floor4_lightning = 63797
+hallowed_trap_floor5_sword_upper = 63798
+hallowed_trap_floor5_sword_lower = 63799
+hallowed_trap_floor5_bolts_west = 63800
+hallowed_trap_floor5_bolts_middle = 63801
+hallowed_trap_floor5_bolts_east = 63802
+hallowed_trap_floor5_lightning = 63803
+shop_currency_hallowed_marks = 63804
+hallowed_bridge = 63805
+hallowed_bridge_pool = 63806
+hallowed_grapple = 63807
+hallowed_portal = 63808
+hallowed_barrier = 63809
+hallowed_grand_barrier = 63810
+hallowed_trap_floor5_flames_ab = 63231
+hallowed_stones_floor2 = 63232
+hallowed_strange_tiles_floor2 = 63233
+hallowed_strange_tiles_floor3 = 63234
+hallowed_strange_tiles_floor4 = 63235
+hallowed_strange_tiles_floor5 = 63236
+
+[gamevals.varp]
+hallowed_floor1_completions = 63060
+hallowed_floor2_completions = 63061
+hallowed_floor3_completions = 63062
+hallowed_floor4_completions = 63063
+hallowed_floor5_completions = 63064
+hallowed_progress = 63065
+
+[gamevals.varbit]
+hallowed_checkpoint = 63050
+hallowed_start = 63051
+hallowed_telepad_immunity = 63090
+
+[gamevals.queue]
+hallowed_trap_hit = 63346
+hallowed_timer_expired = 63347
+hallowed_barrier_activated = 63020
+hallowed_lightning_stun = 63021
+hallowed_stun_recovered = 63022
+hallowed_telepad = 63023
+
+[gamevals.enum]
+hallowed_time_warnings = 63970
+hallowed_bridge_nails = 63971
+hallowed_obelisk_gods = 63040
+hallowed_tool_limits = 342
+
+[gamevals.currency]
+hallowed_marks = 65531

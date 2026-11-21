@@ -1,0 +1,56 @@
+[[varp]]
+id = "varp.agility_laps_dorgesh_kaan"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.dorgesh_agility_outbound_route"
+varp = "varp.dorgesh_kaan_2"
+startBit = 8
+endBit = 8
+
+# UNVERIFIED: which value of dorgesh_agility_part_heavy and _delicate names which part.
+[[enum]]
+isServerOnly = true
+id = "enum.dorgesh_agility_heavy_parts"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+1 = "obj.dorgesh_powerstation_powerbox"
+2 = "obj.dorgesh_powerstation_lever"
+3 = "obj.dorgesh_powerstation_cog"
+
+[[enum]]
+isServerOnly = true
+id = "enum.dorgesh_agility_delicate_parts"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+1 = "obj.dorgesh_powerstation_battery"
+2 = "obj.dorgesh_powerstation_fuse"
+3 = "obj.dorgesh_powerstation_meter"
+
+[[enum]]
+isServerOnly = true
+id = "enum.dorgesh_agility_heavy_breaks"
+keyType = "OBJ"
+valueType = "OBJ"
+
+[enum.values]
+"obj.dorgesh_powerstation_powerbox" = "obj.dorgesh_powerstation_powerbox_broken"
+"obj.dorgesh_powerstation_lever" = "obj.dorgesh_powerstation_lever_broken"
+"obj.dorgesh_powerstation_cog" = "obj.dorgesh_powerstation_cog_broken"
+
+[[enum]]
+isServerOnly = true
+id = "enum.dorgesh_agility_delicate_breaks"
+keyType = "OBJ"
+valueType = "OBJ"
+
+[enum.values]
+"obj.dorgesh_powerstation_battery" = "obj.dorgesh_powerstation_battery_broken"
+"obj.dorgesh_powerstation_fuse" = "obj.dorgesh_powerstation_fuse_broken"
+"obj.dorgesh_powerstation_meter" = "obj.dorgesh_powerstation_meter_broken"

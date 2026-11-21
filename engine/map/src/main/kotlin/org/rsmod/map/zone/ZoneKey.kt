@@ -86,6 +86,20 @@ public value class ZoneKey(public val packed: Int) {
         public fun from(coords: CoordGrid): ZoneKey =
             fromAbsolute(x = coords.x, z = coords.z, level = coords.level)
 
+        public fun covering(southWest: CoordGrid, northEast: CoordGrid): List<ZoneKey> {
+            val lo = from(southWest)
+            val hi = from(northEast)
+            val zones = ArrayList<ZoneKey>()
+            for (level in lo.level..hi.level) {
+                for (x in lo.x..hi.x) {
+                    for (z in lo.z..hi.z) {
+                        zones += ZoneKey(x, z, level)
+                    }
+                }
+            }
+            return zones
+        }
+
         private fun pack(x: Int, z: Int, level: Int): Int {
             require(x in 0..X_BIT_MASK) { "`x` value must be within range [0..$X_BIT_MASK]." }
             require(z in 0..Z_BIT_MASK) { "`z` value must be within range [0..$Z_BIT_MASK]." }

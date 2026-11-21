@@ -1,0 +1,56 @@
+[[varp]]
+id = "varp.agility_lap_start"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_best_lap_wyrm_basic"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_best_lap_wyrm_advanced"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_best_lap_prifddinas"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.agility_extras"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.agility_lap_portal"
+varp = "varp.agility_extras"
+startBit = 0
+endBit = 3
+
+# Agility xp (in tenths) a Wilderness agility ticket pays, by the least number redeemed at once.
+[[enum]]
+isServerOnly = true
+id = "enum.agility_ticket_xp"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+1 = 2000
+11 = 2100
+51 = 2200
+101 = 2300
+
+# The unnoted blighted supply a paid Wilderness lap adds when the inventory has room, by weight.
+[[enum]]
+isServerOnly = true
+id = "enum.agility_dispenser_supplies"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.blighted_anglerfish" = 5
+"obj.blighted_mantaray" = 5
+"obj.blighted_karambwan" = 5
+"obj.blighted_4dose2restore" = 1
