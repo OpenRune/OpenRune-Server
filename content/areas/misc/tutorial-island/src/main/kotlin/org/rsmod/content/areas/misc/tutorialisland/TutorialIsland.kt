@@ -250,11 +250,11 @@ constructor(
     private fun ScriptContext.bindSkilling() {
         onOpHeldU(TutorialObj.BUCKET_WATER, TutorialObj.POT_FLOUR) { makeDough() }
         onOpHeldU(TutorialObj.TINDERBOX, TutorialObj.LOGS) { lightFire() }
-        onOpLocU(TutorialLoc.FIRE, TutorialObj.RAW_SHRIMP) { cookShrimp() }
-        onOpLocU(TutorialLoc.RANGE, TutorialObj.BREAD_DOUGH) { bakeBread() }
+        onOpLocU(TutorialLoc.FIRE, TutorialObj.RAW_SHRIMP) { cookShrimp(it.loc) }
+        onOpLocU(TutorialLoc.RANGE, TutorialObj.BREAD_DOUGH) { bakeBread(it.loc) }
         onOpLoc1(TutorialLoc.RANGE) {
             if (player.tutorialStage == TutorialStage.DOUGH_MADE) {
-                bakeBread()
+                bakeBread(it.loc)
             } else {
                 mes("You haven't got anything suitable for cooking! The master chef can help you out with that.")
             }
@@ -286,9 +286,9 @@ constructor(
             mes("There is no ore currently available in this rock.")
             soundSynth("synth.prospect")
         }
-        onOpLoc1(TutorialLoc.FURNACE) { smeltBar() }
-        onOpLocU(TutorialLoc.FURNACE, TutorialObj.TIN_ORE) { smeltBar() }
-        onOpLocU(TutorialLoc.FURNACE, TutorialObj.COPPER_ORE) { smeltBar() }
+        onOpLoc1(TutorialLoc.FURNACE) { smeltBar(it.loc) }
+        onOpLocU(TutorialLoc.FURNACE, TutorialObj.TIN_ORE) { smeltBar(it.loc) }
+        onOpLocU(TutorialLoc.FURNACE, TutorialObj.COPPER_ORE) { smeltBar(it.loc) }
         onOpHeld1(TutorialObj.BONES) { buryBones(it.slot) }
     }
 
@@ -458,6 +458,22 @@ constructor(
         }
     }
 
+    private suspend fun ProtectedAccess.awaitArrival(target: CoordGrid, maxTicks: Int = 10) {
+        var ticks = 0
+        while (player.coords.chebyshevDistance(target) > 1 && ticks < maxTicks) {
+            delay(1)
+            ticks++
+        }
+    }
+
+    private suspend fun ProtectedAccess.awaitArrival(loc: BoundLocInfo, maxTicks: Int = 10) {
+        var ticks = 0
+        while (!player.isWithinDistance(loc, 1) && ticks < maxTicks) {
+            delay(1)
+            ticks++
+        }
+    }
+
     private suspend fun ProtectedAccess.mesOverlay(text: String) {
         player.ifOpenOverlay("interface.mesoverlay", "component.chatbox:chatoverlay", eventBus)
         player.chatoverlayAllowMesOverlap = 1
@@ -538,13 +554,16 @@ constructor(
         faceSquare(fireCoords)
     }
 
-    private suspend fun ProtectedAccess.cookShrimp() {
+    private suspend fun ProtectedAccess.cookShrimp(loc: BoundLocInfo) {
         if (player.tutorialStage < TutorialStage.FIRE_LIT) {
             return
         }
         val firstCook = player.tutorialStage == TutorialStage.FIRE_LIT
+        awaitArrival(loc)
+        if (!player.isWithinDistance(loc, 1)) {
+            return
+        }
         mesOverlay("Your character is now attempting to cook some shrimp. This will only take a few seconds.")
-        arriveDelay()
         anim("seq.human_firecooking")
         soundSynth("synth.fry")
         delay(3)
@@ -571,16 +590,19 @@ constructor(
         }
     }
 
-    private suspend fun ProtectedAccess.bakeBread() {
+    private suspend fun ProtectedAccess.bakeBread(loc: BoundLocInfo) {
         if (player.tutorialStage < TutorialStage.DOUGH_MADE) {
             return
         }
         val firstBake = player.tutorialStage == TutorialStage.DOUGH_MADE
+        awaitArrival(loc)
+        if (!player.isWithinDistance(loc, 1)) {
+            return
+        }
         if (firstBake) {
             guide.overlay(player, 5)
         }
         mesOverlay("Your character is now attempting to bake some bread. This will only take a few seconds.")
-        arriveDelay()
         anim("seq.human_cooking")
         soundSynth("synth.oven")
         delay(5)
@@ -620,8 +642,11 @@ constructor(
             )
             return
         }
+        awaitArrival(spot.coords)
+        if (player.coords.chebyshevDistance(spot.coords) > 1) {
+            return
+        }
         faceSquare(spot.coords)
-        arriveDelay()
         anim("seq.human_smallnet")
         mesOverlay(
             "Your character is now attempting to catch some shrimp. Sit back for a moment " +
@@ -663,8 +688,11 @@ constructor(
             mesbox("You need an axe to chop this tree.<br>Talk to the survival expert to get one.")
             return
         }
+        awaitArrival(loc)
+        if (!player.isWithinDistance(loc, 1)) {
+            return
+        }
         faceLoc(loc)
-        arriveDelay()
         anim(getInvObj(axe).axeWoodcuttingAnim.internalName)
         mesOverlay(
             "Your character is now attempting to cut down the tree. Sit back for a moment " +
@@ -744,8 +772,11 @@ constructor(
             )
             return
         }
+        awaitArrival(loc)
+        if (!player.isWithinDistance(loc, 1)) {
+            return
+        }
         faceLoc(loc)
-        arriveDelay()
         anim(getInvObj(pickaxe).pickaxeAnim.internalName)
         mesOverlay(
             "Your character is now attempting to mine the rock.<br>" +
@@ -763,7 +794,7 @@ constructor(
         objbox(ore, "You manage to mine some $oreName.")
     }
 
-    private suspend fun ProtectedAccess.smeltBar() {
+    private suspend fun ProtectedAccess.smeltBar(loc: BoundLocInfo) {
         if (player.tutorialStage < TutorialStage.MINING_GUIDE_TALKED) {
             mes("This is a furnace for smelting metal. You'll learn how to use it soon.")
             return
@@ -776,8 +807,11 @@ constructor(
             mesbox("You also need some copper ore to make a bronze bar.")
             return
         }
+        awaitArrival(loc)
+        if (!player.isWithinDistance(loc, 1)) {
+            return
+        }
         mes("You smelt the copper and tin together in the furnace.")
-        arriveDelay()
         anim("seq.human_furnace")
         soundSynth("synth.furnace")
         delay(3)

@@ -14,6 +14,7 @@ import org.rsmod.api.combat.player.specialAttackType
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.death.NpcAttackType
 import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.npc.isValidTarget
@@ -57,7 +58,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.attackMelee(npc: Npc, attack: CombatAttack.Melee) {
-        if (!canAttack(npc)) {
+        if (!canAttack(npc, NpcAttackType.Melee)) {
             return
         }
 
@@ -107,7 +108,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.attackRanged(npc: Npc, attack: CombatAttack.Ranged) {
-        if (!canAttack(npc)) {
+        if (!canAttack(npc, NpcAttackType.Ranged)) {
             return
         }
 
@@ -232,7 +233,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.attackMagicSpell(npc: Npc, attack: CombatAttack.Spell) {
-        if (!canAttack(npc)) {
+        if (!canAttack(npc, NpcAttackType.Magic)) {
             return
         }
 
@@ -257,7 +258,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.attackMagicStaff(npc: Npc, attack: CombatAttack.Staff) {
-        if (!canAttack(npc)) {
+        if (!canAttack(npc, NpcAttackType.Magic)) {
             return
         }
 
@@ -306,9 +307,9 @@ constructor(
         mes("Your staff fails to respond.")
     }
 
-    private fun ProtectedAccess.canAttack(npc: Npc): Boolean {
+    private fun ProtectedAccess.canAttack(npc: Npc, attackType: NpcAttackType): Boolean {
         for (hook in attackValidateHooks) {
-            when (val result = hook.validate(player, npc)) {
+            when (val result = hook.validate(player, npc, attackType)) {
                 is NpcAttackValidateResult.Deny -> {
                     mes(result.message)
                     return false

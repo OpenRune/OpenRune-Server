@@ -3,6 +3,7 @@ package org.rsmod.content.areas.misc.tutorialisland
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.invtx.invAdd
@@ -74,6 +75,9 @@ constructor(
         onTabOpened("stone11", TutorialStage.SETTINGS_REQUESTED, TutorialStage.SETTINGS_OPENED)
         onTabOpened("stone1", TutorialStage.SHRIMP_CAUGHT, TutorialStage.SKILLS_VIEWED)
         onIfToplevelButton("component.toplevel_osrs_stretch:stone2") {
+            if (op != IfButtonOp.Op1) {
+                return@onIfToplevelButton
+            }
             when {
                 player.tutorialStage == TutorialStage.QUEST_GUIDE_TALKED ->
                     guide.advance(player, TutorialStage.QUEST_LIST_OPENED)
