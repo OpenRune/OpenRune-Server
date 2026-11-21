@@ -3,6 +3,7 @@ package org.rsmod.content.areas.misc.tutorialisland
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import kotlin.math.sign
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.dialogue.Dialogue
@@ -93,7 +94,7 @@ constructor(
                 mesbox("You need to talk to the Survival Guide and complete her tasks before you are allowed to proceed through this gate.")
                 return@onOpLoc1
             }
-            player.openGate(it.loc)
+            openGate(it.loc)
             player.advanceIf(TutorialStage.SHRIMP_COOKED, TutorialStage.GATE_OPENED)
         }
         onOpLoc1(TutorialLoc.GATE_RIGHT) {
@@ -101,7 +102,7 @@ constructor(
                 mesbox("You need to talk to the Survival Guide and complete her tasks before you are allowed to proceed through this gate.")
                 return@onOpLoc1
             }
-            player.openGate(it.loc)
+            openGate(it.loc)
             player.advanceIf(TutorialStage.SHRIMP_COOKED, TutorialStage.GATE_OPENED)
         }
         onOpLoc1(TutorialLoc.DOOR_2) {
@@ -186,7 +187,7 @@ constructor(
                 mesbox("You need to finish with Mining and Smithing first.")
                 return@onOpLoc1
             }
-            player.openGate(it.loc)
+            openGate(it.loc)
             player.advanceIf(TutorialStage.DAGGER_SMITHED, TutorialStage.COMBAT_GATE)
         }
         onOpLoc1(TutorialLoc.COMBAT_GATE_RIGHT) {
@@ -194,7 +195,7 @@ constructor(
                 mesbox("You need to finish with Mining and Smithing first.")
                 return@onOpLoc1
             }
-            player.openGate(it.loc)
+            openGate(it.loc)
             player.advanceIf(TutorialStage.DAGGER_SMITHED, TutorialStage.COMBAT_GATE)
         }
         onOpLoc1(TutorialLoc.RAT_GATE_LEFT) { useRatGate(it.loc) }
@@ -303,6 +304,25 @@ constructor(
         }
     }
 
+    private fun doorExit(from: CoordGrid, loc: BoundLocInfo, leaves: List<OpenLeaf>): CoordGrid {
+        val door = loc.coords
+        val leaf = leaves.firstOrNull()?.coords
+        val dx = (door.x - from.x).sign
+        val dz = (door.z - from.z).sign
+        return when (loc.angle) {
+            LocAngle.West,
+            LocAngle.East -> {
+                val step = if (dx != 0) dx else leaf?.let { (it.x - door.x).sign } ?: dz
+                door.translateX(step)
+            }
+            LocAngle.North,
+            LocAngle.South -> {
+                val step = if (dz != 0) dz else leaf?.let { (it.z - door.z).sign } ?: dx
+                door.translateZ(step)
+            }
+        }
+    }
+
     private suspend fun ProtectedAccess.openDoor(loc: BoundLocInfo) {
         val leaves = DOOR_OPEN[loc.internalName]
         if (leaves == null) {
@@ -311,33 +331,46 @@ constructor(
         }
         locRepo.del(loc, DOOR_OPEN_TICKS)
         soundSynth(62)
-        val distance = coords.chebyshevDistance(loc.coords)
-        if (distance > 0) {
-            forcedWalk(loc.coords, crossTiles = distance)
+        val from = coords
+        val dest = doorExit(from, loc, leaves)
+        if (from != dest) {
+            forcedWalk(listOf(loc.coords, dest), crossTiles = from.chebyshevDistance(dest))
         }
         player.addOpenLeaves(leaves, DOOR_OPEN_TICKS - 1)
         locRepo.change(loc, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS - 1)
     }
 
-    private fun Player.openGate(loc: BoundLocInfo) {
+    private suspend fun ProtectedAccess.openGate(loc: BoundLocInfo) {
         val spec = GATE_OPEN[loc.internalName]
         if (spec == null) {
             locRepo.del(loc, DOOR_OPEN_TICKS)
             return
         }
+        val halves = mutableListOf<LocInfo>()
         for (half in spec.halves) {
-            if (half.name == loc.internalName && half.coords == loc.coords) {
-                locRepo.change(loc, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS)
-            } else {
-                findNearbyLoc(half.coords, half.name)?.let {
-                    locRepo.change(it, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS)
+            val gate =
+                if (half.name == loc.internalName && half.coords == loc.coords) {
+                    LocInfo(loc.layer, loc.coords, loc.entity)
+                } else {
+                    findNearbyLoc(half.coords, half.name)
                 }
+            if (gate != null) {
+                locRepo.del(gate, DOOR_OPEN_TICKS)
+                halves += gate
             }
         }
-        addOpenLeaves(spec.leaves)
         if (spec === WOODEN_GATE) {
             soundSynth(67)
         }
+        val from = coords
+        val dest = doorExit(from, loc, spec.leaves)
+        if (from != dest) {
+            forcedWalk(listOf(loc.coords, dest), crossTiles = from.chebyshevDistance(dest))
+        }
+        for (gate in halves) {
+            locRepo.change(gate, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS - 1)
+        }
+        player.addOpenLeaves(spec.leaves, DOOR_OPEN_TICKS - 1)
     }
 
     private fun Player.addOpenLeaves(leaves: List<OpenLeaf>, duration: Int = DOOR_OPEN_TICKS) {
@@ -355,7 +388,7 @@ constructor(
             sayCombatInstructor("No, don't enter the pit. Range the rats from outside the cage.")
             return
         }
-        player.openGate(loc)
+        openGate(loc)
     }
 
     private suspend fun ProtectedAccess.sayCombatInstructor(line: String) {
@@ -406,9 +439,9 @@ constructor(
         invAdd(inv, TutorialObj.BREAD_DOUGH, 1)
         invAdd(inv, TutorialObj.POT_EMPTY, 1)
         invAdd(inv, TutorialObj.BUCKET_EMPTY, 1)
-        objbox(TutorialObj.BREAD_DOUGH, "You make some dough.")
         TutorialHighlights.clearItems(player)
         guide.advance(player, TutorialStage.DOUGH_MADE)
+        objbox(TutorialObj.BREAD_DOUGH, "You make some dough.")
     }
 
     private suspend fun ProtectedAccess.lightFire() {
@@ -451,11 +484,11 @@ constructor(
         if (invDel(inv, TutorialObj.RAW_SHRIMP, 1).failure) {
             return
         }
-        objbox(TutorialObj.SHRIMP, "You manage to cook some shrimp.")
-        TutorialHighlights.clearItems(player)
         tutorialStat("stat.cooking", 30.0)
         invAdd(inv, TutorialObj.SHRIMP, 1)
+        TutorialHighlights.clearItems(player)
         guide.advance(player, TutorialStage.SHRIMP_COOKED)
+        objbox(TutorialObj.SHRIMP, "You manage to cook some shrimp.")
     }
 
     private suspend fun ProtectedAccess.bakeBread() {
@@ -468,10 +501,10 @@ constructor(
         if (invDel(inv, TutorialObj.BREAD_DOUGH, 1).failure) {
             return
         }
-        objbox(TutorialObj.BREAD, "You manage to bake some bread.")
         tutorialStat("stat.cooking", 40.0)
         invAdd(inv, TutorialObj.BREAD, 1)
         guide.advance(player, TutorialStage.BREAD_BAKED)
+        objbox(TutorialObj.BREAD, "You manage to bake some bread.")
     }
 
     private suspend fun ProtectedAccess.catchShrimp() {
@@ -492,9 +525,9 @@ constructor(
         delay(6)
         invAdd(inv, TutorialObj.RAW_SHRIMP, 1)
         tutorialStat("stat.fishing", 10.0)
-        objbox(TutorialObj.RAW_SHRIMP, "You manage to catch some shrimp.")
         TutorialHighlights.item(player, TutorialObj.RAW_SHRIMP, alert = true)
         guide.advance(player, TutorialStage.SHRIMP_CAUGHT)
+        objbox(TutorialObj.RAW_SHRIMP, "You manage to catch some shrimp.")
     }
 
     private suspend fun ProtectedAccess.chopTree(loc: BoundLocInfo) {
@@ -521,10 +554,10 @@ constructor(
             return
         }
         tutorialStat("stat.woodcutting", 25.0)
-        objbox(TutorialObj.LOGS, "You manage to cut some logs.")
         TutorialHighlights.item(player, TutorialObj.LOGS)
         TutorialHighlights.item(player, TutorialObj.TINDERBOX)
         guide.advance(player, TutorialStage.LOGS_CUT)
+        objbox(TutorialObj.LOGS, "You manage to cut some logs.")
     }
 
     private suspend fun ProtectedAccess.mineTin(loc: BoundLocInfo) {
@@ -543,9 +576,9 @@ constructor(
         delay(5)
         invAdd(inv, TutorialObj.TIN_ORE, 1)
         tutorialStat("stat.mining", 17.5)
-        objbox(TutorialObj.TIN_ORE, "You manage to mine some tin.")
         soundSynth(3600)
         guide.advance(player, TutorialStage.TIN_MINED)
+        objbox(TutorialObj.TIN_ORE, "You manage to mine some tin.")
     }
 
     private suspend fun ProtectedAccess.mineCopper(loc: BoundLocInfo) {
@@ -564,9 +597,9 @@ constructor(
         delay(5)
         invAdd(inv, TutorialObj.COPPER_ORE, 1)
         tutorialStat("stat.mining", 17.5)
-        objbox(TutorialObj.COPPER_ORE, "You manage to mine some copper.")
         soundSynth(3600)
         guide.advance(player, TutorialStage.COPPER_MINED)
+        objbox(TutorialObj.COPPER_ORE, "You manage to mine some copper.")
     }
 
     private suspend fun ProtectedAccess.smeltBar() {
@@ -670,11 +703,11 @@ constructor(
                         "this pond here. Let's try and catch some.",
                 )
                 if (access.giveTutorialItems(TutorialObj.NET to 1)) {
+                    guide.advance(player, TutorialStage.NET_GIVEN)
                     objbox(
                         TutorialObj.NET,
                         "The survival expert gives you a <col=000080>small fishing net<col=000000>.",
                     )
-                    guide.advance(player, TutorialStage.NET_GIVEN)
                 }
             }
             TutorialStage.NET_GIVEN, TutorialStage.INVENTORY_VIEWED -> {
@@ -702,13 +735,13 @@ constructor(
                         "need a fire. This brings us on to the Woodcutting and Firemaking skills.",
                 )
                 if (access.giveTutorialItems(TutorialObj.BRONZE_AXE to 1, TutorialObj.TINDERBOX to 1)) {
+                    guide.advance(player, TutorialStage.AXE_GIVEN)
                     doubleobjbox(
                         TutorialObj.BRONZE_AXE,
                         TutorialObj.TINDERBOX,
                         "The survival expert gives you a <col=000080>bronze axe<col=000000> and a " +
                             "<col=000000><col=000080>tinderbox<col=000000>.",
                     )
-                    guide.advance(player, TutorialStage.AXE_GIVEN)
                 }
             }
             TutorialStage.AXE_GIVEN -> {
@@ -906,15 +939,15 @@ constructor(
                     "no, no. I am going to teach you the fine art of cooking bread.",
             )
             if (access.giveTutorialItems(TutorialObj.POT_FLOUR to 1, TutorialObj.BUCKET_WATER to 1)) {
+                guide.advance(player, TutorialStage.CHEF_TALKED)
+                TutorialHighlights.item(player, TutorialObj.POT_FLOUR)
+                TutorialHighlights.item(player, TutorialObj.BUCKET_WATER)
                 doubleobjbox(
                     TutorialObj.POT_FLOUR,
                     TutorialObj.BUCKET_WATER,
                     "The master chef gives you some <col=000080>flour<col=000000> and some " +
                         "<col=000080>water<col=000000>.",
                 )
-                TutorialHighlights.item(player, TutorialObj.POT_FLOUR)
-                TutorialHighlights.item(player, TutorialObj.BUCKET_WATER)
-                guide.advance(player, TutorialStage.CHEF_TALKED)
             }
         } else if (player.tutorialStage < TutorialStage.BREAD_BAKED) {
             chatNpc(neutral, "Time for you to learn the fine art of cooking bread.")
@@ -1135,11 +1168,11 @@ constructor(
                         "contain tin and copper. Why don't you get started by mining some?",
                 )
                 if (access.giveTutorialItems(TutorialObj.BRONZE_PICKAXE to 1)) {
+                    guide.advance(player, TutorialStage.MINING_GUIDE_TALKED)
                     objbox(
                         TutorialObj.BRONZE_PICKAXE,
                         "The mining instructor gives you a <col=000080>bronze pickaxe<col=000000>.",
                     )
-                    guide.advance(player, TutorialStage.MINING_GUIDE_TALKED)
                 }
             }
             TutorialStage.BAR_SMELTED -> {
@@ -1151,11 +1184,11 @@ constructor(
                         "use. See if you can make a bronze dagger.",
                 )
                 if (access.giveTutorialItems(TutorialObj.HAMMER to 1)) {
+                    guide.advance(player, TutorialStage.MINING_GUIDE_BAR)
                     objbox(
                         TutorialObj.HAMMER,
                         "The mining instructor gives you a <col=000080>hammer<col=000000>.",
                     )
-                    guide.advance(player, TutorialStage.MINING_GUIDE_BAR)
                 }
             }
             TutorialStage.MINING_GUIDE_BAR, TutorialStage.ANVIL_OPENED -> {
@@ -1517,14 +1550,14 @@ constructor(
                         "try it out on one of those chickens.",
                 )
                 if (access.giveTutorialItems(TutorialObj.AIR_RUNE to 5, TutorialObj.MIND_RUNE to 5)) {
+                    guide.advance(player, TutorialStage.RUNES_GIVEN)
+                    TutorialHighlights.windStrike(player)
                     doubleobjbox(
                         TutorialObj.AIR_RUNE,
                         TutorialObj.MIND_RUNE,
                         "Terrova gives you some <col=000080>air runes<col=000000> and " +
                             "<col=000080>mind runes<col=000000>.",
                     )
-                    TutorialHighlights.windStrike(player)
-                    guide.advance(player, TutorialStage.RUNES_GIVEN)
                 }
             }
             player.tutorialStage == TutorialStage.RUNES_GIVEN -> {

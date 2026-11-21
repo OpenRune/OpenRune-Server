@@ -11,6 +11,7 @@ import org.rsmod.api.net.rsprot.player.InterfaceEvents
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.player.ui.IfOverlayButton
+import org.rsmod.api.player.ui.IfToplevelButton
 import org.rsmod.api.player.ui.ifCloseInputDialog
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -37,7 +38,8 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
 
     @OptIn(InternalApi::class)
     override fun handle(player: Player, message: If1Button) {
-        val componentType = ServerCacheManager.fromComponent(message.asComponent.packed)
+        val source = player.ui.gameframeSources.getOrNull(message.asComponent) ?: message.asComponent
+        val componentType = ServerCacheManager.fromComponent(source.packed)
         val interfaceType = ServerCacheManager.fromInterface(message.asComponent.packed)
 
         val opEnabled =
@@ -50,8 +52,14 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
 
         if (player.ui.containsOverlay(interfaceType) || player.ui.containsTopLevel(interfaceType)) {
             val event = IfOverlayButton(componentType, comsub = -1, obj = null, op = IfButtonOp.Op1)
+            val toplevel = player.ui.containsTopLevel(interfaceType)
             logger.debug { "[Overlay] If1Button: $message (event=$event)" }
-            protectedAccess.launchBeside(player) { eventBus.publish(this, event) }
+            protectedAccess.launchBeside(player) {
+                eventBus.publish(this, event)
+                if (toplevel) {
+                    eventBus.publish(IfToplevelButton(player, componentType, IfButtonOp.Op1))
+                }
+            }
             return
         }
 
