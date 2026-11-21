@@ -8719,8 +8719,8 @@ id = "npc.dagcave_ranged_boss"
 inherit = "npc.dagcave_ranged_boss"
 respawnDir = "East"
 respawnRate = 150
-huntMode = 6
-huntRange = 7
+huntMode = 8
+huntRange = 15
 maxRange = 15
 attackRange = 15
 defaultMode = "Wander"
@@ -8742,8 +8742,8 @@ id = "npc.dagcave_magic_boss"
 inherit = "npc.dagcave_magic_boss"
 respawnDir = "South"
 respawnRate = 150
-huntMode = 6
-huntRange = 7
+huntMode = 8
+huntRange = 15
 maxRange = 15
 attackRange = 15
 defaultMode = "Wander"
@@ -8766,7 +8766,7 @@ inherit = "npc.dagcave_melee_boss"
 respawnDir = "NorthWest"
 respawnRate = 150
 huntMode = 6
-huntRange = 5
+huntRange = 15
 maxRange = 15
 attackRange = 1
 defaultMode = "Wander"
@@ -8782,6 +8782,63 @@ wanderRange = 5
 "param.attack_sound"="synth.meganoth_melee_attack"
 "param.defend_sound"="synth.meganoth_hit"
 "param.death_sound"="synth.meganoth_death"
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x1"
+inherit = "npc.dagannoth_water_creature_1x1"
+huntMode = 8
+huntRange = 10
+maxRange = 7
+attackRange = 7
+respawnRate = 10
+respawnDir = "South"
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x12"
+inherit = "npc.dagannoth_water_creature_1x12"
+huntMode = 8
+huntRange = 10
+maxRange = 7
+attackRange = 7
+respawnRate = 10
+respawnDir = "South"
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x13"
+inherit = "npc.dagannoth_water_creature_1x13"
+huntMode = 8
+huntRange = 10
+maxRange = 7
+attackRange = 7
+respawnRate = 10
+respawnDir = "South"
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x1_invisible"
+inherit = "npc.dagannoth_water_creature_1x1_invisible"
+respawnRate = 10
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x1_invisible2"
+inherit = "npc.dagannoth_water_creature_1x1_invisible2"
+respawnRate = 10
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x1_invisible3"
+inherit = "npc.dagannoth_water_creature_1x1_invisible3"
+respawnRate = 10
+defaultMode = "Wander"
+wanderRange = 5
 
 [[npc]]
 id = "npc.dagannoth_weak_door_south"

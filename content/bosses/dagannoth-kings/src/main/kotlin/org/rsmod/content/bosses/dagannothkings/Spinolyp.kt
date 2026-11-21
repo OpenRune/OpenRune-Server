@@ -29,7 +29,7 @@ class Spinolyp @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             config = WATER_STRIKE_PROJECTILE,
             hit =
                 hit {
-                    damage(Accuracy(NpcMaxHit(), kind = AccuracyKind.Ranged))
+                    damage(Accuracy(NpcMaxHit(source = RangedMaxHit), kind = AccuracyKind.Ranged))
                     type(HitType.Magic)
                     spotanim("spotanim.waterstrike_impact", height = 124)
                     onHit(statDrain("stat.prayer", amount = 1))

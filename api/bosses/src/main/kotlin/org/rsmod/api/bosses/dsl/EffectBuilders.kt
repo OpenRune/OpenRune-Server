@@ -103,7 +103,8 @@ fun npcMaxHit(
     meleeAttackType: MeleeAttackType? = null,
     scale: Double = 1.0,
     minHit: Int = 0,
-): DamageExpr.NpcMaxHit = DamageExpr.NpcMaxHit(meleeAttackType, scale, minHit)
+    source: MaxHitSource = MaxHitSource.ByHitType,
+): DamageExpr.NpcMaxHit = DamageExpr.NpcMaxHit(meleeAttackType, scale, minHit, source)
 
 fun projectile(
     spotanim: String,
@@ -471,6 +472,7 @@ typealias Roll = DamageExpr.Roll
 typealias Accuracy = DamageExpr.Accuracy
 typealias Fixed = DamageExpr.Fixed
 typealias NpcMaxHit = DamageExpr.NpcMaxHit
+typealias MaxHitSource = org.rsmod.api.bosses.spec.MaxHitSource
 typealias HpBelow = Condition.HpBelow
 typealias TargetPraying = Condition.TargetPraying
 typealias InPhase = Condition.InPhase
@@ -500,3 +502,7 @@ val DragonfireMetal: HitType = HitType.DragonfireMetal
 val WyvernIce: HitType = HitType.WyvernIce
 val Typeless: HitType = HitType.Typeless
 val MagicalRanged: AccuracyKind = AccuracyKind.MagicalRanged
+
+val MeleeMaxHit: MaxHitSource = MaxHitSource.Melee
+val RangedMaxHit: MaxHitSource = MaxHitSource.Ranged
+val MagicMaxHit: MaxHitSource = MaxHitSource.Magic

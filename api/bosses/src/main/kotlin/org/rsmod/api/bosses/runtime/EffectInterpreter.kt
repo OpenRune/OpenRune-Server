@@ -1015,8 +1015,15 @@ class EffectInterpreter internal constructor(
         }
 
     private fun npcFormulaMaxHit(expr: DamageExpr.NpcMaxHit, hitType: BossHitType, t: Player): Int {
+        val source =
+            when (expr.source) {
+                MaxHitSource.ByHitType -> hitType
+                MaxHitSource.Melee -> BossHitType.Melee
+                MaxHitSource.Ranged -> BossHitType.Ranged
+                MaxHitSource.Magic -> BossHitType.Magic
+            }
         val raw =
-            when (hitType) {
+            when (source) {
                 BossHitType.Ranged -> deps.maxHit.getRangedMaxHit(npc, t)
                 BossHitType.Magic,
                 BossHitType.Dragonfire,
