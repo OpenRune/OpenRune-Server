@@ -36,6 +36,12 @@ public object SkillModifiers {
     /** Extra percent chance, on top of any gear, that a potion's secondaries are not used up. */
     @Volatile public var secondarySaveChance: (Player) -> Int = { 0 }
 
+    /** When `true`, gathering [stat]'s resources goes on with a full inventory (they're banked). */
+    @Volatile public var gathersWhenFull: (Player, String) -> Boolean = { _, _ -> false }
+
+    public fun invFullFor(player: Player, stat: String): Boolean =
+        player.inv.isFull() && !gathersWhenFull(player, stat)
+
     /** When `true`, eating food does not use it up. */
     @Volatile public var keepsFood: (Player) -> Boolean = { false }
 

@@ -72,7 +72,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (SkillModifiers.invFullFor(player, "stat.woodcutting")) {
             val product = type.treeLogs
             mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
             soundSynth("synth.pillory_wrong")
@@ -107,7 +107,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (SkillModifiers.invFullFor(player, "stat.woodcutting")) {
             val product = type.treeLogs
             mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
             soundSynth("synth.pillory_wrong")

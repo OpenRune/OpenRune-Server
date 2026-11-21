@@ -220,7 +220,7 @@ constructor(
             return null
         }
 
-        if (inv.isFull()) {
+        if (SkillModifiers.invFullFor(player, "stat.fishing")) {
             if (verbose) {
                 mes("Your inventory is too full to hold any more fish.")
                 soundSynth("synth.pillory_wrong")

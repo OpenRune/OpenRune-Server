@@ -40,7 +40,7 @@ The relic window shows the game's own description of each relic. On this server:
 
 | Relic | On this server |
 |---|---|
-| Endless Harvest | Double logs, fish and ore and their XP; trees and rocks don't deplete; resources go to the bank (`::dprelic bank off`). |
+| Endless Harvest | Double logs, fish and ore and their XP; trees and rocks don't deplete; resources go straight to the bank, even with a full inventory (`::dprelic bank off` to keep them). |
 | Barbarian Gathering | Chop and mine bare-handed (as crystal tools); failed gathering attempts succeed half the time; 10% bonus Strength and Agility XP. Fishing still needs tools, and the knapsack does nothing. |
 | Abundance | +10 to non-combat skills, +2 XP per drop in them, 2 coins per XP gained in them. |
 | Hotfoot | Agility and Cooking always succeed. With the searing boots on: fish are cooked, ore is smelted, running gives Agility XP. No Agility courses exist here. |

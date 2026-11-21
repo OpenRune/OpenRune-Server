@@ -84,7 +84,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (SkillModifiers.invFullFor(player, "stat.mining")) {
             mes(inventoryFullMessage(data))
             soundSynth("synth.pillory_wrong")
             return
@@ -119,7 +119,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (SkillModifiers.invFullFor(player, "stat.mining")) {
             mes(inventoryFullMessage(data))
             soundSynth("synth.pillory_wrong")
             resetAnim()

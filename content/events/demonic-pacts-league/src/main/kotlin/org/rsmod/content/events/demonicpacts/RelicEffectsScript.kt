@@ -37,6 +37,7 @@ import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.spells.autocast.MagicSpellbookManager
 import org.rsmod.api.spells.runes.unlimited.InventoryRuneSources
+import org.rsmod.content.interfaces.bank.bankInsert
 import org.rsmod.api.table.FiremakingLogsRow
 import org.rsmod.api.table.cooking.CookingFoodsRow
 import org.rsmod.api.table.herblore.HerbloreCleaningRow
@@ -164,6 +165,8 @@ constructor(
             previousHands(player, stat) ||
                 (stat in BARE_HAND_STATS && player.hasRelic(RelicNames.BARBARIAN_GATHERING))
         }
+        val previousFull = SkillModifiers.gathersWhenFull
+        SkillModifiers.gathersWhenFull = { player, stat -> previousFull(player, stat) || banksGathered(player, stat) }
         val previousSecondaries = SkillModifiers.secondarySaveChance
         SkillModifiers.secondarySaveChance = { player ->
             val forager = if (player.hasRelic(RelicNames.FRIENDLY_FORAGER)) FORAGER_SECONDARY_SAVE else 0
@@ -203,6 +206,9 @@ constructor(
             product.count *= 2
             product.experience *= 2
             product.depletes = false
+            if (banksGathered(player, product.skill)) {
+                product.deliver = { it.player.bankInsert(it.item.asRSCM(RSCMType.OBJ), it.count) }
+            }
         }
         if (player.hasRelic(RelicNames.BARBARIAN_GATHERING)) {
             val bonus = product.experience * BARBARIAN_BONUS_XP
@@ -259,6 +265,13 @@ constructor(
         }
     }
 
+    private fun banksGathered(player: Player, stat: String): Boolean =
+        player.isDemonicPactsLeague &&
+            stat in GATHERING_STATS &&
+            player.hasRelic(RelicNames.ENDLESS_HARVEST) &&
+            RelicEffects.banksResources(player) &&
+            !(stat == WOODCUTTING && RelicEffects.burnsLogs(player))
+
     private fun onComplete(player: Player, context: SkillingActionContext) {
         val product = context as? SkillingActionContext.Product ?: return
         if (!player.isDemonicPactsLeague || product.skill !in GATHERING_STATS) {
@@ -274,9 +287,6 @@ constructor(
                     return
                 }
             }
-        }
-        if (RelicEffects.banksResources(player)) {
-            RelicEffects.bankFromInventory(player, product.item, product.count)
         }
     }
 

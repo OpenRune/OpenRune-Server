@@ -1,5 +1,6 @@
 package org.rsmod.content.interfaces.bank
 
+import dev.openrune.ServerCacheManager
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.vars.intVarBit
@@ -47,6 +48,58 @@ fun Player.bankAppend(from: Inventory, fromSlot: Int): Boolean {
                 this.intoCapacity = capacity
                 this.count = obj.count
                 this.strict = true
+            }
+        }
+    if (!result.success) {
+        return false
+    }
+
+    if (appendsToMain) {
+        bankMainTabSize += 1
+    }
+    return true
+}
+
+/**
+ * Puts [count] of [obj] (unnoted) straight into the player's bank: onto an existing stack,
+ * otherwise at the end of the main tab. A placeholder is left for the caller to handle, so this
+ * returns `false` then. On `false` the bank is unchanged.
+ */
+fun Player.bankInsert(obj: Int, count: Int): Boolean {
+    if (count <= 0) {
+        return false
+    }
+    val type = ServerCacheManager.getItem(obj) ?: return false
+    val base = if (type.isCert) ServerCacheManager.getItem(type.certlink) ?: return false else type
+    val bank = invMap.getOrPut("inv.bank")
+    val capacity = bankCapacity
+    val placeholder = placeholder(base)
+
+    val existing = bank.indexOfFirst { it?.id == base.id || it?.id == placeholder.id }
+    if (existing != -1 && bank[existing]?.id != base.id) {
+        return false
+    }
+    val appendsToMain = existing == -1
+    val slot =
+        if (!appendsToMain) {
+            existing
+        } else {
+            val mainFirst = BankTab.tabs.sumOf { vars[it.sizeVarBit] }
+            val end = mainFirst + bankMainTabSize
+            if (end >= capacity || bank[end] != null) {
+                return false
+            }
+            end
+        }
+
+    val result =
+        invTransaction(bank) {
+            val bankInv = select(bank)
+            insert {
+                this.into = bankInv
+                this.obj = base.id
+                this.strictCount = count
+                this.strictSlot = slot
             }
         }
     if (!result.success) {
