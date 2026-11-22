@@ -11,6 +11,7 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.hook.HeldEquipValidateHook
+import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.map.CoordGrid
 
@@ -129,6 +130,21 @@ class TutorialRulesTest {
             player.tutorialStage = TutorialStage.QUEST_HOUSE_ENTERED
             player.coords = CoordGrid(3086, 3125, 0)
             assertEquals(TutorialStage.QUEST_HOUSE_INSIDE, rules.nextStage(player))
+        }
+
+    @Test
+    fun GameTestState.`tutorial xp stops at level three`() =
+        runInjectedGameTest(TutorialXpMod::class, TestHooks()) { mod ->
+            player.tutorialStage = TutorialStage.SHRIMP_CAUGHT
+            repeat(30) { player.tutorialStatAdvance("stat.fishing", 10.0) }
+
+            assertEquals(3, player.statBase("stat.fishing"))
+            val cappedXp = player.statMap.getXP("stat.fishing")
+            assertEquals(0, player.tutorialStatAdvance("stat.fishing", 10.0))
+            assertEquals(cappedXp, player.statMap.getXP("stat.fishing"))
+            assertEquals(-1.0, with(mod) { player.modifier("stat.fishing") })
+            assertTrue(player.tutorialXpBlocked("stat.hitpoints"))
+            assertEquals(-1.0, with(mod) { player.modifier("stat.hitpoints") })
         }
 
     @Test

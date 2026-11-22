@@ -1,6 +1,8 @@
 package org.rsmod.content.areas.misc.tutorialisland
 
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.player.stat.statAdvance
+import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
@@ -25,6 +27,8 @@ internal var Player.chatoverlayAllowMesOverlap by
 
 internal val RUN_TOGGLED = AttributeKey<Boolean>(temp = true)
 internal val LAST_RUN_STATE = AttributeKey<Int>(temp = true)
+
+private const val TUTORIAL_LEVEL_CAP = 3
 
 private val TUTORIAL_EXPERIENCE = AttributeKey<Int>(persistenceKey = "tutorial_island_experience")
 
@@ -56,6 +60,16 @@ internal fun Player.advanceTutorial(stage: Int) {
         tutorialStage = stage
     }
 }
+
+internal fun Player.tutorialXpBlocked(stat: String): Boolean =
+    stat == "stat.hitpoints" || statBase(stat) >= TUTORIAL_LEVEL_CAP
+
+internal fun Player.tutorialStatAdvance(stat: String, xp: Double): Int =
+    if (!inTutorial || tutorialXpBlocked(stat)) {
+        0
+    } else {
+        statAdvance(stat, xp, rate = 1.0, globalRate = 1.0)
+    }
 
 internal object TutorialStage {
     const val START = 1

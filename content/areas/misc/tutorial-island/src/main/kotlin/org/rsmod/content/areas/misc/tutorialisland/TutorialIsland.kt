@@ -19,7 +19,6 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.protect.forcedWalk
 import org.rsmod.api.player.stat.hitpoints
-import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.subjectPronoun
 import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.player.ui.ifOpenOverlay
@@ -475,7 +474,7 @@ constructor(
     }
 
     private fun ProtectedAccess.tutorialStat(stat: String, xp: Double) {
-        player.statAdvance(stat, xp, rate = 1.0, globalRate = 1.0)
+        player.tutorialStatAdvance(stat, xp)
     }
 
     private suspend fun ProtectedAccess.makeDough() {

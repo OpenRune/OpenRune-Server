@@ -3,7 +3,6 @@ package org.rsmod.content.areas.misc.tutorialisland
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.spells.attack.SpellCastHook
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
@@ -30,7 +29,7 @@ constructor(private val guide: TutorialGuide) : SpellCastHook {
             guide.advance(player, TutorialStage.WIND_STRIKE_CAST)
         }
         if (player.tutorialStage == TutorialStage.WIND_STRIKE_CAST) {
-            player.statAdvance("stat.magic", 1.5, rate = 1.0, globalRate = 1.0)
+            player.tutorialStatAdvance("stat.magic", 1.5)
             guide.advance(player, TutorialStage.WIND_STRIKE_RESOLVED)
             TutorialHighlights.clearWindStrike(player)
         }
