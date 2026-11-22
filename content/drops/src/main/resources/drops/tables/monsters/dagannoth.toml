@@ -2,6 +2,12 @@ id = "Dagannoth Drops"
 npcs = ["npc.horror_dagganoth_jr", "npc.horror_dagganoth_jr_darker", "npc.horror_dagganoth_jr_lighter", "npc.horror_dagannoth_medium", "npc.horror_dagannoth_medium_darker", "npc.horror_dagannoth_medium_lighter", "npc.kourend_dagannoth1", "npc.kourend_dagannoth2"]
 brimstone_key_roll = true
 
+[[guaranteed]]
+obj = "obj.rag_dagganoth_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
 [main]
 total = 128
 name = "Dagannoth Drops"
@@ -131,21 +137,13 @@ shared = "rareSeed"
 
 [[tertiary]]
 numerator = 1
-denominator = 4
-obj = "obj.rag_dagganoth_bone"
-count = 1
-quest = "quest_ragandboneman2"
-quest_mode = "during"
-
-[[tertiary]]
-numerator = 1
 denominator = 40
-obj = "obj.arceuus_corpse_dagannoth"
+obj = "obj.arceuus_corpse_dagannoth_initial"
 count = 1
 
 [[tertiary]]
 numerator = 1
-denominator = 121
+denominator = 128
 obj = "obj.trail_medium_emote_exp1"
 count = 1
 clue_scroll_box = true

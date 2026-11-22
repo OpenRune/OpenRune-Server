@@ -8735,7 +8735,7 @@ respawnRate = 150
 huntMode = 8
 huntRange = 7
 maxRange = 15
-attackRange = 5
+attackRange = 10
 defaultMode = "Wander"
 wanderRange = 5
 [npc.params]
@@ -8758,7 +8758,7 @@ respawnRate = 150
 huntMode = 8
 huntRange = 7
 maxRange = 15
-attackRange = 5
+attackRange = 12
 defaultMode = "Wander"
 wanderRange = 5
 [npc.params]

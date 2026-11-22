@@ -25,11 +25,11 @@ class DagannothKingsConfigTest {
 
         assertEquals(8, prime.huntMode)
         assertEquals(7, prime.huntRange)
-        assertEquals(5, prime.attackRange)
+        assertEquals(12, prime.attackRange)
 
         assertEquals(8, supreme.huntMode)
         assertEquals(7, supreme.huntRange)
-        assertEquals(5, supreme.attackRange)
+        assertEquals(10, supreme.attackRange)
     }
 
     @Test

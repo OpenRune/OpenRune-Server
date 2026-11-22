@@ -33,7 +33,7 @@ class WaterbirthDungeon @Inject constructor() : PluginScript() {
         onOpLoc1("loc.dagexp_exit_ladder") { climb(it.type, LIGHTHOUSE_EXIT) }
 
         onOpLoc1("loc.dagannoth_ladder_base_ext2") {
-            climbOption(it.type, ASKELADDEN_EXIT, DUNGEON_ENTRY)
+            climbOption(it.type, ASKELADDEN_EXIT, DUNGEON_ENTRY, animate = false)
         }
         onOpLoc2("loc.dagannoth_ladder_base_ext2") { climb(it.type, ASKELADDEN_EXIT, up = true) }
         onOpLoc3("loc.dagannoth_ladder_base_ext2") { climb(it.type, DUNGEON_ENTRY, up = false) }
@@ -57,6 +57,7 @@ class WaterbirthDungeon @Inject constructor() : PluginScript() {
         type: ObjectServerType,
         upDestination: CoordGrid,
         downDestination: CoordGrid,
+        animate: Boolean = true,
     ) {
         arriveDelay()
         startDialogue {
@@ -69,9 +70,9 @@ class WaterbirthDungeon @Inject constructor() : PluginScript() {
                     title = "Climb up or down the ladder?",
                 )
             if (up) {
-                climb(type, upDestination, up = true)
+                climb(type, upDestination, up = true, animate = animate)
             } else {
-                climb(type, downDestination, up = false)
+                climb(type, downDestination, up = false, animate = animate)
             }
         }
     }
@@ -80,12 +81,17 @@ class WaterbirthDungeon @Inject constructor() : PluginScript() {
         type: ObjectServerType,
         destination: CoordGrid,
         up: Boolean = type.actions.getOpOrNull(0).equals("Climb-up", ignoreCase = true),
+        animate: Boolean = true,
     ) {
         arriveDelay()
-        anim(if (up) "seq.human_climbing" else "seq.human_climbing_down")
-        delay(1)
+        if (animate) {
+            anim(if (up) "seq.human_climbing" else "seq.human_climbing_down")
+            delay(1)
+        }
         telejump(destination)
-        resetAnim()
+        if (animate) {
+            resetAnim()
+        }
     }
 
     private suspend fun ProtectedAccess.squeezeThrough(crevice: CoordGrid) {

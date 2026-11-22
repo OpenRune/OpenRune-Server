@@ -2,6 +2,12 @@ id = "Dagannoth spawn Drops"
 npcs = ["npc.dagganoth_critter"]
 brimstone_key_roll = true
 
+[[guaranteed]]
+obj = "obj.rag_dagganoth_bone"
+count = 1
+quest = "quest_ragandboneman2"
+quest_mode = "during"
+
 [main]
 total = 128
 name = "Dagannoth spawn Drops"
@@ -67,15 +73,7 @@ shared = "gem"
 
 [[tertiary]]
 numerator = 1
-denominator = 4
-obj = "obj.rag_dagganoth_bone"
-count = 1
-quest = "quest_ragandboneman2"
-quest_mode = "during"
-
-[[tertiary]]
-numerator = 1
-denominator = 121
+denominator = 128
 obj = "obj.trail_clue_easy_simple001"
 count = 1
 clue_scroll_box = true
