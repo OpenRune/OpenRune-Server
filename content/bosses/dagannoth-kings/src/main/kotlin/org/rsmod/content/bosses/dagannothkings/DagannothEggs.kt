@@ -77,7 +77,7 @@ constructor(
         const val SPAWN = "npc.dagganoth_critter"
 
         const val HATCH_RANGE = 1
-        const val EGG1_TICKS = 4
+        const val EGG1_TICKS = 3
         const val EGG_RESPAWN_TICKS = 500
         const val SPAWN_LIFETIME = 500
 
