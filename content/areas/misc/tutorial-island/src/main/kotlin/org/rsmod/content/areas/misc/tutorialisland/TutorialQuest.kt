@@ -1,5 +1,7 @@
 package org.rsmod.content.areas.misc.tutorialisland
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestClose
@@ -17,7 +19,7 @@ internal class TutorialQuest :
         stageInVarp = true,
         closeDialogue = QuestClose.Never,
         closeScroll = QuestClose.Never,
-        completeJingleId = 153,
+        completeJingleId = "jingle.quest_complete_2".asRSCM(RSCMType.JINGLE),
     ) {
 
     override fun ScriptContext.init() {

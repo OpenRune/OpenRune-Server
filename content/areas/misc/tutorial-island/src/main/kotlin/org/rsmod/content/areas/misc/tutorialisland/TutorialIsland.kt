@@ -2382,16 +2382,16 @@ constructor(
     private data class GateSpec(
         val halves: List<GateHalf>,
         val leaves: List<OpenLeaf>,
-        val sound: Int,
+        val sound: String,
     )
 
     private companion object {
         private const val FIRE_DURATION = 150
         private const val EXTRA_COOK_BURN_CHANCE = 50
         private const val DOOR_OPEN_TICKS = 2
-        private const val DOOR_SOUND = 62
-        private const val WOODEN_GATE_SOUND = 67
-        private const val METAL_GATE_SOUND = 71
+        private const val DOOR_SOUND = "synth.door_open"
+        private const val WOODEN_GATE_SOUND = "synth.gate_open"
+        private const val METAL_GATE_SOUND = "synth.iron_door_open"
         private const val LOGOUT_TAB = 10
         private const val ACCOUNT_TAB = 8
         private const val TREE_STUMP_TICKS = 16

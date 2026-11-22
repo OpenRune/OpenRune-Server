@@ -11,12 +11,13 @@ import org.rsmod.api.player.output.ClientScripts.uiHighlightUpdate
 import org.rsmod.game.entity.Player
 
 internal object TutorialHighlights {
-    private const val STYLE_CTA = 7034
-    private const val STYLE_ALERT = 7036
+    private val STYLE_CTA = "dbrow.ui_highlighting_style_tutorial_cta".asRSCM(RSCMType.DBROW)
+    private val STYLE_ALERT = "dbrow.ui_highlighting_style_tutorial_alert".asRSCM(RSCMType.DBROW)
     private const val INVENTORY_TAB = 3
-    private const val SMITHING_DAGGER = (312 shl 16) or 9
-    private const val WIND_STRIKE = (218 shl 16) or 11
-    private const val HOME_TELEPORT = (218 shl 16) or 6
+    private val SMITHING_DAGGER = "component.smithing:dagger".asRSCM(RSCMType.COMPONENT)
+    private val WIND_STRIKE = "component.magic_spellbook:wind_strike".asRSCM(RSCMType.COMPONENT)
+    private val HOME_TELEPORT =
+        "component.magic_spellbook:teleport_home_standard".asRSCM(RSCMType.COMPONENT)
 
     fun item(player: Player, obj: String, alert: Boolean = false) {
         toplevelSidebuttonSwitch(player, INVENTORY_TAB)
