@@ -171,6 +171,7 @@ class HitBuilder internal constructor() {
     private var reactOnLandingFlag: Boolean = false
     private var reactFlag: Boolean = true
     private var missSpot: String? = null
+    private var missSpotHeight: Int = 0
     private var missSoundSynth: String? = null
     private var onHitEffect: Effect? = null
     private var onHitEvenOnMiss: Boolean = false
@@ -218,8 +219,9 @@ class HitBuilder internal constructor() {
         reactOnLandingFlag = true
     }
 
-    fun missSpotanim(spot: String) {
+    fun missSpotanim(spot: String, height: Int = 0) {
         missSpot = spot
+        missSpotHeight = height
     }
 
     /** Plays [synth] to the target when the hit rolls 0, in time with the miss graphic. */
@@ -259,6 +261,7 @@ class HitBuilder internal constructor() {
             penetration = penetrationPercent,
             missSpotanim = missSpot,
             missSound = missSoundSynth,
+            missSpotanimHeight = missSpotHeight,
             onHit = onHitEffect,
             onHitEvenOnMiss = onHitEvenOnMiss,
             lifesteal = lifestealPercent,
