@@ -23,6 +23,7 @@ dependencies {
     implementation(projects.api.repo)
     implementation(projects.api.spellsRunes)
     implementation(projects.api.stats.levelmod)
+    implementation(projects.api.stats.xpmod)
     implementation(projects.api.utils.utilsVars)
     implementation(projects.engine.events)
     implementation(projects.engine.game)

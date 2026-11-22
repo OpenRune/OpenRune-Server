@@ -513,6 +513,7 @@ private fun UserInterfaceMap.translate(component: Component): Component =
 
 internal fun Player.ifMesbox(text: String, pauseText: String, lineHeight: Int, eventBus: EventBus) {
     mes(chatLogText(text), ChatType.Mesbox)
+    closeOverlay("interface.mesoverlay", eventBus)
     openModal("interface.messagebox", "component.chatbox:chatmodal", eventBus)
     ifSetText("component.messagebox:text", text)
     ifSetTextAlign(this, "component.messagebox:text", alignH = 1, alignV = 1, lineHeight)

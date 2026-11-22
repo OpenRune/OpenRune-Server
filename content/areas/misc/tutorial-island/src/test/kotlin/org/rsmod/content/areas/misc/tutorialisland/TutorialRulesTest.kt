@@ -1,0 +1,197 @@
+package org.rsmod.content.areas.misc.tutorialisland
+
+import com.google.inject.AbstractModule
+import com.google.inject.multibindings.Multibinder
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
+import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.player.hook.HeldEquipValidateHook
+import org.rsmod.api.player.stat.statBase
+import org.rsmod.api.testing.GameTestState
+import org.rsmod.map.CoordGrid
+
+@Execution(ExecutionMode.SAME_THREAD)
+class TutorialRulesTest {
+    @Test
+    fun GameTestState.`logs advance the woodcutting stage`() =
+        runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
+            player.tutorialStage = TutorialStage.AXE_GIVEN
+            player.invAdd(player.inv, TutorialObj.LOGS, 1)
+            assertEquals(TutorialStage.LOGS_CUT, rules.nextStage(player))
+        }
+
+    @Test
+    fun GameTestState.`copper can be mined before tin`() =
+        runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
+            player.tutorialStage = TutorialStage.MINING_GUIDE_TALKED
+            player.invAdd(player.inv, TutorialObj.COPPER_ORE, 1)
+            assertEquals(TutorialStage.COPPER_MINED_FIRST, rules.nextStage(player))
+            player.tutorialStage = TutorialStage.COPPER_MINED_FIRST
+            player.invAdd(player.inv, TutorialObj.TIN_ORE, 1)
+            assertEquals(TutorialStage.COPPER_MINED, rules.nextStage(player))
+        }
+
+    @Test
+    fun GameTestState.`the journal only shows reached sections`() =
+        runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
+            player.tutorialStage = TutorialStage.SWORD_EQUIPPED
+            var log = ""
+            player.withProtectedAccess { log = quest.questLog(this) }
+            assertTrue(log.contains("Vannaka"))
+            assertFalse(log.contains("Bank of Gielinor"))
+            assertFalse(log.contains("Brother Brace"))
+            assertFalse(log.contains("Magic Instructor"))
+            assertFalse(log.contains("I completed the tutorial"))
+        }
+
+    @Test
+    fun GameTestState.`the mining journal uses the captured wording`() =
+        runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
+            player.tutorialStage = TutorialStage.DAGGER_SMITHED
+            var log = ""
+            player.withProtectedAccess { log = quest.questLog(this) }
+            assertTrue(log.contains("I then met Dezzick, the Mining Instructor."))
+            assertTrue(log.contains("which I managed to successfully complete!"))
+            assertTrue(log.contains("To that end, he handed me a hammer"))
+        }
+
+    @Test
+    fun GameTestState.`the completed journal has the post-completion lines last`() =
+        runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
+            player.tutorialStage = TutorialStage.LEFT_ISLAND
+            var log = ""
+            player.withProtectedAccess { log = quest.completedLog(this) }
+            val complete = log.indexOf("QUEST COMPLETE!")
+            val stay = log.indexOf("I can stay on Tutorial Island")
+            assertTrue(complete >= 0)
+            assertTrue(stay > complete)
+        }
+
+    @Test
+    fun GameTestState.`the bank journal starts with the bank objective`() =
+        runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
+            player.tutorialStage = TutorialStage.BANK_OPENED
+            var log = ""
+            player.withProtectedAccess { log = quest.questLog(this) }
+            assertTrue(log.contains("I opened my bank"))
+            assertFalse(log.contains("I visited the Bank of Gielinor"))
+        }
+
+    @Test
+    fun GameTestState.`the bank journal completes after the account guide`() =
+        runInjectedGameTest(TutorialQuest::class, TestHooks()) { quest ->
+            player.tutorialStage = TutorialStage.ACCOUNT_GUIDE_DONE
+            var log = ""
+            player.withProtectedAccess { log = quest.questLog(this) }
+            assertTrue(log.contains("I visited the Bank of Gielinor"))
+        }
+
+    @Test
+    fun GameTestState.`a bronze bar advances the smelting stage`() =
+        runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
+            player.tutorialStage = TutorialStage.COPPER_MINED
+            player.invAdd(player.inv, TutorialObj.BRONZE_BAR, 1)
+            assertEquals(TutorialStage.BAR_SMELTED, rules.nextStage(player))
+        }
+
+    @Test
+    fun GameTestState.`a smithed dagger advances from the bar stage`() =
+        runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
+            player.tutorialStage = TutorialStage.BAR_SMELTED
+            player.invAdd(player.inv, TutorialObj.BRONZE_DAGGER, 1)
+            assertEquals(TutorialStage.DAGGER_SMITHED, rules.nextStage(player))
+        }
+
+    @Test
+    fun GameTestState.`an equipped sword alone does not advance the combat stage`() =
+        runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
+            player.tutorialStage = TutorialStage.COMBAT_GUIDE_SWORD
+            player.invAdd(player.worn, TutorialObj.BRONZE_SWORD, 1)
+            assertNull(rules.nextStage(player))
+        }
+
+    @Test
+    fun GameTestState.`an equipped sword and shield advance the combat stage`() =
+        runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
+            player.tutorialStage = TutorialStage.COMBAT_GUIDE_SWORD
+            player.invAdd(player.worn, TutorialObj.BRONZE_SWORD, 1)
+            player.invAdd(player.worn, TutorialObj.WOODEN_SHIELD, 1)
+            assertEquals(TutorialStage.SWORD_EQUIPPED, rules.nextStage(player))
+        }
+
+    @Test
+    fun GameTestState.`entering the quest house advances the quest stage`() =
+        runInjectedGameTest(TutorialRules::class, TestHooks()) { rules ->
+            player.tutorialStage = TutorialStage.QUEST_HOUSE_ENTERED
+            player.coords = CoordGrid(3086, 3125, 0)
+            assertEquals(TutorialStage.QUEST_HOUSE_INSIDE, rules.nextStage(player))
+        }
+
+    @Test
+    fun GameTestState.`tutorial xp stops at level three`() =
+        runInjectedGameTest(TutorialXpMod::class, TestHooks()) { mod ->
+            player.tutorialStage = TutorialStage.SHRIMP_CAUGHT
+            repeat(30) { player.tutorialStatAdvance("stat.fishing", 10.0) }
+
+            assertEquals(3, player.statBase("stat.fishing"))
+            val cappedXp = player.statMap.getXP("stat.fishing")
+            assertEquals(0, player.tutorialStatAdvance("stat.fishing", 10.0))
+            assertEquals(cappedXp, player.statMap.getXP("stat.fishing"))
+            assertEquals(-1.0, with(mod) { player.modifier("stat.fishing") })
+            assertTrue(player.tutorialXpBlocked("stat.hitpoints"))
+            assertEquals(-1.0, with(mod) { player.modifier("stat.hitpoints") })
+        }
+
+    @Test
+    fun GameTestState.`tutorial xp normalizes the realm rate`() =
+        runInjectedGameTest(TutorialXpMod::class, TestHooks()) { mod ->
+            player.tutorialStage = TutorialStage.SHRIMP_CAUGHT
+            player.xpRate = 150.0
+            player.globalXpRate = 1.0
+            val modifier = with(mod) { player.modifier("stat.strength") }
+            assertEquals(1.0 / 150.0 - 1.0, modifier, 0.0001)
+        }
+
+    @Test
+    fun GameTestState.`exit grants the completion kit and clears the bank`() =
+        runInjectedGameTest(TutorialExit::class, TestHooks()) { exit ->
+            player.tutorialStage = TutorialStage.READY_TO_LEAVE
+            player.adventurePaths = 2
+            player.invAdd(player.inv, TutorialObj.SHRIMP, 1)
+            player.invAdd(player.worn, TutorialObj.BRONZE_SWORD, 1)
+            val bank = player.invMap.getOrPut("inv.bank")
+            player.invAdd(bank, TutorialObj.COINS, 25)
+            player.invAdd(bank, TutorialObj.BREAD, 1)
+            player.invAdd(bank, "obj.shark", 1)
+
+            player.withProtectedAccess { with(exit) { complete() } }
+            advance(2)
+
+            assertEquals(TutorialStage.LEFT_ISLAND, player.tutorialStage)
+            assertEquals(1, player.inv.count(TutorialObj.SHRIMP))
+            assertEquals(1, player.inv.count(TutorialObj.BRONZE_SWORD))
+            assertEquals(25, player.inv.count(TutorialObj.BRONZE_ARROW))
+            assertEquals(25, player.inv.count(TutorialObj.AIR_RUNE))
+            assertEquals(15, player.inv.count(TutorialObj.MIND_RUNE))
+            assertEquals(6, player.inv.count(TutorialObj.WATER_RUNE))
+            assertEquals(4, player.inv.count(TutorialObj.EARTH_RUNE))
+            assertEquals(2, player.inv.count(TutorialObj.BODY_RUNE))
+            assertEquals(0, player.worn.count(TutorialObj.BRONZE_SWORD))
+            assertEquals(25, bank.count(TutorialObj.COINS))
+            assertEquals(0, bank.count(TutorialObj.BREAD))
+            assertEquals(0, bank.count("obj.shark"))
+            assertEquals(10_000, player.runEnergy)
+            assertEquals(1, player.tutorialFreeStuffCheck)
+        }
+
+    private class TestHooks : AbstractModule() {
+        override fun configure() {
+            Multibinder.newSetBinder(binder(), HeldEquipValidateHook::class.java)
+        }
+    }
+}

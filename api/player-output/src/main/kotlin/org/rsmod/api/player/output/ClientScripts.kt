@@ -74,6 +74,31 @@ public object ClientScripts {
     public fun toplevelSidebuttonSwitch(player: Player, side: Int): Unit =
         player.runClientScript(915, side)
 
+    public fun invHighlightItemOn(
+        player: Player,
+        obj: Int,
+        style: Int,
+        value: Int,
+    ): Unit = player.runClientScript(8461, obj, style, value)
+
+    public fun invHighlightClearAll(player: Player): Unit = player.runClientScript(8465)
+
+    public fun uiHighlightUpdate(
+        player: Player,
+        first: Int,
+        second: Int,
+        component: Int,
+        value: Int,
+        style: Int,
+        extra: Int,
+    ): Unit = player.runClientScript(8478, first, second, component, value, style, extra)
+
+    public fun uiHighlightClear(player: Player, first: Int, second: Int): Unit =
+        player.runClientScript(8484, first, second)
+
+    public fun uiHighlightClearAll(player: Player, group: Int): Unit =
+        player.runClientScript(8486, group)
+
     /** @param joinedChoices Dialogue choices must be split by the `|` character. */
     public fun chatboxMultiInit(player: Player, title: String, joinedChoices: String): Unit =
         player.runClientScript(58, title, joinedChoices)

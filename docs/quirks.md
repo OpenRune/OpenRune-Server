@@ -65,6 +65,9 @@ example, if `zone(0, 1, 0)` receives a `soundarea` update first and
 `zone(0, 0, 0)` receives one afterward, the latter will still be sent first due
 to fixed iteration order; whereas the official game would send `zone(0, 1, 0)`
 first since it was the earliest update.
+- Tutorial Island's first door can be walked through after opening, but the
+doorway remains blocked from the far side until the door closes. Verify the
+official message/behavior before treating this as final.
 
 ## Level-up popups
 

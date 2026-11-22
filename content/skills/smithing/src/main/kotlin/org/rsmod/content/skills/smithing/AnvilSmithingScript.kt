@@ -27,7 +27,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class AnvilSmithingScript
 @Inject
-constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : PluginScript() {
+constructor(
+    private val xpMods: XpModifiers,
+    private val dorics: DoricsQuest,
+    private val restrictions: Set<@JvmSuppressWildcards SmithingRestrictHook>,
+) : PluginScript() {
 
     private val hammers = setOf(
         "obj.hammer",
@@ -105,6 +109,11 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
         val componentString = RSCM.getReverseMapping(RSCMType.COMPONENT, componentPacked)
         val itemName = SmithingData.typeForChild(componentString, bar) ?: return
         val meta = SmithingData.metaForName(bar, itemName) ?: return
+        val denial = restrictions.firstNotNullOfOrNull { it.restrict(player, meta) }
+        if (denial != null) {
+            mes(denial)
+            return
+        }
 
         ifCloseSub(SmithingData.SMITHING_INTERFACE)
         startSmithing(meta, makeQuantity())

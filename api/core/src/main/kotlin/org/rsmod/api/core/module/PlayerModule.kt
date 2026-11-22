@@ -5,6 +5,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.hook.GroundItemDropResolver
 import org.rsmod.api.player.hook.HeldEquipValidateHook
 import org.rsmod.api.player.hook.PlayerGroundItemDropHook
+import org.rsmod.api.player.hook.PlayerHomeTeleportDestinationHook
 import org.rsmod.api.player.hook.PlayerObjTakeValidateHook
 import org.rsmod.api.player.hook.PlayerObjTakeValidator
 import org.rsmod.api.player.hook.PlayerTeleportValidateHook
@@ -19,6 +20,7 @@ import org.rsmod.module.ExtendedModule
 public object PlayerModule : ExtendedModule() {
     override fun bind() {
         newSetBinding<PlayerTeleportValidateHook>()
+        newSetBinding<PlayerHomeTeleportDestinationHook>()
         newSetBinding<HeldEquipValidateHook>()
         newSetBinding<PlayerGroundItemDropHook>()
         newSetBinding<PlayerObjTakeValidateHook>()

@@ -11,6 +11,7 @@ import org.rsmod.api.combat.manager.PlayerAttackManager
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.proj.ProjAnim
@@ -21,6 +22,7 @@ constructor(
     private val manager: PlayerAttackManager,
     private val runes: MagicRuneManager,
     private val castHooks: Set<SpellCastHook>,
+    private val xpMods: XpModifiers,
 ) {
     private val ProtectedAccess.autocastEnabled by boolVarBit("varbit.autocast_set")
 
@@ -84,7 +86,10 @@ constructor(
      * [CombatAttack.Spell.spell].
      */
     public fun giveCastXp(access: ProtectedAccess, attack: CombatAttack.Spell) {
-        access.statAdvance("stat.magic", attack.spell.castXp)
+        access.statAdvance(
+            "stat.magic",
+            attack.spell.castXp * xpMods.get(access.player, "stat.magic"),
+        )
     }
 
     /**

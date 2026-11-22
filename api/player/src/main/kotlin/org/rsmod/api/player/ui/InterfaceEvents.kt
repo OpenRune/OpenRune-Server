@@ -64,6 +64,14 @@ public data class IfOverlayButton(
     override val id: Long = component.packed.toLong()
 }
 
+public data class IfToplevelButton(
+    val player: Player,
+    val component: ComponentType,
+    val op: IfButtonOp,
+) : KeyedEvent {
+    override val id: Long = component.packed.toLong()
+}
+
 public data class IfModalSubOpMenu(
     val component: ComponentType,
     val comsub: Int,

@@ -83,7 +83,9 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
             if (player.vars[stat.listVarbit] == 0) {
                 vars[stat.listVarbit] = previousLevel + 1
             }
-            vars[FLASHSIDE_VARBIT] = FLASHSIDE_STATS
+            if (!player.isInTutorial()) {
+                vars[FLASHSIDE_VARBIT] = FLASHSIDE_STATS
+            }
         }
         val chatboxList = vars[CHATBOX_LIST_VARBIT] == 1
         val player = player
@@ -152,6 +154,8 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
                 "spotanim.levelup_max"
             else -> "spotanim.levelup_99_anim"
         }
+
+    private fun Player.isInTutorial(): Boolean = vars["varp.tutorial"] in 1 until 1000
 
     private companion object {
         const val LEVELUP_SPOTANIM = "spotanim.levelup_anim"

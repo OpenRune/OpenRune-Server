@@ -13,6 +13,7 @@ dependencies {
     implementation(projects.api.combat.combatCommons)
     implementation(projects.api.combat.combatManager)
     implementation(projects.api.player)
+    implementation(projects.api.stats.xpmod)
 
 
     implementation(projects.engine.game)

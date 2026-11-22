@@ -6,6 +6,7 @@ import org.rsmod.api.combat.PvNCombat
 import org.rsmod.api.combat.WildernessPjTimer
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.commons.styles.AttackStyle
+import org.rsmod.api.combat.commons.types.AttackType
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.npc.aggressivePlayer
 import org.rsmod.api.combat.npc.lastCombat
@@ -16,6 +17,7 @@ import org.rsmod.api.combat.player.resolveAutocastSpell
 import org.rsmod.api.combat.player.resolveCombatAttack
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
+import org.rsmod.api.death.NpcAttackType
 import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -56,7 +58,7 @@ constructor(
         val type = types.get(player)
         val style = styles.get(player)
         val attackRange = attackRange(style)
-        val check = checkAttack(target)
+        val check = checkAttack(target, type.toNpcAttackType())
 
         // Weapons such as salamanders have an attack range of `1` but can attack with both ranged
         // and magic. These attacks should be treated as ap range, not op.
@@ -84,10 +86,10 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.attemptCombatOp(target: Npc) {
-        if (!canAttack(target)) {
+        val type = types.get(player)
+        if (!canAttack(target, type.toNpcAttackType())) {
             return
         }
-        val type = types.get(player)
         val style = styles.get(player)
 
         val spell = resolveAutocastSpell(spells, runes, autocast)
@@ -101,7 +103,7 @@ constructor(
             return
         }
         // Official behavior: `canAttack` checks occur _after_ `canCastSpell` checks.
-        val canAttack = canAttack(target)
+        val canAttack = canAttack(target, NpcAttackType.Magic)
         if (!canAttack) {
             return
         }
@@ -111,18 +113,28 @@ constructor(
         combat.attack(this, target, attack)
     }
 
-    private fun ProtectedAccess.canAttack(npc: Npc): Boolean =
-        checkAttack(npc) == AttackCheck.Allowed
+    private fun AttackType?.toNpcAttackType(): NpcAttackType =
+        when {
+            this == null || isMelee -> NpcAttackType.Melee
+            isRanged -> NpcAttackType.Ranged
+            else -> NpcAttackType.Magic
+        }
 
-    private fun ProtectedAccess.checkAttack(npc: Npc): AttackCheck {
+    private fun ProtectedAccess.canAttack(npc: Npc, attackType: NpcAttackType): Boolean =
+        checkAttack(npc, attackType) == AttackCheck.Allowed
+
+    private fun ProtectedAccess.checkAttack(npc: Npc, attackType: NpcAttackType): AttackCheck {
         var bypassSingleWayPvn = false
         for (hook in attackValidateHooks) {
-            when (val result = hook.validate(player, npc)) {
+            when (val result = hook.validate(player, npc, attackType)) {
                 is NpcAttackValidateResult.Deny -> {
                     mes(result.message)
                     return if (hook.stopsApproach) AttackCheck.DeniedStopApproach
                     else AttackCheck.Denied
                 }
+                NpcAttackValidateResult.DenySilent ->
+                    return if (hook.stopsApproach) AttackCheck.DeniedStopApproach
+                    else AttackCheck.Denied
                 NpcAttackValidateResult.BypassSingleWayPvnRestriction -> bypassSingleWayPvn = true
                 NpcAttackValidateResult.Pass -> Unit
             }

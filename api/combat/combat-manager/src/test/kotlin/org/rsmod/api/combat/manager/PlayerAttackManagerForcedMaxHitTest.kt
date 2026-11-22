@@ -14,6 +14,7 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.combat.formulas.MaxHitFormulae
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -23,6 +24,7 @@ class PlayerAttackManagerForcedMaxHitTest {
     private val accuracy = mockk<AccuracyFormulae>(relaxed = true)
     private val maxHits = mockk<MaxHitFormulae>(relaxed = true)
     private val random = mockk<GameRandom>(relaxed = true)
+    private val xpMods = mockk<XpModifiers>(relaxed = true)
 
     private val manager =
         PlayerAttackManager(
@@ -38,6 +40,7 @@ class PlayerAttackManagerForcedMaxHitTest {
             mockk(relaxed = true),
             mockk(relaxed = true),
             emptySet(),
+            xpMods,
         )
 
     init {

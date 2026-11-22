@@ -6,14 +6,28 @@ import org.rsmod.game.entity.Player
 public fun interface NpcAttackValidateHook {
     public fun validate(player: Player, npc: Npc): NpcAttackValidateResult
 
+    public fun validate(
+        player: Player,
+        npc: Npc,
+        attackType: NpcAttackType,
+    ): NpcAttackValidateResult = validate(player, npc)
+
     public val stopsApproach: Boolean
         get() = false
+}
+
+public enum class NpcAttackType {
+    Melee,
+    Ranged,
+    Magic,
 }
 
 public sealed class NpcAttackValidateResult {
     public data object Pass : NpcAttackValidateResult()
 
     public data class Deny(val message: String) : NpcAttackValidateResult()
+
+    public data object DenySilent : NpcAttackValidateResult()
 
     /**
      * Allow attacking this npc in single-way combat even if the player is already engaged in PvN

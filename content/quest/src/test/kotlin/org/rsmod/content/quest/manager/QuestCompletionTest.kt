@@ -149,10 +149,20 @@ class QuestCompletionTest {
         }
     }
 
+    @Test
+    fun `a stage-in-varp quest reads its stage from the quest varp`() {
+        val f = Fixture(native = false, initialStage = 5, stageInVarp = true)
+        assertEquals(5, f.quest.getQuestStage(f.player))
+
+        VarPlayerIntMapSetter.set(f.player, f.quest.questVarp, 6)
+        assertEquals(6, f.quest.getQuestStage(f.player))
+    }
+
     private class Fixture(
         native: Boolean = true,
         items: List<Pair<String, Int>> = GEMS.map { it to 1 },
         initialStage: Int? = null,
+        stageInVarp: Boolean = false,
     ) {
         private val client = RecordingClient()
         private val events = EventBus()
@@ -169,6 +179,7 @@ class QuestCompletionTest {
             questPoints = row.questpointsOverride,
             questVarp = "varp.mistmyst_main",
             questVarbit = if (native) "varbit.mistmyst_progress" else null,
+            stageInVarp = stageInVarp,
             rewards = QuestReward(xp = mapOf("stat.crafting" to 600.0), items = items),
             itemDisplay = ItemRewardDisplay("obj.uncut_sapphire"),
         )

@@ -51,17 +51,15 @@ public class HeldUInteractions @Inject constructor(private val eventBus: EventBu
         targetItemServerType: ItemServerType,
         targetSlot: Int,
     ) {
-        val firstCombination =
-            opTrigger(selectedItemServerType, selectedSlot, targetItemServerType, targetSlot)
-        if (firstCombination != null) {
-            eventBus.publish(this, firstCombination)
-            return
-        }
-
-        val secondCombination =
-            opTrigger(targetItemServerType, targetSlot, selectedItemServerType, selectedSlot)
-        if (secondCombination != null) {
-            eventBus.publish(this, secondCombination)
+        val trigger =
+            resolveTrigger(
+                selectedItemServerType,
+                selectedSlot,
+                targetItemServerType,
+                targetSlot,
+            )
+        if (trigger != null) {
+            eventBus.publish(this, trigger)
             return
         }
 
@@ -72,7 +70,19 @@ public class HeldUInteractions @Inject constructor(private val eventBus: EventBu
         }
     }
 
-    private fun opTrigger(
+    internal fun resolveTrigger(
+        first: ItemServerType,
+        firstSlot: Int,
+        second: ItemServerType,
+        secondSlot: Int,
+    ): SuspendEvent<ProtectedAccess>? {
+        exactTrigger(first, firstSlot, second, secondSlot)?.let { return it }
+        exactTrigger(second, secondSlot, first, firstSlot)?.let { return it }
+        fallbackTrigger(first, firstSlot, second, secondSlot)?.let { return it }
+        return fallbackTrigger(second, secondSlot, first, firstSlot)
+    }
+
+    private fun exactTrigger(
         first: ItemServerType,
         firstSlot: Int,
         second: ItemServerType,
@@ -82,7 +92,15 @@ public class HeldUInteractions @Inject constructor(private val eventBus: EventBu
         if (eventBus.contains(typeScript::class.java, typeScript.id)) {
             return typeScript
         }
+        return null
+    }
 
+    private fun fallbackTrigger(
+        first: ItemServerType,
+        firstSlot: Int,
+        second: ItemServerType,
+        secondSlot: Int,
+    ): SuspendEvent<ProtectedAccess>? {
         val contentTypeScript = HeldUContentEvents.Type(first, firstSlot, second, secondSlot)
         if (eventBus.contains(contentTypeScript::class.java, contentTypeScript.id)) {
             return contentTypeScript

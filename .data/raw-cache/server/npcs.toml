@@ -14,6 +14,12 @@ wanderRange = 0
 respawnRate = 50
 
 [[npc]]
+id = "npc.0_48_48_newbiefishing"
+inherit = "npc.0_48_48_newbiefishing"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
 id = "npc.imp"
 inherit = "npc.imp"
 giveChase = false
@@ -17347,3 +17353,70 @@ id = "npc.pmoon_boss_winter_storm"
 inherit = "npc.pmoon_boss_winter_storm"
 moveRestrict = "NoClip"
 defaultMode = "None"
+
+[[npc]]
+id = "npc.newbiegiantrat"
+inherit = "npc.newbiegiantrat"
+respawnRate = 60
+wanderRange = 6
+maxRange = 8
+attack = 3
+strength = 3
+defence = 3
+[npc.params]
+"param.attack_sound"="synth.rat_attack"
+"param.defend_sound"="synth.rat_hit"
+"param.death_sound"="synth.rat_death"
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.newbiegiantrat2"
+inherit = "npc.newbiegiantrat2"
+respawnRate = 60
+wanderRange = 6
+maxRange = 8
+attack = 3
+strength = 3
+defence = 3
+[npc.params]
+"param.attack_sound"="synth.rat_attack"
+"param.defend_sound"="synth.rat_hit"
+"param.death_sound"="synth.rat_death"
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.newbiegiantrat3"
+inherit = "npc.newbiegiantrat3"
+respawnRate = 60
+wanderRange = 6
+maxRange = 8
+attack = 3
+strength = 3
+defence = 3
+[npc.params]
+"param.attack_sound"="synth.rat_attack"
+"param.defend_sound"="synth.rat_hit"
+"param.death_sound"="synth.rat_death"
+"param.attack_anim"="seq.giant_rat_update_attack"
+"param.defend_anim"="seq.giant_rat_update_defend"
+"param.death_anim"="seq.giant_rat_update_death"
+"param.npc_attack_type"="category.attacktype_stab"
+
+[[npc]]
+id = "npc.newbiechicken"
+inherit = "npc.newbiechicken"
+respawnRate = 25
+[npc.params]
+"param.attack_sound"="synth.chicken_attack"
+"param.defend_sound"="synth.chicken_hit"
+"param.death_sound"="synth.chicken_death"
+"param.attack_anim"="seq.lore_chicken_attack"
+"param.defend_anim"="seq.lore_chicken_defend"
+"param.death_anim"="seq.lore_chicken_death"
+"param.npc_attack_type"="category.attacktype_stab"

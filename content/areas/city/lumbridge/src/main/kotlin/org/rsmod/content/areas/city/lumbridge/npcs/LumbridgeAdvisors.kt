@@ -4,7 +4,6 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -13,16 +12,13 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 private var Player.countCheckTeleport by boolVarBit("varbit.count_check_stronghold_teleport")
 private var Player.adventurePaths by intVarBit("varbit.adventurepath_player_participating")
+private var Player.apGuideFirst by intVarBit("varbit.ap_guide_first")
+private var Player.apGuideTutorial by intVarBit("varbit.ap_guide_tutorial")
+private var Player.flashSide by intVarBit("varbit.flashside")
 
 /** The Doomsayer, Count Check, Nigel and Adventurer Jon, all north of Lumbridge Castle. */
 class LumbridgeAdvisors : PluginScript() {
     override fun ScriptContext.startup() {
-        // Adventurer Jon is only visible to players the varbit marks as taking part.
-        onPlayerLogin {
-            if (player.adventurePaths == ADVENTURE_PATHS_UNSET) {
-                player.adventurePaths = ADVENTURE_PATHS_PARTICIPATING
-            }
-        }
         for (doomsayer in listOf("npc.cws_doomsayer", "npc.doomsayer_normal")) {
             onOpNpc1(doomsayer) { startDialogue(it.npc) { doomsayer() } }
         }
@@ -366,6 +362,45 @@ class LumbridgeAdvisors : PluginScript() {
             }
             return
         }
+        if (player.apGuideTutorial == 0 && player.adventurePaths == ADVENTURE_PATHS_PARTICIPATING) {
+            val guide = npc
+            if (guide != null && player.coords.chebyshevDistance(guide.coords) > 1) {
+                chatNpc(neutral, "Hey ${player.displayName}! Come over here.")
+                return
+            }
+            chatNpc(neutral, "You look new around here, welcome to the world of Gielinor!")
+            chatPlayer(neutral, "Thanks, it's my first time here and I'm not sure where to start.")
+            chatNpc(neutral, "Well, lucky for you, that is exactly why I am here.")
+            chatPlayer(quiz, "What are Adventure Paths?")
+            chatNpc(
+                happy,
+                "A long time ago, I was a newbie just like you who didn't know what to do and I " +
+                    "would be more than happy to pass on my experience.",
+            )
+            chatNpc(
+                happy,
+                "I've created some Adventure Paths which I recommend you to start off with. An " +
+                    "Adventure Path is a list of tasks which you can complete in any order.",
+            )
+            chatNpc(
+                happy,
+                "To help you get started on your Adventure Path, I'll also give you a starter kit " +
+                    "with some useful items.",
+            )
+            chatNpc(
+                happy,
+                "Once you've completed an Adventure Path task, come back to me and I'll give you a " +
+                    "reward.",
+            )
+            chatNpc(
+                happy,
+                "Start by opening your quest panel and then selecting the flashing yellow star.",
+            )
+            player.apGuideFirst = 1
+            player.apGuideTutorial = 1
+            player.flashSide = 3
+            return
+        }
         chatNpc(neutral, "Hello ${player.displayName}, what can I do for you?")
         while (true) {
             when (
@@ -399,6 +434,13 @@ class LumbridgeAdvisors : PluginScript() {
                         "Once you've completed an Adventure Path task, come back to me and I'll give you a " +
                             "reward.",
                     )
+                    chatNpc(
+                        happy,
+                        "Start by opening your quest panel and then selecting the flashing yellow star.",
+                    )
+                    player.apGuideFirst = 1
+                    player.apGuideTutorial = 1
+                    player.flashSide = 3
                     return
                 }
                 2 -> {
@@ -432,7 +474,6 @@ class LumbridgeAdvisors : PluginScript() {
     }
 
     private companion object {
-        const val ADVENTURE_PATHS_UNSET = 0
         const val ADVENTURE_PATHS_PARTICIPATING = 1
         const val ADVENTURE_PATHS_OPTED_OUT = 2
 
