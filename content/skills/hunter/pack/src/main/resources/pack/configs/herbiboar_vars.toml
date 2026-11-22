@@ -1,0 +1,11 @@
+[[varp]]
+isServerOnly = true
+id = "varp.herbiboar_harvested"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.herbiboar_route_length"
+scope = "Temp"
+transmit = "Never"

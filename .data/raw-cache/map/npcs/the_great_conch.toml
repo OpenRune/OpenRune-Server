@@ -1,12 +1,4 @@
 [[spawn]]
-npc = "npc.blue_crab"
-coords = "0_50_38_51_0"
-
-[[spawn]]
-npc = "npc.blue_crab"
-coords = "0_50_39_13_18"
-
-[[spawn]]
 npc = "npc.farming_gardener_calquat_3"
 coords = "0_48_37_52_36"
 
@@ -159,6 +151,157 @@ npc = "npc.tortugan_leff"
 coords = "0_49_37_39_20"
 
 [[spawn]]
+npc = "npc.tortugan_strom"
+coords = "0_49_37_23_40"
+
+[[spawn]]
 npc = "npc.tt_raley_conch"
 coords = "0_49_37_51_36"
 
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_49_39_58_26"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_49_39_62_31"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_1_23"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_3_14"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_5_21"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_6_10"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_12_9"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_12_20"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_14_15"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_19_21"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_20_11"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_23_16"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_31_12"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_33_15"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_35_13"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_39_38_10"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_38_39_13"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_38_41_4"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_38_41_9"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_42_63"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_45_58"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_38_45_8"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_49_54"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_38_50_14"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_38_52_4"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_53_60"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_55_48"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_55_57"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_38_55_13"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_38_56_8"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_57_53"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_58_46"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_58_61"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_38_59_1"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_60_42"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_60_57"
+
+[[spawn]]
+npc = "npc.blue_crab"
+coords = "0_50_37_62_48"

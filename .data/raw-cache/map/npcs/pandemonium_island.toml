@@ -19,10 +19,6 @@ npc = "npc.pandemonium_rosalee"
 coords = "0_47_46_38_28"
 
 [[spawn]]
-npc = "npc.red_crab"
-coords = "0_47_46_28_30"
-
-[[spawn]]
 npc = "npc.sailing_intro_ribs_vis"
 coords = "0_47_46_43_30"
 
@@ -102,3 +98,38 @@ coords = "0_47_46_6_40"
 npc = "npc.tortugan_kebba"
 coords = "0_47_46_22_40"
 
+[[spawn]]
+npc = "npc.red_crab"
+coords = "0_47_46_22_36"
+
+[[spawn]]
+npc = "npc.red_crab"
+coords = "0_47_46_24_35"
+
+[[spawn]]
+npc = "npc.red_crab"
+coords = "0_47_46_25_41"
+
+[[spawn]]
+npc = "npc.red_crab"
+coords = "0_47_46_26_36"
+
+[[spawn]]
+npc = "npc.red_crab"
+coords = "0_47_46_26_39"
+
+[[spawn]]
+npc = "npc.red_crab"
+coords = "0_47_46_28_25"
+
+[[spawn]]
+npc = "npc.red_crab"
+coords = "0_47_46_28_41"
+
+[[spawn]]
+npc = "npc.red_crab"
+coords = "0_47_46_30_27"
+
+[[spawn]]
+npc = "npc.red_crab"
+coords = "0_47_46_30_31"
