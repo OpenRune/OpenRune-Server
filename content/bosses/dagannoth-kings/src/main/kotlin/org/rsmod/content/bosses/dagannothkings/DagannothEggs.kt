@@ -44,20 +44,24 @@ constructor(
                     return
                 }
                 world.soundArea(npc.coords, "synth.dagganoth_egg_open", loops = 15, radius = 5)
-                hatch(npc, EGG2)
+                hatch(npc, EGG2, EGG1_TICKS)
             }
 
-            EGG2_ID -> hatch(npc, EGG3)
+            EGG2_ID -> {
+                hatch(npc, EGG3)
+                spawn(npc)
+            }
+
             EGG3_ID -> spawn(npc)
         }
     }
 
     @OptIn(InternalApi::class)
-    private fun hatch(npc: Npc, next: String) {
+    private fun hatch(npc: Npc, next: String, delay: Int = 0) {
         val type = checkNotNull(ServerCacheManager.getNpc(next.asRSCM(RSCMType.NPC)))
         npc.transmog(type, Int.MAX_VALUE)
         npc.assignUid()
-        npc.aiTimer = STAGE_DELAY
+        npc.aiTimer = delay
     }
 
     private fun spawn(egg: Npc) {
@@ -73,7 +77,7 @@ constructor(
         const val SPAWN = "npc.dagganoth_critter"
 
         const val HATCH_RANGE = 1
-        const val STAGE_DELAY = 7
+        const val EGG1_TICKS = 4
         const val EGG_RESPAWN_TICKS = 500
         const val SPAWN_LIFETIME = 500
 
