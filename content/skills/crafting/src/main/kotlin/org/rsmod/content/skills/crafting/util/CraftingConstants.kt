@@ -16,6 +16,8 @@ object CraftingConstants {
     const val CHISEL = "obj.chisel"
     const val HAMMER = "obj.hammer"
     const val KNIFE = "obj.knife"
+    const val FLETCHING_KNIFE = "obj.fletching_knife"
+    const val STAT_FLETCHING = "stat.fletching"
     const val GLASSBLOWING_PIPE = "obj.glassblowingpipe"
 
     const val IMCANDO_HAMMER = "obj.imcando_hammer"

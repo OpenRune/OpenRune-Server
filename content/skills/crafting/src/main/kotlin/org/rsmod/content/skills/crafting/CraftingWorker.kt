@@ -17,7 +17,9 @@ import org.rsmod.content.skills.crafting.util.CraftingConstants
 import org.rsmod.content.skills.crafting.util.hasCraftingTool
 import org.rsmod.content.skills.crafting.util.holdsCostumeNeedle
 import org.rsmod.content.skills.crafting.util.holdsImcandoHammer
+import org.rsmod.content.skills.crafting.util.isKnifeFletching
 import org.rsmod.content.skills.crafting.util.meetsUnlocks
+import org.rsmod.content.skills.crafting.util.ticksFor
 import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
@@ -53,7 +55,7 @@ class CraftingWorkerScript @Inject constructor(
         val anim = beginCycle(product, task.facility, task.completed, task.anim)
         weakQueue(
             CraftingConstants.QUEUE_CRAFTING_MAKE,
-            (product.ticksAt(task.completed) - 1) + QUEUE_HANDLER_COMPENSATION,
+            (ticksFor(product, task.completed) - 1) + QUEUE_HANDLER_COMPENSATION,
             task.copy(phase = CraftingPhase.END, anim = anim),
         )
     }
@@ -79,7 +81,7 @@ class CraftingWorkerScript @Inject constructor(
             val anim = beginCycle(product, task.facility, completed, task.anim)
             weakQueue(
                 CraftingConstants.QUEUE_CRAFTING_MAKE,
-                product.ticksAt(completed) + QUEUE_HANDLER_COMPENSATION,
+                ticksFor(product, completed) + QUEUE_HANDLER_COMPENSATION,
                 task.copy(completed = completed, phase = CraftingPhase.END, anim = anim),
             )
         }
@@ -209,6 +211,9 @@ suspend fun ProtectedAccess.canCraft(product: CraftingProduct, verbose: Boolean)
 }
 
 suspend fun ProtectedAccess.craftOnce(product: CraftingProduct): Boolean {
+    if (!canCraft(product, verbose = false)) {
+        return false
+    }
     val removed = mutableListOf<Pair<String, Int>>()
     for (material in product.inputs) {
         if (invDel(inv, material.internal, material.count).success) {
@@ -292,7 +297,7 @@ suspend fun ProtectedAccess.startCrafting(
     if (capped <= 0) {
         return
     }
-    val cycleTicks = product.ticksAt(0)
+    val cycleTicks = ticksFor(product, 0)
     if (cycleTicks <= 0) {
         beginCycle(product, facility)
         repeat(capped) {
@@ -305,7 +310,7 @@ suspend fun ProtectedAccess.startCrafting(
     val anim = beginCycle(product, facility)
 
     val firstCycleTicks: Int
-    if (product.section.shortensFirstCraft) {
+    if (product.section.shortensFirstCraft && !product.isKnifeFletching()) {
         firstCycleTicks = maxOf(1, cycleTicks - 1)
     } else {
         firstCycleTicks = cycleTicks
