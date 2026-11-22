@@ -73,6 +73,25 @@ it through the interface close hook. Keep cleanup tied to the interface,
 not the suspended dialogue: walking or a hit can cancel that dialogue.
 Disabled popups do not set the flag.
 
+## Pest Control reward exchange
+
+Void Knights offer the native reward exchange through Exchange or the third Talk-to option.
+Commendations persist in `varp.pest_control_points`; `varp.if1` is shared interface display
+scratch and is refreshed whenever the reward shop opens.
+
+Dodgy Squire refunds regular and elite Void equipment, including locked versions without
+returning parchment. Talk-to selects the highest eligible inventory slot; item use selects
+that exact item. The quoted refund is limited by the 4,000-point cap, including zero-point
+offers. Acceptance consumes one item only if the original source and quoted payment remain
+valid. Refunds do not update the shop display scratch until the shop next opens.
+
+Normal rounds do not yet award commendations; landers, round gameplay, elite upgrades and
+Void seal combat are outside this implementation. Capped-offer and locked-item packet parity
+remain unverified against live.
+Herb quantities use independent uniform draws within the documented inclusive ranges. Their
+exact probability law, herb/mineral space-refusal packets and bulk XP packet/text parity remain
+unverified.
+
 ## Types
 ```
 engine

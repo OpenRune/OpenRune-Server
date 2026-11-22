@@ -1,0 +1,46 @@
+[[varp]]
+id = "varp.pest_control_points"
+scope = "Perm"
+transmit = "Never"
+
+[[enum]]
+isServerOnly = true
+id = "enum.pest_control_reward_objects"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+24 = "obj.pest_void_knight_mace"
+25 = "obj.pest_void_knight_top"
+26 = "obj.pest_void_knight_robes"
+27 = "obj.pest_void_knight_gloves"
+28 = "obj.game_pest_mage_helm"
+29 = "obj.game_pest_archer_helm"
+30 = "obj.game_pest_melee_helm"
+31 = "obj.pest_seal_8"
+
+[[enum]]
+isServerOnly = true
+id = "enum.pest_control_refund_points"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.pest_void_knight_mace" = 200
+"obj.pest_void_knight_top" = 200
+"obj.pest_void_knight_robes" = 200
+"obj.pest_void_knight_gloves" = 120
+"obj.game_pest_mage_helm" = 160
+"obj.game_pest_archer_helm" = 160
+"obj.game_pest_melee_helm" = 160
+"obj.elite_void_knight_top" = 360
+"obj.elite_void_knight_robes" = 360
+"obj.pest_void_knight_mace_trouver" = 200
+"obj.pest_void_knight_top_trouver" = 200
+"obj.pest_void_knight_robes_trouver" = 200
+"obj.pest_void_knight_gloves_trouver" = 120
+"obj.game_pest_mage_helm_trouver" = 160
+"obj.game_pest_archer_helm_trouver" = 160
+"obj.game_pest_melee_helm_trouver" = 160
+"obj.elite_void_knight_top_trouver" = 360
+"obj.elite_void_knight_robes_trouver" = 360
