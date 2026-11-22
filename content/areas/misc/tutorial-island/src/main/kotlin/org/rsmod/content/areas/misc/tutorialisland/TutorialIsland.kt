@@ -249,11 +249,6 @@ constructor(
     private fun ScriptContext.bindSkilling() {
         onOpHeldU(TutorialObj.BUCKET_WATER, TutorialObj.POT_FLOUR) { makeDough() }
         onOpHeldU(TutorialObj.TINDERBOX, TutorialObj.LOGS) { lightFire() }
-        onOpHeldU(TutorialObj.LOGS) {
-            if (it.second.internalName == TutorialObj.TINDERBOX) {
-                lightFire()
-            }
-        }
         onOpLocU(TutorialLoc.FIRE, TutorialObj.RAW_SHRIMP) { cookShrimp(it.loc) }
         onOpLocU(TutorialLoc.RANGE, TutorialObj.BREAD_DOUGH) { bakeBread(it.loc) }
         onOpLoc1(TutorialLoc.RANGE) {
