@@ -32,6 +32,7 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
         anim("seq.human_climbing_down")
         delay(1)
         telejump(destination)
+        resetAnim()
     }
 
     private suspend fun ProtectedAccess.ascendLair() {
@@ -39,6 +40,7 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
         anim("seq.human_climbing")
         delay(1)
         telejump(LAIR_EXIT)
+        resetAnim()
     }
 
     private fun ProtectedAccess.peekLadder() {
@@ -71,6 +73,7 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
         anim("seq.human_walk_style")
         delay(2)
         telejump(destination)
+        resetAnim()
     }
 
     private companion object {

@@ -134,6 +134,39 @@ class WaterbirthMeleeDagannoth @Inject constructor(deps: BossDeps) : BossPluginS
     }
 }
 
+class WaterbirthRockLobster @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
+
+    override val spec =
+        boss("npc.dagannoth_rock_lobster_2x2") {
+            stats(attackRate = ATTACK_RATE)
+
+            val melee =
+                ability("melee") {
+                    anim("seq.dagannoth_rock_lobster_attack")
+                    soundTo("synth.rock_lobster_attack")
+                    faceTarget()
+                    hit {
+                        damage(
+                            Accuracy(
+                                Roll(0..MAX_HIT),
+                                meleeAttackType = MeleeAttackType.Crush,
+                            )
+                        )
+                        type(HitType.Melee)
+                        delay = 1
+                        onHit(sound("synth.rock_lobster_hit", at = TargetExpr.CurrentTarget))
+                    }
+                }
+
+            phase("combat") { weightedSelectorRandom { +random(melee, weight = 1) } }
+        }
+
+    private companion object {
+        const val ATTACK_RATE = 2
+        const val MAX_HIT = 11
+    }
+}
+
 private val WALLASALKI_PROJECTILE =
     ProjectileConfig(
         startHeight = 100,

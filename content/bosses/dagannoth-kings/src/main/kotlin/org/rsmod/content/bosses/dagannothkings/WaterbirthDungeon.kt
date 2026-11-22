@@ -85,6 +85,7 @@ class WaterbirthDungeon @Inject constructor() : PluginScript() {
         anim(if (up) "seq.human_climbing" else "seq.human_climbing_down")
         delay(1)
         telejump(destination)
+        resetAnim()
     }
 
     private suspend fun ProtectedAccess.squeezeThrough(crevice: CoordGrid) {

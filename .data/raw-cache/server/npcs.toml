@@ -11382,16 +11382,25 @@ respawnRate = 30
 [[npc]]
 id = "npc.dagannoth_rock_lobster_2x2"
 inherit = "npc.dagannoth_rock_lobster_2x2"
+huntMode = 6
+huntRange = 5
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=25
+"param.attack_anim"="seq.dagannoth_rock_lobster_attack"
+"param.defend_anim"="seq.dagannoth_rock_lobster_defend"
+"param.death_anim"="seq.dagannoth_rock_lobster_death"
+"param.attack_sound"="synth.rock_lobster_attack"
+"param.defend_sound"="synth.rock_lobster_hit"
+"param.death_sound"="synth.rock_lobster_death"
 
 [[npc]]
 id = "npc.dagannoth_rock_lobster_2x2_loc"
 inherit = "npc.dagannoth_rock_lobster_2x2_loc"
+timer = 1
 defaultMode = "None"
 wanderRange = 0
-maxRange = 0
+maxRange = 7
 
 [[npc]]
 id = "npc.battle_tortoise"
