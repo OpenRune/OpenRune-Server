@@ -7,6 +7,7 @@ import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.config.constants
 import org.rsmod.api.npc.queueDeath
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.specials.SpecialAttackManager
 import org.rsmod.api.specials.SpecialAttackMap
@@ -17,15 +18,20 @@ import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 
-class RuneThrownaxeSpecialAttack @Inject constructor(private val npcRepo: NpcRepository) :
-    SpecialAttackMap {
+class RuneThrownaxeSpecialAttack
+@Inject
+constructor(
+    private val npcRepo: NpcRepository,
+    private val locs: LocRepository,
+) : SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
-        registerRanged("obj.rune_thrownaxe", RuneThrownaxe(manager, npcRepo))
+        registerRanged("obj.rune_thrownaxe", RuneThrownaxe(manager, npcRepo, locs))
     }
 
     private class RuneThrownaxe(
         private val manager: SpecialAttackManager,
         private val npcRepo: NpcRepository,
+        private val locs: LocRepository,
     ) : RangedSpecialAttack {
         override suspend fun ProtectedAccess.attack(
             target: Npc,
@@ -90,12 +96,18 @@ class RuneThrownaxeSpecialAttack @Inject constructor(private val npcRepo: NpcRep
             for (prop in props) {
                 prop.hitpoints = 0
                 prop.queueDeath()
+                val door = locs.findAll(prop.coords).firstOrNull { it.id == DOOR_LOC } ?: continue
+                val duration = prop.type.respawnRate.takeIf { it > 0 } ?: DOOR_RESPAWN_TICKS
+                locs.del(door, duration)
             }
             mes("The rune thrownaxe ricochets between the door supports, knocking them all down!")
             manager.stopCombat(this)
         }
 
         private companion object {
+            const val DOOR_LOC = 8967
+            const val DOOR_RESPAWN_TICKS = 50
+
             val CENTRE = CoordGrid(2545, 10143, 0)
             val WEAK_DOOR_IDS =
                 setOf(

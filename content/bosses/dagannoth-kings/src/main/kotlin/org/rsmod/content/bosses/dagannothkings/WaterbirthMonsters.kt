@@ -134,6 +134,39 @@ class WaterbirthMeleeDagannoth @Inject constructor(deps: BossDeps) : BossPluginS
     }
 }
 
+class WaterbirthDagannothSpawn @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
+
+    override val spec =
+        boss("npc.dagganoth_critter") {
+            stats(attackRate = ATTACK_RATE)
+
+            val melee =
+                ability("melee") {
+                    anim("seq.horror_dagannoth_attack")
+                    soundTo("synth.dagganoth_attack")
+                    faceTarget()
+                    hit {
+                        damage(
+                            Accuracy(
+                                Roll(0..MAX_HIT),
+                                meleeAttackType = MeleeAttackType.Stab,
+                            )
+                        )
+                        type(HitType.Melee)
+                        delay = 1
+                        onHit(sound("synth.dagganoth_hit", at = TargetExpr.CurrentTarget))
+                    }
+                }
+
+            phase("combat") { weightedSelectorRandom { +random(melee, weight = 1) } }
+        }
+
+    private companion object {
+        const val ATTACK_RATE = 4
+        const val MAX_HIT = 4
+    }
+}
+
 class WaterbirthRockLobster @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     override val spec =

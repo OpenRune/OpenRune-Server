@@ -9572,9 +9572,23 @@ inherit = "npc.tzhaar_fightcave_swarm_boss_cleric"
 [[npc]]
 id = "npc.dagganoth_critter"
 inherit = "npc.dagganoth_critter"
+attack = 50
+strength = 35
+defence = 25
+hitpoints = 35
+huntMode = 6
+huntRange = 5
+maxRange = 7
+attackRange = 1
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.attack_anim"="seq.horror_dagannoth_attack"
+"param.defend_anim"="seq.horror_dagannoth_defend"
+"param.death_anim"="seq.horror_dagannoth_death"
+"param.attack_sound"="synth.dagganoth_attack"
+"param.defend_sound"="synth.dagganoth_hit"
+"param.death_sound"="synth.dagganoth_death"
 
 [[npc]]
 id = "npc.dungeon_dagganoth_mainroom"
@@ -11401,6 +11415,33 @@ timer = 1
 defaultMode = "None"
 wanderRange = 0
 maxRange = 7
+
+[[npc]]
+id = "npc.dungeon_dagganoth_egg1"
+inherit = "npc.dungeon_dagganoth_egg1"
+timer = 1
+respawnRate = 500
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
+
+[[npc]]
+id = "npc.dungeon_dagganoth_egg2"
+inherit = "npc.dungeon_dagganoth_egg2"
+timer = 1
+respawnRate = 500
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
+
+[[npc]]
+id = "npc.dungeon_dagganoth_egg3"
+inherit = "npc.dungeon_dagganoth_egg3"
+timer = 1
+respawnRate = 500
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
 
 [[npc]]
 id = "npc.battle_tortoise"
