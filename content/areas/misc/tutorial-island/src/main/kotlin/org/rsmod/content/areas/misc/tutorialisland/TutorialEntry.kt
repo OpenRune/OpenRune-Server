@@ -31,6 +31,7 @@ import org.rsmod.content.quest.manager.Quest
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
+import org.rsmod.game.entity.player.Appearance
 import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -59,6 +60,7 @@ constructor(
         onIfClose("interface.tutorial_displayname") { closeName(player) }
         onIfModalButton("component.player_design:gender_male") { setBodyType(0, 0) }
         onIfModalButton("component.player_design:gender_female") { setBodyType(1, 1) }
+        onIfModalButton("component.player_design:pronouns_buttons") { selectPronouns(it.comsub) }
         for (part in DESIGN_PARTS) {
             onIfModalButton("component.player_design:${part}_left") {
                 TutorialDesign.cycle(player, part, -1)
@@ -408,10 +410,22 @@ constructor(
                 "your appearance.",
         )
         ifOpenMainModal("interface.player_design")
+        player.ifSetEvents(
+            "component.player_design:pronouns_buttons",
+            1..3,
+            IfEvent.Op1,
+        )
     }
 
     private fun ProtectedAccess.setBodyType(bodyType: Int, pronoun: Int) {
         TutorialDesign.setGender(player, bodyType, pronoun)
+    }
+
+    private fun ProtectedAccess.selectPronouns(option: Int) {
+        val pronoun =
+            (option - 1).coerceIn(Appearance.PRONOUN_HE, Appearance.PRONOUN_THEY)
+        player.transmitPronouns = pronoun
+        player.appearance.pronoun = pronoun
     }
 
     private suspend fun ProtectedAccess.confirmDesign(closed: Boolean) {

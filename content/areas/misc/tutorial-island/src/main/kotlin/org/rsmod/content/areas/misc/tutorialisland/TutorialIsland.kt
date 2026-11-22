@@ -249,6 +249,11 @@ constructor(
     private fun ScriptContext.bindSkilling() {
         onOpHeldU(TutorialObj.BUCKET_WATER, TutorialObj.POT_FLOUR) { makeDough() }
         onOpHeldU(TutorialObj.TINDERBOX, TutorialObj.LOGS) { lightFire() }
+        onOpHeldU(TutorialObj.LOGS) {
+            if (it.second.internalName == TutorialObj.TINDERBOX) {
+                lightFire()
+            }
+        }
         onOpLocU(TutorialLoc.FIRE, TutorialObj.RAW_SHRIMP) { cookShrimp(it.loc) }
         onOpLocU(TutorialLoc.RANGE, TutorialObj.BREAD_DOUGH) { bakeBread(it.loc) }
         onOpLoc1(TutorialLoc.RANGE) {
@@ -367,12 +372,12 @@ constructor(
         locRepo.del(loc, DOOR_OPEN_TICKS)
         soundSynth(DOOR_SOUND)
         player.addOpenLeaves(leaves, DOOR_OPEN_TICKS)
+        locRepo.change(loc, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS)
         val from = coords
         val dest = doorExit(from, loc)
         if (from != dest) {
             forcedWalk(listOf(loc.coords, dest), crossTiles = from.chebyshevDistance(dest))
         }
-        locRepo.change(loc, TutorialLoc.INVISWALL, DOOR_BLOCK_TICKS)
     }
 
     private suspend fun ProtectedAccess.openGate(loc: BoundLocInfo) {
@@ -396,13 +401,13 @@ constructor(
         }
         soundSynth(spec.sound)
         player.addOpenLeaves(spec.leaves, DOOR_OPEN_TICKS)
+        for (gate in halves) {
+            locRepo.change(gate, TutorialLoc.INVISWALL, DOOR_OPEN_TICKS)
+        }
         val from = coords
         val dest = doorExit(from, loc)
         if (from != dest) {
             forcedWalk(listOf(loc.coords, dest), crossTiles = from.chebyshevDistance(dest))
-        }
-        for (gate in halves) {
-            locRepo.change(gate, TutorialLoc.INVISWALL, DOOR_BLOCK_TICKS)
         }
     }
 
@@ -2389,7 +2394,6 @@ constructor(
         private const val FIRE_DURATION = 150
         private const val EXTRA_COOK_BURN_CHANCE = 50
         private const val DOOR_OPEN_TICKS = 2
-        private const val DOOR_BLOCK_TICKS = 1
         private const val DOOR_SOUND = 62
         private const val WOODEN_GATE_SOUND = 67
         private const val METAL_GATE_SOUND = 71

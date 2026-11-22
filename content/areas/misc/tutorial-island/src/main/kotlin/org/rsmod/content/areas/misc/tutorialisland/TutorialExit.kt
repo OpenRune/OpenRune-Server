@@ -5,7 +5,9 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.player.dialogue.BaseMesAnims
 import org.rsmod.api.player.output.ChatType
+import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -14,6 +16,7 @@ import org.rsmod.api.player.ui.ifCloseSub
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.content.quest.manager.Quest
 import org.rsmod.events.EventBus
+import org.rsmod.game.entity.Player
 import org.rsmod.map.zone.ZoneKey
 
 internal class TutorialExit
@@ -54,14 +57,22 @@ constructor(
         camReset()
         player.flashSide = 0
         player.runClientScript(TUTORIAL_END)
+        if (player.canCalloutJon()) {
+            val wasBound = player.bound
+            player.routeDestination.clear()
+            player.clearMapFlag()
+            player.bound = true
+            try {
+                delay(JON_CALLOUT_DELAY_TICKS)
+            } finally {
+                player.bound = wasBound
+            }
+            calloutJon()
+        }
     }
 
     suspend fun ProtectedAccess.calloutJon() {
-        if (player.tutorialStage != TutorialStage.LEFT_ISLAND ||
-            player.adventurePaths != ADVENTURE_PATHS_PARTICIPATING ||
-            player.vars["varbit.ap_guide_tutorial"] != 0 ||
-            player.attr[JON_CALLOUT_SHOWN] == true
-        ) {
+        if (!player.canCalloutJon()) {
             return
         }
         val jon =
@@ -69,11 +80,23 @@ constructor(
                 it.visType.internalName in AP_GUIDES || it.type.internalName in AP_GUIDES
             } ?: return
         player.attr[JON_CALLOUT_SHOWN] = true
-        startDialogue(jon) { chatNpc(neutral, "Hey ${player.displayName}! Come over here.") }
+        chatNpcSpecificNp(
+            title = jon.visType.name,
+            type = jon.visType.internalName,
+            mesanim = BaseMesAnims.neutral,
+            text = "Hey ${player.displayName}! Come over here.",
+        )
     }
+
+    private fun Player.canCalloutJon(): Boolean =
+        tutorialStage == TutorialStage.LEFT_ISLAND &&
+            adventurePaths == ADVENTURE_PATHS_PARTICIPATING &&
+            vars["varbit.ap_guide_tutorial"] == 0 &&
+            attr[JON_CALLOUT_SHOWN] != true
 
     private companion object {
         private const val ADVENTURE_PATHS_PARTICIPATING = 1
+        private const val JON_CALLOUT_DELAY_TICKS = 3
         private val AP_GUIDES =
             setOf("npc.ap_guide_parent", "npc.ap_guide_active", "npc.ap_guide_opt_out")
         private val TUTORIAL_END =
