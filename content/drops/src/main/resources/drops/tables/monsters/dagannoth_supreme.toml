@@ -63,11 +63,13 @@ count = 1
 
 [[main.entries]]
 weight = 1
+boosted = true
 obj = "obj.daganoth_cave_magic_shortbow"
 count = 1
 
 [[main.entries]]
 weight = 1
+boosted = true
 obj = "obj.dragon_axe"
 count = 1
 
@@ -88,6 +90,7 @@ count = 1
 
 [[main.entries]]
 weight = 1
+boosted = true
 obj = "obj.ranger_ring"
 count = 1
 

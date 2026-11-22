@@ -53,11 +53,13 @@ count = 1
 
 [[main.entries]]
 weight = 1
+boosted = true
 obj = "obj.mud_battlestaff"
 count = 1
 
 [[main.entries]]
 weight = 1
+boosted = true
 obj = "obj.dragon_axe"
 count = 1
 
@@ -78,6 +80,7 @@ count = 1
 
 [[main.entries]]
 weight = 1
+boosted = true
 obj = "obj.seer_ring"
 count = 1
 
