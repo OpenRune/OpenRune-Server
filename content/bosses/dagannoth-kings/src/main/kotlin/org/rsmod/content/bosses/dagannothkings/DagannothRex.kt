@@ -7,7 +7,7 @@ import org.rsmod.api.bosses.dsl.Roll
 import org.rsmod.api.bosses.dsl.anim
 import org.rsmod.api.bosses.dsl.boss
 import org.rsmod.api.bosses.dsl.hit
-import org.rsmod.api.bosses.dsl.sound
+import org.rsmod.api.bosses.dsl.soundTo
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.spec.HitType
@@ -21,7 +21,7 @@ class DagannothRex @Inject constructor(deps: BossDeps) : BossPluginScript(deps) 
             val melee =
                 ability("melee") {
                     anim(DagannothKingsCommon.REX_ATTACK_ANIM)
-                    sound(DagannothKingsCommon.REX_ATTACK_SOUND)
+                    soundTo(DagannothKingsCommon.REX_ATTACK_SOUND)
                     faceTarget()
                     hit {
                         damage(

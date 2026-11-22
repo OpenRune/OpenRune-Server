@@ -175,7 +175,7 @@ nothing = true
 [[tertiary]]
 numerator = 1
 denominator = 20
-obj = "obj.arceuus_corpse_dagannoth"
+obj = "obj.arceuus_corpse_dagannoth_initial"
 count = 1
 
 [[tertiary]]

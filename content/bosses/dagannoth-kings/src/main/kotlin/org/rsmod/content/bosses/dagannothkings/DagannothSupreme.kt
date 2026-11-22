@@ -25,9 +25,12 @@ class DagannothSupreme @Inject constructor(deps: BossDeps) : BossPluginScript(de
                 hit {
                     damage(Accuracy(Roll(0..DagannothKingsCommon.SUPREME_MAX_HIT)))
                     type(HitType.Ranged)
+                    missSpotanim(DagannothKingsCommon.MISS_IMPACT, height = 124)
+                    missSound(DagannothKingsCommon.MISS_SOUND)
                     onHit(
-                        org.rsmod.api.bosses.dsl.soundTo(
+                        sound(
                             DagannothKingsCommon.SUPREME_HIT_SOUND,
+                            at = TargetExpr.CurrentTarget,
                         )
                     )
                 },

@@ -51,7 +51,7 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
     private fun countPlayers(zRange: IntRange): Int {
         val zone = ZoneKey.from(CoordGrid(2900, 4449, 0))
         return playerRepo
-            .findAll(zone, zoneRadius = 2)
+            .findAll(zone, zoneRadius = 5)
             .count { it.coords.x in LAIR_X && it.coords.z in zRange }
     }
 

@@ -22,9 +22,12 @@ class DagannothPrime @Inject constructor(deps: BossDeps) : BossPluginScript(deps
             damage(Accuracy(Roll(0..DagannothKingsCommon.PRIME_MAX_HIT)))
             type(HitType.Magic)
             spotanim(DagannothKingsCommon.PRIME_IMPACT, height = 124)
+            missSpotanim(DagannothKingsCommon.MISS_IMPACT)
+            missSound(DagannothKingsCommon.MISS_SOUND)
             onHit(
-                org.rsmod.api.bosses.dsl.soundTo(
+                sound(
                     DagannothKingsCommon.PRIME_HIT_SOUND,
+                    at = TargetExpr.CurrentTarget,
                 )
             )
         }

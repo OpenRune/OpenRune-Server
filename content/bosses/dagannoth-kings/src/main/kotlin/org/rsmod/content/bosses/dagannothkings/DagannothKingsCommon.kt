@@ -32,7 +32,10 @@ internal object DagannothKingsCommon {
     const val PRIME_ATTACK_SOUND = "synth.waterwave_cast_and_fire"
     const val PRIME_HIT_SOUND = "synth.waterwave_hit"
     const val SUPREME_ATTACK_SOUND = "synth.meganoth_spines"
-    const val SUPREME_HIT_SOUND = "synth.meganoth_hit"
+    const val SUPREME_HIT_SOUND = "synth.waterwave_hit"
+
+    const val MISS_IMPACT = "spotanim.failedspell_impact"
+    const val MISS_SOUND = "synth.spellfail"
 
     val PRIME_AOE =
         area(
@@ -51,7 +54,7 @@ internal object DagannothKingsCommon {
             startHeight = 220,
             endHeight = 100,
             startDelay = 10,
-            travelTime = 56,
+            travelTime = 36,
             angle = 20,
             progress = 50,
             stepMultiplier = 5,

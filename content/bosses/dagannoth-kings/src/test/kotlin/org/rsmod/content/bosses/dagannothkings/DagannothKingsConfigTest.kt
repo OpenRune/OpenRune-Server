@@ -20,16 +20,16 @@ class DagannothKingsConfigTest {
         val supreme = npc("npc.dagcave_ranged_boss")
 
         assertEquals(6, rex.huntMode)
-        assertEquals(15, rex.huntRange)
+        assertEquals(5, rex.huntRange)
         assertEquals(1, rex.attackRange)
 
         assertEquals(8, prime.huntMode)
-        assertEquals(15, prime.huntRange)
-        assertEquals(15, prime.attackRange)
+        assertEquals(7, prime.huntRange)
+        assertEquals(5, prime.attackRange)
 
         assertEquals(8, supreme.huntMode)
-        assertEquals(15, supreme.huntRange)
-        assertEquals(15, supreme.attackRange)
+        assertEquals(7, supreme.huntRange)
+        assertEquals(5, supreme.attackRange)
     }
 
     @Test
@@ -38,7 +38,8 @@ class DagannothKingsConfigTest {
             val spinolyp = npc(name)
             assertEquals(8, spinolyp.huntMode, name)
             assertEquals(10, spinolyp.huntRange, name)
-            assertEquals(7, spinolyp.attackRange, name)
+            assertEquals(15, spinolyp.maxRange, name)
+            assertEquals(15, spinolyp.attackRange, name)
             assertEquals(10, spinolyp.respawnRate, name)
             assertEquals(1, spinolyp.timer, name)
         }
@@ -50,7 +51,7 @@ class DagannothKingsConfigTest {
             val water = npc(name)
             assertNull(water.huntMode, name)
             assertEquals(1, water.timer, name)
-            assertEquals(10, water.respawnRate, name)
+            assertEquals(500, water.respawnRate, name)
         }
     }
 
