@@ -29,12 +29,14 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
 
     private suspend fun ProtectedAccess.descendLair(destination: CoordGrid) {
         arriveDelay()
+        anim("seq.human_climbing_down")
         delay(1)
         telejump(destination)
     }
 
     private suspend fun ProtectedAccess.ascendLair() {
         arriveDelay()
+        anim("seq.human_climbing")
         delay(1)
         telejump(LAIR_EXIT)
     }

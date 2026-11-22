@@ -1,5 +1,6 @@
 package org.rsmod.content.bosses.dagannothkings
 
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.agilityLvl
@@ -15,37 +16,73 @@ class WaterbirthDungeon @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onOpLoc1("loc.dagannoth_caveentrance_rock") {
             if (it.loc.coords == MAIN_ENTRANCE) {
-                enter(FIRST_ROOM)
+                travel(FIRST_ROOM)
             }
         }
         onOpLoc1("loc.dagannoth_caveentrance_ice") {
             if (it.loc.coords == ASKELADDEN_ENTRANCE) {
-                enter(LADDER_ROOM)
+                travel(LADDER_ROOM)
             } else {
-                enter(FIRST_ROOM)
+                travel(FIRST_ROOM)
             }
         }
-        onOpLoc1("loc.dagannoth_rocky_steps") { enter(MAIN_ENTRANCE_EXIT) }
+        onOpLoc1("loc.dagannoth_rocky_steps") { travel(MAIN_ENTRANCE_EXIT) }
 
         onOpLoc1("loc.dagannoth_crevice") { squeezeThrough(it.loc.coords) }
 
-        onOpLoc1("loc.dagexp_exit_ladder") { enter(LIGHTHOUSE_EXIT) }
+        onOpLoc1("loc.dagexp_exit_ladder") { climb(it.type, LIGHTHOUSE_EXIT) }
 
-        onOpLoc1("loc.dagannoth_ladder_base_ext2") { enter(DUNGEON_ENTRY) }
-        onOpLoc2("loc.dagannoth_ladder_base_ext2") { enter(ASKELADDEN_EXIT) }
-        onOpLoc3("loc.dagannoth_ladder_base_ext2") { enter(DUNGEON_ENTRY) }
+        onOpLoc1("loc.dagannoth_ladder_base_ext2") {
+            climbOption(it.type, ASKELADDEN_EXIT, DUNGEON_ENTRY)
+        }
+        onOpLoc2("loc.dagannoth_ladder_base_ext2") { climb(it.type, ASKELADDEN_EXIT, up = true) }
+        onOpLoc3("loc.dagannoth_ladder_base_ext2") { climb(it.type, DUNGEON_ENTRY, up = false) }
 
-        onOpLoc1("loc.dagannoth_ladder_base") { enter(LADDER_ROOM) }
-        onOpLoc2("loc.dagannoth_ladder_base") { enter(ASKELADDEN_EXIT) }
-        onOpLoc3("loc.dagannoth_ladder_base") { enter(LADDER_ROOM) }
+        onOpLoc1("loc.dagannoth_ladder_base") { climbOption(it.type, ASKELADDEN_EXIT, LADDER_ROOM) }
+        onOpLoc2("loc.dagannoth_ladder_base") { climb(it.type, ASKELADDEN_EXIT, up = true) }
+        onOpLoc3("loc.dagannoth_ladder_base") { climb(it.type, LADDER_ROOM, up = false) }
 
-        for (climb in CLIMBS) {
-            onOpLoc1(climb.loc) { enter(climb.destination) }
+        for (route in CLIMBS) {
+            onOpLoc1(route.loc) { climb(it.type, route.destination) }
         }
     }
 
-    private suspend fun ProtectedAccess.enter(destination: CoordGrid) {
+    private suspend fun ProtectedAccess.travel(destination: CoordGrid) {
         arriveDelay()
+        delay(1)
+        telejump(destination)
+    }
+
+    private suspend fun ProtectedAccess.climbOption(
+        type: ObjectServerType,
+        upDestination: CoordGrid,
+        downDestination: CoordGrid,
+    ) {
+        arriveDelay()
+        startDialogue {
+            val up =
+                choice2(
+                    "Climb-up",
+                    true,
+                    "Climb-down",
+                    false,
+                    title = "Climb up or down the ladder?",
+                )
+            if (up) {
+                climb(type, upDestination, up = true)
+            } else {
+                climb(type, downDestination, up = false)
+            }
+        }
+    }
+
+    private suspend fun ProtectedAccess.climb(
+        type: ObjectServerType,
+        destination: CoordGrid,
+        up: Boolean = type.actions.getOpOrNull(0).equals("Climb-up", ignoreCase = true),
+    ) {
+        arriveDelay()
+        anim(if (up) "seq.human_climbing" else "seq.human_climbing_down")
         delay(1)
         telejump(destination)
     }
@@ -95,12 +132,12 @@ class WaterbirthDungeon @Inject constructor() : PluginScript() {
                 Climb("loc.dagexp_ladder10", CoordGrid(1799, 4388, 1)),
                 Climb("loc.dagexp_ladder11", CoordGrid(1798, 4382, 1)),
                 Climb("loc.dagexp_ladder12", CoordGrid(1797, 4382, 2)),
-                Climb("loc.dagexp_ladder13", CoordGrid(1802, 4369, 1)),
-                Climb("loc.dagexp_ladder14", CoordGrid(1801, 4369, 2)),
+                Climb("loc.dagexp_ladder13", CoordGrid(1801, 4369, 2)),
+                Climb("loc.dagexp_ladder14", CoordGrid(1802, 4369, 1)),
                 Climb("loc.dagexp_ladder15", CoordGrid(1827, 4362, 1)),
                 Climb("loc.dagexp_ladder16", CoordGrid(1826, 4362, 2)),
-                Climb("loc.dagexp_ladder17", CoordGrid(1863, 4371, 1)),
-                Climb("loc.dagexp_ladder18", CoordGrid(1863, 4372, 2)),
+                Climb("loc.dagexp_ladder17", CoordGrid(1863, 4372, 2)),
+                Climb("loc.dagexp_ladder18", CoordGrid(1863, 4371, 1)),
                 Climb("loc.dagexp_ladder19", CoordGrid(1864, 4389, 1)),
                 Climb("loc.dagexp_ladder20", CoordGrid(1864, 4388, 2)),
                 Climb("loc.dagexp_ladder21", CoordGrid(1890, 4409, 0)),

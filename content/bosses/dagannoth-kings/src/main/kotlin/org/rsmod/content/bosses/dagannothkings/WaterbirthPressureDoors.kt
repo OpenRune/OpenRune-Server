@@ -2,9 +2,11 @@ package org.rsmod.content.bosses.dagannothkings
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.protect.forcedWalk
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.player.PlayerRepository
@@ -25,12 +27,16 @@ constructor(
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpLoc1("loc.dagannoth_pressure_door") { open(it.loc, SOUTH_PADS) }
-        onOpLoc1("loc.dagannoth_pressure_door2") { open(it.loc, MIDDLE_PADS) }
-        onOpLoc1("loc.dagannoth_pressure_door3") { open(it.loc, NORTH_PADS) }
+        onOpLoc1("loc.dagannoth_pressure_door") { open(it.loc, it.type, SOUTH_PADS) }
+        onOpLoc1("loc.dagannoth_pressure_door2") { open(it.loc, it.type, MIDDLE_PADS) }
+        onOpLoc1("loc.dagannoth_pressure_door3") { open(it.loc, it.type, NORTH_PADS) }
     }
 
-    private suspend fun ProtectedAccess.open(door: BoundLocInfo, pads: List<CoordGrid>) {
+    private suspend fun ProtectedAccess.open(
+        door: BoundLocInfo,
+        closed: ObjectServerType,
+        pads: List<CoordGrid>,
+    ) {
         arriveDelay()
         if (!pressed(pads[0]) || !pressed(pads[1])) {
             mes("The door is held shut by a pressure mechanism.")
@@ -38,7 +44,21 @@ constructor(
         }
         world.locAnim(door, "seq.pressure_door_open")
         world.soundArea(door.coords, "synth.dagganoth_pressure_door_open")
-        locs.change(door, "loc.dagannoth_pressure_open", OPEN_TICKS)
+        locs.add(
+            door.coords,
+            "loc.dagannoth_pressure_open",
+            OPEN_TICKS,
+            door.angle,
+            door.shape,
+        ) {
+            locs.add(door.coords, closed.internalName, Int.MAX_VALUE, door.angle, door.shape)
+        }
+        val direction = if (player.coords.x <= door.coords.x) 1 else -1
+        forcedWalk(door.coords.translateX(direction), crossTiles = 2)
+        world.locAnim(door, "seq.pressure_door_close")
+        world.soundArea(door.coords, "synth.dagganoth_pressure_door_openandclose")
+        delay(1)
+        locs.change(door, closed, Int.MAX_VALUE)
     }
 
     private fun pressed(pad: CoordGrid): Boolean {
