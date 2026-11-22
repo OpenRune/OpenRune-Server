@@ -263,18 +263,8 @@ constructor(
             onOpLoc1(tree) { chopTree(it.loc, it.type) }
             onOpLocU(tree, TutorialObj.BRONZE_AXE) { chopTree(it.loc, it.type) }
         }
-        onOpLoc1(TutorialLoc.OAK_TREE) {
-            if (player.tutorialStage == TutorialStage.AXE_GIVEN) {
-                mes(
-                    "You won't be able to chop oak trees until you have a Woodcutting level of " +
-                        "15. You'll advance to higher Woodcutting levels by chopping down normal " +
-                        "trees. At higher Woodcutting levels you will find even more trees you " +
-                        "can cut.",
-                )
-            } else {
-                mes("Perhaps you've done enough woodcutting now.")
-            }
-        }
+        onOpLoc1(TutorialLoc.OAK_TREE) { tellOakRequirement() }
+        onOpLocU(TutorialLoc.OAK_TREE, TutorialObj.BRONZE_AXE) { tellOakRequirement() }
         onOpLoc1(TutorialLoc.TIN_ROCK) { mineTin(it.loc, it.type) }
         onOpLoc1(TutorialLoc.COPPER_ROCK) { mineCopper(it.loc, it.type) }
         onOpLocU(TutorialLoc.TIN_ROCK, TutorialObj.BRONZE_PICKAXE) { mineTin(it.loc, it.type) }
@@ -539,7 +529,7 @@ constructor(
         if (player.inv.contains(TutorialObj.RAW_SHRIMP)) {
             TutorialHighlights.item(player, TutorialObj.RAW_SHRIMP)
         }
-        guide.advance(player, TutorialStage.FIRE_LIT)
+        guide.advanceOrRestore(player, TutorialStage.FIRE_LIT)
         val destination = collision.firstStepDestination(fireCoords, FIRE_WALK_DIRECTIONS)
         if (destination != null) {
             walk(destination)
@@ -569,16 +559,17 @@ constructor(
             invAdd(inv, TutorialObj.SHRIMP, 1)
             if (firstCook) {
                 TutorialHighlights.clearItems(player)
-                guide.advance(player, TutorialStage.SHRIMP_COOKED)
             } else if (!player.inv.contains(TutorialObj.RAW_SHRIMP)) {
                 TutorialHighlights.clearItems(player)
             }
+            guide.advanceOrRestore(player, TutorialStage.SHRIMP_COOKED)
             objbox(TutorialObj.SHRIMP, "You manage to cook some shrimp.")
         } else {
             invAdd(inv, TutorialObj.BURNT_SHRIMP, 1)
             if (!player.inv.contains(TutorialObj.RAW_SHRIMP)) {
                 TutorialHighlights.clearItems(player)
             }
+            guide.restoreAfterAction(player)
             objbox(TutorialObj.BURNT_SHRIMP, "You accidently burn the shrimps.")
         }
     }
@@ -606,12 +597,11 @@ constructor(
         if (firstBake || !rollExtraCookBurn()) {
             tutorialStat("stat.cooking", 40.0)
             invAdd(inv, TutorialObj.BREAD, 1)
-            if (firstBake) {
-                guide.advance(player, TutorialStage.BREAD_BAKED)
-            }
+            guide.advanceOrRestore(player, TutorialStage.BREAD_BAKED)
             objbox(TutorialObj.BREAD, "You manage to bake some bread.")
         } else {
             invAdd(inv, TutorialObj.BURNT_BREAD, 1)
+            guide.restoreAfterAction(player)
             objbox(TutorialObj.BURNT_BREAD, "You accidently burn the bread.")
         }
     }
@@ -653,8 +643,24 @@ constructor(
         }
         tutorialStat("stat.fishing", 10.0)
         TutorialHighlights.item(player, TutorialObj.RAW_SHRIMP, alert = true)
-        guide.advance(player, TutorialStage.SHRIMP_CAUGHT)
+        guide.advanceOrRestore(player, TutorialStage.SHRIMP_CAUGHT)
         objbox(TutorialObj.RAW_SHRIMP, "You manage to catch some shrimp.")
+    }
+
+    private suspend fun ProtectedAccess.tellOakRequirement() {
+        if (player.tutorialStage < TutorialStage.AXE_GIVEN) {
+            mesbox(
+                "You cannot cut down this tree yet.<br>" +
+                    "You must progress further in the tutorial.",
+            )
+            return
+        }
+        mesbox(
+            "You won't be able to chop oak trees until you have a Woodcutting level of " +
+                "15. You'll advance to higher Woodcutting levels by chopping down normal " +
+                "trees. At higher Woodcutting levels you will find even more trees you " +
+                "can cut.",
+        )
     }
 
     private suspend fun ProtectedAccess.chopTree(loc: BoundLocInfo, type: ObjectServerType) {
@@ -701,7 +707,7 @@ constructor(
         tutorialStat("stat.woodcutting", 25.0)
         TutorialHighlights.item(player, TutorialObj.LOGS)
         TutorialHighlights.item(player, TutorialObj.TINDERBOX)
-        guide.advance(player, TutorialStage.LOGS_CUT)
+        guide.advanceOrRestore(player, TutorialStage.LOGS_CUT)
         objbox(TutorialObj.LOGS, "You manage to cut some logs.")
     }
 
@@ -784,7 +790,7 @@ constructor(
         soundSynth("synth.mine_ore")
         locRepo.change(loc, TutorialLoc.ROCK_DEPLETED, ROCK_DEPLETED_TICKS)
         tutorialStat("stat.mining", 17.5)
-        guide.advance(player, nextStage)
+        guide.advanceOrRestore(player, nextStage)
         objbox(ore, "You manage to mine some $oreName.")
     }
 

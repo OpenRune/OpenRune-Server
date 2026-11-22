@@ -31,6 +31,24 @@ constructor(
         apply(player, stage)
     }
 
+    fun advanceOrRestore(player: Player, stage: Int) {
+        if (stage > player.tutorialStage) {
+            advance(player, stage)
+        } else {
+            restoreAfterAction(player)
+        }
+    }
+
+    fun restoreAfterAction(player: Player) {
+        val stage = player.tutorialStage
+        if (HINTS[stage] == null) {
+            player.ifCloseSub("interface.mesoverlay", eventBus)
+            player.chatoverlayAllowMesOverlap = 0
+        } else {
+            show(player, stage)
+        }
+    }
+
     fun apply(player: Player, stage: Int) {
         progress(stage)?.let { player.tutorialOverlayProgress = it }
         player.flashSide = FLASH_SIDE[stage] ?: 0

@@ -1,6 +1,5 @@
 package org.rsmod.content.areas.misc.tutorialisland
 
-import dev.openrune.types.NpcMode
 import jakarta.inject.Inject
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.game.entity.NpcList
@@ -36,18 +35,10 @@ constructor(
             npc.respawnDir = spec.facing
             npc.faceDirection(spec.facing)
             spec.wander?.let { npc.wanderRange = it }
-            if (spec.isStatic) {
-                npc.mode = NpcMode.None
-                npc.movementLocked = true
-            }
         }
     }
 
-    private data class SpawnSpec(
-        val facing: Direction,
-        val wander: Int? = null,
-        val isStatic: Boolean = false,
-    )
+    private data class SpawnSpec(val facing: Direction, val wander: Int? = null)
 
     private companion object {
         private fun spawn(
@@ -55,16 +46,15 @@ constructor(
             z: Int,
             facing: Direction,
             wander: Int? = null,
-            isStatic: Boolean = false,
-        ): Pair<CoordGrid, SpawnSpec> = CoordGrid(x, z, 0) to SpawnSpec(facing, wander, isStatic)
+        ): Pair<CoordGrid, SpawnSpec> = CoordGrid(x, z, 0) to SpawnSpec(facing, wander)
 
         private val SPAWNS: Map<String, Map<CoordGrid, SpawnSpec>> =
             mapOf(
                 "npc.0_48_48_newbiefishing" to
                     mapOf(
-                        spawn(3099, 3090, Direction.South, 0, isStatic = true),
-                        spawn(3101, 3092, Direction.South, 0, isStatic = true),
-                        spawn(3103, 3092, Direction.South, 0, isStatic = true),
+                        spawn(3099, 3090, Direction.South),
+                        spawn(3101, 3092, Direction.South),
+                        spawn(3103, 3092, Direction.South),
                     ),
                 "npc.newbie_basics_instructor" to
                     mapOf(spawn(3095, 3107, Direction.SouthEast, 2)),

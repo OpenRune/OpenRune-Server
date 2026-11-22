@@ -14,6 +14,12 @@ wanderRange = 0
 respawnRate = 50
 
 [[npc]]
+id = "npc.0_48_48_newbiefishing"
+inherit = "npc.0_48_48_newbiefishing"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
 id = "npc.imp"
 inherit = "npc.imp"
 giveChase = false
