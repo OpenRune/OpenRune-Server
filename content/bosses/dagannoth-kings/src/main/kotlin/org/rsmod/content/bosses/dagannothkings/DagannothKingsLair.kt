@@ -73,6 +73,8 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
     private companion object {
         val LAIR_ENTRY = CoordGrid(2900, 4449, 0)
         val SLAYER_LAIR_ENTRY = CoordGrid(2900, 4385, 0)
+
+        // No capture covers the Climb-up ladders; the landing mirrors the entrance side.
         val LAIR_EXIT = CoordGrid(1910, 4367, 0)
 
         val LAIR_X = 2880..2943
