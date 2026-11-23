@@ -1,0 +1,11 @@
+[[enum]]
+isServerOnly = true
+id = "enum.druidic_ritual_meats"
+keyType = "OBJ"
+valueType = "OBJ"
+
+[enum.values]
+"obj.raw_rat_meat" = "obj.enchanted_rat_meat"
+"obj.raw_bear_meat" = "obj.enchanted_bear_meat"
+"obj.raw_beef" = "obj.enchanted_beef"
+"obj.raw_chicken" = "obj.enchanted_chicken"

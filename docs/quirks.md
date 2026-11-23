@@ -176,3 +176,23 @@ the Falador park gardener (rev 235) and Hector's chest (rev 232). Known differen
 - Taking the white apron in Gerrant's shop is an ordinary ground item pickup, without the
   "freshly starched" message.
 - Chathead expressions for Frank, Luthas, Wydin and the customs officer are chosen by hand.
+
+## Druidic Ritual
+
+Built from the OSRS wiki transcripts, RuneLite's Quest Helper and RSProx captures of the cauldron
+prison door and its suits of armour (3250 rev 233, 3279 rev 234) and of Kaqemeex and Sanfew after
+the quest (3131 rev 232, 3249 rev 233). No capture of an account doing the quest exists, so the
+ticks the quest stage changes on follow Quest Helper. Known differences:
+
+- Herblore can still be trained before the quest; no Herblore action checks it yet.
+- How long woken suits of armour stay out is not in any capture. They go back to standing
+  armour once they haven't been in combat for 50 ticks, or when they die.
+- Woken suits fight only the player who opened the door; others get "This is not your target.".
+- The animation for dipping meat in the Cauldron of Thunder has no source; it uses the generic
+  reach-to-table animation. Meat dipped outside the quest gives "Nothing interesting happens.".
+- Sanfew's line after the meats are handed in ("Now go and talk to Kaqemeex...") is also what he
+  says if spoken to again before seeing Kaqemeex; the wiki doesn't record that stage.
+- After the quest, Sanfew's "Have you any more work for me" always says "Not just yet", because
+  Eadgar's Ruse isn't in the game. His Sanfew serum and goutweed options are missing for the same
+  reason.
+- The quest journal uses the text from before any rework; no capture of the live journal exists.
