@@ -1,95 +1,201 @@
-name: Sync Revision with README
+name: Sync OSRS Revision
 
 permissions:
   contents: write
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "game.example.yml"
   workflow_dispatch:
     inputs:
       new_revision:
-        description: "Manually set a new revision (e.g., 236.2)"
+        description: "OSRS revision to sync (e.g. 242 or 242.2). Defaults to game.example.yml."
         required: false
         type: string
 
-jobs:
-  update-files:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+concurrency:
+  group: sync-osrs-revision
+  cancel-in-progress: false
 
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  resolve-revision:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      revision: ${{ steps.revision.outputs.value }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@v7.0.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
 
       - name: Determine revision
-        id: determine_rev
+        id: revision
+        env:
+          REQUESTED_REVISION: ${{ inputs.new_revision }}
+          PREVIOUS_SHA: ${{ github.event.before }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [ -n "${{ github.event.inputs.new_revision }}" ]; then
-            REVISION="${{ github.event.inputs.new_revision }}"
-            echo "Manual mode — setting revision to $REVISION"
-            sed -i -E "s/^revision: .*/revision: ${REVISION}/" game.example.yml
-          else
-            REVISION_LINE=$(grep '^revision:' game.example.yml)
-            REVISION=$(echo "$REVISION_LINE" | awk '{print $2}')
+          revision="${REQUESTED_REVISION:-$(awk '/^revision:/ { print $2; exit }' game.example.yml)}"
+          [[ "$revision" =~ ^[0-9]+([.][0-9]+)?$ ]] || {
+            echo "::error::Expected a numeric revision such as 242 or 242.2."
+            exit 1
+          }
+          if [[ -n "$PREVIOUS_SHA" && ! "$PREVIOUS_SHA" =~ ^0+$ ]]; then
+            previous_config=$(gh api -H 'Accept: application/vnd.github.raw+json' \
+              "repos/$GITHUB_REPOSITORY/contents/game.example.yml?ref=$PREVIOUS_SHA")
+            previous_revision=$(awk '/^revision:/ { print $2; exit }' <<< "$previous_config")
+            if [[ "$previous_revision" == "$revision" ]]; then
+              echo "Revision $revision is unchanged."
+              exit 0
+            fi
+          fi
+          echo "value=$revision" >> "$GITHUB_OUTPUT"
+
+  publish-gamevals:
+    needs: resolve-revision
+    if: needs.resolve-revision.outputs.revision != ''
+    uses: ./.github/workflows/publish-revision-gamevals.yml
+    with:
+      revision: ${{ needs.resolve-revision.outputs.revision }}
+
+  update-files:
+    needs: [resolve-revision, publish-gamevals]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      REVISION: ${{ needs.resolve-revision.outputs.revision }}
+    outputs:
+      commit: ${{ steps.push.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: main
+
+      - name: Update revision files
+        env:
+          REQUESTED_REVISION: ${{ inputs.new_revision }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          current=$(awk '/^revision:/ { print $2; exit }' game.example.yml)
+          if [[ -n "$REQUESTED_REVISION" ]]; then
+            sed -i -E "s/^revision: .*/revision: $REVISION/" game.example.yml
+          elif [[ "$current" != "$REVISION" ]]; then
+            echo "::error::Main has moved to revision $current. This run was for $REVISION."
+            exit 1
           fi
 
-          echo "revision=$REVISION" >> $GITHUB_OUTPUT
+          major="${REVISION%%.*}"
+          sed -i -E "s/\[!\[revision: [0-9.]+\]\[rev-badge\]\]/[![revision: ${REVISION}][rev-badge]]/g" README.md
+          sed -i -E "s|(img\.shields\.io/badge/Revision-)[0-9.]+(-blueviolet)|\1${REVISION}\2|g" README.md
+          sed -i -E "s|(alt=\"Revision )[0-9.]+(\")|\1${REVISION}\2|g" README.md
+          sed -i -E "s|(jav_config_url: https://client\.blurite\.io/jav_local_)[0-9]+(\.ws)|\1${major}\2|g" README.md
+          sed -i -E "s|^([[:space:]]*revision: )[0-9.]+|\1${REVISION}|" README.md
 
-          # Extract integer part for jav_config_url
-          REV_INT=$(echo "$REVISION" | cut -d'.' -f1)
-          echo "revision_int=$REV_INT" >> $GITHUB_OUTPUT
+          python3 tools/scripts/download_gameval_snapshot.py "$RUNNER_TEMP/osrs-gamevals"
+          cp "$RUNNER_TEMP/osrs-gamevals/max-ids.toml" .data/gamevals-binary/max-ids.toml
 
-      - name: Update README.md
-        id: update_readme
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Refresh Shortest Path transports
         run: |
-          REV=${{ steps.determine_rev.outputs.revision }}
-          REV_INT=${{ steps.determine_rev.outputs.revision_int }}
+          ./gradlew :or-cache:downloadTransports \
+            "-PbaseGamevalsDir=$RUNNER_TEMP/osrs-gamevals" --console=plain
 
-          cp README.md README.md.bak
+      - name: Regenerate travel tags
+        env:
+          TRAVEL_CONFIGS: content/generic/generic-locs/pack/src/main/resources/pack/configs
+        run: |
+          # Existing generated tags would make their locations look handled to the report.
+          rm -- "$TRAVEL_CONFIGS"/{auto_doors,auto_ladders,auto_travel}.toml
+          cp game.example.yml game.yml
+          ./gradlew :or-cache:freshCache :or-cache:mergePluginGamevals generateRsa --console=plain
+          ./gradlew :server:app:travelReport --console=plain
 
-          # Update inline markdown badge text
-          sed -i -E "s/\[!\[revision: [0-9.]+\]\[rev-badge\]\]/[![revision: ${REV}][rev-badge]]/g" README.md
+          report=build/reports/travel-coverage
+          cp "$report/door-tags.toml" "$TRAVEL_CONFIGS/auto_doors.toml"
+          cp "$report/ladder-tags.toml" "$TRAVEL_CONFIGS/auto_ladders.toml"
+          cp "$report/auto-travel-tags.toml" "$TRAVEL_CONFIGS/auto_travel.toml"
 
-          # Update markdown badge URL
-          sed -i -E "s|(\[rev-badge\]: https://img\.shields\.io/badge/Revision-)[0-9.]+(-blueviolet)|\1${REV}\2|g" README.md
+      - name: Validate updated gamevals
+        run: |
+          ./gradlew :or-cache:checkGamevals -PfailOnMissing \
+            "-PbaseGamevalsDir=$RUNNER_TEMP/osrs-gamevals" --console=plain
 
-          # --- NEW: Update HTML badge alt text ---
-          sed -i -E 's|(alt="Revision )[0-9.]+(")|\1'"${REV}"'\2|g' README.md
+      # The build job can repack the new tags from this cache without downloading OSRS again.
+      - name: Save game cache for verification
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            .data/cache
+            .data/xteas.json
+            .data/gamevals-binary/gamevals.dat
+            .data/gamevals-binary/gamevals_generated.dat
+          key: game-cache-v2-${{ hashFiles('game.example.yml') }}
 
-          # --- NEW: Update HTML badge image URL ---
-          sed -i -E 's|(img\.shields\.io/badge/Revision-)[0-9.]+(-blueviolet)|\1'"${REV}"'\2|g' README.md
-
-          # Update jav_config_url integer part only
-          sed -i -E "s|(jav_config_url: https://client\.blurite\.io/jav_local_)[0-9]+(\.ws)|\1${REV_INT}\2|g" README.md
-
-          # Update all revision: lines (indented or not)
-          sed -i -E "s|([[:space:]]*revision: )[0-9.]+|\1${REV}|" README.md
-
-          if diff -q README.md README.md.bak > /dev/null; then
-            echo "README.md already up-to-date."
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "README.md updated."
-            echo "changed=true" >> $GITHUB_OUTPUT
+      - name: Commit and push revision
+        id: push
+        env:
+          TRAVEL_CONFIGS: content/generic/generic-locs/pack/src/main/resources/pack/configs
+        run: |
+          git add -- README.md game.example.yml .data/gamevals-binary/max-ids.toml
+          git add -- content/travel/map-transports/src/main/resources/transports
+          git add -- "$TRAVEL_CONFIGS"/{auto_doors,auto_ladders,auto_travel}.toml
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -m "Sync revision to $REVISION"
+            git push origin HEAD:refs/heads/main
           fi
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Commit and push changes
-        if: steps.update_readme.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md game.example.yml
-          git commit -m "Sync revision to ${{ steps.determine_rev.outputs.revision }}"
-          git push
+  verify-server:
+    needs: update-files
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.update-files.outputs.commit }}
+      release_bundle: true
 
-      - name: Fail if no changes
-        if: steps.update_readme.outputs.changed == 'false' && github.event_name != 'workflow_dispatch'
+  publish-server:
+    needs: [resolve-revision, update-files, verify-server]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: openrune-server-release
+
+      - name: Publish verified server release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVISION: ${{ needs.resolve-revision.outputs.revision }}
+          COMMIT: ${{ needs.update-files.outputs.commit }}
         run: |
-          echo "No changes were needed — README already matches the current revision."
-          exit 1
+          tag="server-$REVISION-${COMMIT:0:12}"
+          asset=openrune-server-release.zip
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            present=$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json assets \
+              --jq 'any(.assets[]; .name == "openrune-server-release.zip")')
+            if [[ "$present" != true ]]; then
+              gh release upload "$tag" "$asset" --repo "$GITHUB_REPOSITORY"
+            fi
+          else
+            gh release create "$tag" "$asset" --repo "$GITHUB_REPOSITORY" --target "$COMMIT" \
+              --title "OpenRune Server $REVISION" --latest \
+              --notes "Built and boot-checked at commit $COMMIT. Extract the zip and run java -jar server.jar."
+          fi

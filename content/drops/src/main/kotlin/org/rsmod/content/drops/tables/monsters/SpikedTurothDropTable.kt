@@ -2,19 +2,18 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
+import dtx.rs.rsWeightedTable
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.api.droptable.rsPlayerGuaranteedTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import dtx.rs.rsWeightedTable
+import org.rsmod.content.drops.clueScrollTransformObj
+import org.rsmod.content.drops.shouldDropBrimstoneKey
 import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.content.drops.tables.shared.doubleRollHerbDropTable
 import org.rsmod.content.drops.tables.shared.herbDropTable
 import org.rsmod.content.drops.tables.shared.tripleRollHerbDropTable
-import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.shouldDropBrimstoneKey
-import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -43,6 +42,9 @@ public val spikedTurothDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         1 weight "obj.coins" count 440
         1 outOf 500 separate "obj.leafbladed_sword" count 1
         1 outOf 512 separate "obj.mystic_robe_bottom_light" count 1
+        boosted {
+            1 outOf 128 separate "obj.necklace_of_fangs" count 1
+        }
 
         31 weight rsWeightedTable(total = 31) {
             15 weight herbDropTable

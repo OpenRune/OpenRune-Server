@@ -60,6 +60,9 @@ data class ItemServerType(
 
     companion object {
         private val DEFAULT_OPTIONS: EntityOpsDefinition = EntityOpsBuilder().op(2, "Take").build()
+
+        /** Greegrees, some tools and Rada's blessing say Hold or Equip rather than Wield or Wear. */
+        private val EQUIP_OPS: Set<String> = setOf("Wield", "Wear", "Hold", "Equip")
     }
 
     val internalName
@@ -115,7 +118,7 @@ data class ItemServerType(
         get() = cost * 40 / 100
 
     public val isEquipable: Boolean
-        get() = wearpos1 != -1 && ("Wield" in interfaceOptions || "Wear" in interfaceOptions)
+        get() = wearpos1 != -1 && interfaceOptions.any { it in EQUIP_OPS }
 
     public fun hasOp(interactionOp: Int): Boolean {
         val text = options.getOpOrNull(interactionOp - 1) ?: return false

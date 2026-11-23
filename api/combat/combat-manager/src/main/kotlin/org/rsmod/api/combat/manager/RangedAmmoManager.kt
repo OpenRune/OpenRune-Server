@@ -46,16 +46,14 @@ constructor(
      * Consumes ammunition from the player's `quiver` slot, deducting it and handling possible ammo
      * drops.
      *
-     * This function will first attempt to conserve ammunition based on the player's equipment
-     * (e.g., Ava's devices). If not conserved, it will deduct ammunition from the `quiver` slot and
-     * attempt to drop it on the ground with a chance defined by [dropChance].
+     * The cape slot first recovers its share (e.g., Ava's devices, see
+     * [RangedAmmunition.ammoRecoveryRate]). Otherwise the ammunition is deducted from the `quiver`
+     * slot and either breaks ([RangedAmmunition.AMMO_BREAK_CHANCE]%) or lands at [dropCoord].
      *
      * @param quiverType The type of ammunition used from the `quiver` slot. If the `quiver` slot
      *   obj does **not** match this type, an [IllegalStateException] will be thrown.
      * @param dropCoord The coordinate where the ammo drop should land when applicable.
      * @param dropDelay The delay in cycles before the ammo appears on the ground.
-     * @param dropChance The chance that the ammo will be dropped instead of disappearing, where `1
-     *   / dropChance` is the probability of it occurring.
      * @param dropDuration The duration in cycles that the dropped ammo will remain on the ground.
      * @param useCount The number of ammo units to consume from the `quiver` slot. If the `quiver`
      *   slot obj does not have at least this value as its `count`, an [IllegalStateException] will
@@ -66,7 +64,6 @@ constructor(
         quiverType: ItemServerType,
         dropCoord: CoordGrid,
         dropDelay: Int,
-        dropChance: Int = RangedAmmunition.DEFAULT_AMMO_DROP_RATE,
         dropDuration: Int = RangedAmmunition.DEFAULT_AMMO_DROP_DURATION,
         useCount: Int = 1,
     ): Unit =
@@ -77,7 +74,6 @@ constructor(
             ammoCount = useCount,
             dropCoord = dropCoord,
             dropDelay = dropDelay,
-            dropChance = dropChance,
             dropDuration = dropDuration,
         )
 
@@ -85,17 +81,15 @@ constructor(
      * Consumes ammunition from the player's `righthand` slot (for thrown weapons), deducting it and
      * handling possible ammo drops.
      *
-     * This function will first attempt to conserve ammunition based on the player's equipment
-     * (e.g., Ava's devices). If not conserved, it will deduct ammunition from the `righthand` slot
-     * and attempt to drop it on the ground with a chance defined by [dropChance].
+     * The cape slot first recovers its share (e.g., Ava's devices, see
+     * [RangedAmmunition.ammoRecoveryRate]). Otherwise the weapon is deducted from the `righthand`
+     * slot and either breaks ([RangedAmmunition.AMMO_BREAK_CHANCE]%) or lands at [dropCoord].
      *
      * @param weaponType The type of thrown weapon used from the `righthand` slot. If the
      *   `righthand` slot obj does **not** match this type, an [IllegalStateException] will be
      *   thrown.
      * @param dropCoord The coordinate where the ammo drop should land when applicable.
      * @param dropDelay The delay in cycles before the ammo appears on the ground.
-     * @param dropChance The chance that the ammo will be dropped instead of disappearing, where `1
-     *   / dropChance` is the probability of it occurring.
      * @param dropDuration The duration in cycles that the dropped ammo will remain on the ground.
      * @param useCount The number of thrown weapon units to consume from the `righthand` slot. If
      *   the slot obj does not have at least this value as its `count`, an [IllegalStateException]
@@ -106,7 +100,6 @@ constructor(
         weaponType: ItemServerType,
         dropCoord: CoordGrid,
         dropDelay: Int,
-        dropChance: Int = RangedAmmunition.DEFAULT_AMMO_DROP_RATE,
         dropDuration: Int = RangedAmmunition.DEFAULT_AMMO_DROP_DURATION,
         useCount: Int = 1,
     ): Unit =
@@ -117,7 +110,6 @@ constructor(
             ammoCount = useCount,
             dropCoord = dropCoord,
             dropDelay = dropDelay,
-            dropChance = dropChance,
             dropDuration = dropDuration,
         )
 
@@ -128,15 +120,18 @@ constructor(
         ammoCount: Int,
         dropCoord: CoordGrid,
         dropDelay: Int,
-        dropChance: Int,
         dropDuration: Int,
     ) {
-        val conserve = RangedAmmunition.conserveAmmo(player, random)
-        if (!conserve) {
-            RangedAmmunition.detractAmmo(player, ammoWearpos, ammoType, ammoCount, eventBus)
+        val roll = random.of(maxExclusive = 100)
+        val recovery = RangedAmmunition.ammoRecoveryRate(player)
+        if (roll < recovery) {
+            return
         }
 
-        if (!conserve && random.randomBoolean(dropChance)) {
+        RangedAmmunition.detractAmmo(player, ammoWearpos, ammoType, ammoCount, eventBus)
+
+        val broke = roll < recovery + RangedAmmunition.AMMO_BREAK_CHANCE
+        if (!broke) {
             RangedAmmunition.attemptAmmoDrop(
                 player = player,
                 delay = dropDelay,

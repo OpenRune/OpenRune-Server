@@ -72,19 +72,17 @@ internal object ApmekenSpots {
 }
 
 internal object ApmekenSynths {
-    const val SIGHT = 6574
-    const val RESOLVED = 2655
-    const val CRATE = 2582
-    const val REPAIR = 938
-    const val POUR = 2401
-    const val POUR_TAIL = 6577
-    const val ROOF_COLLAPSE = 6583
-    const val ROOF_COLLAPSE_TAIL = 6573
-    const val VENT_FAILURE = 6569
-    const val CORRUPTION_FAILURE = 6570
-    const val VENOM_POOL = 3308
-    const val VENOM_HIT = 2285
-    const val THRALL_APPEAR = 6579
+    const val SIGHT = "synth.toa_amp_skull_appears_01"
+    const val RESOLVED = "synth.found_gem"
+    const val CRATE = "synth.pick2"
+    const val REPAIR = "synth.poh_build_wood"
+    const val POUR = "synth.liquid"
+    const val POUR_TAIL = "synth.toa_neutralise_fumes_02"
+    const val ROOF_COLLAPSE = "synth.toa_amp_pillar_rumble_01"
+    const val ROOF_COLLAPSE_TAIL = "synth.toa_amp_rocks_fall_impact"
+    const val VENT_FAILURE = "synth.toa_amp_gas_leak_02"
+    const val CORRUPTION_FAILURE = "synth.toa_corruption_01"
+    const val VENOM_HIT = "synth.apple_splat"
 }
 
 internal object ApmekenMidis {

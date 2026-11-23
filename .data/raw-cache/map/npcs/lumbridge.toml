@@ -7,34 +7,6 @@ npc = "npc.0_50_50_freshfish"
 coords = "0_50_50_39_41"
 
 [[spawn]]
-npc = "npc.aide_tutor_clues"
-coords = "0_50_50_29_36"
-
-[[spawn]]
-npc = "npc.aide_tutor_cooking"
-coords = "0_50_49_34_60"
-
-[[spawn]]
-npc = "npc.aide_tutor_magic"
-coords = "0_50_50_17_38"
-
-[[spawn]]
-npc = "npc.aide_tutor_melee"
-coords = "0_50_50_19_38"
-
-[[spawn]]
-npc = "npc.aide_tutor_ranging"
-coords = "0_50_50_18_39"
-
-[[spawn]]
-npc = "npc.aide_tutor_smithing_apprentice"
-coords = "0_50_50_27_53"
-
-[[spawn]]
-npc = "npc.aide_tutor_woodsman"
-coords = "0_50_50_28_45"
-
-[[spawn]]
 npc = "npc.ap_guide_parent"
 coords = "0_50_50_32_35"
 
@@ -751,10 +723,6 @@ npc = "npc.hans"
 coords = "0_50_50_7_33"
 
 [[spawn]]
-npc = "npc.hatius_lumbridge_diary"
-coords = "0_50_50_34_14"
-
-[[spawn]]
 npc = "npc.imp"
 coords = "0_50_50_17_26"
 
@@ -1017,10 +985,6 @@ coords = "0_50_50_16_54"
 ## Father Aereck
 
 [[spawn]]
-npc = "npc.aide_tutor_prayer"
-coords = "0_50_50_43_14"
-
-[[spawn]]
 npc = "npc.father_aereck"
 coords = "0_50_50_44_6"
 
@@ -1029,10 +993,6 @@ npc = "npc.woman3"
 coords = "0_50_50_44_11"
 
 ## Lumbridge Castle
-
-[[spawn]]
-npc = "npc.aide_tutor_crafting"
-coords = "1_50_50_10_12"
 
 [[spawn]]
 npc = "npc.cook"
@@ -1063,10 +1023,6 @@ npc = "npc.woman"
 coords = "1_50_50_11_13"
 
 ## Lumbridge Castle Dining Room
-
-[[spawn]]
-npc = "npc.aide_tutor_banker"
-coords = "2_50_50_8_22"
 
 [[spawn]]
 npc = "npc.deadman_banker_blue_south"

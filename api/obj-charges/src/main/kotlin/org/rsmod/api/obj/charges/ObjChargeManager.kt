@@ -23,6 +23,20 @@ public class ObjChargeManager {
     }
 
     /**
+     * Writes [value] into the [internal] varobj of the obj in [slot] without touching its type.
+     *
+     * @throws IllegalArgumentException if [value] does not fit within the varobj's bit range.
+     */
+    public fun setValue(inventory: Inventory, slot: Int, internal: String, value: Int) {
+        val varobj = ServerCacheManager.getVarObj(internal.asRSCM(RSCMType.VAROBJ)) ?: error("Unable to find varobj: $internal")
+        require(value in 0..varobj.bits.bitMask) {
+            "`value` ($value) must be within range [0..${varobj.bits.bitMask}]. (var=$varobj)"
+        }
+        val obj = inventory[slot] ?: return
+        inventory[slot] = obj.copy(vars = obj.vars.withBits(varobj.bits, value))
+    }
+
+    /**
      * Adds charges to the obj in the given [slot] of the provided [inventory].
      *
      * If the obj has **no existing charges**, it is assumed to be the uncharged variant and will be

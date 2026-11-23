@@ -1,0 +1,146 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: PR number for an auto-fixed head
+        required: true
+        type: number
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number || inputs.pull_request }}
+  cancel-in-progress: true
+
+jobs:
+  formatting:
+    uses: ./.github/workflows/format.yml
+
+  check-revision:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check RsProt modules match the configured revision
+        run: |
+          revision=$(awk '/^revision:/ { print $2; exit }' game.example.yml)
+          if [[ ! "$revision" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+            echo "::error file=game.example.yml::Expected a numeric revision such as 242 or 242.2."
+            exit 1
+          fi
+          python3 - "${revision%%.*}" <<'PY'
+          import sys
+          import tomllib
+
+          with open("gradle/libs.versions.toml", "rb") as file:
+              libraries = tomllib.load(file)["libraries"]
+          major = sys.argv[1]
+          failed = False
+          for kind in ("api", "shared"):
+              alias = f"rsprot-{kind}"
+              expected = f"net.rsprot:osrs-{major}-{kind}"
+              actual = libraries.get(alias, {}).get("module")
+              if actual != expected:
+                  print(f"::error file=gradle/libs.versions.toml::{alias} must use {expected}, found {actual!r}.")
+                  failed = True
+          sys.exit(failed)
+          PY
+
+  gameval-conflicts:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/gameval-conflicts.yml
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+
+  check-gamevals:
+    # Keep this job name stable for the required status check.
+    needs: [formatting, check-revision, gameval-conflicts]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: true
+
+      - name: Download OSRS gameval snapshot
+        id: snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 tools/scripts/download_gameval_snapshot.py "$RUNNER_TEMP/osrs-gamevals" 2>&1 |
+            tee "$RUNNER_TEMP/osrs-gamevals-download.log"
+
+      - name: Check gamevals
+        id: validate
+        if: ${{ !cancelled() && (steps.snapshot.outcome == 'success' || steps.snapshot.outcome == 'failure') }}
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pull_request }}
+          CONFLICT_RESULT: ${{ needs.gameval-conflicts.result }}
+          REVISION_RESULT: ${{ needs.check-revision.result }}
+          SNAPSHOT_RESULT: ${{ steps.snapshot.outcome }}
+        run: |
+          report_dir="$RUNNER_TEMP/gameval-validation"
+          mkdir -p "$report_dir"
+          printf '%s\n' "$PR_NUMBER" > "$report_dir/pr-number.txt"
+
+          status=0
+          report=or-cache/build/reports/gamevals/gameval-report.txt
+          if [[ "$SNAPSHOT_RESULT" == success ]]; then
+            ./gradlew :or-cache:checkGamevals -PfailOnMissing \
+              "-PbaseGamevalsDir=$RUNNER_TEMP/osrs-gamevals" --console=plain 2>&1 |
+              tee "$report_dir/check.log" || status=$?
+          else
+            tail -40 "$RUNNER_TEMP/osrs-gamevals-download.log" |
+              tee "$report_dir/check.log"
+            status=1
+          fi
+
+          if [[ "$CONFLICT_RESULT" == failure ]]; then
+            echo "The reserved-ID conflict check failed. See the gameval-conflicts job." >> "$report_dir/report.txt"
+            status=1
+          fi
+          if [[ "$REVISION_RESULT" == failure ]]; then
+            echo "The RsProt revision check failed. See the check-revision job." >> "$report_dir/report.txt"
+            status=1
+          fi
+          if [[ -s "$report" ]]; then
+            cat "$report" >> "$report_dir/report.txt"
+          else
+            tail -40 "$report_dir/check.log" >> "$report_dir/report.txt"
+          fi
+          exit "$status"
+
+      - name: Upload gameval failure report
+        if: ${{ !cancelled() && steps.validate.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: gameval-validation-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/gameval-validation
+          if-no-files-found: error

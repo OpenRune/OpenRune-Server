@@ -10,7 +10,7 @@ data class Prayer(
     val id: Int,
     val name: String,
     val level: Int,
-    val sound: Int,
+    val sound: SynthType,
     val enabled: String,
     val drainEffect: Int,
     val overhead: Int?,

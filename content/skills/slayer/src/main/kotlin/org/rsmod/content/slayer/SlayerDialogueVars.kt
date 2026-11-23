@@ -21,4 +21,3 @@ internal var Player.slayerMortimerIntroComplete by boolVarBit("varbit.mortimer_i
 internal var Player.expeditiousBraceletCharges by intVarBit("varbit.slayer_expeditious_charges")
 
 internal var Player.slaughterBraceletCharges by intVarBit("varbit.slayer_slaughter_charges")
-

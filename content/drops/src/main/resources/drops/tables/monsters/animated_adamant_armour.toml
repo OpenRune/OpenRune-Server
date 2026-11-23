@@ -1,6 +1,11 @@
 id = "Animated Adamant Armour Drops"
 npcs = ["npc.warguild_adamant_armour"]
 
+# The npc's dropped_remains param already drops 1 token, so this is the wiki total minus one.
+[[guaranteed]]
+obj = "obj.warguild_tokens"
+count = 29
+
 [[guaranteed]]
 obj = "obj.adamant_full_helm"
 count = 1

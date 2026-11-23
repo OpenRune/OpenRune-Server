@@ -102,7 +102,7 @@ internal class WardensCharging(private val room: WardensEncounter) {
         room.obelisk?.anim("seq.fx_obelisk_wardens01_cast")
         deps.worldRepo.soundArea(
             room.coords(WardenGod.OBELISK_CENTRE),
-            "synth.toa_wardens_orb_spawn",
+            "synth.toa_wardens_obelisk_hit_01",
             radius = ORB_SOUND_RADIUS,
         )
         for (god in WardenGod.entries.reversed()) {

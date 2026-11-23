@@ -107,7 +107,7 @@ class BoneShardEvents : PluginScript() {
 
     private fun ProtectedAccess.blessBones(row: PrayerBlessedBoneRow, amount: Int = inv.count(row.input.internalName)) {
         player.anim("seq.human_openchest")
-        player.soundSynth(2738)
+        player.soundSynth("synth.bones_down")
 
         val blessedName = row.output.internalName
 
@@ -124,7 +124,7 @@ class BoneShardEvents : PluginScript() {
     private fun ProtectedAccess.blessWine(wine: String, blessedWine: String, amount: Int = inv.count(wine), ) {
 
         player.anim("seq.human_openchest")
-        player.soundSynth(2738)
+        player.soundSynth("synth.bones_down")
 
         val toConvert = minOf(amount, inv.count(wine))
 

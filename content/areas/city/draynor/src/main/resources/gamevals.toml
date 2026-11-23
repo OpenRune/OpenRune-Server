@@ -1,7 +1,3 @@
-[gamevals.synth]
-trapdoor_open = 91
-wom_recycle_remove = 1181
-
 [gamevals.enum]
 wom_recycling_tabs = 2070
 wom_recycling_free_quests = 2074

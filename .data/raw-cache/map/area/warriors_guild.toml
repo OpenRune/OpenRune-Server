@@ -1,0 +1,41 @@
+[[area]]
+name = "Warriors' Guild Cyclops Room"
+area_id = "area.warguild_cyclops_top"
+levels = [2]
+
+[[area.polygons]]
+vertices = [
+    [2847, 3534],
+    [2877, 3534],
+    [2877, 3557],
+    [2847, 3557],
+]
+
+[[area.polygons]]
+vertices = [
+    [2838, 3543],
+    [2846, 3543],
+    [2846, 3557],
+    [2838, 3557],
+]
+
+[[area]]
+name = "Warriors' Guild Basement Cyclops Room"
+area_id = "area.warguild_cyclops_basement"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [2905, 9957],
+    [2941, 9957],
+    [2941, 9965],
+    [2905, 9965],
+]
+
+[[area.polygons]]
+vertices = [
+    [2912, 9966],
+    [2941, 9966],
+    [2941, 9974],
+    [2912, 9974],
+]

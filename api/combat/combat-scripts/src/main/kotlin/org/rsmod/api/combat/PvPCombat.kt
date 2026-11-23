@@ -12,11 +12,11 @@ import org.rsmod.api.combat.player.activateRangedSpecial
 import org.rsmod.api.combat.player.activateShieldSpecial
 import org.rsmod.api.combat.player.setPkVars
 import org.rsmod.api.combat.player.specialAttackType
-import org.rsmod.api.death.PvPSkullHook
-import org.rsmod.api.death.PvPSpecialAttackHook
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.death.PvPSkullHook
+import org.rsmod.api.death.PvPSpecialAttackHook
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -25,6 +25,7 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.specials.SpecialAttackType
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
+import org.rsmod.api.spells.attack.SpellAttackManager
 import org.rsmod.api.spells.attack.SpellAttackRegistry
 import org.rsmod.api.spells.attack.attack
 import org.rsmod.api.weapons.WeaponRegistry
@@ -43,8 +44,10 @@ constructor(
     private val manager: PlayerAttackManager,
     private val ammunition: RangedAmmoManager,
     private val spellsReg: SpellAttackRegistry,
+    private val spellManager: SpellAttackManager,
     private val skullHooks: Set<PvPSkullHook>,
     private val specialAttackHooks: Set<PvPSpecialAttackHook>,
+    private val pjTimer: WildernessPjTimer,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Player, attack: CombatAttack.PlayerAttack) {
         when (attack) {
@@ -59,6 +62,7 @@ constructor(
         for (hook in skullHooks) {
             hook.onPlayerAttack(player, target)
         }
+        pjTimer.recordAttack(player, target)
         setPkVars(target)
     }
 
@@ -141,7 +145,7 @@ constructor(
 
         // Set the next attack clock before executing any special attack, ensuring all attacks
         // default to the weapon's standard attack delay.
-        val attackRate = speeds.actual(player)
+        val attackRate = speeds.actualVsPlayer(player)
         manager.setNextAttackDelay(player, attackRate)
 
         // Important: Special attack handlers are responsible for explicitly calling `opplayer2`
@@ -220,7 +224,7 @@ constructor(
             return
         }
 
-        val projanimType = RSCM.getReverseMapping(RSCMType.PROJANIM,projectileID)
+        val projanimType = RSCM.getReverseMapping(RSCMType.PROJANIM, projectileID)
 
         // All valid ranged weapons require an `attack_anim_stance1` seq type param to be used in
         // combat.
@@ -237,7 +241,7 @@ constructor(
         // has no `proj_launch` param, a "null" (-1) spotanim will still be sent in the same slot
         // and height as usual.
         val launchSpotanim = weaponType.paramOrNull(params.proj_launch)?.id ?: NULL_SPOTANIM_ID
-        player.spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpotanim), height = 96, slot = constants.spotanim_slot_combat)
+        player.spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM, launchSpotanim), height = 96, slot = constants.spotanim_slot_combat)
 
         val projanim = manager.spawnProjectile(player, target, travelSpotanim, projanimType)
         val (serverDelay, clientDelay) = projanim.durations
@@ -283,10 +287,11 @@ constructor(
         val attackRate = MAGIC_SPELL_ATTACK_RATE
         manager.setNextAttackDelay(player, attackRate)
 
-        val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ,attack.spell.obj.id)]
+        val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ, attack.spell.obj.id)]
         if (spell != null) {
             applyPkVars(target)
             spell.attack(this, target, attack)
+            spellManager.afterSpell(this, target, attack)
             return
         }
 

@@ -51,7 +51,7 @@ class BullBones @Inject constructor(private val objRepo: ObjRepository) : Plugin
 
     private companion object {
         const val BONES = "obj.bull_bones"
-        const val BURY_SYNTH = "synth.bull_bones_bury"
+        const val BURY_SYNTH = "synth.bones_down"
         const val PRAYER_XP = 40.0
         const val YES = 1
         const val YES_ALWAYS = 2

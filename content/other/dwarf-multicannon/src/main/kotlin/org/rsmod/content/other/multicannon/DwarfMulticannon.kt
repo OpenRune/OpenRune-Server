@@ -852,8 +852,8 @@ constructor(
         private const val KQ_IMPACT = "spotanim.kalphite_glow_impact"
         private const val DESTROY_ROLL = 4
         private const val DESTROY_DECAY_DELAY = 2
-        private const val KQ_DESTROY_SYNTH = "synth.mcannon_destroyed_kalphite_queen_1"
-        private const val KQ_DESTROY_SYNTH_2 = "synth.mcannon_destroyed_kalphite_queen_2"
+        private const val KQ_DESTROY_SYNTH = "synth.kalthite_worker_hit"
+        private const val KQ_DESTROY_SYNTH_2 = "synth.kalthite_lightning"
         private const val ORNAMENT_KIT_ROW = "dbrow.mcannon_kit_league03"
         private const val UNDER_ATTACK_MESSAGE = "I'm currently under attack"
         const val DESTROYED_MESSAGE = "Your cannon has been destroyed!"

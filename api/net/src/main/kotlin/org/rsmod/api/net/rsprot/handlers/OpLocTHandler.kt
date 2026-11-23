@@ -4,7 +4,8 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
 import jakarta.inject.Inject
-import net.rsprot.protocol.game.incoming.locs.OpLocT
+import net.rsprot.protocol.game.incoming.locs.OpLocTV1
+import net.rsprot.protocol.game.incoming.locs.OpLocTV2
 import org.rsmod.api.net.rsprot.player.InterfaceEvents
 import org.rsmod.api.player.interact.LocTInteractions
 import org.rsmod.api.player.output.clearMapFlag
@@ -25,29 +26,61 @@ constructor(
     private val eventBus: EventBus,
     private val locRegistry: LocRegistry,
     private val locInteractions: LocTInteractions,
-) : MessageHandler<OpLocT> {
+) {
     private val logger = InlineLogger()
 
-    private val OpLocT.asComponent: Component
-        get() = Component(selectedInterfaceId, selectedComponentId)
+    val v1: MessageHandler<OpLocTV1> = MessageHandler { player, message ->
+        handle(
+            player = player,
+            locId = message.id,
+            x = message.x,
+            z = message.z,
+            controlKey = message.controlKey,
+            component = Component(message.selectedInterfaceId, message.selectedComponentId),
+            comsub = message.selectedSub,
+            selectedObj = message.selectedObj,
+        )
+    }
 
-    override fun handle(player: Player, message: OpLocT) {
+    val v2: MessageHandler<OpLocTV2> = MessageHandler { player, message ->
+        handle(
+            player = player,
+            locId = message.id,
+            x = message.x,
+            z = message.z,
+            controlKey = message.controlKey,
+            component = Component(message.selectedInterfaceId, message.selectedComponentId),
+            comsub = message.selectedSub,
+            selectedObj = message.selectedObj,
+        )
+    }
+
+    private fun handle(
+        player: Player,
+        locId: Int,
+        x: Int,
+        z: Int,
+        controlKey: Boolean,
+        component: Component,
+        comsub: Int,
+        selectedObj: Int,
+    ) {
         if (player.isDelayed) {
             return
         }
 
-        val coords = CoordGrid(message.x, message.z, player.level)
-        val loc = locRegistry.findType(coords, message.id)
+        val coords = CoordGrid(x, z, player.level)
+        val loc = locRegistry.findType(coords, locId)
         if (loc == null) {
             player.clearMapFlag()
             player.clearPendingAction(eventBus)
             return
         }
-        val type = ServerCacheManager.getObject(message.id) ?: return
-        val interfaceType = ServerCacheManager.fromInterface(message.asComponent.packed)
-        val componentType = ServerCacheManager.fromComponent(message.asComponent.packed)
+        val type = ServerCacheManager.getObject(locId) ?: return
+        val interfaceType = ServerCacheManager.fromInterface(component.packed)
+        val componentType = ServerCacheManager.fromComponent(component.packed)
         val objType =
-            message.selectedObj
+            selectedObj
                 .takeIf { it != -1 }
                 ?.let { id -> ServerCacheManager.getItems().values.firstOrNull { it.id == id } }
 
@@ -59,8 +92,6 @@ constructor(
             return
         }
 
-        val comsub = message.selectedSub
-
         val targetEnabled =
             InterfaceEvents.isEnabled(player.ui, componentType, comsub, IfEvent.TgtLoc)
         if (!targetEnabled) {
@@ -69,7 +100,7 @@ constructor(
             return
         }
 
-        val speed = if (message.controlKey) player.ctrlMoveSpeed() else null
+        val speed = if (controlKey) player.ctrlMoveSpeed() else null
         val boundLoc = BoundLocInfo(loc, type)
         val opTrigger =
             locInteractions.hasOpTrigger(player, boundLoc, type, objType, componentType, comsub)

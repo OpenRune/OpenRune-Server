@@ -165,7 +165,7 @@ class ToaRewardScript : PluginScript() {
         val CHESTS = (0..7).map { "loc.toa_vault_chest_loc$it" }
         const val SARCOPHAGUS_PARENT = "loc.toa_vault_sarcophagus_parent"
         const val PICKUP_SEQ = "seq.human_pickuptable"
-        const val CLICK_SOUND = "synth.toa_vault_sarcophagus_click"
+        const val CLICK_SOUND = "synth.toa_wardens_amascut_despawn_03"
         const val CLICK_SOUND_DELAY = 30
         const val STEP_TO_ANIM_TICKS = 2
         const val CHEST_SOUND = "synth.chest_open"

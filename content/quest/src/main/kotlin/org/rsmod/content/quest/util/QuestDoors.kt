@@ -97,6 +97,6 @@ class QuestDoors @Inject constructor(private val locRepo: LocRepository) {
     companion object {
         const val DURATION = 100
         const val DOOR_OPEN = "synth.door_open"
-        const val GATE_OPEN = "synth.picketgate_open"
+        const val GATE_OPEN = "synth.gate_open"
     }
 }

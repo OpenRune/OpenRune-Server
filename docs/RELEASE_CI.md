@@ -100,6 +100,15 @@ java -jar server.jar
 
 The shadow jar task in `server/app/build.gradle.kts` sets `archiveFileName` to `server.jar`. CI and local `shadowJar` builds both use that name. Do not rename the jar in the workflow unless you also update the Gradle task.
 
+## Cache-independent gameval validation
+
+The pull-request gameval check uses a revision-matched binary snapshot, not an installed
+LIVE cache. `PluginPack.dbTableSchemas()` supplies its generated column names and defaults
+to `dbTables()`. Packs whose row builders read the LIVE cache must override it with the
+same table and column definitions, without constructing those cache-backed rows.
+
+Release cache builds still call `dbTables()` and must construct and validate every row.
+
 ## Troubleshooting
 
 | Problem | Likely cause |

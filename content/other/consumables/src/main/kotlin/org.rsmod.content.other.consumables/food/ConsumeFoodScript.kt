@@ -558,7 +558,7 @@ constructor(
     )
 
     private companion object {
-        const val EAT_FOOD_SOUND: Int = 2393
+        const val EAT_FOOD_SOUND: String = "synth.eat"
         const val DEFAULT_EAT_DELAY: Int = 3
         const val DEFAULT_COMBAT_DELAY: Int = 3
         const val SWEETS_RUN_ENERGY_PERCENT: Int = 10

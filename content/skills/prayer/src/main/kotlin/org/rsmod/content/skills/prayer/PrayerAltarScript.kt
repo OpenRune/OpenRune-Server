@@ -21,7 +21,7 @@ class PrayerAltarScript : PluginScript() {
             return
         }
         anim("seq.human_pray")
-        soundSynth("synth.prayer_altar_recharge")
+        soundSynth("synth.prayer_recharge")
         statRestore("stat.prayer")
         spam("You recharge your Prayer Points.")
     }

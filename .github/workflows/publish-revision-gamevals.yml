@@ -1,0 +1,93 @@
+name: Publish Revision Gamevals
+
+on:
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: "OSRS revision to publish (e.g. 242 or 242.2). Defaults to game.example.yml."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-osrs-gamevals
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Select revision
+        id: revision
+        env:
+          REQUESTED_REVISION: ${{ inputs.revision }}
+        run: |
+          revision="${REQUESTED_REVISION:-$(awk '/^revision:/ { print $2; exit }' game.example.yml)}"
+          [[ "$revision" =~ ^[0-9]+([.][0-9]+)?$ ]] || {
+            echo "::error::Expected a numeric revision such as 242 or 242.2."
+            exit 1
+          }
+          tag="gamevals-$revision"
+          printf 'revision=%s\ntag=%s\n' "$revision" "$tag" >> "$GITHUB_OUTPUT"
+
+          present=$(gh release view "$tag" --json assets \
+            --jq 'any(.assets[]; .name == "osrs-gamevals.zip")' 2>/dev/null) || present=false
+          echo "present=$present" >> "$GITHUB_OUTPUT"
+
+          if [[ "$present" != true ]]; then
+            sed -E "s/^revision:.*/revision: $revision/" game.example.yml > game.yml
+          fi
+
+      - name: Set up JDK 21
+        if: steps.revision.outputs.present != 'true'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        if: steps.revision.outputs.present != 'true'
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Export OSRS gameval snapshot
+        if: steps.revision.outputs.present != 'true'
+        env:
+          REVISION: ${{ steps.revision.outputs.revision }}
+        run: |
+          ./gradlew :or-cache:exportBaseGamevals --console=plain
+          cd or-cache/build/reports/base-gamevals
+          [[ "$(cat revision.txt)" == "$REVISION" ]]
+          zip "$RUNNER_TEMP/osrs-gamevals.zip" gamevals.dat gamevals_generated.dat max-ids.toml revision.txt
+
+      - name: Publish gameval release
+        if: steps.revision.outputs.present != 'true'
+        env:
+          REVISION: ${{ steps.revision.outputs.revision }}
+          TAG: ${{ steps.revision.outputs.tag }}
+        run: |
+          asset="$RUNNER_TEMP/osrs-gamevals.zip"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$asset"
+          else
+            gh release create "$TAG" "$asset" --target "$GITHUB_SHA" \
+              --title "OSRS Gamevals $REVISION" --prerelease --latest=false \
+              --notes "Base OSRS gameval symbols and reserved IDs for revision $REVISION."
+          fi

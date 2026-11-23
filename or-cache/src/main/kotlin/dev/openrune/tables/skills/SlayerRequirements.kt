@@ -66,7 +66,9 @@ object SlayerRequirements {
     private const val TUROTH = 36
     private const val KURASK = 45
 
-    fun gear(bossKey: (String) -> Int) =
+    fun gearSchema() = gearTable {}
+
+    private fun gearTable(rows: DBTableBuilder.() -> Unit) =
         dbTable("dbtable.slayer_gear", serverOnly = true) {
             column("tasks", GEAR_TASKS, VarType.INT)
             column("variant", GEAR_VARIANT, VarType.INT)
@@ -80,7 +82,11 @@ object SlayerRequirements {
             column("drains", GEAR_DRAINS, VarType.ENUM)
             column("first_hit_only", GEAR_FIRST_HIT_ONLY, VarType.BOOLEAN)
             column("repel_message", GEAR_REPEL_MESSAGE, VarType.STRING)
+            rows()
+        }
 
+    fun gear(bossKey: (String) -> Int) =
+        gearTable {
             gear(
                 ABERRANT_SPECTRES,
                 1,

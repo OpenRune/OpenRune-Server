@@ -497,7 +497,7 @@ class KnightsSwordQuest :
                 "He wasn't very talkative until I gave him a Redberry pie, which he gobbled up."
 
         // The cache names the eating sound (2393) after a Doom of Mokhaiotl attack.
-        private const val EAT_SYNTH = "synth.dom_burrow_slam"
+        private const val EAT_SYNTH = "synth.eat"
 
         /** Swaps one blurite ore and two iron bars for a blurite sword, or changes nothing. */
         fun makeSword(player: Player): Boolean {

@@ -1,12 +1,17 @@
 package org.rsmod.api.player.output
 
-import net.rsprot.protocol.game.outgoing.camera.CamLookAtV2
+import net.rsprot.protocol.game.outgoing.camera.CamLookAtCycles
 import net.rsprot.protocol.game.outgoing.camera.CamLookAtV3
-import net.rsprot.protocol.game.outgoing.camera.CamMoveToV2
+import net.rsprot.protocol.game.outgoing.camera.CamMoveToArcV3
+import net.rsprot.protocol.game.outgoing.camera.CamMoveToCyclesV3
 import net.rsprot.protocol.game.outgoing.camera.CamMoveToV3
 import net.rsprot.protocol.game.outgoing.camera.CamReset
+import net.rsprot.protocol.game.outgoing.camera.CamRotateToCoordinateV3
 import net.rsprot.protocol.game.outgoing.camera.CamShake
+import net.rsprot.protocol.game.outgoing.camera.CamSkybox
+import net.rsprot.protocol.game.outgoing.camera.CamTargetV4
 import net.rsprot.protocol.game.outgoing.camera.CamUnlock
+import net.rsprot.protocol.game.outgoing.camera.util.CameraEaseFunction
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
@@ -36,17 +41,27 @@ public object Camera {
         player.client.write(CamReset)
     }
 
-    public fun camLookAt(player: Player, dest: CoordGrid, height: Int, rate: Int, rate2: Int) {
-        player.client.write(CamLookAtV2(dest.x, dest.z, height, rate, rate2))
-    }
+    public fun camLookAt(
+        player: Player,
+        dest: CoordGrid,
+        height: Int,
+        rate: Int,
+        rate2: Int,
+        heightRelative: Boolean = false,
+    ): Unit = camLookAtV3(player, dest, height, rate, rate2, heightRelative)
 
-    public fun camMoveTo(player: Player, dest: CoordGrid, height: Int, rate: Int, rate2: Int) {
-        player.client.write(CamMoveToV2(dest.x, dest.z, height, rate, rate2))
-    }
+    public fun camMoveTo(
+        player: Player,
+        dest: CoordGrid,
+        height: Int,
+        rate: Int,
+        rate2: Int,
+        heightRelative: Boolean = false,
+    ): Unit = camMoveToV3(player, dest, height, rate, rate2, heightRelative)
 
     /**
-     * V3 encodes signed height and can apply it relative to the previous look-at height; V2 is
-     * unsigned and absolute.
+     * [heightRelative] applies [height] relative to the previous look-at height instead of treating
+     * it as absolute.
      */
     public fun camLookAtV3(
         player: Player,
@@ -65,8 +80,8 @@ public object Camera {
     }
 
     /**
-     * V3 encodes signed height and can apply it relative to the previous move-to height; V2 is
-     * unsigned and absolute.
+     * [heightRelative] applies [height] relative to the previous move-to height instead of treating
+     * it as absolute.
      */
     public fun camMoveToV3(
         player: Player,
@@ -84,7 +99,129 @@ public object Camera {
         player.client.write(CamMoveToV3(dest.x, dest.z, height, rate, rate2, heightRelative))
     }
 
-    /** Each axis stacks independently and keeps shaking until explicitly reset. */
+    /**
+     * Moves the camera to the absolute tile [dest] along a straight path.
+     *
+     * @param cycles Duration in 20 ms client cycles.
+     * @param easing Curve that controls progress along the path.
+     * @param ignoreTerrain Whether to ignore terrain changes during the move.
+     * @param heightRelative Whether [height] is relative to the previous move-to height.
+     */
+    public fun camMoveToCycles(
+        player: Player,
+        dest: CoordGrid,
+        height: Int,
+        cycles: Int,
+        easing: CameraEaseFunction,
+        ignoreTerrain: Boolean = false,
+        heightRelative: Boolean = false,
+    ) {
+        validateTween(height, cycles)
+        player.client.write(
+            CamMoveToCyclesV3(dest.x, dest.z, height, cycles, ignoreTerrain, easing.id, heightRelative),
+        )
+    }
+
+    /**
+     * Moves the camera along an arc through [center] before it reaches [dest].
+     *
+     * Both positions use absolute tile coordinates. [easing] controls progress along the arc
+     * over [cycles] client cycles of 20 ms each.
+     *
+     * @param ignoreTerrain Whether to ignore terrain changes during the move.
+     * @param heightRelative Whether [height] is relative to the previous move-to height.
+     */
+    public fun camMoveToArc(
+        player: Player,
+        center: CoordGrid,
+        dest: CoordGrid,
+        height: Int,
+        cycles: Int,
+        easing: CameraEaseFunction,
+        ignoreTerrain: Boolean = false,
+        heightRelative: Boolean = false,
+    ) {
+        validateTween(height, cycles)
+        player.client.write(
+            CamMoveToArcV3(
+                center.x, center.z, dest.x, dest.z, height, cycles, ignoreTerrain, easing.id,
+                heightRelative,
+            ),
+        )
+    }
+
+    /**
+     * Moves the camera's look-at point toward the absolute tile [dest] while leaving the camera
+     * position in place. [easing] controls progress over [cycles] client cycles of 20 ms each.
+     *
+     * @param heightRelative Whether [height] is relative to the previous look-at height.
+     */
+    public fun camLookAtCycles(
+        player: Player,
+        dest: CoordGrid,
+        height: Int,
+        cycles: Int,
+        easing: CameraEaseFunction,
+        heightRelative: Boolean = false,
+    ) {
+        validateTween(height, cycles)
+        player.client.write(CamLookAtCycles(dest.x, dest.z, height, cycles, easing.id, heightRelative))
+    }
+
+    /**
+     * Rotates the camera toward the absolute tile [dest] using [easing] over [cycles] client
+     * cycles of 20 ms each.
+     *
+     * @param heightRelative Whether [height] is relative to the previous look-at height.
+     * @param trackTarget Whether the client keeps tracking [dest] as its position on screen changes.
+     */
+    public fun camRotateToCoordinate(
+        player: Player,
+        dest: CoordGrid,
+        height: Int,
+        cycles: Int,
+        easing: CameraEaseFunction,
+        heightRelative: Boolean = false,
+        trackTarget: Boolean = false,
+    ) {
+        validateTween(height, cycles)
+        player.client.write(
+            CamRotateToCoordinateV3(dest.x, dest.z, height, cycles, easing.id, heightRelative, trackTarget),
+        )
+    }
+
+    /**
+     * Focuses the camera on a tile, player, NPC, or world entity using the client's active world.
+     *
+     * When the client cannot find the entity identified by [target], it focuses on the local
+     * player instead.
+     */
+    public fun camTarget(player: Player, target: CamTargetV4.CamTargetType) {
+        player.client.write(CamTargetV4(target))
+    }
+
+    /**
+     * Sends [model] as the model to render for the scene's skybox.
+     *
+     * Rendering depends on client support. The native client implements the skybox behaviour.
+     */
+    public fun camSkybox(player: Player, model: Int) {
+        player.client.write(CamSkybox(model))
+    }
+
+    private fun validateTween(height: Int, cycles: Int) {
+        require(height in Short.MIN_VALUE..Short.MAX_VALUE) { "Invalid camera height: $height" }
+        require(cycles in 0..65535) { "Invalid camera cycle count: $cycles" }
+    }
+
+    /**
+     * Starts or replaces the shake on [axis]. Other axes continue independently until cleared
+     * with [camShakeReset] or [camShakeResetAll].
+     *
+     * @param random Maximum random displacement.
+     * @param amplitude Amplitude of the periodic shake.
+     * @param rate Rate of the periodic shake.
+     */
     public fun camShake(
         player: Player,
         axis: CamShakeAxis,

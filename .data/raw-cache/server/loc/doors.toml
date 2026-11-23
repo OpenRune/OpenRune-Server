@@ -88,7 +88,7 @@ contentGroup = "content.closed_left_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.openfencegate_l"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.openfencegate_l"
@@ -96,7 +96,7 @@ inherit = "loc.openfencegate_l"
 contentGroup = "content.opened_left_picketgate"
 
 [object.params]
-"param.closesound" = "synth.picketgate_close"
+"param.closesound" = "synth.gate_close"
 "param.next_loc_stage" = "loc.fencegate_l"
 
 [[object]]
@@ -106,7 +106,7 @@ contentGroup = "content.closed_right_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.openfencegate_r"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.openfencegate_r"
@@ -114,7 +114,7 @@ inherit = "loc.openfencegate_r"
 contentGroup = "content.opened_right_picketgate"
 
 [object.params]
-"param.closesound" = "synth.picketgate_close"
+"param.closesound" = "synth.gate_close"
 "param.next_loc_stage" = "loc.fencegate_r"
 
 [[object]]
@@ -124,7 +124,7 @@ contentGroup = "content.closed_left_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.qip_sheep_shearer_openfencegate_l"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.qip_sheep_shearer_fencegate_r"
@@ -133,7 +133,7 @@ contentGroup = "content.closed_right_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.qip_sheep_shearer_openfencegate_r"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.qip_sheep_shearer_openfencegate_l"
@@ -160,7 +160,7 @@ contentGroup = "content.closed_right_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.rustic_openfencegate_r"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.rustic_openfencegate_l"
@@ -187,7 +187,7 @@ contentGroup = "content.closed_left_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.rustic_openfencegate_l"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.fai_barbarian_large_doubledoor_l"

@@ -44,6 +44,15 @@ public value class ZoneLocMap(private val entries: Int2ObjectMap<Byte2IntOpenHas
 
     public fun locCount(): Int = entries.values.sumOf { it.size }
 
+    public fun forEachLoc(action: (zone: ZoneKey, key: LocZoneKey, entity: LocEntity) -> Unit) {
+        for (zoneEntry in entries.int2ObjectEntrySet()) {
+            val zone = ZoneKey(zoneEntry.intKey)
+            for (locEntry in zoneEntry.value.byte2IntEntrySet()) {
+                action(zone, LocZoneKey(locEntry.byteKey), LocEntity(locEntry.intValue))
+            }
+        }
+    }
+
     public fun build(key: ZoneKey, build: ZoneBuilder.() -> Unit) {
         val zone = entries.computeIfAbsent(key.packed) { Byte2IntOpenHashMap() }
         val builder = ZoneBuilder(zone)

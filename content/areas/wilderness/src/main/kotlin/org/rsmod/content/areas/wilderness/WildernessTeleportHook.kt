@@ -37,12 +37,7 @@ public class WildernessTeleportHook @Inject constructor() : PlayerTeleportValida
 
         val maxLevel =
             when (type) {
-                TeleportType.MemberLevel30 ->
-                    if (player.members) {
-                        MEMBER_MAX_WILDERNESS_LEVEL
-                    } else {
-                        STANDARD_MAX_WILDERNESS_LEVEL
-                    }
+                TeleportType.MemberLevel30 -> MEMBER_MAX_WILDERNESS_LEVEL
                 TeleportType.Standard -> STANDARD_MAX_WILDERNESS_LEVEL
                 TeleportType.Chronicle,
                 TeleportType.Minigame,

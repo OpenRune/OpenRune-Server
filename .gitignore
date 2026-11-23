@@ -56,6 +56,7 @@ logs/
 *.log
 /.cursor
 /.data/raw-cache/cs2
+/.data/transports/
 .claude/settings.local.json
 .mcp.json
 /bench

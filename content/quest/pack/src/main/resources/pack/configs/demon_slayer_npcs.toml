@@ -1,0 +1,9 @@
+[[npc]]
+isServerOnly = true
+id = "npc.delrith"
+inherit = "npc.delrith"
+[npc.params]
+"param.attack_anim"="seq.demon_attack"
+"param.defend_anim"="seq.demon_block"
+"param.death_anim"="seq.demon_death"
+"param.attackrate"=6

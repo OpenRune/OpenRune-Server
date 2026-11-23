@@ -71,3 +71,13 @@ clue_scroll_box = true
 
 
 # Main table pool padding uses a nothing roll (F2P drops removed and/or subtable access missing from wiki parse) (1 weight)
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 64
+boosted = true
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.earth_emerald"
+count = 1

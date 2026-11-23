@@ -144,3 +144,35 @@ Failed payment leaves the sword, commission and reward state unchanged. Coins go
 to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
 
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)
+
+## Pirate's Treasure
+
+Built from the OSRS wiki transcript and RSProx captures of Luthas's banana job (rev 239),
+the Falador park gardener (rev 235) and Hector's chest (rev 232). Known differences:
+
+- Karamjan rum only gets taken by the Musa Point customs officer. It does not break on a
+  teleport: every move (stairs, ships, spells) goes through the same `telejump` validation,
+  so there is no hook that fires only for magic teleports. The other Karamja exits the wiki
+  lists (charter ships, Shilo cart, gnome glider, Lady of the Waves, Mor Ul Rek) do not check
+  for rum either.
+- The customs officer has no Ring of Charos(a) charm options and no Karamja gloves discount.
+  Her "Pay-Fare" option with rum in the pack confiscates it and does not sail; how live OSRS
+  handles that case is not documented.
+- The quest journal text is written from the quest's steps; no capture of the live journal
+  was available. The rum smuggling lines keep the phrases RuneLite's Quest Helper reads to
+  sync ("I need to go to", "I have taken employment", "I have hidden my", "the crate has been
+  shipped", "I have taken a job at", "I should take it to", "I seem to have lost it.").
+- Hector's chest uses up the key when it opens. The live drop trick that yields extra
+  pirate messages is not reproduced: once opened, "Open" says the chest is locked, and only
+  using a key on it during the key stage opens it again.
+- The gardener leaves once his digger is more than 12 tiles away or after 500 ticks, instead
+  of exactly when the player leaves the park.
+- Messages with no source, written to match nearby ones: "You don't have any bananas." when
+  filling the crate with none, "You don't have enough inventory space to do that." when the
+  casket, the dig or Wydin's crate needs a free slot, the "Do you want to take a banana?"
+  prompt and "You take a banana." at Wydin's crate, and "Why would I want to do that?" for
+  rum used on the crate before Luthas hires you. "There is also some rum stashed in here too."
+  is sent as a game message like the other crate search lines (the wiki shows a box).
+- Taking the white apron in Gerrant's shop is an ordinary ground item pickup, without the
+  "freshly starched" message.
+- Chathead expressions for Frank, Luthas, Wydin and the customs officer are chosen by hand.

@@ -483,19 +483,19 @@ internal class MisthalinBossFight(
 
         val inLine = at != null && (wardrobeAt.x == at.x || wardrobeAt.z == at.z)
         val scores =
-            inLine &&
-                at != null &&
-                when {
-                    active.pushDx != 0 ->
-                        wardrobeAt.z == at.z && (wardrobeAt.x - at.x).sameSign(active.pushDx)
-                    active.pushDz != 0 ->
-                        wardrobeAt.x == at.x && (wardrobeAt.z - at.z).sameSign(active.pushDz)
-                    else -> false
-                }
+            inLine && when {
+                active.pushDx != 0 ->
+                    wardrobeAt.z == at.z && (wardrobeAt.x - at.x).sameSign(active.pushDx)
 
-        val outbound = if (inLine && at != null) at else r[wardrobe.wallEnd]
+                active.pushDz != 0 ->
+                    wardrobeAt.x == at.x && (wardrobeAt.z - at.z).sameSign(active.pushDz)
+
+                else -> false
+            }
+
+        val outbound = if (inLine) at else r[wardrobe.wallEnd]
         throwKnife(wardrobeAt, outbound, mirror.takeIf { inLine })
-        if (inLine && at != null) {
+        if (inLine) {
             val bounce = if (scores) wardrobeAt else r[MisthalinCoords.StrayReflection]
             reflectKnife(at, bounce)
         }

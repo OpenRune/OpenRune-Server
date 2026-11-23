@@ -2,7 +2,7 @@
 # You want to edit these to fit your game.
 name: "OpenRune"
 game-port: 43594
-revision: 241
+revision: 242
 environment: "LIVE"
 world: 255
 
@@ -20,6 +20,9 @@ world: 255
 world-types: ["main"]
 
 gameplay:
+  # Farming growth speed: integer 1-100. 1 is normal, 5 is five times faster.
+  # Applies to patches, weeds and saplings, including offline growth.
+  farming-growth-rate: 1
   drop-rates:
     # Server-wide multiplier for drops flagged `boosted` (2.0 turns 1/512 into 1/256). Stacks with
     # each player's own multiplier (varp.drop_rate_multiplier, percent; 0 = unset).
@@ -37,6 +40,8 @@ gameplay:
   # Random events (the Genie) appear during play, as on live. false turns the schedule off;
   # `::randomevent` still summons one.
   random-events: true
+  # Allow cosmetic bots, including manual spawns through ::bots.
+  bots-enabled: true
   gravestones:
     # Lost items go to a gravestone the player can reclaim; false drops them on the floor instead.
     enabled: true
@@ -47,6 +52,11 @@ gameplay:
     mode: "assume-completed"
     virtual-completions: []
     virtual-lines: []
+  run-energy:
+    # 2 makes run energy last twice as long, 3 three times, and so on.
+    drain-denominator: 1
+    # Run energy never drains while true.
+    infinite: false
 
 central:
   same-instance: true

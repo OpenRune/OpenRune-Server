@@ -21,7 +21,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     QuestScript(
-        questKey = "miniquest_daddyshome",
+        questKey = "quest_daddyshome",
         questVarp = "varp.karam_dungeon_varbit",
         rewards = rewards {},
         completedQuestItemDisplay = ItemRewardDisplay(CRATE),
@@ -818,7 +818,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
         private const val CONSTRUCTION_XP = 400.0
         private const val HOUSE_COINS = 1_000
         private const val RIMMINGTON_HOUSE = 1
-        private const val MINIQUEST_JINGLE = 283
+        private const val MINIQUEST_JINGLE = "jingle.league_task_jingle"
         private const val SCROLL_REWARD_LINES = 7
         private const val REMAINING_PER_PAGE = 3
 

@@ -112,7 +112,7 @@ constructor(
 
         if (grantedPrayers.isEmpty()) {
             mes("You've been injured and can't use protection prayers!")
-            soundSynth("synth.prayer_disable")
+            soundSynth("synth.cancel_prayer")
             player.resyncVar("varbit.quickprayer_active")
             return
         }
@@ -135,7 +135,7 @@ constructor(
         }
         if (lockedProtection) {
             mes("You've been injured and can't use protection prayers!")
-            soundSynth("synth.prayer_disable")
+            soundSynth("synth.cancel_prayer")
         }
         enablePrayerDrain()
     }
@@ -149,7 +149,7 @@ constructor(
         disableOverhead()
         vars["varbit.prayer_allactive"] = 0
         vars["varbit.quickprayer_active"] = 0
-        soundSynth("synth.prayer_disable")
+        soundSynth("synth.cancel_prayer")
     }
 
     private fun ProtectedAccess.disableOverhead() {

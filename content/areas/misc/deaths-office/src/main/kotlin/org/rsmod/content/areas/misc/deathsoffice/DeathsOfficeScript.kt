@@ -733,7 +733,7 @@ constructor(
         // The office portal's model and colour have no gameval names.
         const val PORTAL_MODEL = 39504
         const val PORTAL_COLOUR = 4128927
-        const val PORTAL_SYNTH = "synth.deaths_domain_portal"
+        const val PORTAL_SYNTH = "synth.tob_transition_card"
         const val ENTER_ANIM = "seq.human_pickupfloor"
         const val ENTER_ANIM_DELAY = 20
         const val DESK_RANGE = 3
@@ -747,7 +747,7 @@ constructor(
         const val CAMERA_RATE2 = 100
 
         // Death's payment sound, with no gameval name.
-        const val PAYMENT_SYNTH = 2115
+        const val PAYMENT_SYNTH = "synth.coins"
         const val PAYMENT_SYNTH_DELAY = 10
         const val DESK_WALK_TICKS = 6
         const val INTERFACE = "interface.death_office"

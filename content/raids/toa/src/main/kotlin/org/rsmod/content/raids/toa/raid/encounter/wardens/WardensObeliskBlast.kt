@@ -55,7 +55,7 @@ internal class WardensObeliskBlast(private val room: WardensEncounter) {
 
     private companion object {
         const val BLAST = "spotanim.obelisk_explode_energy"
-        const val SOUND = "synth.toa_wardens_obelisk_lane_explode"
+        const val SOUND = "synth.toa_wardens_thunder_travelling_warden_01"
         const val SOUND_RADIUS = 15
         const val BLAST_DAMAGE = 11
         const val EDGE_X = 3810

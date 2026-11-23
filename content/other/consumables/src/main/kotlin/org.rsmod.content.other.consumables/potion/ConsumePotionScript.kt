@@ -364,8 +364,8 @@ constructor(
                 "toa_ambrosia",
             )
 
-        const val DRINK_SOUND: Int =
-            2401
+        const val DRINK_SOUND: String =
+            "synth.liquid"
 
         const val DRINK_ANIMATION: String =
             "seq.human_eat"

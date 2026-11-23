@@ -227,8 +227,7 @@ constructor(
         player: Player,
         itemId: String,
         quantity: Int,
-        log:
-            (
+        log: (
                 worldId: Int,
                 now: Long,
                 charId: Int,

@@ -1,6 +1,11 @@
 id = "Animated Mithril Armour Drops"
 npcs = ["npc.warguild_mithril_armour"]
 
+# The npc's dropped_remains param already drops 1 token, so this is the wiki total minus one.
+[[guaranteed]]
+obj = "obj.warguild_tokens"
+count = 24
+
 [[guaranteed]]
 obj = "obj.mithril_full_helm"
 count = 1

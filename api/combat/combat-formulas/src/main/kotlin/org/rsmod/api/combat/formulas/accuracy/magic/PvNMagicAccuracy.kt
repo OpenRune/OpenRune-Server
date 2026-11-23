@@ -89,6 +89,7 @@ constructor(
                 targetMagic = targetMagic,
                 amascutInvocationLvl = amascutInvocationLvl,
                 npcAttributes = npcAttributes,
+                magicDefenceDrain = npc?.vars?.get("varn.magic_defence_drain") ?: 0,
             )
         val defenceRoll = modifySpellDefenceRoll(baseDefenceRoll, spellAttributes)
 
@@ -158,6 +159,7 @@ constructor(
                 targetMagic = targetMagic,
                 amascutInvocationLvl = amascutInvocationLvl,
                 npcAttributes = npcAttributes,
+                magicDefenceDrain = npc?.vars?.get("varn.magic_defence_drain") ?: 0,
             )
         val defenceRoll = modifyStaffDefenceRoll(baseDefenceRoll, staffAttributes)
 
@@ -186,6 +188,7 @@ constructor(
         targetMagic: Int,
         amascutInvocationLvl: Int,
         npcAttributes: EnumSet<CombatNpcAttributes>,
+        magicDefenceDrain: Int = 0,
     ): Int {
         val defenceLevel =
             if (target.param(params.magic_defence_uses_defence_level)) {
@@ -194,7 +197,8 @@ constructor(
                 targetMagic
             }
         val effectiveDefence = NpcMagicAccuracy.calculateEffectiveDefence(defenceLevel)
-        val defenceBonus = target.param(params.defence_magic)
+        val baseDefenceBonus = target.param(params.defence_magic)
+        val defenceBonus = MagicAccuracyOperations.drainDefenceBonus(baseDefenceBonus, magicDefenceDrain)
         val defenceRoll = NpcMagicAccuracy.calculateBaseDefenceRoll(effectiveDefence, defenceBonus)
         return AccuracyOperations.modifyDefenceRoll(
             defenceRoll = defenceRoll,

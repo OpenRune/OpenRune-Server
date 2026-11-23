@@ -143,8 +143,8 @@ constructor(private val circuit: MotherlodeWaterCircuit) : PluginScript() {
     }
 
     private companion object {
-        const val HOPPER_SOUND = 2496
-        const val HAMMER_SOUND = 1786
+        const val HOPPER_SOUND = "synth.watersplash"
+        const val HAMMER_SOUND = "synth.swan_repair_wall"
         const val HAMMER_ANIM_CYCLES = 3
         const val STRUT_XP_MULTIPLIER = 1.5
         const val MIN_REPAIR_CHANCE = 0.12

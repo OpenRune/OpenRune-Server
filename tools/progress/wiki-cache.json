@@ -38,6 +38,7 @@
     },
     "Defence": {
       "sections": [
+        "Fighting defensively",
         "Mechanics",
         "Equipment",
         "Temporary boosts",
@@ -729,7 +730,7 @@
         "Bird house trapping",
         "Bird snaring",
         "Box trapping",
-        "Butterfly netting",
+        "Insect netting",
         "Crab trapping",
         "Deadfall trapping",
         "Drift net fishing",
@@ -803,7 +804,7 @@
       "image": "https://oldschool.runescape.wiki/images/thumb/Culinaromancer.png/48px-Culinaromancer.png?1076b"
     },
     "Count Draynor": {
-      "image": "https://oldschool.runescape.wiki/images/thumb/Count_Draynor.png/48px-Count_Draynor.png?95156"
+      "image": "https://oldschool.runescape.wiki/images/thumb/Count_Draynor.png/48px-Count_Draynor.png?47c74"
     },
     "Agrith-Na-Na": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Agrith-Na-Na.png/48px-Agrith-Na-Na.png?9d9fc"
@@ -950,7 +951,7 @@
       "image": "https://oldschool.runescape.wiki/images/thumb/Jungle_Demon.png/48px-Jungle_Demon.png?b44f3"
     },
     "Glough": {
-      "image": "https://oldschool.runescape.wiki/images/thumb/Glough.png/48px-Glough.png?81044"
+      "image": "https://oldschool.runescape.wiki/images/thumb/Glough.png/48px-Glough.png?ec759"
     },
     "Fareed": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Fareed.png/48px-Fareed.png?537e7"
@@ -1730,5 +1731,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-11-05"
+  "fetched": "2026-11-21"
 }

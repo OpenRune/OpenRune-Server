@@ -1,20 +1,6 @@
-
 [gamevals.queue]
 crafting_make = 57
 crafting_cape_teleport = 60
-
-[gamevals.synth]
-crafting_pottery_wheel_craft = 2588
-glassblowing = 2724
-
-sand_bucket = 2584
-attach_orb = 2585
-chisel = 2586
-loom_weave = 2587
-smash_gem = 2589
-spinning = 2590
-stiching = 2591
-stringing = 2593
 
 [gamevals.content]
 sandpit = 54
@@ -243,7 +229,6 @@ crafting_slayer_helm=63932
 crafting_noxious_halberd=63931
 crafting_toxic_staff_of_the_dead=63930
 crafting_trident_of_the_swamp=63929
-crafting_bone_staff=63928
 crafting_accursed_sceptre=63927
 crafting_strung_rabbit_foot=63926
 crafting_birdhouse_normal=63925

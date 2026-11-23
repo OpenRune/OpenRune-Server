@@ -6,28 +6,25 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.game.entity.Player
 
-internal enum class BarrowsDoorway(val varbit: String) {
-    NORTH_LONG_PASSAGE("varbit.barrows_door_a"),
-    WEST_LONG_PASSAGE("varbit.barrows_door_b"),
-    NORTH_WEST_TO_WEST("varbit.barrows_door_c"),
-    NORTH_TO_NORTH_WEST("varbit.barrows_door_d"),
-    NORTH_TO_CENTER("varbit.barrows_door_e"),
-    NORTH_EAST_TO_NORTH("varbit.barrows_door_f"),
-    EAST_TO_NORTH_EAST("varbit.barrows_door_g"),
-    EAST_LONG_PASSAGE("varbit.barrows_door_h"),
-    WEST_TO_CENTER("varbit.barrows_door_i"),
-    EAST_TO_CENTER("varbit.barrows_door_j"),
-    WEST_TO_SOUTH_WEST("varbit.barrows_door_k"),
-    SOUTH_TO_CENTER("varbit.barrows_door_l"),
-    SOUTH_EAST_TO_EAST("varbit.barrows_door_m"),
-    SOUTH_WEST_TO_SOUTH("varbit.barrows_door_n"),
-    SOUTH_TO_SOUTH_EAST("varbit.barrows_door_o"),
-    SOUTH_LONG_PASSAGE("varbit.barrows_door_p");
+internal enum class BarrowsDoorway(val varbit: String, right: String, left: String) {
+    NORTH_LONG_PASSAGE("varbit.barrows_door_a", "loc.barrows_door_a_r", "loc.barrows_door_a_l"),
+    WEST_LONG_PASSAGE("varbit.barrows_door_b", "loc.barrows_door_b_r", "loc.barrows_door_b_l"),
+    NORTH_WEST_TO_WEST("varbit.barrows_door_c", "loc.barrows_door_c_r", "loc.barrows_door_c_l"),
+    NORTH_TO_NORTH_WEST("varbit.barrows_door_d", "loc.barrows_door_d_r", "loc.barrows_door_d_l"),
+    NORTH_TO_CENTER("varbit.barrows_door_e", "loc.barrows_door_e_r", "loc.barrows_door_e_l"),
+    NORTH_EAST_TO_NORTH("varbit.barrows_door_f", "loc.barrows_door_f_r", "loc.barrows_door_f_l"),
+    EAST_TO_NORTH_EAST("varbit.barrows_door_g", "loc.barrows_door_g_r", "loc.barrows_door_g_l"),
+    EAST_LONG_PASSAGE("varbit.barrows_door_h", "loc.barrows_door_h_r", "loc.barrows_door_h_l"),
+    WEST_TO_CENTER("varbit.barrows_door_i", "loc.barrows_door_i_r", "loc.barrows_door_i_l"),
+    EAST_TO_CENTER("varbit.barrows_door_j", "loc.barrows_door_j_r", "loc.barrows_door_j_l"),
+    WEST_TO_SOUTH_WEST("varbit.barrows_door_k", "loc.barrows_door_k_r", "loc.barrows_door_k_l"),
+    SOUTH_TO_CENTER("varbit.barrows_door_l", "loc.barrows_door_l_r", "loc.barrows_door_l_l"),
+    SOUTH_EAST_TO_EAST("varbit.barrows_door_m", "loc.barrows_door_m_r", "loc.barrows_door_m_l"),
+    SOUTH_WEST_TO_SOUTH("varbit.barrows_door_n", "loc.barrows_door_n_r", "loc.barrows_door_n_l"),
+    SOUTH_TO_SOUTH_EAST("varbit.barrows_door_o", "loc.barrows_door_o_r", "loc.barrows_door_o_l"),
+    SOUTH_LONG_PASSAGE("varbit.barrows_door_p", "loc.barrows_door_p_r", "loc.barrows_door_p_l");
 
-    val locs: List<String> =
-        varbit.removePrefix("varbit.barrows_door_").let { letter ->
-            listOf("loc.barrows_door_${letter}_r", "loc.barrows_door_${letter}_l")
-        }
+    val locs: List<String> = listOf(right, left)
 
     companion object {
         val CENTER = listOf(EAST_TO_CENTER, SOUTH_TO_CENTER, WEST_TO_CENTER, NORTH_TO_CENTER)

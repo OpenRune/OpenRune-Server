@@ -36,7 +36,7 @@ contentGroup = "content.closed_left_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.farming_openfencegate_l"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.farming_fencegate_r"
@@ -45,7 +45,7 @@ contentGroup = "content.closed_right_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.farming_openfencegate_r"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.farming_openfencegate_l"

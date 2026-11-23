@@ -62,6 +62,7 @@ import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.hit.takeInstantHit
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.input.ResumePCountDialogInput
+import org.rsmod.api.player.input.ResumePLongDialogInput
 import org.rsmod.api.player.input.ResumePObjDialogInput
 import org.rsmod.api.player.input.ResumePStringDialogInput
 import org.rsmod.api.player.input.ResumePauseButtonInput
@@ -131,6 +132,7 @@ import org.rsmod.api.player.ui.ifSetModel
 import org.rsmod.api.player.ui.ifSetNpcHead
 import org.rsmod.api.player.ui.ifSetObj
 import org.rsmod.api.player.ui.ifSetPlayerHead
+import org.rsmod.api.player.ui.ifSetRotateSpeed
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.VarPlayerIntMapDelegate
 import org.rsmod.api.player.vars.disarmRunAutoEnable
@@ -414,11 +416,25 @@ public class ProtectedAccess(
     }
 
     public fun spotanim(spot: String?, delay: Int = 0, height: Int = 0, slot: Int = 0) {
+        spotanim(spot, delay, height, slot, loop = false)
+    }
+
+    /**
+     * Plays a spot animation on the player, or sends a reset for [slot] if [spot] is null.
+     * [delay] is in client cycles. [loop] applies when the sequence supports looping.
+     */
+    public fun spotanim(
+        spot: String?,
+        delay: Int = 0,
+        height: Int = 0,
+        slot: Int = 0,
+        loop: Boolean,
+    ) {
         if (spot == null) {
             player.resetSpotanim(height = height, slot = slot)
             return
         }
-        player.spotanim(spot, delay, height, slot)
+        player.spotanim(spot, delay, height, slot, loop)
     }
 
     public fun say(text: String) {
@@ -2900,6 +2916,21 @@ public class ProtectedAccess(
     }
 
     /**
+     * Suspends the current script until the player submits a signed 64-bit value.
+     *
+     * Open the long input dialog through a clientscript before calling this method. The
+     * response resumes this coroutine only while it is awaiting long input.
+     *
+     * @return The submitted value, including its sign.
+     * @throws ProtectedAccessLostException If protected access was lost while waiting.
+     */
+    public suspend fun awaitLongDialog(): Long {
+        val modal = player.ui.getModalOrNull("component.toplevel_osrs_stretch:mainmodal")
+        val input = coroutine.pause(ResumePLongDialogInput::class)
+        return resumeWithMainModalProtectedAccess(input.count, modal)
+    }
+
+    /**
      * @param stockMarketRestriction If `true` the search will be restricted to only objs that can
      *   be found in the grand exchange.
      * @param enumRestriction If an enum (with key of `ItemServerType` and value of `Boolean`) is
@@ -3691,10 +3722,6 @@ public class ProtectedAccess(
         player.soundSynth(synth, loops, delay)
     }
 
-    public fun soundSynth(synth: Int, loops: Int = 1, delay: Int = 0) {
-        player.soundSynth(synth, loops, delay)
-    }
-
     public fun soundArea(
         repo: WorldRepository,
         source: CoordGrid,
@@ -3813,6 +3840,10 @@ public class ProtectedAccess(
 
     public fun ifSetModel(target: String, model: Int) {
         player.ifSetModel(target, model)
+    }
+
+    public fun ifSetRotateSpeed(target: String, xSpeed: Int, ySpeed: Int) {
+        player.ifSetRotateSpeed(target, xSpeed, ySpeed)
     }
 }
 

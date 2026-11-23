@@ -45,7 +45,7 @@ class PrayerRepository() {
             val component = obj.param(prayer_params.component)
             val name = obj.param(prayer_params.name)
             val level = obj.param(prayer_params.level)
-            val sound = obj.param(prayer_params.sound).id
+            val sound = obj.param(prayer_params.sound)
             val enabled = RSCM.getReverseMapping(RSCMType.VARBIT,obj.param(prayer_params.varbit).id)
             val drain = obj.param(prayer_params.drain_effect)
             val overhead = obj.paramOrNull(prayer_params.overhead)

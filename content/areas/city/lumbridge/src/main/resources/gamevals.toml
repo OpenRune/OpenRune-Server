@@ -1,8 +1,3 @@
-[gamevals.synth]
-raft_climb = 2454
-raft_jump = 2465
-swamp_cave_insects = 1582
-
 [gamevals.timer]
 swamp_cave_insects = 401
 
