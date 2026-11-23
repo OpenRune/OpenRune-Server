@@ -115,7 +115,10 @@ class WaterbirthDungeon @Inject constructor() : PluginScript() {
         val LADDER_ROOM = CoordGrid(2545, 10143, 0)
 
         val DUNGEON_ENTRY = CoordGrid(1799, 4406, 3)
-        val LIGHTHOUSE_EXIT = CoordGrid(2506, 10018, 0)
+
+        // TSPS lands at 2506,10018, inside the Lighthouse dungeon's water pool. Land on
+        // the dry chamber tile instead.
+        val LIGHTHOUSE_EXIT = CoordGrid(2521, 10018, 0)
 
         const val CREVICE_AGILITY = 81
         val CREVICE_DOWN = CoordGrid(1862, 4406, 1)
