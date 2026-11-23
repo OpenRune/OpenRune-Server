@@ -18,11 +18,11 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
     override fun ScriptContext.startup() {
         onOpLoc1("loc.dagexp_bossroomladder_down") { descendLair(LAIR_ENTRY) }
         onOpLoc2("loc.dagexp_bossroomladder_down") { descendLair(SLAYER_LAIR_ENTRY) }
-        onOpLoc3("loc.dagexp_bossroomladder_down") { peekLadder() }
+        onOpLoc3("loc.dagexp_bossroomladder_down") { peekLairs() }
 
         onOpLoc1("loc.dagexp_bossroomladder_up") { ascendLair() }
 
-        onOpLoc1("loc.dk_peek_crack") { peekCrack() }
+        onOpLoc1("loc.dk_peek_crack") { peekLairs() }
 
         onOpLoc1("loc.dk_peek_root") { stepOver(it.loc.coords) }
     }
@@ -37,17 +37,13 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
         telejump(LAIR_EXIT)
     }
 
-    private fun ProtectedAccess.peekLadder() {
-        mes("Standard cave: ${adventurers(countPlayers(NORMAL_LAIR_Z))}")
-        mes("Slayer cave: ${adventurers(countPlayers(SLAYER_LAIR_Z))}")
+    private fun ProtectedAccess.peekLairs() {
+        mes("Standard cave: ${adventurers(countPlayers(PUBLIC_LAIR_CENTER, NORMAL_LAIR_Z))}")
+        mes("Slayer cave: ${adventurers(countPlayers(SLAYER_LAIR_CENTER, SLAYER_LAIR_Z))}")
     }
 
-    private fun ProtectedAccess.peekCrack() {
-        mes("Standard cave: ${adventurers(countPlayers(NORMAL_LAIR_Z))}")
-    }
-
-    private fun countPlayers(zRange: IntRange): Int {
-        val zone = ZoneKey.from(CoordGrid(2900, 4449, 0))
+    private fun countPlayers(center: CoordGrid, zRange: IntRange): Int {
+        val zone = ZoneKey.from(center)
         return playerRepo
             .findAll(zone, zoneRadius = 5)
             .count { it.coords.x in LAIR_X && it.coords.z in zRange }
@@ -76,6 +72,9 @@ class DagannothKingsLair @Inject constructor(private val playerRepo: PlayerRepos
 
         // No capture covers the Climb-up ladders; the landing mirrors the entrance side.
         val LAIR_EXIT = CoordGrid(1910, 4367, 0)
+
+        val PUBLIC_LAIR_CENTER = CoordGrid(2900, 4448, 0)
+        val SLAYER_LAIR_CENTER = CoordGrid(2900, 4384, 0)
 
         val LAIR_X = 2880..2943
         val NORMAL_LAIR_Z = 4416..4479
