@@ -30,6 +30,7 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
         arriveDelay()
         if (!insideCell(door)) {
             mes("The gate is locked.")
+            soundSynth("synth.locked")
             return
         }
         passThrough(door)
@@ -48,6 +49,7 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
         }
         if (stage >= STAGE_ALI_ESCAPED) {
             mes("The gate is locked.")
+            soundSynth("synth.locked")
             return
         }
         soundSynth("synth.unlock")

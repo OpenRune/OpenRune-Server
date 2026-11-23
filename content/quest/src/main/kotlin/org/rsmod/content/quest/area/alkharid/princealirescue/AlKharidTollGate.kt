@@ -4,6 +4,7 @@ import dev.openrune.types.MesAnimType
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.protect.forcedWalk
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc4
@@ -18,7 +19,7 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-internal const val TOLL_GATE_OPEN_TICKS = 2
+internal const val TOLL_GATE_OPEN_TICKS = 3
 
 class AlKharidTollGate
 @Inject
@@ -28,6 +29,10 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     override fun ScriptContext.startup() {
         bindLeaf(LEFT_GATE)
         bindLeaf(RIGHT_GATE)
+        bindLeaf(LEFT_GATE_TOLL)
+        bindLeaf(RIGHT_GATE_TOLL)
+        onOpLoc1(LEFT_GATE_FREE) { open() }
+        onOpLoc1(RIGHT_GATE_FREE) { open() }
         onOpNpc1(GUARD_1) { talkToGuard(it.npc) }
         onOpNpc1(GUARD_2) { talkToGuard(it.npc) }
     }
@@ -128,13 +133,19 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     private suspend fun ProtectedAccess.passThrough() {
         val eastbound = coords.x < GATE_X
         val z = coords.z.coerceIn(GATE_MIN_Z, GATE_MAX_Z)
+        val approach = CoordGrid(if (eastbound) GATE_X - 1 else GATE_X, z, 0)
+        if (coords != approach) {
+            playerWalkWithMinDelay(approach)
+        }
         swingOpen()
-        playerWalkWithMinDelay(CoordGrid(if (eastbound) GATE_X else GATE_X - 1, z, 0))
+        forcedWalk(CoordGrid(if (eastbound) GATE_X else GATE_X - 1, z, 0), 1)
     }
+
     private fun ProtectedAccess.swingOpen() {
         for (z in GATE_MIN_Z..GATE_MAX_Z) {
             locRepo.findExact(CoordGrid(GATE_X, z, 0), LocShape.WallStraight)?.let {
                 locRepo.del(it, TOLL_GATE_OPEN_TICKS)
+                locRepo.add(it.coords, CLOSED_GATE_SPACE, TOLL_GATE_OPEN_TICKS, it.angle, it.shape)
             }
         }
         locRepo.add(
@@ -168,8 +179,13 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     private companion object {
         const val LEFT_GATE = "loc.kharidmetalgateclosedl"
         const val RIGHT_GATE = "loc.kharidmetalgateclosedr"
+        const val LEFT_GATE_TOLL = "loc.kharidmetalgateclosedl_2op"
+        const val RIGHT_GATE_TOLL = "loc.kharidmetalgateclosedr_2op"
+        const val LEFT_GATE_FREE = "loc.kharidmetalgateclosedl_1op"
+        const val RIGHT_GATE_FREE = "loc.kharidmetalgateclosedr_1op"
         const val OPEN_GATE = "loc.inacmetalgateopenl"
-        const val OPEN_SOUND = "synth.kharid_gate_open"
+        const val CLOSED_GATE_SPACE = "loc.inviswall"
+        const val OPEN_SOUND = "synth.grate_open"
         const val GUARD_1 = "npc.borderguard1"
         const val GUARD_2 = "npc.borderguard2"
 

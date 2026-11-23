@@ -18,8 +18,10 @@ class PrinceAliRescueQuest @Inject constructor() :
         QUEST_KEY,
         "varp.princequest",
         rewards {
+            xp("stat.smithing", SMITHING_XP)
+            xp("stat.crafting", CRAFTING_XP)
             item(COINS, COIN_REWARD, label = "$COIN_REWARD Coins")
-            extra("Free passage through the Al Kharid toll gate")
+            extra("Free passage through the toll gate")
         },
         ItemRewardDisplay(KEY, zoom = 300),
         questVarbit = "varbit.prince_ali_progress",
@@ -133,9 +135,12 @@ class PrinceAliRescueQuest @Inject constructor() :
 
     private fun QuestJournalBuilder.gathering(p: Player) {
         when {
-            hasKey(p) && p.keyObtained -> strike("I have a copy of the cell key.")
+            hasKey(p) && p.keyObtained -> strike("I have made a copy of the key to his cell.")
             p.keyObtained ->
-                line("I have lost the key. <red>Leela</red> can sell me another for 15 coins.")
+                line(
+                    "I made a copy of the key to his cell, but I have lost it. <red>Leela</red> " +
+                        "can sell me another for 15 coins."
+                )
             p.keyOrdered ->
                 line("Osman is having a copy of the key made. He will send it to <red>Leela</red>.")
             KEY_PRINT in p.inv ->
@@ -269,6 +274,8 @@ class PrinceAliRescueQuest @Inject constructor() :
         const val STAGE_COMPLETE = 110
 
         const val COIN_REWARD = 700
+        const val SMITHING_XP = 500.0
+        const val CRAFTING_XP = 500.0
         const val LOST_KEY_PRICE = 15
         const val BEERS_NEEDED = 3
         const val WOOL_PER_WIG = 3
