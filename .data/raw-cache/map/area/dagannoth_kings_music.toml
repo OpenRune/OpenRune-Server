@@ -1,0 +1,41 @@
+[[area]]
+name = "Xenophobe"
+area_id = "area.xenophobe"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1856, 4352],
+    [1856, 4415],
+    [1919, 4415],
+    [1919, 4352],
+]
+
+[[area.polygons]]
+vertices = [
+    [2880, 4352],
+    [2880, 4479],
+    [2943, 4479],
+    [2943, 4352],
+]
+
+[[area]]
+name = "Dagannoth Dawn"
+area_id = "area.dagannoth_dawn"
+levels = [0]
+
+[[area.polygons]]
+vertices = [
+    [1792, 4352],
+    [1792, 4415],
+    [1855, 4415],
+    [1855, 4352],
+]
+
+[[area.polygons]]
+vertices = [
+    [1920, 4352],
+    [1920, 4415],
+    [1983, 4415],
+    [1983, 4352],
+]

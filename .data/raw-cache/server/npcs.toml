@@ -8696,9 +8696,22 @@ inherit = "npc.tzhaar_fightpit_swarm_3b"
 [[npc]]
 id = "npc.dungeon_dagganoth_lighter"
 inherit = "npc.dungeon_dagganoth_lighter"
+attack = 10
+strength = 10
+huntMode = 8
+huntRange = 5
+maxRange = 4
+attackRange = 4
+respawnRate = 30
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.attack_anim"="seq.horror_dagannoth_rangeattack"
+"param.defend_anim"="seq.horror_dagannoth_defend"
+"param.death_anim"="seq.horror_dagannoth_death"
+"param.attack_sound"="synth.dagganoth_spines"
+"param.defend_sound"="synth.dagganoth_hit"
+"param.death_sound"="synth.dagganoth_death"
 
 [[npc]]
 id = "npc.giant_rockcrab"
@@ -8717,23 +8730,184 @@ inherit = "npc.jb_baby_dagganoth"
 [[npc]]
 id = "npc.dagcave_ranged_boss"
 inherit = "npc.dagcave_ranged_boss"
+respawnDir = "East"
+respawnRate = 150
+huntMode = 8
+huntRange = 7
+maxRange = 15
+attackRange = 10
+defaultMode = "Wander"
+wanderRange = 5
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.killcount_varp"="varp.total_supreme_kills"
+"param.dropped_remains"="obj.dagannoth_king_bones"
+"param.attack_anim"="seq.dagannoth_meganoth_attack_range"
+"param.defend_anim"="seq.dagannoth_meganoth_defend"
+"param.death_anim"="seq.dagannoth_meganoth_death"
+"param.attack_sound"="synth.meganoth_spines"
+"param.defend_sound"="synth.meganoth_hit"
+"param.death_sound"="synth.meganoth_death"
 
 [[npc]]
 id = "npc.dagcave_magic_boss"
 inherit = "npc.dagcave_magic_boss"
+respawnDir = "South"
+respawnRate = 150
+huntMode = 8
+huntRange = 7
+maxRange = 15
+attackRange = 12
+defaultMode = "Wander"
+wanderRange = 5
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.killcount_varp"="varp.total_prime_kills"
+"param.dropped_remains"="obj.dagannoth_king_bones"
+"param.attack_anim"="seq.dagannoth_meganoth_attack_mage"
+"param.defend_anim"="seq.dagannoth_meganoth_defend"
+"param.death_anim"="seq.dagannoth_meganoth_death"
+"param.attack_sound"="synth.waterwave_cast_and_fire"
+"param.defend_sound"="synth.meganoth_hit"
+"param.death_sound"="synth.meganoth_death"
 
 [[npc]]
 id = "npc.dagcave_melee_boss"
 inherit = "npc.dagcave_melee_boss"
+respawnDir = "NorthWest"
+respawnRate = 150
+huntMode = 6
+huntRange = 5
+maxRange = 15
+attackRange = 1
+defaultMode = "Wander"
+wanderRange = 5
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.killcount_varp"="varp.total_rex_kills"
+"param.dropped_remains"="obj.dagannoth_king_bones"
+"param.attack_anim"="seq.dagannoth_meganoth_attack_melee"
+"param.defend_anim"="seq.dagannoth_meganoth_defend"
+"param.death_anim"="seq.dagannoth_meganoth_death"
+"param.attack_sound"="synth.meganoth_melee_attack"
+"param.defend_sound"="synth.meganoth_hit"
+"param.death_sound"="synth.meganoth_death"
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x1"
+inherit = "npc.dagannoth_water_creature_1x1"
+huntMode = 8
+huntRange = 10
+maxRange = 15
+attackRange = 15
+respawnRate = 10
+timer = 1
+respawnDir = "South"
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x12"
+inherit = "npc.dagannoth_water_creature_1x12"
+huntMode = 8
+huntRange = 10
+maxRange = 15
+attackRange = 15
+respawnRate = 10
+timer = 1
+respawnDir = "South"
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x13"
+inherit = "npc.dagannoth_water_creature_1x13"
+huntMode = 8
+huntRange = 10
+maxRange = 15
+attackRange = 15
+respawnRate = 10
+timer = 1
+respawnDir = "South"
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x1_invisible"
+inherit = "npc.dagannoth_water_creature_1x1_invisible"
+respawnRate = 500
+timer = 1
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x1_invisible2"
+inherit = "npc.dagannoth_water_creature_1x1_invisible2"
+respawnRate = 500
+timer = 1
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_water_creature_1x1_invisible3"
+inherit = "npc.dagannoth_water_creature_1x1_invisible3"
+respawnRate = 500
+timer = 1
+defaultMode = "Wander"
+wanderRange = 5
+
+[[npc]]
+id = "npc.dagannoth_weak_door_south"
+inherit = "npc.dagannoth_weak_door_south"
+respawnDir = "North"
+respawnRate = 50
+defaultMode = "None"
+wanderRange = 0
+[npc.params]
+"param.dropped_remains"=-1
+"param.death_anim"="seq.weak_door_fall"
+"param.death_sound"="synth.dagganoth_pressure_door_fall"
+
+[[npc]]
+id = "npc.dagannoth_weak_door_west"
+inherit = "npc.dagannoth_weak_door_west"
+respawnDir = "West"
+respawnRate = 50
+defaultMode = "None"
+wanderRange = 0
+[npc.params]
+"param.dropped_remains"=-1
+"param.death_anim"="seq.weak_door_fall_west"
+"param.death_sound"="synth.dagganoth_pressure_door_fall"
+
+[[npc]]
+id = "npc.dagannoth_weak_door_north"
+inherit = "npc.dagannoth_weak_door_north"
+respawnDir = "South"
+respawnRate = 50
+defaultMode = "None"
+wanderRange = 0
+[npc.params]
+"param.dropped_remains"=-1
+"param.death_anim"="seq.weak_door_fall_north"
+"param.death_sound"="synth.dagganoth_pressure_door_fall"
+
+[[npc]]
+id = "npc.dagannoth_dungeon_pressure_pet_rock"
+inherit = "npc.dagannoth_dungeon_pressure_pet_rock"
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
+
+[[npc]]
+id = "npc.dagannoth_dungeon_pressure_pet_egg"
+inherit = "npc.dagannoth_dungeon_pressure_pet_egg"
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
 
 [[npc]]
 id = "npc.warguild_bronze_armour"
@@ -9398,16 +9572,41 @@ inherit = "npc.tzhaar_fightcave_swarm_boss_cleric"
 [[npc]]
 id = "npc.dagganoth_critter"
 inherit = "npc.dagganoth_critter"
+attack = 50
+strength = 35
+defence = 25
+hitpoints = 35
+huntMode = 6
+huntRange = 5
+maxRange = 7
+attackRange = 1
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.attack_anim"="seq.horror_dagannoth_attack"
+"param.defend_anim"="seq.horror_dagannoth_defend"
+"param.death_anim"="seq.horror_dagannoth_death"
+"param.attack_sound"="synth.dagganoth_attack"
+"param.defend_sound"="synth.dagganoth_hit"
+"param.death_sound"="synth.dagganoth_death"
 
 [[npc]]
 id = "npc.dungeon_dagganoth_mainroom"
 inherit = "npc.dungeon_dagganoth_mainroom"
+huntMode = 7
+huntRange = 5
+maxRange = 7
+attackRange = 1
+respawnRate = 30
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.attack_anim"="seq.horror_dagannoth_attack"
+"param.defend_anim"="seq.horror_dagannoth_defend"
+"param.death_anim"="seq.horror_dagannoth_death"
+"param.attack_sound"="synth.dagganoth_attack"
+"param.defend_sound"="synth.dagganoth_hit"
+"param.death_sound"="synth.dagganoth_death"
 
 [[npc]]
 id = "npc.champions_lesserdemon"
@@ -11118,16 +11317,38 @@ inherit = "npc.zeah_sandcrab"
 [[npc]]
 id = "npc.dungeon_dagganoth_magic_monster"
 inherit = "npc.dungeon_dagganoth_magic_monster"
+huntMode = 8
+huntRange = 7
+maxRange = 7
+attackRange = 7
+respawnRate = 25
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.wallasalki_attack"
+"param.defend_anim"="seq.wallasalki_defend"
+"param.death_anim"="seq.wallasalki_death"
+"param.attack_sound"="synth.waterwave_cast_and_fire"
+"param.defend_sound"="synth.wallasalki_hit"
+"param.death_sound"="synth.wallasalki_death"
 
 [[npc]]
 id = "npc.dungeon_dagganoth_magic_monster_deeper"
 inherit = "npc.dungeon_dagganoth_magic_monster_deeper"
+huntMode = 8
+huntRange = 7
+maxRange = 7
+attackRange = 7
+respawnRate = 25
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=30
+"param.attack_anim"="seq.wallasalki_attack"
+"param.defend_anim"="seq.wallasalki_defend"
+"param.death_anim"="seq.wallasalki_death"
+"param.attack_sound"="synth.waterwave_cast_and_fire"
+"param.defend_sound"="synth.wallasalki_hit"
+"param.death_sound"="synth.wallasalki_death"
 
 [[npc]]
 id = "npc.giant_rockcrab_deeper"
@@ -11139,23 +11360,88 @@ inherit = "npc.giant_rockcrab_deeper"
 [[npc]]
 id = "npc.dungeon_dagganoth_lighter_deeper"
 inherit = "npc.dungeon_dagganoth_lighter_deeper"
+huntMode = 8
+huntRange = 5
+maxRange = 4
+attackRange = 4
+respawnRate = 30
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.attack_anim"="seq.horror_dagannoth_rangeattack"
+"param.defend_anim"="seq.horror_dagannoth_defend"
+"param.death_anim"="seq.horror_dagannoth_death"
+"param.attack_sound"="synth.dagganoth_spines"
+"param.defend_sound"="synth.dagganoth_hit"
+"param.death_sound"="synth.dagganoth_death"
 
 [[npc]]
 id = "npc.dungeon_dagganoth_mainroom_deeper"
 inherit = "npc.dungeon_dagganoth_mainroom_deeper"
+huntMode = 7
+huntRange = 5
+maxRange = 7
+attackRange = 1
+respawnRate = 30
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=35
+"param.attack_anim"="seq.horror_dagannoth_attack"
+"param.defend_anim"="seq.horror_dagannoth_defend"
+"param.death_anim"="seq.horror_dagannoth_death"
+"param.attack_sound"="synth.dagganoth_attack"
+"param.defend_sound"="synth.dagganoth_hit"
+"param.death_sound"="synth.dagganoth_death"
 
 [[npc]]
 id = "npc.dagannoth_rock_lobster_2x2"
 inherit = "npc.dagannoth_rock_lobster_2x2"
+huntMode = 6
+huntRange = 5
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=25
+"param.attack_anim"="seq.dagannoth_rock_lobster_attack"
+"param.defend_anim"="seq.dagannoth_rock_lobster_defend"
+"param.death_anim"="seq.dagannoth_rock_lobster_death"
+"param.attack_sound"="synth.rock_lobster_attack"
+"param.defend_sound"="synth.rock_lobster_hit"
+"param.death_sound"="synth.rock_lobster_death"
+
+[[npc]]
+id = "npc.dagannoth_rock_lobster_2x2_loc"
+inherit = "npc.dagannoth_rock_lobster_2x2_loc"
+timer = 1
+defaultMode = "None"
+wanderRange = 0
+maxRange = 7
+
+[[npc]]
+id = "npc.dungeon_dagganoth_egg1"
+inherit = "npc.dungeon_dagganoth_egg1"
+timer = 1
+respawnRate = 500
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
+
+[[npc]]
+id = "npc.dungeon_dagganoth_egg2"
+inherit = "npc.dungeon_dagganoth_egg2"
+timer = 1
+respawnRate = 500
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
+
+[[npc]]
+id = "npc.dungeon_dagganoth_egg3"
+inherit = "npc.dungeon_dagganoth_egg3"
+timer = 1
+respawnRate = 500
+defaultMode = "None"
+wanderRange = 0
+maxRange = 0
 
 [[npc]]
 id = "npc.battle_tortoise"

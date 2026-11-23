@@ -6,12 +6,14 @@ import org.rsmod.content.other.special.attacks.magic.PoweredStaffSpecialAttacks
 import org.rsmod.content.other.special.attacks.melee.DragonLongswordSpecialAttack
 import org.rsmod.content.other.special.attacks.melee.HalberdSpecialAttack
 import org.rsmod.content.other.special.attacks.ranged.DarkBowSpecialAttack
+import org.rsmod.content.other.special.attacks.ranged.RuneThrownaxeSpecialAttack
 import org.rsmod.plugin.module.PluginModule
 
 class SpecialAttackModule : PluginModule() {
     override fun bind() {
         addSetBinding<SpecialAttackMap>(StatBoostSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(DarkBowSpecialAttack::class.java)
+        addSetBinding<SpecialAttackMap>(RuneThrownaxeSpecialAttack::class.java)
         addSetBinding<SpecialAttackMap>(DragonLongswordSpecialAttack::class.java)
         addSetBinding<SpecialAttackMap>(HalberdSpecialAttack::class.java)
         addSetBinding<SpecialAttackMap>(PoweredStaffSpecialAttacks::class.java)

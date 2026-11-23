@@ -342,8 +342,8 @@ public class Npc(
         huntLoc = null
         huntNpc = NpcUid.NULL
         huntPlayer = PlayerUid.NULL
-        huntRange = type.huntRange
-        huntMode = type.huntMode
+        huntRange = visType.huntRange
+        huntMode = visType.huntMode
     }
 
     @InternalApi
@@ -614,9 +614,11 @@ public class Npc(
         mode = null
     }
 
+    @OptIn(InternalApi::class)
     public fun defaultMode() {
         clearInteraction()
         resetFaceEntity()
+        resetHunt()
 
         mode = defaultMode
     }

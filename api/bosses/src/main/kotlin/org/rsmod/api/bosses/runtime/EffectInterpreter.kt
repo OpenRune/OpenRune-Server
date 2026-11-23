@@ -30,6 +30,7 @@ import org.rsmod.api.player.hit.modify
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.isValidTarget
+import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
@@ -42,6 +43,7 @@ import org.rsmod.game.entity.util.EntityExactMove
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar as EngineHeadbar
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.inv.isType
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
@@ -650,7 +652,9 @@ class EffectInterpreter internal constructor(
 
     private fun showMissSpotanim(hit: Effect.Hit, t: Player, rolled: Int, clientDelay: Int) {
         if (rolled <= 0) {
-            hit.missSpotanim?.let { t.spotanim(it, delay = clientDelay, height = hit.spotanimHeight) }
+            val height =
+                if (hit.missSpotanimHeight != 0) hit.missSpotanimHeight else hit.spotanimHeight
+            hit.missSpotanim?.let { t.spotanim(it, delay = clientDelay, height = height) }
             hit.missSound?.let { t.soundSynth(it, 1, clientDelay) }
         }
     }
@@ -828,12 +832,18 @@ class EffectInterpreter internal constructor(
         for (entry in effect.entries) {
             if (deps.random.of(entry.outOf) < entry.chance) {
                 if (entry.percent == 0) {
-                    CombatEffects.statDrain(target, listOf(entry.stat), entry.amount)
+                    CombatEffects.statDrain(target, listOf(entry.stat), spectralAdjustedAmount(entry))
                 } else {
                     target.statDrain(entry.stat, entry.amount, entry.percent)
                 }
             }
         }
+    }
+
+    private fun spectralAdjustedAmount(entry: StatDrainEntry): Int {
+        if (entry.stat != "stat.prayer" || entry.amount <= 0) return entry.amount
+        if (!target.lefthand.isType("obj.spectral")) return entry.amount
+        return (entry.amount + deps.random.of(2)) / 2
     }
 
     private class TileBox(val sw: CoordGrid, val ne: CoordGrid) {
@@ -1015,8 +1025,15 @@ class EffectInterpreter internal constructor(
         }
 
     private fun npcFormulaMaxHit(expr: DamageExpr.NpcMaxHit, hitType: BossHitType, t: Player): Int {
+        val source =
+            when (expr.source) {
+                MaxHitSource.ByHitType -> hitType
+                MaxHitSource.Melee -> BossHitType.Melee
+                MaxHitSource.Ranged -> BossHitType.Ranged
+                MaxHitSource.Magic -> BossHitType.Magic
+            }
         val raw =
-            when (hitType) {
+            when (source) {
                 BossHitType.Ranged -> deps.maxHit.getRangedMaxHit(npc, t)
                 BossHitType.Magic,
                 BossHitType.Dragonfire,
@@ -1068,6 +1085,8 @@ class EffectInterpreter internal constructor(
                 val landed =
                     if (expr.kind == AccuracyKind.MagicalRanged) {
                         deps.accuracy.rollMagicalRangedAccuracy(npc, t, deps.random)
+                    } else if (expr.kind == AccuracyKind.Ranged) {
+                        deps.accuracy.rollRangedAccuracy(npc, t, deps.random)
                     } else {
                         rollAccuracy(hitType, t, expr.meleeAttackType)
                     }

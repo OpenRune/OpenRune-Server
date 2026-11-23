@@ -1,0 +1,17 @@
+[[npc]]
+id = "npc.dagcave_melee_boss"
+inherit = "npc.dagcave_melee_boss"
+[npc.params]
+"param.npc_hp_name" = "Dagannoth Kings"
+
+[[npc]]
+id = "npc.dagcave_magic_boss"
+inherit = "npc.dagcave_magic_boss"
+[npc.params]
+"param.npc_hp_name" = "Dagannoth Kings"
+
+[[npc]]
+id = "npc.dagcave_ranged_boss"
+inherit = "npc.dagcave_ranged_boss"
+[npc.params]
+"param.npc_hp_name" = "Dagannoth Kings"

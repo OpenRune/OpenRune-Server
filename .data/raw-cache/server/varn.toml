@@ -315,3 +315,6 @@ id = "varn.araxxor_engage_at"
 
 [[varn]]
 id = "varn.burn_stacks"
+
+[[varn]]
+id = "varn.spinolyp_transform"

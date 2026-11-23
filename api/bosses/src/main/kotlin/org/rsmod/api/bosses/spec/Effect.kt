@@ -96,6 +96,7 @@ sealed interface Effect {
         val penetration: Int = 0,
         val missSpotanim: String? = null,
         val missSound: String? = null,
+        val missSpotanimHeight: Int = 0,
         val onHit: Effect? = null,
         val onHitEvenOnMiss: Boolean = false,
         val lifesteal: Int = 0,

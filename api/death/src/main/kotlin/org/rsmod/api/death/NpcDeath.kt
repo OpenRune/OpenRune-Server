@@ -66,7 +66,9 @@ constructor(
                     dropType = droppedRemains,
                     dropCoords = dropCoords,
                     duration = duration,
-                    objRepo = objRepo
+                    objRepo = objRepo,
+                    npc = this,
+                    lootTrackerEventId = lootTrackerEventId,
                 )
 
                 var dropConsumed = false

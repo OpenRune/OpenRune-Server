@@ -24,7 +24,15 @@ sealed interface DamageExpr {
         val meleeAttackType: MeleeAttackType? = null,
         val scale: Double = 1.0,
         val minHit: Int = 0,
+        val source: MaxHitSource = MaxHitSource.ByHitType,
     ) : DamageExpr
+}
+
+enum class MaxHitSource {
+    ByHitType,
+    Melee,
+    Ranged,
+    Magic,
 }
 
 enum class AccuracyKind {
@@ -33,4 +41,7 @@ enum class AccuracyKind {
 
     /** The npc's ranged attack roll against the target's magic defence roll. */
     MagicalRanged,
+
+    /** The npc's ranged attack roll against the target's ranged defence roll. */
+    Ranged,
 }

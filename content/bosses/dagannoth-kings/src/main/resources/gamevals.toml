@@ -1,0 +1,13 @@
+[gamevals.area]
+xenophobe = 32739
+dagannoth_dawn = 32740
+
+[gamevals.dbrow]
+music_modern_xenophobe = 98137
+music_modern_dagannoth_dawn = 98138
+
+[gamevals.param]
+npc_hp_name = 510
+
+[gamevals.varn]
+spinolyp_transform = 102

@@ -1,9 +1,7 @@
 id = "Blue dagannoth Drops"
 npcs = ["npc.sailing_charting_drink_crate_blue_lagoon_effect"]
 
-[[tertiary]]
-numerator = 1
-denominator = 4
+[[guaranteed]]
 obj = "obj.rag_dagganoth_bone"
 count = 1
 quest = "quest_ragandboneman2"

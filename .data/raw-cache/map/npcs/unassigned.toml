@@ -2124,23 +2124,11 @@ coords = "0_39_158_47_31"
 
 [[spawn]]
 npc = "npc.dagcave_magic_boss"
-coords = "0_41_151_7_3"
-
-[[spawn]]
-npc = "npc.dagcave_magic_boss"
 coords = "0_45_68_31_35"
 
 [[spawn]]
 npc = "npc.dagcave_magic_boss"
 coords = "0_45_69_31_35"
-
-[[spawn]]
-npc = "npc.dagcave_melee_boss"
-coords = "0_41_150_9_61"
-
-[[spawn]]
-npc = "npc.dagcave_melee_boss"
-coords = "0_42_150_1_61"
 
 [[spawn]]
 npc = "npc.dagcave_melee_boss"
@@ -2152,151 +2140,11 @@ coords = "0_45_69_33_29"
 
 [[spawn]]
 npc = "npc.dagcave_ranged_boss"
-coords = "0_41_151_2_0"
-
-[[spawn]]
-npc = "npc.dagcave_ranged_boss"
-coords = "0_41_151_58_0"
-
-[[spawn]]
-npc = "npc.dagcave_ranged_boss"
 coords = "0_45_68_26_32"
 
 [[spawn]]
 npc = "npc.dagcave_ranged_boss"
 coords = "0_45_69_26_32"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_12_25"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_15_52"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_16_54"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_17_55"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_19_22"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_20_21"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_20_24"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_22_14"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_22_17"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_22_20"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_26_35"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_26_36"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_27_15"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_27_57"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_28_57"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_30_16"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_33_13"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_34_29"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_35_29"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_37_13"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_42_47"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_43_14"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_45_46"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_46_46"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_49_13"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_53_11"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_53_56"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_55_12"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_57_32"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_60_27"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_38_158_60_43"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_39_158_50_30"
-
-[[spawn]]
-npc = "npc.dagganoth_critter"
-coords = "0_39_158_50_32"
 
 [[spawn]]
 npc = "npc.dark_warrior"
