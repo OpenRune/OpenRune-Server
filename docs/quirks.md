@@ -176,3 +176,18 @@ the Falador park gardener (rev 235) and Hector's chest (rev 232). Known differen
 - Taking the white apron in Gerrant's shop is an ordinary ground item pickup, without the
   "freshly starched" message.
 - Chathead expressions for Frank, Luthas, Wydin and the customs officer are chosen by hand.
+
+## Prince Ali Rescue
+
+Built from the OSRS wiki transcript and RuneLite's Quest Helper. No RSProx capture of the quest
+being played exists. Captures 95 (Leagues auto-completion: `princequest` ends at 110), 1702 (the
+toll gate) and 3202 (a locked "Open" on the cell door) were checked. Known differences:
+
+- Osman still takes the key print and a bronze bar and sends the key to Leela, as before the
+  14 January 2026 update. Making the key at a furnace, the route that update made the only one,
+  works too. What Osman says now when shown the print is not documented.
+- The quest journal text is written from the quest's steps, since the January 2026 journal
+  rewrite has no capture. The key lines keep the phrase Quest Helper reads to sync
+  ("made a copy of the key to his cell").
+- The fades when Keli is tied up and when the Prince escapes, and how long the cell door stays
+  open, are not from a capture.
