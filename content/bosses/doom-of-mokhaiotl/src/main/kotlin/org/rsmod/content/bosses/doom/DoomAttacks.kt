@@ -21,22 +21,22 @@ internal enum class DoomStyle(
         type = HitType.Magic,
         projectile = "spotanim.vfx_standard_projectile_magic",
         impactSpotanim = "spotanim.vfx_leviathan_01_projectile_impact_magic_01",
-        launchSynth = "synth.dom_standard_launch_magic",
-        impactSynth = "synth.dom_standard_impact_magic",
+        launchSynth = "synth.delve_boss_std_range_attack_spit_01",
+        impactSynth = "synth.dt2_levboss_magic_impact_sound_01",
     ),
     Ranged(
         type = HitType.Ranged,
         projectile = "spotanim.vfx_standard_projectile_range",
         impactSpotanim = "spotanim.vfx_leviathan_01_projectile_impact_ranged_01",
-        launchSynth = "synth.dom_standard_launch_range",
-        impactSynth = "synth.leviathan_pathfinder_spawn",
+        launchSynth = "synth.delve_boss_std_range_attack_spit_02",
+        impactSynth = "synth.dt2_levboss_ranged_impact_sound_01",
     ),
     Melee(
         type = HitType.Melee,
         projectile = "spotanim.vfx_standard_projectile_melee",
         impactSpotanim = "spotanim.vfx_leviathan_01_projectile_impact_melee_01",
-        launchSynth = "synth.dom_standard_launch_melee",
-        impactSynth = "synth.dom_standard_impact_melee",
+        launchSynth = "synth.delve_boss_std_range_attack_spit_03",
+        impactSynth = "synth.dt2_levboss_melee_impact_sound_01",
     );
 
     val alternate: DoomStyle
@@ -131,7 +131,7 @@ internal object DoomRockThrow {
     private const val SECOND_DEBRIS = "second_debris"
     private const val SOURCE = "source"
 
-    private const val SPLIT_SYNTH = "synth.dom_rock_split"
+    private const val SPLIT_SYNTH = "synth.delve_boss_std_rock_attack_explosion_01"
     private const val DEBRIS_SHADOW = "spotanim.gargboss_debris_shadow_90_small"
     private const val DEBRIS_IMPACT = "spotanim.vfx_rock_projectile_impact"
     private const val PUSH_SEQ = "seq.agilityarena_player_spikedback"

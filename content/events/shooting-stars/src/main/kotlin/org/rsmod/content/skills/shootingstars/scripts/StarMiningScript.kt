@@ -157,7 +157,7 @@ constructor(
         val xp = baseXp * xpMods.get(player, "stat.mining")
         statAdvance("stat.mining", xp)
         spam("You manage to mine some stardust.")
-        soundSynth(3600)
+        soundSynth("synth.mine_ore")
         return true
     }
 

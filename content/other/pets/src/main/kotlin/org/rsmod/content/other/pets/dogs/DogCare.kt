@@ -43,14 +43,14 @@ class DogCare @Inject constructor(private val followers: PetFollowers) {
     }
 
     fun isPotion(obj: ItemServerType): Boolean {
-        val isGuthixRest = obj.internalName.startsWith(GUTHIX_REST)
+        val isGuthixRest = obj.internalName in GUTHIX_REST
         return (obj.internalName in potions && !isGuthixRest) || obj.name.endsWith(" mix", ignoreCase = true)
     }
 
     fun isFood(obj: ItemServerType): Boolean {
         val name = obj.name.lowercase()
         return obj.internalName in food ||
-            obj.internalName.startsWith(GUTHIX_REST) ||
+            obj.internalName in GUTHIX_REST ||
             name == "egg" ||
             name.endsWith("bones") ||
             name in BONES
@@ -115,7 +115,13 @@ class DogCare @Inject constructor(private val followers: PetFollowers) {
         const val HUNGER_VERY = 2500
         const val HUNGER_STOP = 3000
 
-        private const val GUTHIX_REST = "obj.cup_guthix_rest"
+        private val GUTHIX_REST =
+            setOf(
+                "obj.cup_guthix_rest_1",
+                "obj.cup_guthix_rest_2",
+                "obj.cup_guthix_rest_3",
+                "obj.cup_guthix_rest_4",
+            )
         private val BONES = setOf("long bone", "curved bone")
         private val UPSET_WORDS =
             setOf(

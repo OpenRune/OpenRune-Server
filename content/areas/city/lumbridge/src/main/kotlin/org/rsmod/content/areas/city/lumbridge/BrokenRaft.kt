@@ -60,8 +60,8 @@ class BrokenRaft : PluginScript() {
         const val FACE_EAST = 1536
         const val FACE_WEST = 512
 
-        const val JUMP_SOUND = "synth.raft_jump"
-        const val CLIMB_SOUND = "synth.raft_climb"
+        const val JUMP_SOUND = "synth.jump_further"
+        const val CLIMB_SOUND = "synth.climbing_loop"
 
         val EASTBOUND =
             listOf(

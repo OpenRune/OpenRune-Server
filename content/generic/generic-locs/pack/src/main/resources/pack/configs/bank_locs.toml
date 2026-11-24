@@ -1,0 +1,138 @@
+# Bank booths, counters and tables: Bank on op2 (op1 on the tutorial booths), Collect on op3.
+
+[[object]]
+id = "loc.bankbooth_end_right"
+inherit = "loc.bankbooth_end_right"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.bankbooth_end_left"
+inherit = "loc.bankbooth_end_left"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.exchange_bank_wall_bank"
+inherit = "loc.exchange_bank_wall_bank"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.exchange_bank_wall_bank_3ops"
+inherit = "loc.exchange_bank_wall_bank_3ops"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.elf_village_bankcounter"
+inherit = "loc.elf_village_bankcounter"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.banktable_breakroute_bankable"
+inherit = "loc.banktable_breakroute_bankable"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.cam_torum_bank_table"
+inherit = "loc.cam_torum_bank_table"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.cam_torum_bank_table02"
+inherit = "loc.cam_torum_bank_table02"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.table_bank01_civitas01"
+inherit = "loc.table_bank01_civitas01"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.table_bank01_civitas02"
+inherit = "loc.table_bank01_civitas02"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.booth_bank01_talkasti01"
+inherit = "loc.booth_bank01_talkasti01"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.sailing_bank_boat_clickbox"
+inherit = "loc.sailing_bank_boat_clickbox"
+contentGroup = "content.bank_booth"
+
+# Bank chests and bank animals: Bank or Use on op1, Collect on op3.
+
+[[object]]
+id = "loc.duel_chestopen"
+inherit = "loc.duel_chestopen"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.hundred_goodchest_base"
+inherit = "loc.hundred_goodchest_base"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fairy_chest_bank"
+inherit = "loc.fairy_chest_bank"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fossil_washed_up_chest"
+inherit = "loc.fossil_washed_up_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.giants_foundry_chest"
+inherit = "loc.giants_foundry_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.toa_bank_camel"
+inherit = "loc.toa_bank_camel"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.toa_bank_camel_named"
+inherit = "loc.toa_bank_camel_named"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.colosseum_bank"
+inherit = "loc.colosseum_bank"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.chest_alchemist01_open01"
+inherit = "loc.chest_alchemist01_open01"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.chest_alchemist01_closed01"
+inherit = "loc.chest_alchemist01_closed01"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.bank_buffalo"
+inherit = "loc.bank_buffalo"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.tortugan_chest01_bank01_open01"
+inherit = "loc.tortugan_chest01_bank01_open01"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.pandemonium_bank_crab"
+inherit = "loc.pandemonium_bank_crab"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.sailing_bank_boat_bank_crab"
+inherit = "loc.sailing_bank_boat_bank_crab"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.tfa_lobby_bankchest_open"
+inherit = "loc.tfa_lobby_bankchest_open"
+contentGroup = "content.bank_chest"

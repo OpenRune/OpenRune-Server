@@ -61,6 +61,17 @@ tasks.named<JavaExec>("run") {
     workingDir = rootProject.projectDir
 }
 
+tasks.register<JavaExec>("travelReport") {
+    group = "tools"
+    description =
+        "Boots the server, writes build/reports/travel-coverage/ (travel locs nothing answers) and exits"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set(application.mainClass)
+    jvmArgs = application.applicationDefaultJvmArgs.toList()
+    workingDir = rootProject.projectDir
+    environment("OPENRUNE_TRAVEL_REPORT", "1")
+}
+
 tasks.named<ShadowJar>("shadowJar") {
     archiveFileName.set("server.jar")
     mergeServiceFiles()

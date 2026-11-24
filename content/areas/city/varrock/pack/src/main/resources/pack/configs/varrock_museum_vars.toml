@@ -1,0 +1,19 @@
+[[varp]]
+isServerOnly = true
+id = "varp.vm_nathis_quiz_state"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.vm_nathis_quiz_display"
+varp = "varp.vm_nathis_quiz_state"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.vm_nathis_quiz_question"
+varp = "varp.vm_nathis_quiz_state"
+startBit = 4
+endBit = 6

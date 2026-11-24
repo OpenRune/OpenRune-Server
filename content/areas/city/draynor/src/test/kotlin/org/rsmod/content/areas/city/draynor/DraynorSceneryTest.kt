@@ -113,7 +113,7 @@ class DraynorSceneryTest {
         val start = tree.coords
         assertEquals(MoveRestrict.NoMove, tree.type.moveRestrict)
         assertEquals("seq.deadtree_attack".asRSCM(), tree.type.param(params.attack_anim).id)
-        assertEquals("synth.deadtree_attack".asRSCM(), tree.type.param(params.attack_sound).id)
+        assertEquals("synth.nasty_tree_attack".asRSCM(), tree.type.param(params.attack_sound).id)
         tree.walk(start.translate(3, 0))
         val movement = NpcMovementProcessor(fixture.collision, StepFactory(fixture.collision), fixture.events)
         repeat(8) { movement.process(tree) }

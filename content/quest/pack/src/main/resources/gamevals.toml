@@ -1,88 +1,3 @@
-[gamevals.synth]
-mizgog_placebeads = 1632
-mizgog_beads = 1633
-coffin_close = 53
-rg_ghost_approach = 1743
-bigghost_appear = 1595
-rg_place_skull = 1744
-rg_skeleton_awake = 1746
-destroy_object = 2381
-shade_sigh = 748
-kittens_mew = 339
-purr = 340
-cat_hiss = 335
-meeoow = 1169
-skeleton_attack = 776
-skelly_hit = 779
-skeleton_death = 777
-bigdoor_close = 45
-bigdoor_open = 46
-bookcase_open_and_close = 42
-chicken_into_human = 1564
-coffin_open = 54
-creakydoor_open = 56
-cupboard_open = 58
-deadtree_attack = 651
-digspade = 1470
-ernest_clunk = 1565
-ernest_sprinkle = 1566
-fish_swim = 2601
-iron_door_open = 71
-swan_rumble = 1790
-unlock = 2419
-poh_build_furniture = 938
-poh_remove_furniture = 2097
-poh_remove_furniture_alt = 2098
-
-locked = 2402
-pyramid_block = 1395
-throwingknife = 2707
-scythe_double = 2522
-human_hit = 513
-scream2 = 660
-godwars_godsword_special_attack = 3869
-barbarian_grunt_death = 3382
-paper_move = 1412
-tree_rustle_01 = 2073
-tree_rustle_02 = 2074
-skullball_scratchy = 1940
-ds_big_door_unlock = 2972
-explosion = 1487
-climb_wall = 2453
-grim_piano_c4 = 3696
-grim_piano_d4 = 3698
-grim_piano_e4 = 3700
-grim_piano_f4 = 3702
-grim_piano_g4 = 3704
-grim_piano_a4 = 3692
-grim_piano_b4 = 3694
-grim_piano_c5 = 3697
-grim_piano_d5 = 3699
-grim_piano_e5 = 3701
-grim_piano_f5 = 3703
-grim_piano_g5 = 3705
-grim_piano_a5 = 3693
-grim_piano_b5 = 3695
-romeo_juliet_collapse = 505
-romeo_juliet_crypt_door = 1816
-romeo_juliet_crypt_enter = 1815
-
-splash_and_river = 1308
-roof_collapse = 1384
-big_wooden_door_open = 44
-big_wooden_door_close = 43
-watersplash = 2496
-smokepuff = 1930
-chest_open = 52
-chest_close = 51
-irondoor_locked = 72
-gobdip_dye_goblin_mail = 2392
-gobdip_soldier_attack1 = 3514
-gobdip_soldier_attack2 = 3515
-gobdip_soldier_attack3 = 3521
-gobdip_soldier_hit1 = 3517
-gobdip_soldier_hit2 = 472
-
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
 restless_ghost_return_tile = 63704
@@ -95,9 +10,14 @@ gertrudes_cat_state = 63711
 daddyshome_state = 64064
 waterfall_state = 64310
 sheep_shearer_state = 65472
-romeo_juliet_return_tile = 63730
+vampyre_slayer_state = 64600
+demon_slayer_state = 64610
+demon_slayer_return_tile = 64611
+pirates_treasure_state = 64620
+romeo_juliet_return_tile = 64720
 
 [gamevals.varbit]
+romeo_juliet_progress = 64720
 restless_ghost_progress = 63702
 imp_catcher_progress = 63703
 misthalin_reflections = 63700
@@ -111,7 +31,6 @@ gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
-romeo_juliet_progress = 63730
 daddyshome_crate_opened = 64064
 dorics_quest_progress = 64470
 knights_sword_progress = 64430
@@ -121,6 +40,21 @@ waterfall_met_golrie = 64312
 waterfall_pillar_runes = 64313
 sheep_shearer_progress = 65449
 sheep_shearer_saw_thing = 65448
+vampyre_slayer_progress = 64600
+vampyre_slayer_met_harlow = 64601
+vampyre_slayer_cupboard_searched = 64602
+demon_slayer_traiborn_bones = 64610
+demon_slayer_traiborn_asked = 64611
+demon_slayer_lamps_given = 64612
+pirates_treasure_luthas_job = 64620
+pirates_treasure_crate_bananas = 64621
+pirates_treasure_crate_rum = 64622
+pirates_treasure_wydin_rum = 64623
+pirates_treasure_wydin_job = 64624
+pirates_treasure_chest_opened = 64625
+pirates_treasure_gardener = 64626
+pirates_treasure_progress = 64627
+pirates_treasure_rum_retrieved = 64628
 
 [gamevals.bas]
 waterfall_wading = 1
@@ -141,15 +75,22 @@ restless_ghost_coffin_ghost = 123
 restless_skeleton_attack = 124
 
 [gamevals.dbtable]
-apothecary_potions = 65496
+apothecary_potions = 64720
+pmoon_ruins_parts = 64801
+pmoon_ruins_spawns = 64802
 daddys_home_furniture = 65472
 daddys_home_crate = 65473
 glarial_restrictions = 65495
 
 [gamevals.dbrow]
-apothecary_strength = 63688
-apothecary_energy = 63687
-apothecary_antipoison = 63686
+apothecary_strength = 63236
+apothecary_energy = 63237
+apothecary_antipoison = 63238
+pmoon_ruins_antechamber = 62810
+pmoon_ruins_ancient_prison = 62811
+pmoon_ruins_earthbound_cavern = 62812
+pmoon_ruins_streambound_cavern = 62813
+pmoon_ruins_vault = 62814
 daddys_home_furniture_kitchen_stool = 63420
 daddys_home_furniture_bedroom_stool = 63421
 daddys_home_furniture_chair = 63422
@@ -180,3 +121,10 @@ poh_furniture_creation_entry_old = 7988
 
 [gamevals.category]
 goblin_armour = 528
+
+[gamevals.area]
+pmoon_ruins_antechamber = 32448
+pmoon_ruins_ancient_prison = 32449
+pmoon_ruins_earthbound_cavern = 32450
+pmoon_ruins_streambound_cavern = 32451
+pmoon_ruins_vault = 32452

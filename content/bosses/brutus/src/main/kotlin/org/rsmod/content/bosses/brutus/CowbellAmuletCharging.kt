@@ -98,8 +98,8 @@ class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeMa
         const val AIR_RUNE = "obj.airrune"
         const val CHARGES = "varobj.charges_16383"
         const val MAX_CHARGES = 1_000
-        private const val CHARGE_SYNTH = "synth.cowbell_amulet_charge"
-        private const val UNCHARGE_SYNTH = "synth.cowbell_amulet_uncharge"
+        private const val CHARGE_SYNTH = "synth.crystal_armour_4"
+        private const val UNCHARGE_SYNTH = "synth.crystal_armour_5"
 
         private val chargeBits by lazy {
             checkNotNull(ServerCacheManager.getVarObj(CHARGES.asRSCM(RSCMType.VAROBJ))).bits

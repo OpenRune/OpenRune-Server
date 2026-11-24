@@ -43,7 +43,7 @@ class JournalTabScript @Inject constructor(private val eventBus: EventBus) : Plu
                 else -> return
             }
         ClientScripts.toplevelSidebuttonSwitch(this, 2)
-        soundSynth("synth.interface_select")
+        soundSynth("synth.interface_select1")
         switchJournalTab(tab)
     }
 

@@ -31,6 +31,15 @@ public class PlayerTimerMap(
         timers[timer] = (expiry.toLong() shl 32) or interval.toLong()
     }
 
+    public fun remainingCycles(timer: String, mapClock: Int): Int {
+        val key = timer.asRSCM(RSCMType.TIMER).toShort()
+        if (!timers.containsKey(key)) {
+            return 0
+        }
+        val expiry = (timers.get(key) shr 32).toInt()
+        return maxOf(0, expiry - mapClock)
+    }
+
     @InternalApi public fun extractExpiry(packed: Long): Int = (packed shr 32).toInt()
 
     @InternalApi public fun extractInterval(packed: Long): Int = packed.toInt()

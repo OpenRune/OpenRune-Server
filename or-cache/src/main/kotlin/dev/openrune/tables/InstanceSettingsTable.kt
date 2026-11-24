@@ -334,5 +334,23 @@ object InstanceSettingsTable {
             columnRSCM(ENTER_OBJECT, "loc.vmq3_ruins_door_multi")
             columnRSCM(EXIT_OBJECT, "loc.amoxliatl_exit")
         }
+
+        row("dbrow.instance_araxxor") {
+            column(KEY, "araxxor")
+            columnCoord(EXIT_COORD, CoordGrid(3658, 9815, 0))
+            columnCoord(ENTER_COORD, CoordGrid(3647, 9816, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.araxxor")
+            column(BOSS_NAME, "Araxxor")
+            column(RECOMMENDED_COMBAT, 100, 126)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "The venomous matriarch of the Araxyte caves.")
+            columnRSCM(ENTER_OBJECT, "loc.araxxor_boss_tunnel_multi")
+            columnRSCM(EXIT_OBJECT, "loc.araxxor_cave_outer_tunnel_op_4")
+        }
     }
 }

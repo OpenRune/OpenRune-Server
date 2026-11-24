@@ -17,7 +17,7 @@ import org.rsmod.content.skills.runecrafting.magic.MagicImbue.isActive
 
 object RunecraftAction {
     private const val RUNECRAFT_WAIT_CYCLE = 3
-    private const val RUNECRAFT_SOUND = 2710
+    private const val RUNECRAFT_SOUND = "synth.bind_runes"
     private const val RUNE_ESSENCE = EssencePouch.RUNE_ESSENCE
     private const val PURE_ESSENCE = EssencePouch.PURE_ESSENCE
     private const val DAEYALT_ESSENCE = EssencePouch.DAEYALT_ESSENCE

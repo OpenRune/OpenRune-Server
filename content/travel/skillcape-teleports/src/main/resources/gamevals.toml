@@ -1,0 +1,39 @@
+[gamevals.dbtable]
+skillcape_teleport_destinations = 64951
+
+[gamevals.dbrow]
+skillcape_teleport_strength_warriors_guild = 59050
+skillcape_teleport_farming_farming_guild = 59052
+skillcape_teleport_fishing_fishing_guild = 59053
+skillcape_teleport_fishing_ottos_grotto = 59054
+skillcape_teleport_hunter_hunter_guild = 59110
+skillcape_teleport_hunter_carnivorous_chinchompas = 59111
+skillcape_teleport_hunter_black_chinchompas = 59112
+skillcape_teleport_max_warriors_guild = 59113
+skillcape_teleport_max_fishing_guild = 59114
+skillcape_teleport_max_crafting_guild = 59115
+skillcape_teleport_max_farming_guild = 59116
+skillcape_teleport_max_ottos_grotto = 59117
+skillcape_teleport_max_feldip_hills = 59118
+skillcape_teleport_max_black_chinchompas = 59119
+skillcape_teleport_max_hunter_guild = 59120
+skillcape_teleport_max_pandemonium = 59121
+skillcape_teleport_max_worn_crafting_guild = 59122
+skillcape_teleport_construction_rimmington = 59150
+skillcape_teleport_construction_taverley = 59151
+skillcape_teleport_construction_pollnivneach = 59152
+skillcape_teleport_construction_hosidius = 59153
+skillcape_teleport_construction_aldarin = 59154
+skillcape_teleport_construction_rellekka = 59155
+skillcape_teleport_construction_brimhaven = 59156
+skillcape_teleport_construction_yanille = 59157
+skillcape_teleport_construction_prifddinas = 59158
+skillcape_teleport_max_rimmington = 59159
+skillcape_teleport_max_taverley = 59160
+skillcape_teleport_max_pollnivneach = 59161
+skillcape_teleport_max_hosidius = 59162
+skillcape_teleport_max_aldarin = 59163
+skillcape_teleport_max_rellekka = 59164
+skillcape_teleport_max_brimhaven = 59165
+skillcape_teleport_max_yanille = 59166
+skillcape_teleport_max_prifddinas = 59167

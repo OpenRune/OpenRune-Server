@@ -1,17 +1,32 @@
 package org.rsmod.content.quest.manager
 
 import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
+import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.player.hook.SpadeDigHook
+import org.rsmod.content.bosses.moons.neypotzli.NeypotzliHook
 import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.TouristCentreBookcases
+import org.rsmod.content.quest.area.draynor.vampyreslayer.CountDraynorAttackHook
+import org.rsmod.content.quest.area.draynor.vampyreslayer.VampyreSlayerQuest
 import org.rsmod.content.quest.area.falador.doricsquest.DoricsQuest
 import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
 import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureDig
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureGardenerAttackHook
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureGardenerKillHook
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureQuest
+import org.rsmod.content.quest.area.portsarim.piratestreasure.PiratesTreasureSmuggling
 import org.rsmod.content.quest.area.rimmington.WitchsPotionRatTail
+import org.rsmod.content.quest.area.varlamore.perilousmoons.PerilousMoonsNaguaKill
+import org.rsmod.content.quest.area.varlamore.perilousmoons.PerilousMoonsRuins
 import org.rsmod.content.quest.area.varrock.daddyshome.DaddysHomeQuest
+import org.rsmod.content.quest.area.varrock.demonslayer.DelrithAttackHook
+import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerCutscenes
+import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerQuest
+import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerScenes
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest
 import org.rsmod.plugin.module.PluginModule
 
@@ -25,9 +40,22 @@ public class QuestModule : PluginModule() {
         bindInstance<DoricsQuest>()
         bindInstance<IdesOfMilkQuest>()
         bindInstance<KnightsSwordQuest>()
+        bindInstance<VampyreSlayerQuest>()
+        bindInstance<DemonSlayerQuest>()
+        bindBaseInstance<DemonSlayerScenes>(DemonSlayerCutscenes::class.java)
+        bindInstance<PiratesTreasureQuest>()
+        bindInstance<PiratesTreasureSmuggling>()
+        bindInstance<PiratesTreasureDig>()
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)
         addSetBinding<BookcaseSearchHook>(TouristCentreBookcases::class.java)
         addSetBinding<SpadeDigHook>(XMarksTheSpotQuest::class.java)
+        addSetBinding<SpadeDigHook>(PiratesTreasureDig::class.java)
         addSetBinding<NpcDeathKillHook>(WitchsPotionRatTail::class.java)
+        addSetBinding<NpcAttackValidateHook>(CountDraynorAttackHook::class.java)
+        addSetBinding<NpcAttackValidateHook>(DelrithAttackHook::class.java)
+        addSetBinding<NpcDeathKillHook>(PiratesTreasureGardenerKillHook::class.java)
+        addSetBinding<NpcAttackValidateHook>(PiratesTreasureGardenerAttackHook::class.java)
+        addSetBinding<NpcDeathKillHook>(PerilousMoonsNaguaKill::class.java)
+        addSetBinding<NeypotzliHook>(PerilousMoonsRuins::class.java)
     }
 }

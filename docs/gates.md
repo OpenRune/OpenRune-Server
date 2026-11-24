@@ -34,7 +34,7 @@ contentGroup = "content.closed_left_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.openfencegate_l"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.fencegate_r"
@@ -42,7 +42,7 @@ contentGroup = "content.closed_right_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.openfencegate_r"
-"param.opensound" = "synth.picketgate_open"
+"param.opensound" = "synth.gate_open"
 
 [[object]]
 id = "loc.openfencegate_l"
@@ -50,7 +50,7 @@ contentGroup = "content.opened_left_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.fencegate_l"
-"param.closesound" = "synth.picketgate_close"
+"param.closesound" = "synth.gate_close"
 
 [[object]]
 id = "loc.openfencegate_r"
@@ -58,7 +58,7 @@ contentGroup = "content.opened_right_picketgate"
 
 [object.params]
 "param.next_loc_stage" = "loc.fencegate_r"
-"param.closesound" = "synth.picketgate_close"
+"param.closesound" = "synth.gate_close"
 ```
 
 ---

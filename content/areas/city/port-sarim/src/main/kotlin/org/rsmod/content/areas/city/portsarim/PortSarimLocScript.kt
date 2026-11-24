@@ -76,7 +76,7 @@ class PortSarimLocScript @Inject constructor(private val locRepo: LocRepository)
             return
         }
         anim("seq.human_crawling")
-        soundSynth("synth.underwall_tunnel_crawl")
+        soundSynth("synth.climb_under")
         delay(1)
         teleport(exit)
         resetAnim()

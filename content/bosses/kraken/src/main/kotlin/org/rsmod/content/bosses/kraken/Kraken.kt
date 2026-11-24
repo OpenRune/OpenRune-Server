@@ -344,8 +344,8 @@ class Kraken @Inject constructor(
         private const val CAST_SOUND_RADIUS = 10
         private const val HIT_SYNTH = "synth.waterwave_hit"
         private const val MISS_SYNTH = "synth.spellfail"
-        private const val BOSS_ARISE_SYNTH = "synth.slayer_kraken_arise"
-        private const val TENTACLE_ARISE_SYNTH = "synth.slayer_kraken_tentacle_arise"
+        private const val BOSS_ARISE_SYNTH = "synth.sea_troll_queen_attack"
+        private const val TENTACLE_ARISE_SYNTH = "synth.poh_tentacle"
 
         private const val ATTACK_RATE = 4
         private const val MAGIC_MAX = 28

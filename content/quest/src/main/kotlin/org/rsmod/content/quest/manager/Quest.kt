@@ -20,7 +20,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
-const val QUEST_COMPLETE_JINGLE = "jingle.gaol"
+const val QUEST_COMPLETE_JINGLE = "jingle.quest_complete_1"
 
 internal const val QUEST_DIALOGUE_CLOSE_TIMER = "timer.quest_dialogue_close"
 internal const val QUEST_SCROLL_CLOSE_TIMER = "timer.quest_scroll_close"
@@ -103,7 +103,7 @@ data class Quest(
                 mapElement = questRow.mapelement,
                 startCoord = questRow.startcoord,
                 maxSteps = questRow.endstate,
-                questPoints = questRow.questpoints,
+                questPoints = questRow.questpointsOverride,
                 questVarp = varp,
                 questVarbit = varbit,
                 itemDisplay = itemDisplay,

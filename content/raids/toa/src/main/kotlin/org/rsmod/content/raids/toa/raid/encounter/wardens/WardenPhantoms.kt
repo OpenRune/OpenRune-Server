@@ -317,14 +317,14 @@ internal class WardenPhantoms(private val room: WardensSecondEncounter) {
         const val PATH_LEVELS_PER_TIER = 2
         const val BABA_DAMAGE = 19
         const val BABA_SPREAD = 4
-        const val BABA_SWING_SOUND = "synth.toa_wardens_baba_swing"
-        const val BABA_ROCK_SOUND = "synth.toa_wardens_baba_rock_fall"
+        const val BABA_SWING_SOUND = "synth.toa_baba_circular_rocks_falling_01"
+        const val BABA_ROCK_SOUND = "synth.toa_baba_circular_rocks_impact_01"
         const val BABA_ROCK_SOUND_DELAY = 150
 
         const val AKKHA_SHOTS_PER_STYLE = 3
         const val AKKHA_FIRE_DELAY = 2
-        const val AKKHA_RANGED_SOUND = "synth.toa_wardens_akkha_ranged_impact"
-        const val AKKHA_MAGIC_SOUND = "synth.toa_wardens_akkha_magic_impact"
+        const val AKKHA_RANGED_SOUND = "synth.toa_akka_non_magic_knife_projectile_01"
+        const val AKKHA_MAGIC_SOUND = "synth.toa_akka_projectle_impact_01"
         const val AKKHA_MAX_HIT = 20
         const val AKKHA_START_HEIGHT = 404
         const val AKKHA_END_HEIGHT = 138
@@ -335,9 +335,9 @@ internal class WardenPhantoms(private val room: WardensSecondEncounter) {
         const val AKKHA_MAGIC_STEP = 10
 
         const val KEPHRI_SHADOW = "spotanim.gargboss_debris_shadow_90"
-        const val KEPHRI_APEX_SOUND = "synth.toa_wardens_kephri_apex"
+        const val KEPHRI_APEX_SOUND = "synth.toa_kephri_fire_projectile"
         const val KEPHRI_DROP_SOUND = "synth.toa_zebak_redirected_projectile_02"
-        const val KEPHRI_BLAST_SOUND = "synth.toa_wardens_kephri_blast"
+        const val KEPHRI_BLAST_SOUND = "synth.toa_kephri_fire_proj_impact_01"
         const val KEPHRI_DROP_SOUND_RADIUS = 12
         const val KEPHRI_BLAST_SOUND_RADIUS = 6
         const val KEPHRI_DROP_DELAY = 3

@@ -10,7 +10,6 @@ import org.rsmod.api.player.back
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.torso
 import org.rsmod.api.player.worn.WornUnequipOp
-import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -23,8 +22,27 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
 public object RangedAmmunition {
-    /** The default chance for standard ammunition to drop on the ground instead of disappearing. */
-    public const val DEFAULT_AMMO_DROP_RATE: Int = 5
+    /** The percentage of fired ammunition that breaks on impact, whatever the player wears. */
+    public const val AMMO_BREAK_CHANCE: Int = 20
+
+    private const val ACCUMULATOR_RECOVERY = 72
+    private const val ASSEMBLER_RECOVERY = 80
+
+    // UNVERIFIED: which value of the 3-bit varbit stands for which device.
+    private const val QUIVER_SAVE_ACCUMULATOR = 1
+    private const val QUIVER_SAVE_ASSEMBLER = 2
+
+    private val DIZANAS_QUIVERS =
+        listOf(
+            "obj.dizanas_quiver_uncharged",
+            "obj.dizanas_quiver_uncharged_trouver",
+            "obj.dizanas_quiver_charged",
+            "obj.dizanas_quiver_charged_trouver",
+            "obj.dizanas_quiver_infinite",
+            "obj.dizanas_quiver_infinite_trouver",
+            "obj.skillcape_max_dizanas",
+            "obj.skillcape_max_dizanas_trouver",
+        )
 
     /** The obj spawn duration when an ammunition is dropped on the ground after being fired. */
     public const val DEFAULT_AMMO_DROP_DURATION: Int = 200
@@ -114,19 +132,27 @@ public object RangedAmmunition {
         return true
     }
 
-    public fun conserveAmmo(player: Player, random: GameRandom): Boolean {
-        val cape = getOrNull(player.back)
-        if (cape != null) {
-            val recoveryRate = cape.paramOrNull(params.ammo_recovery_rate) ?: return false
-
-            val body = getOrNull(player.torso)
-            if (body != null && body.param(params.metallic_interference)) {
-                return false
+    /**
+     * The percentage (0-80) of fired ammunition the worn cape slot returns. Ava's devices, the
+     * Ranging cape and max capes carry [params.ammo_recovery_rate] and stop working under a
+     * metallic torso; Dizana's quiver takes the device Ava applied to it and is not affected.
+     */
+    public fun ammoRecoveryRate(player: Player): Int {
+        val back = player.back ?: return 0
+        if (DIZANAS_QUIVERS.any { back.isType(it) }) {
+            return when (player.vars["varbit.dizanas_quiver_ammo_save"]) {
+                QUIVER_SAVE_ACCUMULATOR -> ACCUMULATOR_RECOVERY
+                QUIVER_SAVE_ASSEMBLER -> ASSEMBLER_RECOVERY
+                else -> 0
             }
-
-            return recoveryRate > random.of(maxExclusive = 100)
         }
-        return false
+
+        val recoveryRate = getOrNull(back)?.paramOrNull(params.ammo_recovery_rate) ?: return 0
+        val body = getOrNull(player.torso)
+        if (body != null && body.param(params.metallic_interference)) {
+            return 0
+        }
+        return recoveryRate
     }
 
     public fun detractAmmo(

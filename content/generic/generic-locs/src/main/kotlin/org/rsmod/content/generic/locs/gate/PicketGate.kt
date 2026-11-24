@@ -44,14 +44,14 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
             val openedTranslation = leftGateOpen(it.shape, it.angle)
             val openedCoords = it.coords + openedTranslation
             val openedAngle = it.turnAngle(rotations = 3)
-            locRepo.add(openedCoords, openedLoc, GateConstants.DURATION, openedAngle, it.shape)
+            locRepo.add(openedCoords, openedLoc.internalName, GateConstants.DURATION, openedAngle, it.shape)
         }
         right?.let {
             val openedLoc = locParamOrNull(it, params.next_loc_stage) ?: return
             val openedTranslation = rightGateOpen(it.shape, it.angle)
             val openedCoords = it.coords + openedTranslation
             val openedAngle = it.turnAngle(rotations = 3)
-            locRepo.add(openedCoords, openedLoc, GateConstants.DURATION, openedAngle, it.shape)
+            locRepo.add(openedCoords, openedLoc.internalName, GateConstants.DURATION, openedAngle, it.shape)
         }
     }
 
@@ -74,14 +74,14 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
             val openedTranslation = leftGateOpen(it.shape, it.angle)
             val openedCoords = it.coords + openedTranslation
             val openedAngle = it.turnAngle(rotations = 3)
-            locRepo.add(openedCoords, openedLoc, GateConstants.DURATION, openedAngle, it.shape)
+            locRepo.add(openedCoords, openedLoc.internalName, GateConstants.DURATION, openedAngle, it.shape)
         }
         right.let {
             val openedLoc = type.param(params.next_loc_stage)
             val openedTranslation = rightGateOpen(it.shape, it.angle)
             val openedCoords = it.coords + openedTranslation
             val openedAngle = it.turnAngle(rotations = 3)
-            locRepo.add(openedCoords, openedLoc, GateConstants.DURATION, openedAngle, it.shape)
+            locRepo.add(openedCoords, openedLoc.internalName, GateConstants.DURATION, openedAngle, it.shape)
         }
     }
 
@@ -104,14 +104,14 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
             val closedTranslation = leftGateClose(it.shape, it.angle)
             val closedCoords = it.coords + closedTranslation
             val closedAngle = it.turnAngle(rotations = -3)
-            locRepo.add(closedCoords, closedLoc, GateConstants.DURATION, closedAngle, it.shape)
+            locRepo.add(closedCoords, closedLoc.internalName, GateConstants.DURATION, closedAngle, it.shape)
         }
         right?.let {
             val closedLoc = locParamOrNull(it, params.next_loc_stage) ?: return
             val closedTranslation = rightGateClose(it.shape, it.angle)
             val closedCoords = it.coords + closedTranslation
             val closedAngle = it.turnAngle(rotations = -3)
-            locRepo.add(closedCoords, closedLoc, GateConstants.DURATION, closedAngle, it.shape)
+            locRepo.add(closedCoords, closedLoc.internalName, GateConstants.DURATION, closedAngle, it.shape)
         }
     }
 
@@ -134,7 +134,7 @@ class PicketGate @Inject constructor(private val locRepo: LocRepository) : Plugi
             val openedTranslation = leftGateClose(it.shape, it.angle)
             val openedCoords = it.coords + openedTranslation
             val openedAngle = it.turnAngle(rotations = -3)
-            locRepo.add(openedCoords, openedLoc, GateConstants.DURATION, openedAngle, it.shape)
+            locRepo.add(openedCoords, openedLoc.internalName, GateConstants.DURATION, openedAngle, it.shape)
         }
         right.let {
             val openedLoc = type.param(params.next_loc_stage)

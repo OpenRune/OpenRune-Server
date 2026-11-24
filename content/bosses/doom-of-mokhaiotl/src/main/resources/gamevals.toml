@@ -14,17 +14,5 @@ dom_step_attacks = 58
 [gamevals.headbar]
 standard_charge_100 = 81
 
-[gamevals.synth]
-dom_standard_launch_range = 10341
-dom_standard_launch_melee = 10367
-dom_standard_launch_magic = 10375
-dom_standard_impact_magic = 7023
-dom_standard_impact_melee = 7025
-dom_rock_split = 10331
-dom_burrow_slam = 2393
-dom_burrow_rumble = 10303
-dom_burrow_rock_fall = 10301
-dom_burrow_rock_land = 10372
-
 [gamevals.varp]
 dom_loot_claimed = 63226

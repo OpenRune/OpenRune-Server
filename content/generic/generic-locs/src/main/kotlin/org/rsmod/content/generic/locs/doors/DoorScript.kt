@@ -34,7 +34,7 @@ class DoorScript @Inject constructor(private val locRepo: LocRepository) : Plugi
         }
 
         locRepo.del(closed, DoorConstants.DURATION)
-        locRepo.add(openedCoords, openedLoc, DoorConstants.DURATION, openedAngle, closed.shape)
+        locRepo.add(openedCoords, openedLoc.internalName, DoorConstants.DURATION, openedAngle, closed.shape)
     }
 
     private fun BoundLocInfo.openAngle(): LocAngle = turnAngle(rotations = 1)
@@ -73,7 +73,7 @@ class DoorScript @Inject constructor(private val locRepo: LocRepository) : Plugi
         if (original != null) {
             locRepo.add(original, DoorConstants.DURATION)
         } else {
-            locRepo.add(closedCoords, closedLoc, DoorConstants.DURATION, closedAngle, closed.shape)
+            locRepo.add(closedCoords, closedLoc.internalName, DoorConstants.DURATION, closedAngle, closed.shape)
         }
     }
 

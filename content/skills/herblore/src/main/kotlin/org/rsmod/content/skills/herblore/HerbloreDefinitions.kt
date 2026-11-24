@@ -135,6 +135,6 @@ object HerbloreDefinitions {
     fun findPotionCandidates(item1: String, item2: String): List<HerbloreFinishedRow> {
         val potions1 = itemToPotions[item1] ?: emptyList()
         val potions2 = itemToPotions[item2] ?: emptyList()
-        return (potions1 + potions2).distinct()
+        return potions1.filter { it in potions2 }.distinct()
     }
 }

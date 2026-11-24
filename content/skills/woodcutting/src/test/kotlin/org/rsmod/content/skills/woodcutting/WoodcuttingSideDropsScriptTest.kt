@@ -162,6 +162,7 @@ class WoodcuttingSideDropsScriptTest {
             return when (maxExclusive) {
                 2560 -> chance
                 95, 100 -> type
+                250 -> 1
                 else -> 0
             }
         }

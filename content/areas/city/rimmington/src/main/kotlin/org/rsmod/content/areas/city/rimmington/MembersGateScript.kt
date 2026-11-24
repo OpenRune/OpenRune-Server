@@ -52,7 +52,7 @@ class MembersGateScript @Inject constructor(private val locRepo: LocRepository) 
         }
         locRepo.add(openRight - swing, Half.Right.closed.last(), DURATION, closedAngle, clicked.shape)
         locRepo.add(openLeft - swing, Half.Left.closed.last(), DURATION, closedAngle, clicked.shape)
-        soundSynth("synth.iron_door_close")
+        soundSynth("synth.grate_close")
     }
 
     /**

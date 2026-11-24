@@ -13,9 +13,6 @@ prayer_break_down_bone = 44
 prayer_altar_sacrifice = 43
 prayer_bury = 42
 
-[gamevals.synth]
-prayer_altar_recharge = 2674
-
 [gamevals.varbit]
 ash_sanctifier_activity_enabled=65474
 bonecrusher_activity_enabled=65473

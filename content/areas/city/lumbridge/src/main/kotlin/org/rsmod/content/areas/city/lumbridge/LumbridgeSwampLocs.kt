@@ -88,7 +88,7 @@ class LumbridgeSwampLocs @Inject constructor(private val locRepo: LocRepository)
         clearSoftTimer(INSECT_TIMER)
         if (darkness == 0) return
         mes("You hear tiny insects skittering over the ground...")
-        soundSynth("synth.swamp_cave_insects")
+        soundSynth("synth.insect_swarm")
     }
 
     private suspend fun ProtectedAccess.shedDoor(door: BoundLocInfo) {

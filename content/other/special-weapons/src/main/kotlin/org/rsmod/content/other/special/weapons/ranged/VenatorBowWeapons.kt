@@ -237,8 +237,8 @@ constructor(
             const val CHARGE_VAROBJ = "varobj.venator_bow_charges"
             const val BOUNCE_RADIUS = 2
             const val BOUNCE_MAX_HIT_MULTIPLIER = 2.0 / 3.0
-            const val RICOCHET_1_SYNTH = 6672
-            const val RICOCHET_2_SYNTH = 6735
+            const val RICOCHET_1_SYNTH = "synth.sotn_muspah_venator_bow_ricochet_p1_01"
+            const val RICOCHET_2_SYNTH = "synth.sotn_muspah_venator_bow_ricochet_p2_01"
         }
     }
 }

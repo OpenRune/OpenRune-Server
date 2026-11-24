@@ -175,8 +175,8 @@ class HisFaithfulServants :
     private suspend fun Dialogue.afterIconGiven() {
         chatNpc(happy, "You did it! Now for me.")
         quest.setQuestStage(access, STAGE_ICON_DESTROYED)
-        access.soundSynth("synth.hfs_icon_disintegrate")
-        access.soundSynth("synth.hfs_icon_disintegrate_echo", delay = ICON_ECHO_DELAY)
+        access.soundSynth("synth.snare_impact")
+        access.soundSynth("synth.lore_fire_titan_death", delay = ICON_ECHO_DELAY)
         objbox("obj.barrows_icon_dust", "Before you can react, the Strange Old Man casts a spell. The icon disintegrates in his hands.")
         chatNpc(happy, "It's all little bits now.")
         chatPlayer(shocked, "What? But why? I thought you needed it!")
@@ -345,7 +345,7 @@ class HisFaithfulServants :
         const val MENU_WARNINGS = 2
         const val MENU_LEAVE = 3
         const val LAMP_XP = 20_000.0
-        const val COMPLETE_JINGLE = 283
+        const val COMPLETE_JINGLE = "jingle.league_task_jingle"
         const val ICON_ECHO_DELAY = 30
     }
 }

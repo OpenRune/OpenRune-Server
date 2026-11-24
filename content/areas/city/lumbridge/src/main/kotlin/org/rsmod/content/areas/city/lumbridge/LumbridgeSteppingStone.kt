@@ -55,7 +55,7 @@ class LumbridgeSteppingStone : PluginScript() {
         const val FACE_SOUTH = 0
         const val FACE_NORTH = 1024
 
-        const val JUMP_SOUND = "synth.varrock_fence_jump"
+        const val JUMP_SOUND = "synth.jump"
 
         val NORTH_BANK = CoordGrid(3212, 3138, 0)
         val STONE = CoordGrid(3214, 3135, 0)

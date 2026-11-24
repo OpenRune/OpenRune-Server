@@ -2,10 +2,12 @@ package org.rsmod.api.combat.scripts
 
 import jakarta.inject.Inject
 import org.rsmod.api.combat.PvPCombat
+import org.rsmod.api.combat.WildernessPjTimer
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.player.aggressiveNpc
+import org.rsmod.api.combat.player.armedSpecialAtMeleeDistance
 import org.rsmod.api.combat.player.attackRange
 import org.rsmod.api.combat.player.pkPredator1
 import org.rsmod.api.combat.player.resolveAutocastSpell
@@ -14,6 +16,7 @@ import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
 import org.rsmod.api.death.PvPAttackValidateHook
 import org.rsmod.api.death.PvPAttackValidateResult
+import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
@@ -22,6 +25,8 @@ import org.rsmod.api.script.advanced.onApPlayer2
 import org.rsmod.api.script.advanced.onOpPlayer1
 import org.rsmod.api.script.advanced.onOpPlayer2
 import org.rsmod.api.script.onApPlayerT
+import org.rsmod.api.script.onEvent
+import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
 import org.rsmod.game.entity.Player
@@ -38,9 +43,12 @@ constructor(
     private val spells: MagicSpellRegistry,
     private val runes: MagicRuneManager,
     private val autocast: AutocastWeapons,
+    private val specials: SpecialAttackRegistry,
     private val attackValidateHooks: Set<PvPAttackValidateHook>,
+    private val pjTimer: WildernessPjTimer,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
+        onEvent<PlayerHitpointsChangedEvent> { pjTimer.onHitpointsChanged(this) }
         onApPlayer1 { attemptCombatAp(it.target) }
         onApPlayer2 { attemptCombatAp(it.target) }
         onOpPlayer1 { attemptCombatOp(it.target) }
@@ -58,7 +66,7 @@ constructor(
         // Weapons such as salamanders have an attack range of `1` but can attack with both ranged
         // and magic. These attacks should be treated as ap range, not op.
         val isMeleeAttackType = type == null || type.isMelee
-        if (attackRange == 1 && isMeleeAttackType) {
+        if (attackRange == 1 && isMeleeAttackType || armedSpecialAtMeleeDistance(specials)) {
             if (!canAttack(target)) {
                 return
             }
@@ -139,8 +147,23 @@ constructor(
             }
         }
 
+        if (pjTimer.appliesTo(player, target)) {
+            if (pjTimer.blocksAttack(player, target.uid) || pjTimer.hasNpcProtection(player)) {
+                spam("I'm already under attack.")
+                return false
+            }
+            if (pjTimer.protects(target, player.uid)) {
+                mes("${target.displayName} is fighting another player.")
+                return false
+            }
+            if (pjTimer.hasNpcProtection(target)) {
+                mes("${target.displayName} is fighting a monster.")
+                return false
+            }
+            return true
+        }
+
         // TODO(combat): Updated multiway logic.
-        // TODO(combat): Add singles plus support.
         val singleCombat = !mapMultiway()
         if (singleCombat) {
             if (isInCombat()) {

@@ -26,10 +26,13 @@ class GameValProvider(
     companion object {
         const val UNASSIGNED_ID = -1
 
-        fun sourceFiles(rootDir: String): Array<File> =
+        fun sourceFiles(
+            rootDir: String,
+            binaryDir: File = File("${rootDir}.data/gamevals-binary"),
+        ): Array<File> =
             arrayOf(
-                Paths.get("${rootDir}.data", "gamevals-binary", "gamevals.dat").toFile(),
-                Paths.get("${rootDir}.data", "gamevals-binary", GeneratedGameVals.FILE_NAME).toFile(),
+                File(binaryDir, "gamevals.dat"),
+                File(binaryDir, GeneratedGameVals.FILE_NAME),
                 Paths.get("${rootDir}content").toFile(),
                 Paths.get("${rootDir}api").toFile(),
                 Paths.get("${rootDir}.data", "gamevals").toFile(),
@@ -39,9 +42,12 @@ class GameValProvider(
             GameValProvider().use(*sourceFiles(rootDir))
         }
 
-        fun loadIsolated(rootDir: String = ""): GameValProvider {
+        fun loadIsolated(
+            rootDir: String = "",
+            binaryDir: File = File("${rootDir}.data/gamevals-binary"),
+        ): GameValProvider {
             val provider = GameValProvider()
-            provider.load(*sourceFiles(rootDir))
+            provider.load(*sourceFiles(rootDir, binaryDir))
             return provider
         }
     }

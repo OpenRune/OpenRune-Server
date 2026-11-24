@@ -148,13 +148,13 @@ constructor(
         invTransmit(claimed(player))
         ifOpenMainModal(INTERFACE)
         runClientScript(INIT_SCRIPT, delves.currentLevel(player) - 1, if (player.lootClaimed) 1 else 0, 0)
-        ifSetEvents("$COMPONENT:btn_claim", 0..1, IfEvent.Op1)
-        ifSetEvents("$COMPONENT:btn_descend", 0..1, IfEvent.Op1)
-        ifSetEvents("$COMPONENT:btn_leave", 0..1, IfEvent.Op1)
-        ifSetEvents("$COMPONENT:btn_inv_all", 0..1, IfEvent.Op1)
-        ifSetEvents("$COMPONENT:btn_bank_all", 0..1, IfEvent.Op1)
+        ifSetEvents("component.dom_end_level_ui:btn_claim", 0..1, IfEvent.Op1)
+        ifSetEvents("component.dom_end_level_ui:btn_descend", 0..1, IfEvent.Op1)
+        ifSetEvents("component.dom_end_level_ui:btn_leave", 0..1, IfEvent.Op1)
+        ifSetEvents("component.dom_end_level_ui:btn_inv_all", 0..1, IfEvent.Op1)
+        ifSetEvents("component.dom_end_level_ui:btn_bank_all", 0..1, IfEvent.Op1)
         ifSetEvents(
-            "$COMPONENT:loot_contents",
+            "component.dom_end_level_ui:loot_contents",
             0..27,
             IfEvent.Op1,
             IfEvent.Op2,
@@ -176,7 +176,7 @@ constructor(
         if (player.lootClaimed) return
         val confirmed =
             confirmOverlay(
-                "$COMPONENT:dialogs",
+                "component.dom_end_level_ui:dialogs",
                 "Are you sure you want to claim your loot?",
                 "Claiming your loot early will <col=ffff00>forfeit your run</col>, not allowing you to proceed any further.",
                 "Cancel",
@@ -216,7 +216,7 @@ constructor(
 
     private fun ProtectedAccess.updateValue() {
         val value = total(earned(player)) + total(claimed(player))
-        ifSetText("$COMPONENT:loot_value", "Value: ${"%,d".format(value)} GP")
+        ifSetText("component.dom_end_level_ui:loot_value", "Value: ${"%,d".format(value)} GP")
     }
 
     private fun ProtectedAccess.total(inv: Inventory): Long =
@@ -227,7 +227,6 @@ constructor(
 
     private companion object {
         private const val INTERFACE = "interface.dom_end_level_ui"
-        private const val COMPONENT = "component.dom_end_level_ui"
         private const val EARNED_INV = "inv.dom_lootpile_during"
         private const val CLAIMED_INV = "inv.dom_lootpile"
         private const val INIT_SCRIPT = 7927

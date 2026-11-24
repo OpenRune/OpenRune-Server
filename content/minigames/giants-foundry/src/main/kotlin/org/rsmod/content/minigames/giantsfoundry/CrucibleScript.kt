@@ -363,7 +363,7 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
         const val CRUCIBLE_FULL = "loc.giants_foundry_crucible_full"
         const val POUR_SEQ = "seq.giants_foundry_crucible_pour01"
         const val POUR_PLAYER_SEQ = "seq.human_push"
-        const val POUR_SYNTH = "synth.giants_foundry_crucible_pour"
+        const val POUR_SYNTH = "synth.sg_crucible_pour_start"
         const val POUR_DELAY = 6
         const val QUEST_DIFFICULTY = 5
         const val QUEST_POUR_BRONZE = 10

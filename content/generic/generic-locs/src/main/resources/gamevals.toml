@@ -1,7 +1,18 @@
 [gamevals.dbtable]
 pickable_objects=65529
+lockpick_doors=65406
 
 [gamevals.dbrow]
+lockpick_door_ardougne_coin_chest=62600
+lockpick_door_ardougne_nature_chest=62601
+lockpick_door_ardougne_sewer_gate_l=62602
+lockpick_door_ardougne_sewer_gate_r=62603
+lockpick_door_chaos_druid_tower=62604
+lockpick_door_ardougne_castle=62605
+lockpick_door_magic_axe_hut=62606
+lockpick_door_pirates_hideout=62607
+lockpick_door_yanille_dungeon=62608
+lockpick_door_ham_trapdoor=62609
 pickable_potato=65361
 pickable_flax=65360
 pickable_banana=65359
@@ -23,14 +34,15 @@ water_source = 62516
 water_source_well = 62400
 water_source_tap = 62401
 water_source_pump = 62402
+auto_travel_up = 65400
+auto_travel_down = 65401
+auto_travel_option = 65402
+auto_travel_cross = 65403
+auto_trapdoor_closed = 65404
+auto_trapdoor_open = 65405
 
 [gamevals.enum]
 water_container_fills = 64402
-
-[gamevals.synth]
-drawer_open = 64
-fill_container = 2609
-fill_container_well = 2615
 
 [gamevals.queue]
 water_source_fill = 64400

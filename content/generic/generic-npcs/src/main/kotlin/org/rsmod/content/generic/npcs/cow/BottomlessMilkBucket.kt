@@ -134,7 +134,7 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
                     "mysteriously receive noted empty buckets back."
             )
         }
-        soundSynth("synth.bucket_pour")
+        soundSynth("synth.liquid")
         val poured = if (amount == 1) "a single bucket" else "${number(amount)} buckets"
         objbox(
             FILLED,
@@ -194,7 +194,7 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
             return
         }
         MilkSources.empty(inv, slot)
-        soundSynth("synth.bottomless_milk_bucket_discard")
+        soundSynth("synth.fishboss_empty_bucket")
         objbox(EMPTY, zoom = 400, "You discard the contents of your bottomless milk bucket.")
     }
 

@@ -309,14 +309,14 @@ internal class WardensObelisk(private val room: WardensEncounter) {
 
         val OPEN_SOUNDS =
             listOf(
-                "synth.toa_wardens_obelisk_open_1",
-                "synth.toa_wardens_obelisk_open_2",
-                "synth.crystal_sing",
-                "synth.toa_wardens_obelisk_open_4",
+                "synth.toa_wardens_square_thunder1_01",
+                "synth.toa_wardens_square_thunder2_01",
+                "synth.toa_wardens_square_thunder3_01",
+                "synth.toa_wardens_square_thunder4_01",
             )
-        const val SKULL_SOUND = "synth.toa_wardens_obelisk_skull"
-        const val SKULL_IMPACT_SOUND = "synth.toa_wardens_obelisk_skull_impact"
-        const val WINDMILL_SOUND = "synth.toa_wardens_obelisk_windmill"
+        const val SKULL_SOUND = "synth.toa_wardens_obelisk_red_thunder_projectile_falling_01"
+        const val SKULL_IMPACT_SOUND = "synth.toa_wardens_obelisk_red_thunder_projectile_fall_impact_02"
+        const val WINDMILL_SOUND = "synth.toa_wardens_red_tille_quarter_whoosh_01"
         const val SOUND_STEP = 30
         const val SOUND_RADIUS = 9
 

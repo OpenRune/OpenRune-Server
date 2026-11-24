@@ -1144,7 +1144,7 @@ constructor(
         const val PRAYER = "stat.prayer"
 
         const val KICK_SEQ = "seq.human_unarmedkick"
-        const val KICK_SYNTH = "synth.human_unarmedkick"
+        const val KICK_SYNTH = "synth.unarmed_kick"
         const val BED_BLOCK_SEQ = "seq.wom_bed_block"
         const val THING_UNDER_THE_BED = "npc.wom_bed_active"
         const val THING_DURATION = 200

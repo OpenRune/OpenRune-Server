@@ -126,3 +126,13 @@ denominator = 512
 weight = 1
 obj = "obj.mystic_fire_staff"
 count = 1
+
+[[main.separate_rolls]]
+numerator = 1
+denominator = 64
+boosted = true
+
+[[main.separate_rolls.entries]]
+weight = 1
+obj = "obj.air_diamond"
+count = 1

@@ -543,7 +543,7 @@ constructor(
         val eyeX = if (direction > 0) EYE_LEFT_X else EYE_RIGHT_X
         val eye = locRepo.findExact(resolve(session, CoordGrid(eyeX, base.z + 1)), LocShape.CentrepieceStraight)
             ?: return
-        deps.worldRepo.locAnim(eye, "$EYE_ROUSE_SEQ$coneIndex")
+        deps.worldRepo.locAnim(eye, EYE_ROUSE_SEQS[coneIndex - 1])
         deps.worldQueues.add(EXTREMITY_CONE_LIFESPAN + 1) { deps.worldRepo.locAnim(eye, EYE_IDLE_SEQ) }
     }
 
@@ -557,7 +557,8 @@ constructor(
         val tile = resolve(session, base)
         animateEye(session, base, coneIndex, direction)
         val coneType =
-            ServerCacheManager.getNpc("$EXTREMITY_CONE_NPC$coneIndex".asRSCM(RSCMType.NPC)) ?: return
+            ServerCacheManager.getNpc(EXTREMITY_CONE_NPCS[coneIndex - 1].asRSCM(RSCMType.NPC))
+                ?: return
         val cone = Npc(coneType, tile)
         cone.mode = NpcMode.None
         cone.respawnDir = if (direction > 0) Direction.East else Direction.West
@@ -739,7 +740,12 @@ constructor(
         private const val EXTREMITY_FACE_DZ = 2
         private const val EYE_LEFT_X = 3028
         private const val EYE_RIGHT_X = 3049
-        private const val EYE_ROUSE_SEQ = "seq.duke_door_eye_01_rouse_0"
+        private val EYE_ROUSE_SEQS =
+            listOf(
+                "seq.duke_door_eye_01_rouse_01",
+                "seq.duke_door_eye_01_rouse_02",
+                "seq.duke_door_eye_01_rouse_03",
+            )
         private const val EYE_IDLE_SEQ = "seq.duke_door_eye_01_asleep_idle_01"
         private const val EYE_WAKE_SEQ = "seq.duke_door_eye_01_wake_up_01"
         private const val EYE_AWAKE_SEQ = "seq.duke_door_eye_01_awake_idle_01"
@@ -749,7 +755,8 @@ constructor(
         private const val RESTART_VENT_DELAY = 15
         private const val EXTREMITY_LEFT_X = 3028
         private const val EXTREMITY_RIGHT_X = 3046
-        private const val EXTREMITY_CONE_NPC = "npc.duke_extremity_cone_"
+        private val EXTREMITY_CONE_NPCS =
+            listOf("npc.duke_extremity_cone_1", "npc.duke_extremity_cone_2", "npc.duke_extremity_cone_3")
         private const val EXTREMITY_HIT_MESSAGE = "<col=ff3045>You've been frozen in place!"
         private const val STUN_SPOTANIM = "spotanim.tob_bloat_stunned"
         private const val STUN_SPOTANIM_HEIGHT = 124
@@ -757,7 +764,7 @@ constructor(
         private const val EXTREMITY_FREEZE_SPOTANIM = "spotanim.ice_barrage_impact"
         private const val EXTREMITY_FREEZE_SPOTANIM_SLOT = 2
         private const val EXTREMITY_FREEZE_SYNTH = "synth.ice_cast"
-        private const val ICE_HIT_SYNTH = "synth.thieving_stunned"
+        private const val ICE_HIT_SYNTH = "synth.stunned"
         private const val EXTREMITY_FREEZE_TICKS = 9
         private val EXTREMITY_DAMAGE = 30..70
         private const val EXTREMITY_HIT_DELAY = 1

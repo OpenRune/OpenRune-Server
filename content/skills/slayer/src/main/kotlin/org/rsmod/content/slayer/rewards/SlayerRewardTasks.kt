@@ -64,7 +64,7 @@ internal object SlayerRewardTasks {
             return
         }
 
-        val varbit = RSCM.getReverseMapping(RSCMType.VARBIT,master.blockVarbits[slot])
+        val varbit = RSCM.getReverseMapping(RSCMType.VARBIT, master.blockVarbits[slot])
         if (!SlayerRewardsPoints.spendPoints(access.player, blockCost)) return
 
         VarPlayerIntMapSetter.set(access.player, varbit, access.vars["varp.slayer_target"])
@@ -83,7 +83,7 @@ internal object SlayerRewardTasks {
 
     private fun confirmUnblock(access: ProtectedAccess, slotIndex: Int) {
         val master = SlayerTaskManager.getFocusedMaster(access.player) ?: return
-        val varbit = RSCM.getReverseMapping(RSCMType.VARBIT,master.blockVarbits[slotIndex])
+        val varbit = RSCM.getReverseMapping(RSCMType.VARBIT, master.blockVarbits[slotIndex])
         if (access.vars[varbit] == 0) {
             access.mes("You don't have a Slayer task blocked in that slot.")
             return

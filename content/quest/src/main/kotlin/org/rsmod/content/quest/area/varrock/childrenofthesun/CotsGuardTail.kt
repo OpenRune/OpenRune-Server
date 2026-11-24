@@ -12,40 +12,48 @@ internal enum class TailResult {
 
 /**
  * The guard's path through south-east Varrock. Between the lookouts the guard walks one tile per
- * tick; at each lookout it stops, turns around and, once the turn has played out, spots anyone with
- * line of sight to him.
+ * tick; at each lookout it stops, turns around and, once the turn has played out, spots anyone in
+ * front of him with line of sight.
  */
 internal object CotsRoute {
     val Door: CoordGrid = CoordGrid(3259, 3400)
 
     private val Waypoints =
         listOf(
-            CoordGrid(3225, 3427),
-            CoordGrid(3227, 3429),
-            CoordGrid(3240, 3429),
-            CoordGrid(3240, 3417),
-            CoordGrid(3241, 3417),
-            CoordGrid(3241, 3416),
-            CoordGrid(3242, 3415),
-            CoordGrid(3242, 3404),
-            CoordGrid(3241, 3403),
-            CoordGrid(3241, 3402),
-            CoordGrid(3240, 3402),
-            CoordGrid(3236, 3398),
-            CoordGrid(3236, 3390),
-            CoordGrid(3248, 3390),
-            CoordGrid(3248, 3396),
-            CoordGrid(3254, 3396),
+            CoordGrid(3228, 3430),
+            CoordGrid(3236, 3430),
+            CoordGrid(3237, 3429),
+            CoordGrid(3239, 3429),
+            CoordGrid(3241, 3429),
+            CoordGrid(3242, 3428),
+            CoordGrid(3242, 3424),
+            CoordGrid(3243, 3423),
+            CoordGrid(3243, 3410),
+            CoordGrid(3242, 3409),
+            CoordGrid(3242, 3402),
+            CoordGrid(3241, 3401),
+            CoordGrid(3239, 3401),
+            CoordGrid(3237, 3401),
+            CoordGrid(3235, 3399),
+            CoordGrid(3235, 3390),
+            CoordGrid(3236, 3389),
+            CoordGrid(3248, 3389),
+            CoordGrid(3249, 3390),
+            CoordGrid(3249, 3396),
+            CoordGrid(3250, 3397),
+            CoordGrid(3253, 3397),
+            CoordGrid(3255, 3397),
             CoordGrid(3258, 3400),
+            CoordGrid(3259, 3400),
         )
 
     val Lookouts: List<CoordGrid> =
         listOf(
-            CoordGrid(3240, 3429),
-            CoordGrid(3242, 3404),
-            CoordGrid(3236, 3390),
-            CoordGrid(3248, 3390),
-            CoordGrid(3254, 3396),
+            CoordGrid(3239, 3429),
+            CoordGrid(3243, 3412),
+            CoordGrid(3239, 3401),
+            CoordGrid(3243, 3389),
+            CoordGrid(3253, 3397),
         )
 
     val Tiles: List<CoordGrid> = expand(Waypoints)
@@ -104,6 +112,13 @@ internal class GuardTail(
     val lookingAt: CoordGrid
         get() = route[(index - 1).coerceAtLeast(0)]
 
+    fun depart() {
+        if (route.size > 1) {
+            index = 1
+        }
+        enter(Phase.Walking)
+    }
+
     /** [at] is where the guard npc really stands; it lags [guard] until the npc takes its step. */
     fun tick(player: CoordGrid, at: CoordGrid = guard): TailResult {
         if (player.level != at.level || distance(at, player) > MaxDistance) {
@@ -137,13 +152,23 @@ internal class GuardTail(
     }
 
     private fun look(player: CoordGrid, at: CoordGrid): TailResult {
-        if (distance(at, player) <= SightRange && canSee(at, player)) {
+        val inFront = isInFront(at, player)
+        if (inFront && distance(at, player) <= SightRange && canSee(at, player)) {
             return TailResult.Spotted
         }
         if (++phaseTicks >= LookTicks) {
             enter(Phase.Walking)
         }
         return TailResult.Continue
+    }
+
+    private fun isInFront(at: CoordGrid, player: CoordGrid): Boolean {
+        val facing = lookingAt
+        val dx = player.x - at.x
+        val dz = player.z - at.z
+        val fx = facing.x - at.x
+        val fz = facing.z - at.z
+        return dx * fx + dz * fz > 0
     }
 
     private fun enter(next: Phase) {
@@ -156,9 +181,9 @@ internal class GuardTail(
 
     companion object {
         const val SetupTicks = 3
-        const val StopTicks = 2
+        const val StopTicks = 7
         const val TurnTicks = 2
-        const val LookTicks = 3
+        const val LookTicks = 5
         const val MaxDistance = 16
         const val SightRange = 16
     }

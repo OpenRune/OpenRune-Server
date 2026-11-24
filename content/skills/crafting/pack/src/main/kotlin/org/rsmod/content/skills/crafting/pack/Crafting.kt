@@ -1624,21 +1624,6 @@ object Crafting {
                 column(COL_SOUND, "synth.chisel")
             }
 
-            row("dbrow.crafting_bone_staff") {
-                production {
-                    category("Chisel")
-                    input("obj.rat_boss_spine")
-                    input("obj.battlestaff")
-                    input("obj.chaosrune", 1000)
-                    statReq("stat.crafting", 35)
-                    xp(0)
-                    output("obj.rat_bone_staff")
-                }
-                columnRSCM(COL_TRIGGERS, "obj.rat_boss_spine", "obj.battlestaff")
-                columnRSCM(COL_TOOL, "obj.chisel")
-                column(COL_SOUND, "synth.chisel")
-            }
-
             row("dbrow.crafting_accursed_sceptre") {
                 production {
                     category("Attach")

@@ -69,21 +69,21 @@ internal constructor(
         }
         onOpLoc1(CHEST_LOC) { with(loot) { openChest() } }
 
-        onIfModalButton("$END_LEVEL:btn_claim") { with(loot) { claim() } }
-        onIfModalButton("$END_LEVEL:btn_descend") {
+        onIfModalButton("component.dom_end_level_ui:btn_claim") { with(loot) { claim() } }
+        onIfModalButton("component.dom_end_level_ui:btn_descend") {
             if (player.lootClaimed) return@onIfModalButton
             with(loot) { closeEndLevel() }
             descend()
         }
-        onIfModalButton("$END_LEVEL:btn_leave") {
+        onIfModalButton("component.dom_end_level_ui:btn_leave") {
             if (!player.lootClaimed) return@onIfModalButton
             with(loot) { closeEndLevel() }
             if (manager.sessionForPlayer(player) == null) return@onIfModalButton
             defaultLeaveFlow()
         }
-        onIfModalButton("$END_LEVEL:btn_inv_all") { with(loot) { takeAll(inv) } }
-        onIfModalButton("$END_LEVEL:btn_bank_all") { with(loot) { takeAll(bank) } }
-        onIfModalButton("$END_LEVEL:loot_contents") {
+        onIfModalButton("component.dom_end_level_ui:btn_inv_all") { with(loot) { takeAll(inv) } }
+        onIfModalButton("component.dom_end_level_ui:btn_bank_all") { with(loot) { takeAll(bank) } }
+        onIfModalButton("component.dom_end_level_ui:loot_contents") {
             with(loot) {
                 when (it.op) {
                     IfButtonOp.Op1 -> take(it.comsub, 1)
@@ -143,7 +143,6 @@ internal constructor(
         private const val HOLE_LOC = "loc.dom_descend_hole"
         private const val UNIQUE_HOLE_LOC = "loc.dom_descend_hole_unique"
         private const val CHEST_LOC = "loc.dom_chest_loot"
-        private const val END_LEVEL = "component.dom_end_level_ui"
         private const val JUMP_MESSAGE = "You jump the gap..."
         private const val DESCEND_MESSAGE = "You jump further into the burrow..."
         private const val NPC_VIEW_DISTANCE = 32

@@ -226,8 +226,8 @@ class WardensSecondEncounter(
         private val SIPHON_THRESHOLDS = listOf(0.8, 0.6, 0.4, 0.2)
         private const val ENRAGE_FRACTION = 0.05
         private const val WARDEN_BUSY = "You can't attack the warden right now."
-        private const val COMPLETE_JINGLE = "jingle.grumpy"
-        private const val COMPLETE_MUSIC = "midi.toa_laid_to_rest"
+        private const val COMPLETE_JINGLE = "jingle.arena_wave_complete"
+        private const val COMPLETE_MUSIC = "midi.toa_victory"
         private const val MUSIC_DELAY = 2
         private const val CRYSTAL_DELAY = 13
         private const val PHANTOM_CLEAR_DELAY = 3

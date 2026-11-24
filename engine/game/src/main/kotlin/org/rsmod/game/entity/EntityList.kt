@@ -6,25 +6,45 @@ public abstract class EntityList<T>(
     initialLastSlotUsed: Int = 0,
 ) : Iterable<T> {
     private val entries: MutableList<T?> = MutableList(capacity) { null }
+    private val reserved = BooleanArray(capacity)
     private var lastUsedSlot = initialLastSlotUsed
 
     public fun nextFreeSlot(): Int? {
         val startSlot = lastUsedSlot + 1
 
         for (slot in startSlot until capacity) {
-            if (this[slot] == null) {
+            if (isFree(slot)) {
                 return slot
             }
         }
 
         for (slot in slotPadding until startSlot) {
-            if (this[slot] == null) {
+            if (isFree(slot)) {
                 return slot
             }
         }
 
         return null
     }
+
+    public fun reserveHighestFree(): Int? {
+        for (slot in capacity - 1 downTo slotPadding) {
+            if (isFree(slot)) {
+                reserved[slot] = true
+                return slot
+            }
+        }
+        return null
+    }
+
+    public fun unreserve(slot: Int) {
+        assertSlot(slot)
+        reserved[slot] = false
+    }
+
+    public fun isReserved(slot: Int): Boolean = reserved.getOrElse(slot) { false }
+
+    private fun isFree(slot: Int): Boolean = this[slot] == null && !reserved[slot]
 
     public fun remove(slot: Int) {
         assertSlot(slot)
@@ -33,6 +53,7 @@ public abstract class EntityList<T>(
 
     public operator fun set(slot: Int, entity: T) {
         assertSlot(slot)
+        check(!reserved[slot]) { "Slot $slot is reserved." }
         lastUsedSlot = slot
         entries[slot] = entity
     }

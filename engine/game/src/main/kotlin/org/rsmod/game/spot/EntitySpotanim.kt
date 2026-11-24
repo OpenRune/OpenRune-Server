@@ -14,12 +14,19 @@ public value class EntitySpotanim(public val packed: Long) {
     public val slot: Int
         get() = ((packed shr SLOT_BIT_OFFSET) and SLOT_BIT_MASK).toInt()
 
+    public val loop: Boolean
+        get() = packed and Long.MIN_VALUE != 0L
+
+    public constructor(id: Int, delay: Int, height: Int, slot: Int) :
+        this(id, delay, height, slot, loop = false)
+
     public constructor(
         id: Int,
         delay: Int,
         height: Int,
         slot: Int,
-    ) : this(pack(id, delay, height, slot))
+        loop: Boolean,
+    ) : this(pack(id, delay, height, slot) or (if (loop) Long.MIN_VALUE else 0L))
 
     public operator fun component1(): Int = id
 
@@ -30,13 +37,13 @@ public value class EntitySpotanim(public val packed: Long) {
     public operator fun component4(): Int = slot
 
     override fun toString(): String =
-        "EntitySpotanim(id=$id, delay=$delay, height=$height, slot=$slot)"
+        "EntitySpotanim(id=$id, delay=$delay, height=$height, slot=$slot, loop=$loop)"
 
     public companion object {
         public const val ID_BIT_COUNT: Int = 16
         public const val DELAY_BIT_COUNT: Int = 16
         public const val HEIGHT_BIT_COUNT: Int = 16
-        public const val SLOT_BIT_COUNT: Int = 16
+        public const val SLOT_BIT_COUNT: Int = 15
 
         public const val ID_BIT_OFFSET: Int = 0
         public const val DELAY_BIT_OFFSET: Int = ID_BIT_OFFSET + ID_BIT_COUNT

@@ -312,12 +312,12 @@ internal class MisthalinCutscenes(
             mandySays(mandy, sad, "Why am I the one who is always left clearing up after everyone?")
 
             noise.say("*shuffle*")
-            sound("synth.tree_rustle_01")
+            sound("synth.tree_rustle_1")
             mandySays(mandy, quiz, "Hello? Anyone there?")
 
             noise.telejump(r[MandyNoiseNorth])
             noise.say("*rustle*")
-            sound("synth.tree_rustle_02")
+            sound("synth.tree_rustle_2")
             mandySays(mandy, quiz, "Hello? Lacey? Sid?")
 
             noise.telejump(r[MandyNoiseKitchen])

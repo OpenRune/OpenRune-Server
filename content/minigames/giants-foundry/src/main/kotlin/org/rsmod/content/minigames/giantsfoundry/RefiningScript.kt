@@ -1,5 +1,7 @@
 package org.rsmod.content.minigames.giantsfoundry
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.game.process.GameLifecycle
@@ -332,7 +334,7 @@ constructor(
         }
         when {
             mistake -> player.soundSynth(MISTAKE_SYNTH)
-            !bonus -> player.soundSynth(tool.row.synth)
+            !bonus -> player.soundSynth(RSCM.getReverseMapping(RSCMType.SYNTH,tool.row.synth))
         }
         if (armed) {
             player.showSweetSpot(SWEETSPOT_NONE)
@@ -419,14 +421,14 @@ constructor(
         const val HEAT_SEQ = "seq.human_pickupfloor"
         const val COOL_SEQ = "seq.human_pickuptable"
 
-        const val LAVA_SYNTH = "synth.giants_foundry_lava_pool"
-        const val WATERFALL_SYNTH = "synth.giants_foundry_waterfall"
+        const val LAVA_SYNTH = "synth.100_sizzle_gloves"
+        const val WATERFALL_SYNTH = "synth.100_underwater_pick"
         const val MISTAKE_SYNTH = "synth.glassblowing"
-        const val SWEETSPOT_SYNTH = "synth.cowbell_amulet_ring"
-        const val FINISH_SYNTH = "synth.giants_foundry_sword_finished"
-        const val TRIP_HAMMER_LOOP_SYNTH = "synth.giants_foundry_trip_hammer_loop"
-        const val AMBIENT_1_SYNTH = "synth.giants_foundry_ambient_1"
-        const val AMBIENT_2_SYNTH = "synth.giants_foundry_ambient_2"
+        const val SWEETSPOT_SYNTH = "synth.bell"
+        const val FINISH_SYNTH = "synth.blade4_5"
+        const val TRIP_HAMMER_LOOP_SYNTH = "synth.sg_big_hammer_hit"
+        const val AMBIENT_1_SYNTH = "synth.sg_grindstone_loop"
+        const val AMBIENT_2_SYNTH = "synth.sg_polishwheel_loop"
         const val AMBIENT_PERIOD = 2
         const val AMBIENT_RADIUS = 12
 

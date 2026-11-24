@@ -56,7 +56,7 @@ class MiningGuildLocScript @Inject constructor(private val locRepo: LocRepositor
     private companion object {
         const val OPEN_DOOR = "loc.inactivepoordoor"
         const val DOOR_OPEN_CYCLES = 2
-        const val DOOR_SOUND = 81
+        const val DOOR_SOUND = "synth.nicedoor_open"
         const val UNDERGROUND_OFFSET = 6400
         const val DOOR_DWARF = "npc.mguild_dwarf1"
         const val LADDER_DWARF = "npc.mguild_dwarf2"

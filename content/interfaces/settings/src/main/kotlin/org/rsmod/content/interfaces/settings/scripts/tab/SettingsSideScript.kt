@@ -49,7 +49,7 @@ class SettingsSideScript @Inject constructor(private val protectedAccess: Protec
                 else -> return
             }
         ClientScripts.toplevelSidebuttonSwitch(this, 11)
-        soundSynth("synth.interface_select")
+        soundSynth("synth.interface_select1")
     }
 }
 
