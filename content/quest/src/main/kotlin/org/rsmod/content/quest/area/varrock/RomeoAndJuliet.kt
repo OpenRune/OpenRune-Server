@@ -3,6 +3,7 @@ package org.rsmod.content.quest.area.varrock
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.MesAnimType
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.outgoing.camera.CamShake
 import org.rsmod.api.invtx.add
@@ -14,11 +15,13 @@ import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
+import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpHeld1
@@ -35,6 +38,7 @@ import org.rsmod.content.quest.area.misthalin.SceneRegion
 import org.rsmod.content.quest.area.misthalin.lockedScene
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestScript
+import org.rsmod.content.quest.manager.chooseLampSkill
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.content.quest.manager.rewards
 import org.rsmod.content.quest.manager.startQuestPrompt
@@ -51,6 +55,7 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
 private var Player.julietVisible by intVarBit("varbit.romjul_juliet_visible")
 private var Player.tailoredBush by intVarBit("varbit.cadavabush")
 private var Player.sceneReturnTile by intVarp("varp.romeo_juliet_return_tile")
+private var Player.lampUsed by intVarBit("varbit.randj_lamp_used")
 
 class RomeoAndJuliet
 @Inject
@@ -60,17 +65,19 @@ constructor(
     private val locRepo: LocRepository,
     private val regionRepo: RegionRepository,
     private val collision: CollisionFlagMap,
+    private val random: GameRandom,
 ) :
     QuestScript(
         "quest_romeoandjuliet",
         "varp.rjquest",
-        rewards {},
+        rewards { extra("An Antique Lamp") },
         ItemRewardDisplay(POTION),
         questVarbit = "varbit.romeo_juliet_progress",
     ) {
 
     // Released on login too; removal may bypass the scene finally block.
     private val sceneRegions = HashMap<Long, Region>()
+    private val npcCues = HashMap<Npc, ArrayDeque<Pair<Int, Npc.() -> Unit>>>()
 
     override fun ScriptContext.init() {
         check(quest.maxSteps == COMPLETE) {
@@ -82,6 +89,9 @@ constructor(
             discardLeakedRegion(player)
             syncJuliet(player)
         }
+        for (actor in CUE_ACTORS) onAiTimer(actor) { npc.runCue() }
+        onAiTimer("npc.romeo_juliet_pew_sleeping_man") { npc.snore() }
+        onAiTimer("npc.romeo_juliet_pew_sleeping_woman") { npc.snore() }
         onOpNpc1("npc.romeo") { startDialogue(it.npc) { romeo() } }
         onOpNpcU("npc.romeo") {
             if (it.objType.internalName == MESSAGE && stage(player) > MESSAGE_GIVEN) {
@@ -110,7 +120,7 @@ constructor(
             }
         }
         for (potion in ApothecaryPotionsRow.all()) {
-            onIfModalButton("component.apothecary_potions:${potion.key}") { brew(potion) }
+            onIfModalButton("component.apothecary_potions:${potion.key}") { buy(potion, it.op) }
         }
         onOpHeld1(POTION) {
             objbox(
@@ -120,6 +130,7 @@ constructor(
             )
         }
         onOpHeld2(POTION) { drinkPotion() }
+        onOpHeld1(LAMP) { rubLamp() }
     }
 
     override fun subTitle(): String =
@@ -148,7 +159,7 @@ constructor(
             strike("I delivered the message to Romeo, and he was sad to hear that Juliet's father opposed their marriage. However, he said that Father Lawrence might be able to overcome this.")
             if (stage < SPOKEN_TO_APOTHECARY) {
                 line("I found Father Lawrence and he suggested the use of a potion to fool Juliet's father that she is dead so that Romeo and Juliet can be together in peace.")
-                line("I should ask the <red>Apothecary</red> in <red>south-west Varrock</red> to make a <red>cadava potion</red>.")
+                line("I need to find the <red>Apothecary</red> to make a <red>cadava potion</red>. Maybe <red>Romeo</red> will know where the <red>Apothecary</red> is.")
                 return@questJournal
             }
             strike("I found Father Lawrence and he suggested the use of a potion to fool Juliet's father that she is dead so that Romeo and Juliet can be together in peace.")
@@ -162,8 +173,8 @@ constructor(
                 return@questJournal
             }
             strike("I went to the Apothecary regarding making this cadava potion, and he told me to bring him some cadava berries.")
-            line("Juliet drank the cadava potion and has been taken to the crypt.")
-            line("I should tell <red>Romeo</red> to go and collect her.")
+            strike("After the Apothecary made me the potion, I delivered it to Juliet. She asked me to tell Romeo the plan.")
+            line("I have to find <red>Romeo</red> and tell him what's happened.")
         }
 
     override fun completedLog(player: ProtectedAccess): String =
@@ -198,11 +209,37 @@ constructor(
             SPOKEN_TO_LAWRENCE -> romeoAfterLawrence()
             SPOKEN_TO_APOTHECARY -> romeoPotion()
             POTION_GIVEN -> romeoCrypt()
-            else -> {
-                chatNpc(sad, "I heard Juliet had died. Terrible business.")
-                chatNpc(happy, "Her cousin and I are getting on well though. Thanks for your help.")
-            }
+            else -> if (canReclaimLamp()) romeoLamp() else romeoPostQuest()
         }
+    }
+
+    private suspend fun Dialogue.romeoPostQuest() {
+        chatNpc(sad, "I heard Juliet had died. Terrible business.")
+        chatNpc(happy, "Her cousin and I are getting on well though. Thanks for your help.")
+    }
+
+    private fun Dialogue.canReclaimLamp(): Boolean =
+        player.lampUsed == 0 && access.inv.count(LAMP) == 0 && access.bank.count(LAMP) == 0
+
+    private suspend fun Dialogue.romeoLamp() {
+        chatNpc(
+            happy,
+            "I heard Juliet had died. Terrible business. Her cousin and I are getting on well " +
+                "though. Here, take this as thanks for your help.",
+        )
+        if (access.invAdd(access.inv, LAMP).failure) {
+            mesbox("You don't have enough inventory space.")
+        }
+    }
+
+    private suspend fun ProtectedAccess.rubLamp() {
+        val stat = chooseLampSkill(LAMP_TITLE) ?: return
+        if (invDel(inv, LAMP).failure) {
+            return
+        }
+        player.lampUsed = 1
+        statAdvance(stat, LAMP_XP)
+        mes("Your wish has been granted!")
     }
 
     private suspend fun Dialogue.romeoStart() {
@@ -790,13 +827,11 @@ constructor(
                 "suggestion...",
         )
         chatNpc(angry, "Ok...if this is the best we can do...hand over the potion!")
-        if (access.invDel(access.inv, POTION).failure) return
-        quest.setQuestStage(access, POTION_GIVEN)
         objbox(POTION, "You pass the suspicious potion to Juliet.")
         chatNpc(angry, "Wonderful! I just hope Romeo can remember to get me from the crypt.")
         chatNpc(
             confused,
-            "Please go to Romeo and make sure he understands. Although I love his gormless, " +
+            " Please go to Romeo and make sure he understands. Although I love his gormless, " +
                 "lovelorn soppy ways, he can be a bit dense sometimes and I don't want to wake up " +
                 "in that crypt on my own.",
         )
@@ -832,6 +867,7 @@ constructor(
             juliet.anim("seq.human_drink_from_vial_cadava")
             access.soundSynth(DRINK_SYNTH)
             access.delay(2)
+            cue(juliet, step(1) { facePlayer(player) })
             chatJuliet(shocked, "Urk!")
             access.ifCloseChat()
             access.delay(1)
@@ -867,6 +903,10 @@ constructor(
             access.faceSquare(r[CUTSCENE_PHILLIPA])
             chatPhillipa(sad, "Poor Juliet...make preparations for her body to be placed in the Crypt...")
             access.ifCloseChat()
+            if (access.invDel(access.inv, POTION).success) {
+                quest.setQuestStage(access, POTION_GIVEN)
+                syncJuliet(player)
+            }
         }
     }
 
@@ -942,11 +982,19 @@ constructor(
             access.delay(1)
             romeo.telejump(collision, r[ROMEO_WALK_START])
             access.cut(r, ROMEO_SHOT)
-            romeo.walk(ROMEO_PATH.map { r[it] }) { romeo.faceSquare(r[ROMEO_GAZE]) }
-            access.delay(9)
+            cue(
+                romeo,
+                *ROMEO_LEGS.map { (wait, leg) -> step(wait) { walk(leg.map { r[it] }) } }.toTypedArray(),
+                step(ROMEO_GAZE_WAIT) { faceSquare(r[ROMEO_GAZE]) },
+            )
+            access.delay(PHILLIPA_ENTRY_TICKS)
             val phillipa = spawn("npc.phillipa", r[CRYPT_PHILLIPA], facing = null, actors)
-            phillipa.walk(PHILLIPA_PATH.map { r[it] }) { phillipa.faceSquare(r[ROMEO_END]) }
-            access.delay(4)
+            cue(
+                phillipa,
+                *PHILLIPA_LEGS.map { (wait, leg) -> step(wait) { walk(leg.map { r[it] }) } }.toTypedArray(),
+                step(PHILLIPA_FACE_WAIT) { faceSquare(r[ROMEO_END]) },
+            )
+            access.delay(ROMEO_LINE_TICKS - PHILLIPA_ENTRY_TICKS)
             access.faceSquare(r[ROMEO_END])
             chatRomeo(worried, "Hey...Juliet...")
             chatRomeo(neutral, "Juliet....?")
@@ -962,7 +1010,8 @@ constructor(
             chatRomeo(happy, "Who's Juliet?")
             access.ifCloseChat()
         }
-        quest.setQuestStage(access, COMPLETE)
+        access.delay(COMPLETION_DELAY_TICKS)
+        quest.setQuestStage(access, COMPLETE) { if (player.lampUsed == 0) invAdd(inv, LAMP) }
         syncJuliet(player)
     }
 
@@ -1035,8 +1084,34 @@ constructor(
         return npc
     }
 
+    private fun step(wait: Int, action: Npc.() -> Unit): Pair<Int, Npc.() -> Unit> = wait to action
+
+    private fun cue(npc: Npc, vararg steps: Pair<Int, Npc.() -> Unit>) {
+        npcCues[npc] = ArrayDeque(steps.toList())
+        npc.aiTimer(steps.first().first)
+    }
+
+    private fun Npc.snore() {
+        spotanim("spotanim.troll_zeds")
+        aiTimer(random.of(SNORE_TICKS))
+    }
+
+    private fun Npc.runCue() {
+        val steps = npcCues[this] ?: return
+        val (_, action) = steps.removeFirst()
+        action()
+        val next = steps.firstOrNull()
+        if (next == null) {
+            npcCues.remove(this)
+            aiTimer(0)
+        } else {
+            aiTimer(next.first)
+        }
+    }
+
     private fun despawn(actors: MutableList<Npc>) {
         for (npc in actors) {
+            npcCues.remove(npc)
             if (npc.isSlotAssigned) {
                 npcRepo.del(npc, Int.MAX_VALUE)
             }
@@ -1119,7 +1194,7 @@ constructor(
             }
             else ->
                 chatNpc(
-                    happy,
+                    neutral,
                     "Hello, I seem to be getting on really well with that dashing lovely dovely, " +
                         "Romeo. Pity about poor Juliet - she missed out there I reckon!",
                 )
@@ -1375,13 +1450,13 @@ constructor(
                 chatPlayer(neutral, "Ok, that's as good a place to start looking as any.")
             }
             else -> {
-                chatNpc(drunk, "Oh to be a father in the times of whiskey.")
-                chatNpc(drunk, "I sing and I drink and I wake up in gutters.")
+                chatNpc(happy, "Oh to be a father in the times of whiskey.")
+                chatNpc(happy, "I sing and I drink and I wake up in gutters.")
                 if (access.random.of(0, 1) == 0) {
-                    chatNpc(drunk, "Top of the morning to you.")
+                    chatNpc(happy, "Top of the morning to you.")
                 } else {
-                    chatNpc(drunk, "To err is human, to forgive, quite difficult.")
-                    chatNpc(drunk, "I need a think I drink.")
+                    chatNpc(happy, "To err is human, to forgive, quite difficult.")
+                    chatNpc(happy, "I need a think I drink.")
                 }
             }
         }
@@ -1441,20 +1516,21 @@ constructor(
         chatNpc(angry, "Can't you see that I'm in the middle of a sermon?!")
         chatPlayer(angry, "But Romeo sent me!")
         chatNpc(angry, "But I'm busy delivering a sermon to my congregation!")
-        access.camMoveTo(SERMON_CAMERA, height = 325, rate = 100, rate2 = 100)
-        access.camLookAt(SERMON_LOOK, height = 25, rate = 100, rate2 = 100)
-        chatNpcSpecific(
+        access.camMoveToV3(SERMON_CAMERA, height = 325, rate = 100, rate2 = 100)
+        access.camLookAtV3(SERMON_LOOK, height = 25, rate = 100, rate2 = 100)
+        chatNpcSpecificNp(
             "Congregation",
             "npc.romeo_juliet_pew_sleeping_man",
             mesanim("mesanim.sleep"),
             "Zzzzzzzzz",
         )
+        access.delay(5)
         access.say("Yes, well, it certainly seems")
         access.delay(2)
         access.say("like you have a captive")
         access.delay(2)
         access.say("audience!")
-        chatPlayer(bored, "Yes, well, it certainly seems like you have a captive audience!")
+        access.delay(5)
         access.camReset()
         chatNpc(
             confused,
@@ -1651,8 +1727,8 @@ constructor(
         val handOver =
             "You hand over the berries, which the Apothecary shakes up in a vial of strange liquid."
         objbox(BERRIES, handOver)
-        if (access.invReplace(access.inv, BERRIES, 1, POTION).failure) return
         chatNpc(happy, "Phew! Here is what you need.")
+        if (access.invReplace(access.inv, BERRIES, 1, POTION).failure) return
         objbox(POTION, "The Apothecary gives you a Cadava potion.")
     }
 
@@ -1686,11 +1762,31 @@ constructor(
     private fun strikeUnless(has: Boolean, text: String): String =
         if (has) text else "<str>$text</str>"
 
-    private fun ProtectedAccess.brew(potion: ApothecaryPotionsRow) {
+    private suspend fun ProtectedAccess.buy(potion: ApothecaryPotionsRow, op: IfButtonOp) {
         if (!hasIngredients(potion)) {
             mes("You haven't got the required items.")
             return
         }
+        val count =
+            when (op) {
+                IfButtonOp.Op1 -> 1
+                IfButtonOp.Op2 -> 5
+                IfButtonOp.Op3 -> countDialog()
+                IfButtonOp.Op4 -> Int.MAX_VALUE
+                else -> return
+            }
+        var brewed = 0
+        while (brewed < count && hasIngredients(potion)) {
+            if (!brew(potion)) break
+            brewed++
+        }
+        if (brewed > 0) {
+            mes("The Apothecary brews you ${potion.article} ${potion.title.lowercase()}.")
+        }
+        openPotions()
+    }
+
+    private fun ProtectedAccess.brew(potion: ApothecaryPotionsRow): Boolean {
         val result =
             player.invTransaction(inv) {
                 val target = select(inv)
@@ -1704,10 +1800,9 @@ constructor(
             }
         if (!result.success) {
             mes("You don't have enough inventory space.")
-            return
+            return false
         }
-        mes("The Apothecary brews you ${potion.article} ${potion.title.lowercase()}.")
-        openPotions()
+        return true
     }
 
     private suspend fun ProtectedAccess.drinkPotion() {
@@ -1775,14 +1870,20 @@ constructor(
         const val POTION = "obj.cadava"
         const val BERRIES = "obj.cadavaberries"
         const val COINS = "obj.coins"
+        const val LAMP = "obj.randj_lamp"
+        const val LAMP_XP = 500.0
+        const val LAMP_TITLE = "Choose the stat you wish to be advanced!"
 
         const val POTION_JINGLE = "jingle.juliet_dies_jingle"
         const val CRYPT_JINGLE = "jingle.romeo_cutscene"
-        const val DRINK_SYNTH = "synth.bucket_pour"
+        const val DRINK_SYNTH = "synth.liquid"
         const val COLLAPSE_SYNTH = "synth.female_death"
         const val CRYPT_ENTER_SYNTH = "synth.trek_walkaway"
         const val CRYPT_DOOR_SYNTH = "synth.trek_walktoward"
         const val CUTSCENE_NPC_TICKS = 6000
+
+        val CUE_ACTORS = listOf("npc.juliet", "npc.romeo", "npc.phillipa")
+        val SNORE_TICKS = 11..19
 
         const val JULIET_VISIBLE = 0
         const val JULIET_HIDDEN = 1
@@ -1888,24 +1989,24 @@ constructor(
                 SceneCamera(CoordGrid(2324, 4644, 0), 250, CRYPT_JULIET, 200, rate = 5, rate2 = 5) to
                     7,
             )
-        val ROMEO_PATH =
+        const val COMPLETION_DELAY_TICKS = 3
+        const val ROMEO_GAZE_WAIT = 2
+        const val PHILLIPA_ENTRY_TICKS = 9
+        const val PHILLIPA_FACE_WAIT = 2
+        const val ROMEO_LINE_TICKS = 13
+
+        val ROMEO_LEGS =
             listOf(
-                CoordGrid(2329, 4645, 0),
-                CoordGrid(2328, 4645, 0),
-                CoordGrid(2327, 4645, 0),
-                CoordGrid(2326, 4644, 0),
-                CoordGrid(2325, 4644, 0),
-                CoordGrid(2324, 4643, 0),
-                ROMEO_END,
+                1 to listOf(CoordGrid(2329, 4645, 0)),
+                3 to listOf(CoordGrid(2328, 4645, 0), CoordGrid(2327, 4645, 0)),
+                3 to listOf(CoordGrid(2326, 4644, 0), CoordGrid(2325, 4644, 0)),
+                3 to listOf(CoordGrid(2324, 4643, 0), ROMEO_END),
             )
-        val PHILLIPA_PATH =
+        val PHILLIPA_LEGS =
             listOf(
-                CoordGrid(2330, 4645, 0),
-                CoordGrid(2329, 4645, 0),
-                CoordGrid(2328, 4645, 0),
-                CoordGrid(2327, 4645, 0),
-                CoordGrid(2326, 4644, 0),
-                PHILLIPA_END,
+                1 to listOf(CoordGrid(2330, 4645, 0), CoordGrid(2329, 4645, 0)),
+                3 to listOf(CoordGrid(2328, 4645, 0), CoordGrid(2327, 4645, 0)),
+                3 to listOf(CoordGrid(2326, 4644, 0), PHILLIPA_END),
             )
     }
 }
