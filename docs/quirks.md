@@ -176,3 +176,39 @@ the Falador park gardener (rev 235) and Hector's chest (rev 232). Known differen
 - Taking the white apron in Gerrant's shop is an ordinary ground item pickup, without the
   "freshly starched" message.
 - Chathead expressions for Frank, Luthas, Wydin and the customs officer are chosen by hand.
+
+## Mudfoot's Big Adventure
+
+Built from an RSProx capture of the whole quest on a fresh account (rev 242.1), with the OSRS
+wiki for branches the capture does not take. Known differences:
+
+- The fights and the General Store scene run in instanced copies of the area, as in OSRS, but
+  only the scene's own npcs are spawned there: the sheep, farmers and shop staff that OSRS
+  copies in are left out.
+- Mudfoot's attacks on the outlaws are scripted (every 4 ticks, stab or thrown rock, rolled with
+  the npc-vs-npc formulas): the engine has no npc-vs-npc combat.
+- The outlaws use the generic npc combat, with their launch, cast and impact spotanims added by
+  an attack hook. Hit timings follow that combat code rather than the capture's exact delays.
+- When the warrior goes 12 ticks without attacking the player (as in the capture, after the
+  player runs off) while Mudfoot stands beside him, he turns on Mudfoot for the rest of the
+  fight. His hits are capped so Mudfoot keeps at least 1 hitpoint; the capture never shows
+  Mudfoot near death.
+- Mudfoot shouts "Look! There she is!" and "Look! That him!" when the player confronts the
+  outlaw, instead of a few ticks earlier as they come into view.
+- The mage's "H.A.M. will get rid of people like you!" fires on her first damage rather than on
+  the player's first attack.
+- Npcs other than Captain Harlan do not react to Mudfoot following the player.
+- Mudfoot waits for the player beside the outlaw in the woods and in the graveyard; the capture
+  never shows those spots, so the tiles are chosen to match where he reappears after each fight.
+- Lines with no capture source, written from the wiki's summary: Captain Harlan's combat advice,
+  the guards answer, "I'm still looking into it." about the thieves, the weapon offer and the
+  "Captain Harlan gives you..." handout box, the "already have" lines for the bow and staff, the
+  full-inventory line before the reward, and Mudfoot's "Me meet you back..." waiting spot names.
+- Captain Harlan's Defence cape: the wiki transcript has no lines for a purchase or a missing
+  hood, so those use the lines other skillcape sellers give ("Excellent! Wear that cape with pride
+  my friend.", "Well, come back and see me when you do.", the free-hood space line). "Of course!
+  Here you go." for a spare hood is written to match. The option shows only at 99 Defence, as the
+  captured level 3 account never saw it.
+- Captain Harlan's one free handout per style during the quest uses the `bonus_*_giveaway`
+  varbits as "already given"; after that every handout shares the 30 minute cooldown.
+- Chathead expressions outside the captured dialogue are chosen by hand.

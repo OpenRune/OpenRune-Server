@@ -1,0 +1,161 @@
+[[varp]]
+isServerOnly = true
+id = "varp.mba_return_tile"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.mba_weapon_claim_minute"
+scope = "Perm"
+transmit = "Never"
+
+[[mesanim]]
+id = "mesanim.mba_disgruntled"
+len1 = "seq.chat_disgruntled"
+len2 = "seq.chat_disgruntled"
+len3 = "seq.chat_disgruntled"
+len4 = "seq.chat_disgruntled"
+
+[[mesanim]]
+id = "mesanim.mba_suspecting"
+len1 = "seq.chat_suspecting"
+len2 = "seq.chat_suspecting"
+len3 = "seq.chat_suspecting"
+len4 = "seq.chat_suspecting"
+
+[[mesanim]]
+id = "mesanim.mba_confused_idle"
+len1 = "seq.chatcon_idle"
+len2 = "seq.chatcon_idle"
+len3 = "seq.chatcon_idle"
+len4 = "seq.chatcon_idle"
+
+[[npc]]
+isServerOnly = true
+id = "npc.captain_harlan"
+inherit = "npc.captain_harlan"
+wanderRange = 2
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_mudfoot_ruined_building"
+inherit = "npc.mba_mudfoot_ruined_building"
+wanderRange = 2
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_mudfoot_windmill"
+inherit = "npc.mba_mudfoot_windmill"
+wanderRange = 0
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_mudfoot_woods"
+inherit = "npc.mba_mudfoot_woods"
+wanderRange = 0
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_mudfoot_graveyard"
+inherit = "npc.mba_mudfoot_graveyard"
+wanderRange = 0
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_outlaw_ranged_general_store"
+inherit = "npc.mba_outlaw_ranged_general_store"
+wanderRange = 0
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_outlaw_ranged_windmill"
+inherit = "npc.mba_outlaw_ranged_windmill"
+wanderRange = 0
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_outlaw_magic_woods"
+inherit = "npc.mba_outlaw_magic_woods"
+wanderRange = 1
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_outlaw_melee_graveyard"
+inherit = "npc.mba_outlaw_melee_graveyard"
+wanderRange = 2
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_outlaw_ranged_combat"
+inherit = "npc.mba_outlaw_ranged_combat"
+respawnRate = 0
+moveRestrict = "NoMove"
+attackRange = 7
+maxRange = 16
+[npc.params]
+"param.attack_anim" = "seq.human_bow"
+"param.defend_anim" = "seq.human_unarmed_def"
+"param.death_anim" = "seq.human_death"
+"param.attack_sound" = "synth.arrowlaunch2"
+"param.defend_sound" = "synth.human_hit"
+"param.death_sound" = "synth.human_death"
+"param.npc_attack_type" = "category.attacktype_light"
+"param.proj_type" = "projanim.arrow"
+"param.proj_travel" = "spotanim.bronze_arrow_travel"
+"param.attackrate" = 4
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_outlaw_magic_combat"
+inherit = "npc.mba_outlaw_magic_combat"
+respawnRate = 0
+moveRestrict = "NoMove"
+attackRange = 10
+maxRange = 16
+[npc.params]
+"param.attack_anim" = "seq.human_caststrike_staff_walkmerge"
+"param.defend_anim" = "seq.human_staff_block"
+"param.death_anim" = "seq.human_death"
+"param.attack_sound" = "synth.windstrike_cast_and_fire"
+"param.defend_sound" = "synth.human_hit"
+"param.death_sound" = "synth.human_death"
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.proj_type" = "projanim.magic_spell"
+"param.proj_travel" = "spotanim.windstrike_travel"
+"param.attackrate" = 5
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_outlaw_melee_combat"
+inherit = "npc.mba_outlaw_melee_combat"
+respawnRate = 0
+maxRange = 16
+[npc.params]
+"param.attack_anim" = "seq.human_sword_slash"
+"param.defend_anim" = "seq.human_sword_def"
+"param.death_anim" = "seq.human_death"
+"param.attack_sound" = "synth.hacksword_slash"
+"param.defend_sound" = "synth.human_hit"
+"param.death_sound" = "synth.human_death"
+"param.npc_attack_type" = "category.attacktype_slash"
+"param.attackrate" = 4
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_mudfoot_spear_combat"
+inherit = "npc.mba_mudfoot_spear_combat"
+respawnRate = 0
+timer = 1
+
+[[npc]]
+isServerOnly = true
+id = "npc.mba_mudfoot_rocks_combat"
+inherit = "npc.mba_mudfoot_rocks_combat"
+respawnRate = 0
+timer = 1
