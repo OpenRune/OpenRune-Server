@@ -1,7 +1,6 @@
 package org.rsmod.content.quest.area.misthalin
 
 import org.rsmod.api.repo.region.RegionTemplate
-import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
 internal val MisthalinIslandTemplate: RegionTemplate =
@@ -13,26 +12,6 @@ internal val MisthalinIslandTemplate: RegionTemplate =
             zoneLength = 8
         }
     }
-
-internal class SceneRegion(private val region: Region?) {
-    val instanced: Boolean
-        get() = region != null
-
-    operator fun get(coords: CoordGrid): CoordGrid =
-        if (region == null) coords else region.normal[coords]
-
-    fun map(camera: SceneCamera): SceneCamera =
-        if (region == null) {
-            camera
-        } else {
-            SceneCamera(
-                eye = this[camera.eye],
-                eyeHeight = camera.eyeHeight,
-                lookAt = this[camera.lookAt],
-                lookAtHeight = camera.lookAtHeight,
-            )
-        }
-}
 
 internal fun assertMisthalinSceneCoords(coords: Iterable<Pair<String, CoordGrid>>) {
     for ((name, coord) in coords) {

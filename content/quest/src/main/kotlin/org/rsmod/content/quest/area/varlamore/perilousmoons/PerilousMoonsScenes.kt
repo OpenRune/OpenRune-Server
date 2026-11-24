@@ -4,6 +4,9 @@ import dev.openrune.types.MoveRestrict
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.config.Constants
+import org.rsmod.api.player.cinematic.SceneCamera
+import org.rsmod.api.player.cinematic.SceneRegion
+import org.rsmod.api.player.cinematic.lockedScene
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
@@ -11,9 +14,6 @@ import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.api.repo.world.WorldRepository
-import org.rsmod.content.quest.area.misthalin.SceneCamera
-import org.rsmod.content.quest.area.misthalin.SceneRegion
-import org.rsmod.content.quest.area.misthalin.lockedScene
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape

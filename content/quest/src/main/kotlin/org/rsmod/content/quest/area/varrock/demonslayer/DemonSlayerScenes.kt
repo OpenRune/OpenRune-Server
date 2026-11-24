@@ -4,6 +4,11 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.player.cinematic.SceneCamera
+import org.rsmod.api.player.cinematic.SceneFadeDuration
+import org.rsmod.api.player.cinematic.SceneRegion
+import org.rsmod.api.player.cinematic.SceneSnapRate
+import org.rsmod.api.player.cinematic.lockedScene
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
@@ -11,11 +16,6 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.api.repo.world.WorldRepository
-import org.rsmod.content.quest.area.misthalin.SceneCamera
-import org.rsmod.content.quest.area.misthalin.SceneFadeDuration
-import org.rsmod.content.quest.area.misthalin.SceneRegion
-import org.rsmod.content.quest.area.misthalin.SceneSnapRate
-import org.rsmod.content.quest.area.misthalin.lockedScene
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle

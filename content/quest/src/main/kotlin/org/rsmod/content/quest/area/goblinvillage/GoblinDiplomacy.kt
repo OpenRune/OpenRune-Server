@@ -14,6 +14,9 @@ import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.cinematic.CameraMode
 import org.rsmod.api.player.cinematic.Cinematic
+import org.rsmod.api.player.cinematic.SceneFadeTicks
+import org.rsmod.api.player.cinematic.SceneRegion
+import org.rsmod.api.player.cinematic.SceneSnapRate
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -30,9 +33,6 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.script.onPlayerLogin
-import org.rsmod.content.quest.area.misthalin.SceneFadeTicks
-import org.rsmod.content.quest.area.misthalin.SceneRegion
-import org.rsmod.content.quest.area.misthalin.SceneSnapRate
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.rewards
