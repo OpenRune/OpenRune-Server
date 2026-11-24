@@ -1,0 +1,31 @@
+[[npc]]
+isServerOnly = true
+id = "npc.romeo_juliet_pew_sleeping_man"
+inherit = "npc.romeo_juliet_pew_sleeping_man"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "South"
+timer = 1
+
+[[npc]]
+isServerOnly = true
+id = "npc.romeo_juliet_pew_sleeping_woman"
+inherit = "npc.romeo_juliet_pew_sleeping_woman"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "South"
+timer = 1
+
+[[npc]]
+isServerOnly = true
+id = "npc.apothecary"
+inherit = "npc.apothecary"
+wanderRange = 3
+
+[[npc]]
+isServerOnly = true
+id = "npc.juliet_multi_visible"
+inherit = "npc.juliet_multi_visible"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "North"

@@ -14,8 +14,10 @@ vampyre_slayer_state = 64600
 demon_slayer_state = 64610
 demon_slayer_return_tile = 64611
 pirates_treasure_state = 64620
+romeo_juliet_return_tile = 64720
 
 [gamevals.varbit]
+romeo_juliet_progress = 64720
 restless_ghost_progress = 63702
 imp_catcher_progress = 63703
 misthalin_reflections = 63700
@@ -73,6 +75,7 @@ restless_ghost_coffin_ghost = 123
 restless_skeleton_attack = 124
 
 [gamevals.dbtable]
+apothecary_potions = 64720
 pmoon_ruins_parts = 64801
 pmoon_ruins_spawns = 64802
 daddys_home_furniture = 65472
@@ -80,6 +83,9 @@ daddys_home_crate = 65473
 glarial_restrictions = 65495
 
 [gamevals.dbrow]
+apothecary_strength = 63236
+apothecary_energy = 63237
+apothecary_antipoison = 63238
 pmoon_ruins_antechamber = 62810
 pmoon_ruins_ancient_prison = 62811
 pmoon_ruins_earthbound_cavern = 62812

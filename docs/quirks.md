@@ -176,3 +176,22 @@ the Falador park gardener (rev 235) and Hector's chest (rev 232). Known differen
 - Taking the white apron in Gerrant's shop is an ordinary ground item pickup, without the
   "freshly starched" message.
 - Chathead expressions for Frank, Luthas, Wydin and the customs officer are chosen by hand.
+
+## Romeo & Juliet
+
+Built from an RSProx capture of the whole quest on a fresh account (rev 242.1, the server's
+revision), plus rsprox.net captures of finished accounts for the Apothecary's potion window
+(rev 232), the church congregation and the quest NPCs' movement. Known differences:
+
+- Both cutscenes use the shared scene helper for the fade in and out, so the moves into and
+  out of the cutscene land a tick or two away from live. Live moves the player 3 ticks after
+  the click, and the crypt scene's first two lines play on the black screen. Everything
+  between those transitions (lines, camera shots, animations, sounds, NPC steps and var
+  changes) matches the capture tick for tick.
+- The quest journal text was only captured at two points: after talking to Father Lawrence,
+  and after Juliet drinks the potion. The other stages keep the text from the earlier port.
+- The Apothecary's Buy-5, Buy-X and Buy-All options were only captured refusing a player
+  without the ingredients. The success message is not captured; one message is sent per
+  click, however many potions he brews.
+- Live sends "You haven't got the required items." a tick after the click; here it is sent
+  on the same tick.

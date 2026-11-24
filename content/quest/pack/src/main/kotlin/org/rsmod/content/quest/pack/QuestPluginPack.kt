@@ -11,5 +11,6 @@ class QuestPluginPack : PluginPack() {
             GlarialRestrictionsTable.restrictions(),
             PerilousMoonsRuinsTables.parts(),
             PerilousMoonsRuinsTables.spawns(),
+            ApothecaryPotionsTable.potions(),
         )
 }
