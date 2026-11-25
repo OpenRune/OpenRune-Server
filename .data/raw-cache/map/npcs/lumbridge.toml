@@ -1484,3 +1484,39 @@ coords = "0_50_50_11_25"
 
 ## Zeke End
 
+
+[[spawn]]
+npc = "npc.captain_harlan"
+coords = "0_50_50_19_39"
+
+[[spawn]]
+npc = "npc.mba_mudfoot_ruined_building"
+coords = "0_50_50_48_52"
+
+[[spawn]]
+npc = "npc.mba_outlaw_ranged_general_store"
+coords = "0_50_50_19_45"
+
+[[spawn]]
+npc = "npc.mba_mudfoot_windmill"
+coords = "0_49_51_36_24"
+
+[[spawn]]
+npc = "npc.mba_outlaw_ranged_windmill"
+coords = "0_49_51_31_23"
+
+[[spawn]]
+npc = "npc.mba_mudfoot_woods"
+coords = "0_49_50_38_40"
+
+[[spawn]]
+npc = "npc.mba_outlaw_magic_woods"
+coords = "0_49_50_35_40"
+
+[[spawn]]
+npc = "npc.mba_mudfoot_graveyard"
+coords = "0_50_49_42_63"
+
+[[spawn]]
+npc = "npc.mba_outlaw_melee_graveyard"
+coords = "0_50_49_45_62"

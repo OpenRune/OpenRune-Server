@@ -31,6 +31,7 @@ constructor(
     private val npcList: NpcList,
     private val mapClock: MapClock,
     private val collision: CollisionFlagMap,
+    private val externalForms: ExternalFollowerForms = ExternalFollowerForms(),
 ) {
     fun hasFollower(player: Player): Boolean = player.followerObj != 0
 
@@ -38,6 +39,7 @@ constructor(
         Pets.formForObj(player.followerObj)
             ?: Cats.formForObj(player.followerObj)
             ?: Dogs.formForObj(player.followerObj)
+            ?: externalForms.formForObj(player.followerObj)
 
     fun follower(player: Player): Npc? {
         val packed = player.followerNpc
@@ -234,7 +236,8 @@ constructor(
         const val STUCK_TELEPORT_CYCLES = 5
         const val TELEPORT_DISTANCE = 12
         const val NO_FOLLOWER = 0
-        const val BLOCKED_FLAGS = CollisionFlag.BLOCK_WALK or CollisionFlag.BLOCK_PLAYERS
+        const val BLOCKED_FLAGS =
+            CollisionFlag.BLOCK_WALK or CollisionFlag.BLOCK_PLAYERS or CollisionFlag.LOC
 
         val ADJACENT_OFFSETS =
             listOf(-1 to 0, 1 to 0, 0 to -1, 0 to 1, -1 to -1, 1 to -1, -1 to 1, 1 to 1)

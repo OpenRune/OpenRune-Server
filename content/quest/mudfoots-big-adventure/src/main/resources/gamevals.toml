@@ -1,0 +1,8 @@
+[gamevals.varp]
+mba_return_tile = 63740
+mba_weapon_claim_minute = 63741
+
+[gamevals.mesanim]
+mba_disgruntled = 64430
+mba_suspecting = 64431
+mba_confused_idle = 64432
